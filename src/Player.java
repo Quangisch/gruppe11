@@ -1,5 +1,6 @@
 
 import java.awt.event.KeyEvent;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -25,7 +26,6 @@ public class Player extends JComponent implements Runnable {
 	//player coordinates
 	static int x = 0;
 	static int y = 0;
-	static int centerX, centerY;
 	static int xEnterNewMap, yEnterNewMap;
 	
 	//animation
@@ -42,9 +42,10 @@ public class Player extends JComponent implements Runnable {
 	static final double SPEED = 4;
 	static final double SPEEDUP = 2.5;
 	double tmpSpeed = SPEED;
+	final static Rectangle rectBOARD = new Rectangle(-200,-200,1210,1030);
 	
 	//worldnavigation
-	static Rectangle playerBound;
+	static Rectangle playerBoundN,playerBoundE,playerBoundS,playerBoundW;
 	static boolean enterNewMap = false;
 	static double dx, dy;
 	
@@ -92,30 +93,26 @@ public class Player extends JComponent implements Runnable {
 
 			    dx *= tmpSpeed;
 			    dy *= tmpSpeed;
-			    if (getCenterX() >= 0)
-			    	x += dx;
-			    else x -= dx-5;
-			    
-			    if (getCenterY() >= 0)
-			    	y += dy;
-			    else y -= dy-5;
-			    
-			    if (getCenterX() <= 810)
-			    	x += dx;
-			    else x -= (dx+40);
-			    
-			    if (getCenterY() <= 630)
-			    	y += dy;
-			    else y -= (dy+40);
 			   
-			    
-			    
+			    //checks movement in board
+			    if (rectBOARD.contains(playerBoundN)||rectBOARD.contains(playerBoundE)
+			    		||rectBOARD.contains(playerBoundS)||rectBOARD.contains(playerBoundW)) {
+			    	x += dx;
+			    	y += dy;
+			    } else {
+			    	System.err.println("Illegal movement");
+			    	x = 400;
+			    	y = 300;
+			    }
+			  
+			  
+			    //toogles movement sprites/animation
 			    if (dx != 0 || dy != 0){
 			    	if (moveStep >= 7 || newDirection != lastDirection || interStep > 8)
 			    		interStep = 0;
 			    	interStep += 0.08*tmpSpeed;
 			    	moveStep = Math.round((int)interStep);
-					
+				
 			    }
 			   
 			    //System.out.println(interStep);
@@ -126,18 +123,12 @@ public class Player extends JComponent implements Runnable {
 			//System.out.println(getBounds().intersects(overWorldMap.getRectSouth()));
 			
 			
-			//System.out.println(overWorldMap.newMap);
-			if(overWorldMap.newMap){
-				Rectangle nullRect = new Rectangle(0,0,0,0);
-				overWorldMap.rectNorth = nullRect;
-				overWorldMap.rectEast = nullRect;
-				overWorldMap.rectSouth = nullRect;
-				overWorldMap.rectNorth = nullRect;
-			}
+			System.out.println(overWorldMap.newMap);
+		
 			
-			if(overWorldMap.newMap == false){
+			if(!overWorldMap.newMap && MapMaker.scrollReady){
 			
-				if (getBounds().intersects(overWorldMap.rectNorth)){
+				if (playerBoundN.intersects(overWorldMap.rectNorth)){
 					overWorldMap.oldWorldMapX = overWorldMap.worldMapX;
 					overWorldMap.oldWorldMapY = overWorldMap.worldMapY;
 					overWorldMap.scrollData(overWorldMap.worldMapX,overWorldMap.worldMapY-1,true);
@@ -147,7 +138,7 @@ public class Player extends JComponent implements Runnable {
 					xEnterNewMap = x;
 					yEnterNewMap = y;
 				}	
-				if (getBounds().intersects(overWorldMap.rectEast)){
+				if (playerBoundE.intersects(overWorldMap.rectEast)){
 					overWorldMap.oldWorldMapX = overWorldMap.worldMapX;
 					overWorldMap.oldWorldMapY = overWorldMap.worldMapY;
 					overWorldMap.scrollData(overWorldMap.worldMapX+1,overWorldMap.worldMapY,true);
@@ -157,7 +148,7 @@ public class Player extends JComponent implements Runnable {
 					xEnterNewMap = x;
 					yEnterNewMap = y;
 				}
-				if (getBounds().intersects(overWorldMap.rectSouth)){
+				if (playerBoundS.intersects(overWorldMap.rectSouth)){
 					overWorldMap.oldWorldMapX = overWorldMap.worldMapX;
 					overWorldMap.oldWorldMapY = overWorldMap.worldMapY;
 					overWorldMap.scrollData(overWorldMap.worldMapX,overWorldMap.worldMapY+1,true);
@@ -167,7 +158,7 @@ public class Player extends JComponent implements Runnable {
 					xEnterNewMap = x;
 					yEnterNewMap = y;
 				}	
-				if (getBounds().intersects(overWorldMap.rectWest)){
+				if (playerBoundW.intersects(overWorldMap.rectWest)){
 					overWorldMap.oldWorldMapX = overWorldMap.worldMapX;
 					overWorldMap.oldWorldMapY = overWorldMap.worldMapY;
 					overWorldMap.scrollData(overWorldMap.worldMapX-1,overWorldMap.worldMapY,true);
@@ -179,6 +170,8 @@ public class Player extends JComponent implements Runnable {
 				}
 			}
 			
+				
+			
 			
 		
 	}
@@ -189,29 +182,23 @@ public class Player extends JComponent implements Runnable {
 		if (MapMaker.scrollReady){
 			if (key == KeyEvent.VK_UP){
 				moveUp = true;	
-				if (!getBounds().intersects(overWorldMap.rectNorth) && !getBounds().intersects(overWorldMap.rectSouth) && !getBounds().intersects(overWorldMap.rectEast) &&!getBounds().intersects(overWorldMap.rectWest)){
-					OverWorldMap.newMap = false;
-				}
+				OverWorldMap.newMap = false;
 			}
 			if (key == KeyEvent.VK_RIGHT){
 				moveRight = true;
-				if (!getBounds().intersects(overWorldMap.rectNorth) && !getBounds().intersects(overWorldMap.rectSouth) && !getBounds().intersects(overWorldMap.rectEast) &&!getBounds().intersects(overWorldMap.rectWest)){
-					OverWorldMap.newMap = false;
-				}
+				OverWorldMap.newMap = false;
 			}
 
 			if (key == KeyEvent.VK_DOWN){	
 				moveDown = true;
-				if (!getBounds().intersects(overWorldMap.rectNorth) && !getBounds().intersects(overWorldMap.rectSouth) && !getBounds().intersects(overWorldMap.rectEast) &&!getBounds().intersects(overWorldMap.rectWest)){
-					OverWorldMap.newMap = false;
-				}
+				OverWorldMap.newMap = false;
 			}
 			if (key == KeyEvent.VK_LEFT){
 				moveLeft = true;
-				if (!getBounds().intersects(overWorldMap.rectNorth) && !getBounds().intersects(overWorldMap.rectSouth) && !getBounds().intersects(overWorldMap.rectEast) &&!getBounds().intersects(overWorldMap.rectWest)){
-					OverWorldMap.newMap = false;
-				}
+				OverWorldMap.newMap = false;
 			}
+			
+			
 			if (key == KeyEvent.VK_F){
 				tmpSpeed = SPEED*SPEEDUP;
 			}
@@ -252,16 +239,20 @@ public class Player extends JComponent implements Runnable {
 		//temp worldMapNavigation ASWD
 		if (key == KeyEvent.VK_W && mapMaker.getScrollStatus()){
 			OverWorldMap.scrollMap(0,-1);
+			MapMaker.scrollReady = true;
 		}
 		if (key == KeyEvent.VK_D && mapMaker.getScrollStatus()){
 			OverWorldMap.scrollMap(1,0);
+			MapMaker.scrollReady = true;
 		}
 		if (key == KeyEvent.VK_S && mapMaker.getScrollStatus()){
 			System.out.println("MapScroll down");
 			OverWorldMap.scrollMap(0, 1);
+			MapMaker.scrollReady = true;
 		}
 		if (key == KeyEvent.VK_A && mapMaker.getScrollStatus()){
 			OverWorldMap.scrollMap(-1,0);
+			MapMaker.scrollReady = true;
 		}	
 	}
 	
@@ -332,21 +323,33 @@ public class Player extends JComponent implements Runnable {
 		}
 		
 		g2d.drawImage(playerMoveBuff ,x ,y , this);
+		
+		//playerBounds
+		g2d.setColor(Color.red);
+        g2d.drawRect(x+10,y+10,60,10);
+        g2d.drawRect(x+10,y+90,60,10);
+        g2d.drawRect(x+10,y+10,10,90);
+        g2d.drawRect(x+60,y+10,10,90);
+        
+        //OverWorldNavigation Bounds
+        g2d.setColor(Color.blue);
+        g2d.draw(OverWorldMap.rectNorth);
+        g2d.draw(OverWorldMap.rectEast);
+        g2d.draw(OverWorldMap.rectSouth);
+        g2d.draw(OverWorldMap.rectWest);
 	}
-	
-	public int getX(){return x;}
-	public int getY(){return y;}
 	
 	//worldmapnavigation and bounds
-	public void setBounds(){playerBound = new Rectangle(x+7, y+9, 24*3, 35*3);}
-	public Rectangle getBounds(){return playerBound;}
+	public void setBounds(){playerBoundS = new Rectangle (x+10,y+10,60,10);
+							playerBoundE = new Rectangle (x+10,y+10,10,90);
+							playerBoundN = new Rectangle (x+10,y+90,60,10);
+							playerBoundW = new Rectangle (x+60,y+10,10,90);}
+	
 	public void setPosition(int x, int y){this.x = x;this.y = y;}
 	
-	public void hallo(){
-		System.out.println("hallo von player");
-	}
 	
-	public int getCenterX(){return centerX = getX() + 15;}
-	public int getCenterY(){return centerY = getY() + 20;}
+	public void hallo(){System.out.println("hallo von player");}
+	
+
 
 }

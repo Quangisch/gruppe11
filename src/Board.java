@@ -74,7 +74,7 @@ public class Board extends JPanel implements ActionListener, GridInterface, Rect
 		mapMaker.paintComponents(g2d);
 		scrollMapPainter.paintComponents(g2d);
 		
-		
+
 		startGame();
 	
 	g.dispose();
@@ -84,10 +84,11 @@ public class Board extends JPanel implements ActionListener, GridInterface, Rect
 	public void startGame() {
 		timer.start();
 		
-		if(OverWorldMap.newMap && !MapMaker.scrollReady)
-			scrollMapPainter.iniMapMaker();
+		//if(OverWorldMap.newMap && !MapMaker.scrollReady)
+		//	scrollMapPainter.iniMapMaker();
 		mapMaker.iniMapMaker();
 		player.paintPlayer();
+		
 		
 		
 		//TODO Thread for player

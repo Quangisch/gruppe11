@@ -78,8 +78,9 @@ public final class OverWorldMap implements RectMapGrid{
 			mapSetURL = this.getClass().getResource(FileLink.mapBasic1);
 			mapDataBuff = new BufferedReader(new FileReader(FileLink.mapData00_00));
 			mapDataBuffOld = new BufferedReader(new FileReader(FileLink.mapData00_00));
-			rectSouth = new Rectangle(320,610, 80,1);
-			rectEast = new Rectangle(810,250, 1,55);
+			resetBounds();
+			rectSouth = new Rectangle(320,620, 80,10);
+			rectEast = new Rectangle(800,250, 10,55);
 
 		}
 			
@@ -87,14 +88,16 @@ public final class OverWorldMap implements RectMapGrid{
 			mapSetURL = this.getClass().getResource(FileLink.mapBasic1);
 			mapDataBuff = new BufferedReader(new FileReader(FileLink.mapData00_01));
 			mapDataBuffOld = new BufferedReader(new FileReader(FileLink.mapData00_00));
-			rectNorth = new Rectangle(320,0,68,1);
+			resetBounds();
+			rectNorth = new Rectangle(310,0,90,10);
 		}
 		
 		if (worldMapX == 1 && worldMapY == 0){
 			mapSetURL = this.getClass().getResource(FileLink.mapBasic1);
 			mapDataBuff = new BufferedReader(new FileReader(FileLink.mapData01_00));
 			mapDataBuffOld = new BufferedReader(new FileReader(FileLink.mapData00_00));
-			rectWest = new Rectangle(0,250, 1,60);
+			resetBounds();
+			rectWest = new Rectangle(0,250, 10,60);
 		}
 		
 		
@@ -126,15 +129,14 @@ public final class OverWorldMap implements RectMapGrid{
 		}
 	}
 	
-
-	//collision detection for overWorldMap Navigation
-	public Rectangle getRectNorth(){return rectNorth;}
-	public Rectangle getRectEast(){return rectEast;}
-	public Rectangle getRectSouth(){return rectSouth;}
-	public Rectangle getRectWest(){return rectWest;}
-	
-	public void hallo(){
-		System.out.println("hallo overworldmap");
+	private void resetBounds(){
+		Rectangle nullRect = new Rectangle(0,0,0,0);
+		rectNorth = nullRect;
+		rectEast = nullRect;
+		rectSouth = nullRect;
+		rectWest = nullRect;
 	}
-
+	
+	public void hallo(){System.out.println("hallo overworldmap");}
+	
 }

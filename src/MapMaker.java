@@ -82,8 +82,8 @@ public class MapMaker extends JComponent implements Runnable, GridInterface{
 						mapGrid = new BoardGrid(oneLine);
 						
 						mapBuff = mapTiles.getSubimage(mapGrid.getX(), mapGrid.getY(), B2.x, B2.y);
-						g2d.drawImage(mapBuff , (x*6)-scrollX, (y*6)-scrollY, this);
-						//g2d.drawImage(mapBuff , (x*6), (y*6), this);
+						//g2d.drawImage(mapBuff , (x*6)-scrollX, (y*6)-scrollY, this);
+						g2d.drawImage(mapBuff , (x*6), (y*6), this);
 						x += 15;
 						
 						//System.out.println("paint Tile: " + x*6 +", " + y*6 + " at this Position: " + mapGrid.getX() + ", " + mapGrid.getY());
@@ -104,6 +104,7 @@ public class MapMaker extends JComponent implements Runnable, GridInterface{
 			if (OverWorldMap.mapDataBuff != null)
 				OverWorldMap.mapDataBuff.close();
 			}
+		
 			scrollBetweenMaps();
 			
 		}
@@ -112,26 +113,26 @@ public class MapMaker extends JComponent implements Runnable, GridInterface{
 		if(OverWorldMap.nextMapY == -1){
 			scrollReady = false;
 			scrollY += SCROLLSPEED_Y;
-			player.setPosition(player.getX(), scrollY);
+			player.setPosition(Player.x, 560);
 			if(scrollY >= 2*630){System.out.println("North");scrollY = 0;OverWorldMap.nextMapY = 0;scrollReady = true;}
 		}
 		if(OverWorldMap.nextMapX == 1){
 			scrollReady = false;
 			scrollX -= SCROLLSPEED_X;
-			player.setPosition(scrollX, player.getY());
+			player.setPosition(-30, Player.y);
 			if(scrollX <= 0){System.out.println("East");scrollX = 0;OverWorldMap.nextMapX = 0;scrollReady = true;}
 		}
 		if(OverWorldMap.nextMapY == 1){
 			scrollReady = false;
 			scrollY -= SCROLLSPEED_Y;
 			System.out.println(scrollY);
-			player.setPosition(player.getX(),scrollY);
+			player.setPosition(Player.x,0);
 			if(scrollY <= 0){System.out.println("South");scrollY = 0;OverWorldMap.nextMapY = 0;scrollReady = true;}
 		}	
 		if(OverWorldMap.nextMapX == -1){
 			scrollReady = false;
 			scrollX += SCROLLSPEED_X;
-			player.setPosition(scrollX, player.getY());
+			player.setPosition(760, Player.y);
 			if(scrollX >= 2*810){System.out.println("West");scrollX = 0;OverWorldMap.nextMapX = 0;scrollReady = true;}
 		}
 	
