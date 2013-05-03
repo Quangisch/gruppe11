@@ -53,7 +53,7 @@ public class Map extends JComponent implements GridInterface{
 				x = 0;
 				y += 15;	
 			}
-			
+			/*
 			//paint wall
 			mapBuff = mapTiles.getSubimage(A5.x, A5.y, 15*6*2, 15*6);
 			x = 0;
@@ -92,7 +92,7 @@ public class Map extends JComponent implements GridInterface{
 			paintTree1(C7, D7);
 			paintTree1(E4, F4);
 			paintTree1(F8, G8);
-	
+		*/
 		
 	}
 	

@@ -17,7 +17,7 @@ import javax.swing.JComponent;
 public class ScrollMapPainter extends JComponent implements Runnable, GridInterface{
 	
 	//class instances
-	OverWorldMap overWorldMap;
+	ScrollOverWorld scrollOverWorld;
 	static BufferedImage mapTiles, mapBuff;
 	BoardGrid mapGrid;
 	static Player player;
@@ -32,22 +32,23 @@ public class ScrollMapPainter extends JComponent implements Runnable, GridInterf
 	static URL mapSetURL = null;
 	
 	//worldMapNavigation
-	static int scrollX = 810, scrollY = 630;
+	static int scrollX = 0, scrollY = 0;
 	static boolean scrollReady = true;
+	static boolean toNorth, toEast, toSouth, toWest;
 	final static int SCROLLSPEED_X = 40,  SCROLLSPEED_Y = 30;
-	
 
-	
-	public ScrollMapPainter(){
-		overWorldMap = new OverWorldMap();
+	public ScrollMapPainter() {
+		scrollOverWorld = new ScrollOverWorld();
 		player = new Player(false);
+		
+
+		
 	}
 	
 	//initiates MapMaking process with Exception Handler
 	public void iniMapMaker() {
-		
 		try {
-			paintOldMap();
+			paintMapData();
 		} catch (IOException ioe){
 			System.err.println("iniMapMaker-readMapData: " + ioe);
 		} catch (NullPointerException npe) {
@@ -64,32 +65,55 @@ public class ScrollMapPainter extends JComponent implements Runnable, GridInterf
 		g2d = (Graphics2D) g;
 	}
 	
-	public void paintOldMap() throws IOException, NullPointerException{
+	public void paintMapData() throws IOException, NullPointerException{
 		
 		String oneLine = null, dummyLine = null;
-		
 		try{
 			switchMap();
 			int x = 0;
 			int y = 0;
+			
+	
+			
 			readMapData:
+				
 				for (int i = 0; i < 7; i++){
-					
+				
 					for (int j = 0; j < 9; j++){
-						//TODO THREAD: scrollMap(0,0);
-						oneLine = OverWorldMap.mapDataBuff.readLine();
+					
+						oneLine = scrollOverWorld.getMapDataBuff().readLine();
 						mapGrid = new BoardGrid(oneLine);
 						
 						mapBuff = mapTiles.getSubimage(mapGrid.getX(), mapGrid.getY(), B2.x, B2.y);
-						//g2d.drawImage(mapBuff , (x*6)+(810-scrollX), (y*6)+(630-scrollY), this);
-						g2d.drawImage(mapBuff , (x*6), (y*6), this);
-						x += 15;
+						
+						//g2d.drawImage(mapBuff , (x*6), (y*6), this);
+						
+						//System.out.println("draw old map");
+						if(!ScrollMapPainter.toNorth && !ScrollMapPainter.toWest && !ScrollMapPainter.toSouth && !ScrollMapPainter.toEast)
+							g2d.drawImage(mapBuff , (x*6), (y*6), this);
+						if(ScrollMapPainter.toNorth && !ScrollMapPainter.toWest && !ScrollMapPainter.toSouth && !ScrollMapPainter.toEast){
+							//System.out.println("scroll to North");
+							g2d.drawImage(mapBuff , (x*6), MapMaker.scrollY + (y*6)-50, this);	
+						}
+						if(!ScrollMapPainter.toNorth && !ScrollMapPainter.toWest && ScrollMapPainter.toSouth && !ScrollMapPainter.toEast){
+							//System.out.println("scroll to South");
+							g2d.drawImage(mapBuff , (x*6), MapMaker.scrollY + (y*6)+50, this);
+						}
+						if(!ScrollMapPainter.toNorth && !ScrollMapPainter.toWest && !ScrollMapPainter.toSouth && ScrollMapPainter.toEast){
+							//System.out.println("scroll to East");
+							g2d.drawImage(mapBuff , (x*6)+MapMaker.scrollX+60, (y*6), this);	
+						}
+						if(!ScrollMapPainter.toNorth && ScrollMapPainter.toWest && !ScrollMapPainter.toSouth && !ScrollMapPainter.toEast){
+							//System.out.println("scroll to West");
+							g2d.drawImage(mapBuff , (x*6)+MapMaker.scrollX-60, (y*6), this);	
+						}
+						
 						
 						//System.out.println("paint Tile: " + x*6 +", " + y*6 + " at this Position: " + mapGrid.getX() + ", " + mapGrid.getY());
-						
+						x += 15;
 					}
 					
-					dummyLine = OverWorldMap.mapDataBuff.readLine();
+					dummyLine = scrollOverWorld.getMapDataBuff().readLine();
 						if (dummyLine == null){
 							System.err.println("DummyLine != 0");
 							break readMapData;
@@ -100,55 +124,29 @@ public class ScrollMapPainter extends JComponent implements Runnable, GridInterf
 				}
 				
 			} finally {
-			if (OverWorldMap.mapDataBuff != null)
-				OverWorldMap.mapDataBuff.close();
+			if (scrollOverWorld.getMapDataBuff() != null)
+				scrollOverWorld.getMapDataBuff().close();
 			}
-			//scrollBetweenMaps();
-			//scrollMapPainter.paintLeftBorder();
-		}
-	
-	public void scrollBetweenMaps() throws IOException, NullPointerException{
-		if(OverWorldMap.nextMapY == -1){
-			scrollY += SCROLLSPEED_Y;
-			player.setPosition(player.getX(), player.yEnterNewMap+scrollY-630-40*3);
-			if(scrollY >= 2*630){System.out.println("OVER Y");scrollY = 630;OverWorldMap.nextMapY = 0;scrollReady = true;}
-		}
-		if(OverWorldMap.nextMapX == 1){
-			scrollX -= SCROLLSPEED_X;
-			player.setPosition(player.xEnterNewMap-810+scrollX+30*3, player.getY());
-			if(scrollX <= 0){System.out.println("OVER X");scrollX = 810;OverWorldMap.nextMapX = 0;scrollReady = true;}
-		}
-		if(OverWorldMap.nextMapY == 1){
-			System.out.println("south");
-			scrollY -= SCROLLSPEED_Y;
-			System.out.println(scrollY);
-			player.setPosition(player.getX(),player.yEnterNewMap-630+scrollY+40*3);
-			if(scrollY <= 0){System.out.println("OVER Y");scrollY = 630;OverWorldMap.nextMapY = 0;scrollReady = true;}
-		}	
-		if(OverWorldMap.nextMapX == -1){
-			scrollX += SCROLLSPEED_X;
-			player.setPosition(scrollX-810+player.xEnterNewMap-30*3, player.getY());
-			if(scrollX >= 2*810){System.out.println("OVER X");scrollX = 810;OverWorldMap.nextMapX = 0;scrollReady = true;}
-		}
-	
 		
-	}
+		
+			
+		}
 	
 	//get overWorldMap for MapMaker
 	public void switchMap() throws IOException {
 		
 		try
 		{	
-			overWorldMap.scrollData(overWorldMap.oldWorldMapX, overWorldMap.oldWorldMapY, false);
-			mapTiles = ImageIO.read(overWorldMap.mapSetURL);
-			//mapData = overWorldMap.mapDataBuff;
+			scrollOverWorld.scrollData(scrollOverWorld.worldMapX, scrollOverWorld.worldMapY,false);
+			//oldWorldMap.scrollData(0, 0,false);
+			mapTiles = ImageIO.read(scrollOverWorld.mapSetURL);
+			//mapData = OldWorldMap.mapDataBuff;
 			//mapBuff = new BufferedImage(810, 630, BufferedImage.TYPE_INT_ARGB);
 	
 		} finally {
 			
 		}
 	}
-	
 	
 	
 	public boolean getScrollStatus(){return scrollReady;}

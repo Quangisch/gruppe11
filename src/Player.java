@@ -26,7 +26,7 @@ public class Player extends JComponent implements Runnable {
 	//player coordinates
 	static int x = 0;
 	static int y = 0;
-	static int xEnterNewMap, yEnterNewMap;
+	//static int xEnterNewMap, yEnterNewMap;
 	
 	//animation
 	static final int spriteGridX = 30*3;
@@ -48,6 +48,8 @@ public class Player extends JComponent implements Runnable {
 	static Rectangle playerBoundN,playerBoundE,playerBoundS,playerBoundW;
 	static boolean enterNewMap = false;
 	static double dx, dy;
+
+	static boolean tmpSAME;
 	
 	
 	public Player(int x, int y) {
@@ -93,6 +95,9 @@ public class Player extends JComponent implements Runnable {
 
 			    dx *= tmpSpeed;
 			    dy *= tmpSpeed;
+			    
+			    x += dx;
+		    	y += dy;
 			   
 			    //checks movement in board
 			    if (rectBOARD.contains(playerBoundN)||rectBOARD.contains(playerBoundE)
@@ -118,67 +123,56 @@ public class Player extends JComponent implements Runnable {
 			    //System.out.println(interStep);
 			}
 			dx = dy = 0;
+			//System.out.println(getBounds().intersects(overWorldMap.getRectSouth()));
+			//System.out.println(moveLeft);
 			
 			setBounds();
-			//System.out.println(getBounds().intersects(overWorldMap.getRectSouth()));
-			
-			
-			System.out.println(overWorldMap.newMap);
-		
 			
 			if(!overWorldMap.newMap && MapMaker.scrollReady){
 			
 				if (playerBoundN.intersects(overWorldMap.rectNorth)){
-					overWorldMap.oldWorldMapX = overWorldMap.worldMapX;
-					overWorldMap.oldWorldMapY = overWorldMap.worldMapY;
+					ScrollOverWorld.worldMapX = overWorldMap.worldMapX;
+					ScrollOverWorld.worldMapY = overWorldMap.worldMapY;
 					overWorldMap.scrollData(overWorldMap.worldMapX,overWorldMap.worldMapY-1,true);
 					//setPosition(getX(), 630-40*3);
 					OverWorldMap.newMap = true;
 					OverWorldMap.nextMapY = -1;
-					xEnterNewMap = x;
-					yEnterNewMap = y;
+
 				}	
 				if (playerBoundE.intersects(overWorldMap.rectEast)){
-					overWorldMap.oldWorldMapX = overWorldMap.worldMapX;
-					overWorldMap.oldWorldMapY = overWorldMap.worldMapY;
+					ScrollOverWorld.worldMapX = overWorldMap.worldMapX;
+					ScrollOverWorld.worldMapY = overWorldMap.worldMapY;
 					overWorldMap.scrollData(overWorldMap.worldMapX+1,overWorldMap.worldMapY,true);
 					//setPosition(0, getY());
 					OverWorldMap.newMap = true;
 					OverWorldMap.nextMapX = 1;
-					xEnterNewMap = x;
-					yEnterNewMap = y;
+
 				}
 				if (playerBoundS.intersects(overWorldMap.rectSouth)){
-					overWorldMap.oldWorldMapX = overWorldMap.worldMapX;
-					overWorldMap.oldWorldMapY = overWorldMap.worldMapY;
+					ScrollOverWorld.worldMapX = overWorldMap.worldMapX;
+					ScrollOverWorld.worldMapY = overWorldMap.worldMapY;
 					overWorldMap.scrollData(overWorldMap.worldMapX,overWorldMap.worldMapY+1,true);
 					//setPosition(getX(),0);
 					OverWorldMap.newMap = true;
 					OverWorldMap.nextMapY = 1;
-					xEnterNewMap = x;
-					yEnterNewMap = y;
+
 				}	
 				if (playerBoundW.intersects(overWorldMap.rectWest)){
-					overWorldMap.oldWorldMapX = overWorldMap.worldMapX;
-					overWorldMap.oldWorldMapY = overWorldMap.worldMapY;
+					ScrollOverWorld.worldMapX = overWorldMap.worldMapX;
+					ScrollOverWorld.worldMapY = overWorldMap.worldMapY;
 					overWorldMap.scrollData(overWorldMap.worldMapX-1,overWorldMap.worldMapY,true);
 					//setPosition(810-30*3, getY());
 					OverWorldMap.newMap = true;
 					OverWorldMap.nextMapX = -1;
-					xEnterNewMap = x;
-					yEnterNewMap = y;
 				}
-			}
-			
 				
-			
-			
-		
-	}
+			}
+	} //move
+	
 	
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
-		
+
 		if (MapMaker.scrollReady){
 			if (key == KeyEvent.VK_UP){
 				moveUp = true;	

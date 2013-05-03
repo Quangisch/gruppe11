@@ -31,6 +31,7 @@ public class Board extends JPanel implements ActionListener, GridInterface, Rect
 	private Player player;
 	public static ScrollMapPainter scrollMapPainter;
 	private MapMaker mapMaker;
+	private Map map;
 	
 	Timer timer;
 	Graphics2D g2d;
@@ -48,9 +49,10 @@ public class Board extends JPanel implements ActionListener, GridInterface, Rect
 		setBackground(Color.BLACK);
 		setDoubleBuffered(true);
 		
+		map = new Map();
 		scrollMapPainter = new ScrollMapPainter();
 		mapMaker = new MapMaker();
-		player = new Player(B2.x, B2.y);
+		player = new Player(E6.x, E6.y);
 		
 		
 		timer = new Timer(5, this);
@@ -73,6 +75,7 @@ public class Board extends JPanel implements ActionListener, GridInterface, Rect
 		player.paintComponents(g2d);
 		mapMaker.paintComponents(g2d);
 		scrollMapPainter.paintComponents(g2d);
+		map.paintComponents(g2d);
 		
 
 		startGame();
@@ -85,8 +88,15 @@ public class Board extends JPanel implements ActionListener, GridInterface, Rect
 		timer.start();
 		
 		//if(OverWorldMap.newMap && !MapMaker.scrollReady)
-		//	scrollMapPainter.iniMapMaker();
+		//if ((OverWorldMap.oldWorldMapX !=OverWorldMap.worldMapX || OverWorldMap.oldWorldMapY !=OverWorldMap.worldMapY) && !MapMaker.scrollReady){
+	
+		if(!MapMaker.scrollReady){
+			map.paintMap();
+		}	
 		mapMaker.iniMapMaker();
+		if(!MapMaker.scrollReady){
+			scrollMapPainter.iniMapMaker();
+		}
 		player.paintPlayer();
 		
 		
@@ -105,15 +115,18 @@ public class Board extends JPanel implements ActionListener, GridInterface, Rect
 		player.move();
 		//repaint(player.x - B2.x/2, player.y - B2.y/2, C3.x, C3.y);
 		
-		//if(OverWorldMap.newMap || !MapMaker.scrollReady)
+		//if(!MapMaker.scrollReady){
+		//	System.out.println("repaint all");
 			repaint();
+		//}
+			
 	}
 	
 	private class TAdapter extends KeyAdapter {
 		
 		public void keyReleased(KeyEvent e){
 			player.keyReleased(e);
-			repaint();
+			//repaint();
 		}
 		
 		public void keyPressed(KeyEvent e){
