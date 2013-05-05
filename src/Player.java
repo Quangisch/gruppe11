@@ -1,32 +1,24 @@
-
-import java.awt.event.KeyEvent;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 import java.io.*;
 import java.net.URL;
 
-import javax.swing.JComponent;
 import javax.imageio.ImageIO;
+import javax.swing.JComponent;
+import java.awt.*; 
+import java.awt.event.*; 
 
-
-public class Player extends JComponent implements Runnable {
-
-	//objects
+public final class Player extends JComponent implements Runnable, FileLink {
 	Graphics2D g2d;
 	BufferedImage playerMove, playerMoveBuff;
-	MapMaker mapMaker;
-	OverWorldMap overWorldMap;
-	static Player Player = new Player(false);
-
+	
 	//player coordinates
-	static int x = 0;
-	static int y = 0;
-	//static int xEnterNewMap, yEnterNewMap;
+	static int x,y;
 	
 	//animation
 	static final int spriteGridX = 30*3;
@@ -39,48 +31,44 @@ public class Player extends JComponent implements Runnable {
 	static double interStep = 0.1;
 	
 	//movement
-	static final double SPEED = 4;
+	static double dx, dy;
+	static final double SPEED = 1;
 	static final double SPEEDUP = 2.5;
 	double tmpSpeed = SPEED;
 	final static Rectangle rectBOARD = new Rectangle(-200,-200,1210,1030);
 	
-	//worldnavigation
+	//worldmapnavigation
 	static Rectangle playerBoundN,playerBoundE,playerBoundS,playerBoundW;
-	static boolean enterNewMap = false;
-	static double dx, dy;
-
-	static boolean tmpSAME;
 	
 	
-	public Player(int x, int y) {
+	public Player(){
+		System.err.println("->Player");
 		
-		overWorldMap = new OverWorldMap(false);
-		mapMaker = new MapMaker();
 		try {
-		URL url = this.getClass().getResource(FileLink.player1_move);
-		playerMove = ImageIO.read(url);
-		playerMoveBuff = new BufferedImage(1260, 960, BufferedImage.TYPE_INT_ARGB);
-		} catch (IOException e) {
-			
-		}
-		this.x = x;
-		this.y = x;
+			playerMove = ImageIO.read(player1_move);
+			playerMoveBuff = new BufferedImage(1260, 960, BufferedImage.TYPE_INT_ARGB);
+			} catch (IOException e) {
+				System.err.println("file not found");
+				System.exit(0);
+			}
+		x = 10;
+		y = 20;
 	}
 	
-	public Player(boolean dummyConstructor){
-		//Instance for OverWorldMap
+	public void paintComponents(Graphics g){
+		g2d = (Graphics2D) g;
+		//System.out.println("Player.paintComponents");
 	}
 	
-	
-	//TODO PlayerThread
-	public void run() {
-		System.out.println("player Thread start");
+	public void run(){
+		if (Board.printMsg)
+			System.out.println("Player.run");
+		move();
 		paintPlayer();
 	}
-
-	public void move(){
-		//System.out.println("CenterX: " + getCenterX() + ", CenterY: " + getCenterY());
-		
+	
+	
+	private void move(){
 			dx=dy=0;
 			if (moveLeft) dx -= 1;
 			if (moveRight) dx += 1;
@@ -100,8 +88,8 @@ public class Player extends JComponent implements Runnable {
 		    	y += dy;
 			   
 			    //checks movement in board
-			    if (rectBOARD.contains(playerBoundN)||rectBOARD.contains(playerBoundE)
-			    		||rectBOARD.contains(playerBoundS)||rectBOARD.contains(playerBoundW)) {
+			    if (x < 810 && x > 0 && y < 630 && y > 0) {
+			    	System.out.println("X: " + x + ", Y: " + y);
 			    	x += dx;
 			    	y += dy;
 			    } else {
@@ -109,7 +97,6 @@ public class Player extends JComponent implements Runnable {
 			    	x = 400;
 			    	y = 300;
 			    }
-			  
 			  
 			    //toogles movement sprites/animation
 			    if (dx != 0 || dy != 0){
@@ -119,144 +106,16 @@ public class Player extends JComponent implements Runnable {
 			    	moveStep = Math.round((int)interStep);
 				
 			    }
-			   
-			    //System.out.println(interStep);
 			}
 			dx = dy = 0;
-			//System.out.println(getBounds().intersects(overWorldMap.getRectSouth()));
-			//System.out.println(moveLeft);
 			
 			setBounds();
 			
-			if(!overWorldMap.newMap && MapMaker.scrollReady){
-			
-				if (playerBoundN.intersects(overWorldMap.rectNorth)){
-					ScrollOverWorld.worldMapX = overWorldMap.worldMapX;
-					ScrollOverWorld.worldMapY = overWorldMap.worldMapY;
-					overWorldMap.scrollData(overWorldMap.worldMapX,overWorldMap.worldMapY-1,true);
-					//setPosition(getX(), 630-40*3);
-					OverWorldMap.newMap = true;
-					OverWorldMap.nextMapY = -1;
-
-				}	
-				if (playerBoundE.intersects(overWorldMap.rectEast)){
-					ScrollOverWorld.worldMapX = overWorldMap.worldMapX;
-					ScrollOverWorld.worldMapY = overWorldMap.worldMapY;
-					overWorldMap.scrollData(overWorldMap.worldMapX+1,overWorldMap.worldMapY,true);
-					//setPosition(0, getY());
-					OverWorldMap.newMap = true;
-					OverWorldMap.nextMapX = 1;
-
-				}
-				if (playerBoundS.intersects(overWorldMap.rectSouth)){
-					ScrollOverWorld.worldMapX = overWorldMap.worldMapX;
-					ScrollOverWorld.worldMapY = overWorldMap.worldMapY;
-					overWorldMap.scrollData(overWorldMap.worldMapX,overWorldMap.worldMapY+1,true);
-					//setPosition(getX(),0);
-					OverWorldMap.newMap = true;
-					OverWorldMap.nextMapY = 1;
-
-				}	
-				if (playerBoundW.intersects(overWorldMap.rectWest)){
-					ScrollOverWorld.worldMapX = overWorldMap.worldMapX;
-					ScrollOverWorld.worldMapY = overWorldMap.worldMapY;
-					overWorldMap.scrollData(overWorldMap.worldMapX-1,overWorldMap.worldMapY,true);
-					//setPosition(810-30*3, getY());
-					OverWorldMap.newMap = true;
-					OverWorldMap.nextMapX = -1;
-				}
-				
-			}
 	} //move
 	
 	
-	public void keyPressed(KeyEvent e){
-		int key = e.getKeyCode();
-
-		if (MapMaker.scrollReady){
-			if (key == KeyEvent.VK_UP){
-				moveUp = true;	
-				OverWorldMap.newMap = false;
-			}
-			if (key == KeyEvent.VK_RIGHT){
-				moveRight = true;
-				OverWorldMap.newMap = false;
-			}
-
-			if (key == KeyEvent.VK_DOWN){	
-				moveDown = true;
-				OverWorldMap.newMap = false;
-			}
-			if (key == KeyEvent.VK_LEFT){
-				moveLeft = true;
-				OverWorldMap.newMap = false;
-			}
-			
-			
-			if (key == KeyEvent.VK_F){
-				tmpSpeed = SPEED*SPEEDUP;
-			}
-		}
+	private void paintPlayer() {
 		
-	
-
-	}
-	
-	public void keyReleased(KeyEvent e){
-		int key = e.getKeyCode();
-		
-		if (key == KeyEvent.VK_UP){
-			moveUp = false;
-			moveStep = 0;
-		}
-		if (key == KeyEvent.VK_RIGHT){
-			moveRight = false;
-			moveStep = 0;
-		}
-		if (key == KeyEvent.VK_DOWN){
-			moveDown = false;
-			moveStep = 0;
-		}	
-		if (key == KeyEvent.VK_LEFT){
-			moveLeft = false;
-			moveStep = 0;
-		}
-		
-		
-		if (key == KeyEvent.VK_F){
-			tmpSpeed = SPEED;
-		}
-		if (key == KeyEvent.VK_SPACE){
-			System.out.println("Hit Space");
-		}
-		
-		//temp worldMapNavigation ASWD
-		if (key == KeyEvent.VK_W && mapMaker.getScrollStatus()){
-			OverWorldMap.scrollMap(0,-1);
-			MapMaker.scrollReady = true;
-		}
-		if (key == KeyEvent.VK_D && mapMaker.getScrollStatus()){
-			OverWorldMap.scrollMap(1,0);
-			MapMaker.scrollReady = true;
-		}
-		if (key == KeyEvent.VK_S && mapMaker.getScrollStatus()){
-			System.out.println("MapScroll down");
-			OverWorldMap.scrollMap(0, 1);
-			MapMaker.scrollReady = true;
-		}
-		if (key == KeyEvent.VK_A && mapMaker.getScrollStatus()){
-			OverWorldMap.scrollMap(-1,0);
-			MapMaker.scrollReady = true;
-		}	
-	}
-	
-
-	public void paintComponents(Graphics g) {
-		g2d = (Graphics2D) g;
-	}
-	
-	//get subimages for animated movement
-	public void paintPlayer() {
 		if ( moveUp == true &&  moveRight != true && moveDown != true &&moveLeft != true || lastDirection == 1){
 			if (newDirection != lastDirection || moveStep >= 8)
 				moveStep = 0;
@@ -316,34 +175,80 @@ public class Player extends JComponent implements Runnable {
 			newDirection = lastDirection;
 		}
 		
-		g2d.drawImage(playerMoveBuff ,x ,y , this);
+		//System.out.println("X: " + x + ", Y: " + y);
+		//g2d.drawImage(playerMoveBuff ,x ,y , this);
 		
 		//playerBounds
-		g2d.setColor(Color.red);
-        g2d.drawRect(x+10,y+10,60,10);
-        g2d.drawRect(x+10,y+90,60,10);
-        g2d.drawRect(x+10,y+10,10,90);
-        g2d.drawRect(x+60,y+10,10,90);
-        
-        //OverWorldNavigation Bounds
-        g2d.setColor(Color.blue);
-        g2d.draw(OverWorldMap.rectNorth);
-        g2d.draw(OverWorldMap.rectEast);
-        g2d.draw(OverWorldMap.rectSouth);
-        g2d.draw(OverWorldMap.rectWest);
+		
+
 	}
 	
-	//worldmapnavigation and bounds
-	public void setBounds(){playerBoundS = new Rectangle (x+10,y+10,60,10);
-							playerBoundE = new Rectangle (x+10,y+10,10,90);
-							playerBoundN = new Rectangle (x+10,y+90,60,10);
-							playerBoundW = new Rectangle (x+60,y+10,10,90);}
-	
-	public void setPosition(int x, int y){this.x = x;this.y = y;}
-	
-	
-	public void hallo(){System.out.println("hallo von player");}
 	
 
+	public void keyPressed(KeyEvent e){
+		int key = e.getKeyCode();
+		Board.repaintNow = true;
 
+			if (key == KeyEvent.VK_UP){
+				moveUp = true;
+			}
+			if (key == KeyEvent.VK_RIGHT){
+				moveRight = true;
+			}
+			if (key == KeyEvent.VK_DOWN){	
+				moveDown = true;
+			}
+			if (key == KeyEvent.VK_LEFT){
+				moveLeft = true;
+			}
+			
+			
+			if (key == KeyEvent.VK_F){
+				tmpSpeed = SPEED*SPEEDUP;
+			}
+
+	}
+	
+	public void keyReleased(KeyEvent e){
+		int key = e.getKeyCode();
+		Board.repaintNow = true;
+		
+		if (key == KeyEvent.VK_UP){
+			moveUp = false;
+			moveStep = 0;
+		}
+		if (key == KeyEvent.VK_RIGHT){
+			moveRight = false;
+			moveStep = 0;
+		}
+		if (key == KeyEvent.VK_DOWN){
+			moveDown = false;
+			moveStep = 0;
+		}	
+		if (key == KeyEvent.VK_LEFT){
+			moveLeft = false;
+			moveStep = 0;
+		}
+		
+		
+		if (key == KeyEvent.VK_F){
+			tmpSpeed = SPEED;
+		}
+		if (key == KeyEvent.VK_SPACE){
+			System.out.println("Hit Space");
+		}
+		
+	}
+	
+	public void setBounds(){
+	playerBoundS = new Rectangle (x+10,y+10,60,10);
+	playerBoundE = new Rectangle (x+10,y+10,10,90);
+	playerBoundN = new Rectangle (x+10,y+90,60,10);
+	playerBoundW = new Rectangle (x+60,y+10,10,90);
+	}
+	
+	public BufferedImage getImage(){
+		return playerMoveBuff;
+	}
+	
 }

@@ -1,80 +1,46 @@
-
-//
-/*Game supporting: 
- *		15*15 Map Tiles with x6 scale
- * 		30x40 PlayerGrid with x3 scale
- * 
- *SingleMapSize: 810x630
- *OverWorldMapGrid: 9x9
- *
- *mapData stored in bin/resources/data/ folder as single *.txt files
- *sprites and images stored in bin/resources/images/ folder as *.png files
- */
-
-/*TODO:	- Multi Thread Implementation for 
- * 			Board.paint(); 
- * 			Player.paintPlayer();
- * 			MapMaker.readMapData(), *.switch(), *.scroll();
- *
- * 		- MapMaker with *.tmx support (Tiles)
- * 
- *		- Enemy Class: sprites, movement, collision detection, primitive AI
- *
- *		- Player Interface Implementation: Hearts/Life, Coins
- *		- Main Menu and Ingame Menu Implementation
- *
- *		- Network Implementation with Coop, PvP Support
- * 
- * BUILD: 02-05-2013 11AM Quang Thi Nguyen
- */ 
-
 import javax.swing.JFrame;
 
 import java.awt.Rectangle;
-import java.io.*;
+import java.io.File;
 
-public class MainGame extends JFrame {
-	public final int WINDOW_X = 810;
-	public final int WINDOW_Y = 651;
+
+public class MainGame extends JFrame{
+
 	public Board board;
 	
-	public MainGame() {
+	public MainGame(){
 		board = new Board();
 		add(board);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize (WINDOW_X, WINDOW_Y);
+		setSize (810, 630);
 		//setLocationRelativeTo(null);
 		setTitle("DC - Prototype");
 		setResizable(false);
 		setVisible(true);
+		
 	}
 	
 	public static void main(String[] args){
 		new MainGame();
-		
-		File currentDir = new File("");
-		System.out.println(currentDir.getAbsolutePath());
-		
-		}
-		
+	}
 }
 
-interface FileLink{
-	String map = "resources/images/tiles_alpha1.png";
-	String button = "resources/images/button.png";
-	String menu = "resources/images/menu.png";
-	String player1_move = "resources/images/mario_sprite_move3x.png";
-	
-	String heart = "resources/images/heart.png";
-	String coin = "resources/images/coin.png";
-	
-	String mapBasic1 = "resources/images/tiles_basic1.png";
-		String mapData00_00 = "resources/data/mapData00_00.txt";
-		String mapData00_01 = "resources/data/mapData00_01.txt";
-		String mapData01_00 = "resources/data/mapData01_00.txt";
-		
-		//String mapData0 = "bin/resources/data/testMapData.txt";
 
+interface FileLink{
+	File player1_move = new File("resources/images/mario_sprite_move3x.png");
+	
+	File menu = new File( "resources/images/menu.png");
+	File button = new File( "resources/images/button.png");
+	
+	File heart = new File( "resources/images/heart.png");
+	File coin = new File( "resources/images/coin.png");
+	
+	File map = new File( "resources/images/tiles_alpha1.png");
+	File mapBasic1 = new File( "resources/images/tiles_basic1.png");
+		File mapData00_00 = new File( "resources/data/mapData00_00.txt");
+		File mapData00_01 = new File( "resources/data/mapData00_01.txt");
+		File mapData01_00 = new File( "resources/data/mapData01_00.txt");
+		
 }
 
 interface GridInterface{
@@ -98,4 +64,3 @@ interface RectMapGrid extends GridInterface{
 	Rectangle rectG1 = new Rectangle(G1.getX(),G1.getY(),15*6,15*6);Rectangle rectG2 = new Rectangle(G2.getX(),G2.getY(),15*6,15*6);Rectangle rectG3 = new Rectangle(G3.getX(),G3.getY(),15*6,15*6);Rectangle rectG4 = new Rectangle(G4.getX(),G5.getY(),15*6,15*6);Rectangle rectG5 = new Rectangle(G5.getX(),G5.getY(),15*6,15*6);Rectangle rectG6 = new Rectangle(G6.getX(),G6.getY(),15*6,15*6);Rectangle rectG7 = new Rectangle(G7.getX(),G7.getY(),15*6,15*6);Rectangle rectG8 = new Rectangle(G8.getX(),G8.getY(),15*6,15*6);Rectangle rectG9 = new Rectangle(G9.getX(),G9.getY(),15*6,15*6);
 
 }
-

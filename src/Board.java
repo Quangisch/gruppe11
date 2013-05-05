@@ -1,161 +1,140 @@
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
+
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-/*
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-*/
+
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
-import java.util.TimerTask;
-
-import javax.imageio.ImageIO;
-import javax.swing.JPanel;
 import javax.swing.Timer;
 
+public class Board extends JPanel implements ActionListener, FileLink{
+	//instantiates classes
+	final static MainMenu mainMenu = new MainMenu();
+	final static Map map = new Map();
+	final static Player player = new Player();
+	
+	
+	//Threads
+	final static ScheduledThreadPoolExecutor threadScheduler = new ScheduledThreadPoolExecutor(5);
+	final static Thread mainMenuThread = new Thread(mainMenu);
+	final static Thread mapThread = new Thread(map);
+	final static Thread playerThread = new Thread(player);
+	
+	Timer repaintTimer;
+	static Graphics2D g2d;
+	BufferedImage playerMove;
+	
+	//instance variables
+	static boolean repaintNow = false;
+	static boolean printMsg = false;
+	static boolean menuThread = false, ingameThread = true;
+	static int clickCount = 0;
 
-public class Board extends JPanel implements ActionListener, GridInterface, RectMapGrid{
-	
-	//class instances
-	private Thread playerThread;
-	private Player player;
-	public static ScrollMapPainter scrollMapPainter;
-	private MapMaker mapMaker;
-	private Map map;
-	
-	Timer timer;
-	Graphics2D g2d;
-	
-	//firstTimeSet
-	static boolean initialTimer;
-	
-	
 	public Board(){
-		
-		addKeyListener(new TAdapter());
-
-		
+		setDoubleBuffered(true);
 		setFocusable(true);
 		setBackground(Color.BLACK);
-		setDoubleBuffered(true);
-		
-		map = new Map();
-		scrollMapPainter = new ScrollMapPainter();
-		mapMaker = new MapMaker();
-		player = new Player(E6.x, E6.y);
 		
 		
-		timer = new Timer(5, this);
-		initialTimer = true;
+		//Listeners
+		this.addMouseListener(new MAdapter());
+		this.addKeyListener(new KAdapter());
 		
-		//timer.start();
-		//playerThread = new Thread(new PlayerThread());
+		//Timer
+		repaintTimer = new Timer(50, this);
+		repaintTimer.start();
+		
+		
+		System.out.println("->Board");
+		startNow();
 		
 	}
 	
-	public void dummyMethod(){
-		System.out.println("dummy");
-	}
-	
-	public void paint (Graphics g) {
-		
+	public void paint(Graphics g){
 		super.paint(g);
 		g2d = (Graphics2D) g;
 
-		player.paintComponents(g2d);
-		mapMaker.paintComponents(g2d);
-		scrollMapPainter.paintComponents(g2d);
+		mainMenu.paintComponents(g2d);
 		map.paintComponents(g2d);
+		player.paintComponents(g2d);
 		
-
-		startGame();
+		//paint player
+		g2d.setColor(Color.red);
+        g2d.drawRect(Player.x+10,Player.y+10,60,10);
+        g2d.drawRect(Player.x+10,Player.y+90,60,10);
+        g2d.drawRect(Player.x+10,Player.y+10,10,90);
+        g2d.drawRect(Player.x+60,Player.y+10,10,90);
+		g2d.drawImage(player.getImage(),Player.x,Player.y,this);
+		
 	
-	g.dispose();
+		g.dispose();
+
 	
 	}
-	
-	public void startGame() {
-		timer.start();
+
+	public void startNow(){
+		System.out.println("Board.startNow");
 		
-		//if(OverWorldMap.newMap && !MapMaker.scrollReady)
-		//if ((OverWorldMap.oldWorldMapX !=OverWorldMap.worldMapX || OverWorldMap.oldWorldMapY !=OverWorldMap.worldMapY) && !MapMaker.scrollReady){
-	
-		if(!MapMaker.scrollReady){
-			map.paintMap();
-		}	
-		mapMaker.iniMapMaker();
-		if(!MapMaker.scrollReady){
-			scrollMapPainter.iniMapMaker();
-		}
-		player.paintPlayer();
-		
-		
-		
-		//TODO Thread for player
-		/*
-		if (initialTimer){
-			new Thread(player).start();
-			initialTimer = false;
-		}
-		*/
 		
 	}
-
-	public void actionPerformed(ActionEvent e){
-		player.move();
-		//repaint(player.x - B2.x/2, player.y - B2.y/2, C3.x, C3.y);
+	
+	public void actionPerformed (ActionEvent aE){
+		repaint(Player.x-150, Player.y-200,600,800);
+		if (repaintNow == true){
+			System.out.println("repaintNow:" +repaintNow);
+			repaintNow = false;
+			repaint();	
+		}
 		
-		//if(!MapMaker.scrollReady){
-		//	System.out.println("repaint all");
-			repaint();
-		//}
+		
+		if(ingameThread){
+			System.out.println("ingame Threads start");
+			ingameThread = false;
+			threadScheduler.scheduleWithFixedDelay(mapThread, 10, 10,TimeUnit.MILLISECONDS);
+			threadScheduler.scheduleWithFixedDelay(playerThread, 10, 10,TimeUnit.MILLISECONDS);
 			
-	}
-	
-	private class TAdapter extends KeyAdapter {
-		
-		public void keyReleased(KeyEvent e){
-			player.keyReleased(e);
-			//repaint();
 		}
 		
-		public void keyPressed(KeyEvent e){
-			player.keyPressed(e);
+		if(menuThread){
+			System.out.println("menu Threads start");
+			menuThread = false;
+			threadScheduler.scheduleWithFixedDelay(mainMenuThread, 500, 10,TimeUnit.MILLISECONDS);
+			
 		}
+		
 	}
 	
 	
-	public void hallo(){
-		System.out.println("hallo von board");
+	private class KAdapter extends KeyAdapter {
+		public void keyReleased(KeyEvent kE){
+			player.keyReleased(kE);
+		}	
+		public void keyPressed(KeyEvent kE){
+			player.keyPressed(kE);
+		}
 	}
 	
-	/*
-	//TODO player thread
-	private static class PlayerThread implements Runnable {
-		
-		Graphics2D g2d;
-		Player player = new Player(B2.x, B2.y);
-		
-		public void run(){
-			player.paintComponents(g2d);
-			System.out.println("Run Player");
-			player.paintPlayer();
-		}
-		
-		public void paint (Graphics g) {
-			g2d = (Graphics2D) g;
-
-		}
-	}
-	*/
+	private class MAdapter extends MouseAdapter{ 
+	      @Override 
+	      public void mouseClicked( MouseEvent e ) { 
+	    	  clickCount++;
+	    	  System.out.println(clickCount);
+	      } 
+	 }
+	
+	
 }
