@@ -41,6 +41,8 @@ interface FileLink{
 		File mapData00_01 = new File( "resources/data/mapData00_01.txt");
 		File mapData01_00 = new File( "resources/data/mapData01_00.txt");
 		
+	File newMap00_00 = new File ("resources/images/newMap00_00.png");
+		
 }
 
 interface GridInterface{

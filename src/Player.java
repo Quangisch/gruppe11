@@ -19,6 +19,7 @@ public final class Player extends JComponent implements Runnable, FileLink {
 	
 	//player coordinates
 	static int x,y;
+	static int absoluteX, absoluteY;
 	
 	//animation
 	static final int spriteGridX = 30*3;
@@ -33,9 +34,9 @@ public final class Player extends JComponent implements Runnable, FileLink {
 	//movement
 	static double dx, dy;
 	static final double SPEED = 1;
-	static final double SPEEDUP = 2.5;
+	static final double SPEEDUP = 2;
 	double tmpSpeed = SPEED;
-	final static Rectangle rectBOARD = new Rectangle(-200,-200,1210,1030);
+	final static Rectangle rectBOARD = new Rectangle(0,0,810,630);
 	
 	//worldmapnavigation
 	static Rectangle playerBoundN,playerBoundE,playerBoundS,playerBoundW;
@@ -51,8 +52,10 @@ public final class Player extends JComponent implements Runnable, FileLink {
 				System.err.println("file not found");
 				System.exit(0);
 			}
-		x = 10;
-		y = 20;
+		absoluteX = x = 405-15*3;
+		absoluteY = y = 315-20*3;
+		Camera.cameraX = absoluteX;
+		Camera.cameraY = absoluteY;
 	}
 	
 	public void paintComponents(Graphics g){
@@ -65,52 +68,78 @@ public final class Player extends JComponent implements Runnable, FileLink {
 			System.out.println("Player.run");
 		move();
 		paintPlayer();
+		if(new Rectangle(0,0,810,1).intersects(playerBoundS)||new Rectangle(809,0,1,630).intersects(playerBoundW)
+				||new Rectangle(0,629,810,1).intersects(playerBoundN)||new Rectangle(0,0,1,630).intersects(playerBoundE))
+			Camera.cameraOn = true;
 	}
 	
 	
 	private void move(){
-			dx=dy=0;
-			if (moveLeft) dx -= 1;
-			if (moveRight) dx += 1;
-			if (moveUp) dy -= 1;
-			if (moveDown) dy += 1;
+		dx=dy=0;
+		
+		if (moveLeft) dx = -1;
+		if (moveRight) dx = 1;
+		if (moveUp) dy = -1;
+		if (moveDown) dy = 1;
+		
+		
+		//System.out.println("X: " + x + ", Y: " + y);
 
-			double length = Math.sqrt(dx * dx + dy * dy);
-			if (length != 0) {
-				
-			    dx = dx/length;
-			    dy = dy/length;
+		double length = Math.sqrt(dx * dx + dy * dy);
+		if (length != 0) {
+			
+		    dx *= tmpSpeed;
+		    dy *= tmpSpeed;
+		    
+		    
+	    	
+	    	
+		  
+		    //toogles movement sprites/animation
+		    if (dx != 0 || dy != 0){
+		    	if (moveStep >= 7 || newDirection != lastDirection || interStep > 8)
+		    		interStep = 0;
+		    	interStep += 0.08*tmpSpeed;
+		    	moveStep = Math.round((int)interStep);
+			
+		    }
+		}
+		
+		
+		
+		
+		absoluteX += dx;
+    	absoluteY += dy;
+    	
+    	//fixed Camera
+    	if(!Camera.cameraOn){
+    		x += dx;
+        	y += dy;
+    	}
+			
+	
+		//moveable Camera
+		if(Camera.cameraOn){
+			
+		    if(absoluteX > 0){
+		    	x = 405-15*3;
+				Camera.cameraX = absoluteX;
+		    } else {
+		    	x = absoluteX+405;
+		    	Camera.cameraX = 0;
+		    }
 
-			    dx *= tmpSpeed;
-			    dy *= tmpSpeed;
-			    
-			    x += dx;
-		    	y += dy;
-			   
-			    //checks movement in board
-			    if (x < 810 && x > 0 && y < 630 && y > 0) {
-			    	System.out.println("X: " + x + ", Y: " + y);
-			    	x += dx;
-			    	y += dy;
-			    } else {
-			    	System.err.println("Illegal movement");
-			    	x = 400;
-			    	y = 300;
-			    }
-			  
-			    //toogles movement sprites/animation
-			    if (dx != 0 || dy != 0){
-			    	if (moveStep >= 7 || newDirection != lastDirection || interStep > 8)
-			    		interStep = 0;
-			    	interStep += 0.08*tmpSpeed;
-			    	moveStep = Math.round((int)interStep);
-				
-			    }
-			}
-			dx = dy = 0;
-			
-			setBounds();
-			
+		    if(absoluteY > 0){
+		    	Camera.cameraY = absoluteY;
+			   	y = 315-20*3;
+		    } else {
+		    	y = absoluteY+315;
+		    	Camera.cameraY = 0;
+		    }
+		}
+		
+	setBounds();
+	dx = dy = 0;
 	} //move
 	
 	
@@ -183,7 +212,6 @@ public final class Player extends JComponent implements Runnable, FileLink {
 
 	}
 	
-	
 
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
@@ -203,6 +231,16 @@ public final class Player extends JComponent implements Runnable, FileLink {
 			}
 			
 			
+			if (key == KeyEvent.VK_S){
+				Camera.moveable = true;
+			}
+			
+			if (key == KeyEvent.VK_X){
+				System.out.println("Player: "+x+","+y);
+				System.out.println("Camera: "+Camera.cameraX+","+Camera.cameraY);
+				System.err.println("Absolut:"+absoluteX+","+absoluteY);
+			}
+				
 			if (key == KeyEvent.VK_F){
 				tmpSpeed = SPEED*SPEEDUP;
 			}
@@ -236,6 +274,41 @@ public final class Player extends JComponent implements Runnable, FileLink {
 		}
 		if (key == KeyEvent.VK_SPACE){
 			System.out.println("Hit Space");
+		}
+		
+		if (key == KeyEvent.VK_C){
+			System.out.println("OverWorld Camera on");
+			
+				System.out.println("OverWorld Camera on");
+				Camera.cameraOn = true;
+				x = 405-15*3;
+				y = 315-20*3;
+				
+				if(absoluteX > 0)
+					Camera.cameraX = absoluteX;
+				if(absoluteY > 0)
+					Camera.cameraY = absoluteY;
+						
+		}
+		
+		if (key == KeyEvent.VK_V){
+			System.out.println("OverWorld Camera off");
+			Camera.cameraOn = false;
+			
+		}
+		
+		if (key == KeyEvent.VK_M){
+			Board.ingame = !Board.ingame;
+			if(!Board.ingame)
+				System.out.println("menu");
+			if(Board.ingame)
+				System.out.println("ingame");
+		}
+		if (key == KeyEvent.VK_B){
+			Board.paintBounds = !Board.paintBounds;
+		}
+		if (key == KeyEvent.VK_S){
+			Camera.moveable = false;
 		}
 		
 	}

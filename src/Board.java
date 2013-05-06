@@ -26,25 +26,29 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	final static MainMenu mainMenu = new MainMenu();
 	final static Map map = new Map();
 	final static Player player = new Player();
+	final static Camera camera = new Camera();
 	
-	
-	//Threads
+	//threads
 	final static ScheduledThreadPoolExecutor threadScheduler = new ScheduledThreadPoolExecutor(5);
 	final static Thread mainMenuThread = new Thread(mainMenu);
 	final static Thread mapThread = new Thread(map);
 	final static Thread playerThread = new Thread(player);
-	
-	Timer repaintTimer;
-	static Graphics2D g2d;
-	BufferedImage playerMove;
+	final static Thread cameraThread = new Thread(camera);
 	
 	//instance variables
 	static boolean repaintNow = false;
 	static boolean printMsg = false;
-	static boolean menuThread = false, ingameThread = true;
+	static boolean menuThread = false, ingameThread = false;
 	static int clickCount = 0;
+	
+	/*switch menu/ingame with M*/	static boolean ingame = true;
+	/*paint Bounds with B*/			static boolean paintBounds = false;
+	
+	private Timer repaintTimer;
+	private Graphics2D g2d;
 
 	public Board(){
+		
 		setDoubleBuffered(true);
 		setFocusable(true);
 		setBackground(Color.BLACK);
@@ -55,16 +59,24 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		this.addKeyListener(new KAdapter());
 		
 		//Timer
-		repaintTimer = new Timer(50, this);
+		repaintTimer = new Timer(5, this);
 		repaintTimer.start();
 		
+		//initiate Threads
+		if (ingame){
+			ingameThread = true;
+			menuThread = false;
+		} else {
+			ingameThread = false;
+			menuThread = true;
+		}
 		
 		System.out.println("->Board");
-		startNow();
-		
+		start();
 	}
 	
-	public void paint(Graphics g){
+	public void paint(Graphics g) {
+
 		super.paint(g);
 		g2d = (Graphics2D) g;
 
@@ -72,40 +84,57 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		map.paintComponents(g2d);
 		player.paintComponents(g2d);
 		
-		//paint player
-		g2d.setColor(Color.red);
-        g2d.drawRect(Player.x+10,Player.y+10,60,10);
-        g2d.drawRect(Player.x+10,Player.y+90,60,10);
-        g2d.drawRect(Player.x+10,Player.y+10,10,90);
-        g2d.drawRect(Player.x+60,Player.y+10,10,90);
-		g2d.drawImage(player.getImage(),Player.x,Player.y,this);
 		
-	
+		if (!ingame){
+			//paint menu
+		}
+		
+		if (ingame){
+			//paint map
+			//g2d.drawImage(map.getImage(),-player.absoluteX, -player.absoluteY, this);
+				
+			
+		
+				
+			g2d.drawImage(map.getImage(),-Camera.cameraX,-Camera.cameraY,this);
+			
+			//paint player interface
+			
+			//paint player
+			
+			g2d.drawImage(player.getImage(),Player.x,Player.y,this);
+			
+			if(paintBounds){
+				g2d.setColor(Color.red); //PlayerBounds
+		        g2d.drawRect(Player.x+10,Player.y+10,60,10);g2d.drawRect(Player.x+10,Player.y+90,60,10);g2d.drawRect(Player.x+10,Player.y+10,10,90);g2d.drawRect(Player.x+60,Player.y+10,10,90);
+		        g2d.setColor(Color.blue); //WorldMap Bounds
+		        //
+			}
+		}
+		
 		g.dispose();
-
-	
-	}
-
-	public void startNow(){
-		System.out.println("Board.startNow");
-		
-		
 	}
 	
+	public void start(){
+	
+	}
+	//Timer loop
 	public void actionPerformed (ActionEvent aE){
-		repaint(Player.x-150, Player.y-200,600,800);
+		start();
+		//repaint(Player.x-150, Player.y-200,600,800);
+		repaint();
 		if (repaintNow == true){
-			System.out.println("repaintNow:" +repaintNow);
+			//System.out.println("repaintNow:" +repaintNow);
 			repaintNow = false;
 			repaint();	
 		}
 		
-		
 		if(ingameThread){
 			System.out.println("ingame Threads start");
 			ingameThread = false;
-			threadScheduler.scheduleWithFixedDelay(mapThread, 10, 10,TimeUnit.MILLISECONDS);
-			threadScheduler.scheduleWithFixedDelay(playerThread, 10, 10,TimeUnit.MILLISECONDS);
+			threadScheduler.scheduleWithFixedDelay(mapThread, 100, 10,TimeUnit.MILLISECONDS);
+			threadScheduler.scheduleWithFixedDelay(playerThread, 100, 10,TimeUnit.MILLISECONDS);
+			threadScheduler.scheduleWithFixedDelay(cameraThread, 100, 5,TimeUnit.MILLISECONDS);
 			
 		}
 		
@@ -129,7 +158,6 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	}
 	
 	private class MAdapter extends MouseAdapter{ 
-	      @Override 
 	      public void mouseClicked( MouseEvent e ) { 
 	    	  clickCount++;
 	    	  System.out.println(clickCount);

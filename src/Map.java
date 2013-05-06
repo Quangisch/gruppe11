@@ -10,20 +10,35 @@ import java.io.*;
 import java.awt.Image;
 
 public class Map extends JComponent implements Runnable, FileLink{
-	Graphics2D g2d;
-	BufferedImage playerMove, playerMoveBuff;
+	BufferedImage newMap;
 	
 	public Map(){
-		System.err.println("->MapMaker");
+		System.err.println("->Map");
 	}
 	
 	public void paintComponents(Graphics g){
-		g2d = (Graphics2D) g;
+		//g2d = (Graphics2D) g;
 	}
 	
 	public void run(){
 		if (Board.printMsg)
-			System.out.println("Map.run");	
+			System.out.println("Map.run");
+		paintMap();
 	}
+	
 
+	public void paintMap(){
+		try {
+			newMap = ImageIO.read(newMap00_00);
+			//playerMoveBuff = new BufferedImage(1260, 960, BufferedImage.TYPE_INT_ARGB);
+			} catch (IOException e) {
+				System.err.println("file not found");
+				System.exit(0);
+			}
+	}
+	
+	public BufferedImage getImage(){
+		return newMap;
+	}
+		
 }
