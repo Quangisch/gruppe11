@@ -1,5 +1,6 @@
 .project
 .metadata
+.ds_store
 bin/**
 tmp/**
 tmp/**/*
