@@ -37,7 +37,6 @@ public class Map extends JComponent implements Runnable, FileLink{
 	public void paintMap(){
 		try {
 			newMap = ImageIO.read(newMap00_00);
-			//playerMoveBuff = new BufferedImage(1260, 960, BufferedImage.TYPE_INT_ARGB);
 			} catch (IOException e) {
 				System.err.println("file not found");
 				System.exit(0);

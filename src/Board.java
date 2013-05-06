@@ -74,8 +74,8 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		}
 
 		//start point
-		Player.absoluteX = Player.x = 405-15*3;
-		Player.absoluteY = Player.y = 315-20*3;
+		Player.absoluteX = Player.x = 405-20*3;
+		Player.absoluteY = Player.y = 315-15*3;
 		Camera.cameraX = Player.absoluteX;
 		Camera.cameraY = Player.absoluteY;
 		

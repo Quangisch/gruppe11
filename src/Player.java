@@ -105,32 +105,21 @@ public final class Player extends JComponent implements Runnable, FileLink {
     		x += dx;
         	y += dy;
     	}
-			
-	
+		/*
+    	System.out.println("Player: "+x+","+y);
+		System.out.println("Camera: "+Camera.cameraX+","+Camera.cameraY);
+		System.err.println("Absolut:"+absoluteX+","+absoluteY);
+		*/
 		//moveable Camera
 		if(Camera.cameraOn){
-			
-		    if(absoluteX > 0){
-		    	//x = 405-15*3;
-				Camera.cameraX = absoluteX;
-		    } else {
-		    	Camera.cameraX = 0;
-		    	x = absoluteX+405;
-		    	
-		    }
-
-		    if(absoluteY > 0){
-		    	
-		    	//y = 315-20*3;
+			if(absoluteY < 2065 || absoluteY > 0){
 		    	Camera.cameraY = absoluteY;
-			   	
-		    } else {
-		    	Camera.cameraY = 0;
-		    	y = absoluteY+315;
-		    	
-		    }
-		 }
-		
+		    } 
+		    if(absoluteX < 1900|| absoluteX > 0){
+				Camera.cameraX = absoluteX;
+			} 
+		    Camera.alignCamera();
+ 		 }		
 
 		setBounds();
 		dx = dy = 0;

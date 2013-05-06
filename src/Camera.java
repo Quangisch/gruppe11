@@ -1,3 +1,4 @@
+import java.lang.Math;
 
 public class Camera implements Runnable{
 	static int cameraX, cameraY;
@@ -10,18 +11,26 @@ public class Camera implements Runnable{
 	
 	
 	public Camera (){
-		cameraX = Player.x;
-		cameraY = Player.y;
+		//cameraX = Player.x;
+		//cameraY = Player.y;
 	}
 	
 	public void run(){
+		if(!cameraOn){
+			moveCamera();
+			scrollCamera();
+			
+			
+			
+		}
+			
 	
-		moveCamera();
-		scrollCamera();
+		//System.out.println("CscrollX: " +Camera.cameraX);
 	}
 	
+	//center player with fixed camera
 	public static void moveCamera(){
-		//when S is pressed
+		System.out.println("moveCam");
 		if(moveFocus) {
 			
 			if(Camera.cameraX < Player.absoluteX) {
@@ -43,74 +52,107 @@ public class Camera implements Runnable{
 			}
 			
 		}
-		
-		
-			
-			/*
-			while (Player.x != 405-15*3 && Player.y != 315-20*3){
-				if(Player.x > 405-15*3 )
-					Camera.cameraX--;
-				if(Player.x < 405-15*3 )
-					Camera.cameraX++;
-				if(Player.x > 315-20*3 )
-					Camera.cameraY--;
-				if(Player.x < 315-20*3 )
-					Camera.cameraY++;
-			}
-			*/
-
 				
 	}
 	
-	
+	//scroll between map with fixed camera
 	public static void scrollCamera(){
-		//scroll between maps
+		System.out.println("scrollCam");
 		if(Camera.scrollLock == 1){
-			System.out.println("scrollY: " +Camera.scrollY);
+			System.out.println("North scrollY: " +Camera.scrollY);
 			
 			Camera.cameraY -= 5;
 			Camera.scrollY -= 5;
 			Player.y += 5;
 			
-			if(Camera.scrollY == -500){
+			if(Camera.scrollY == -500 || Camera.cameraY <= 0){
 				Camera.scrollLock = 0;
 				Camera.scrollY = 0;
 			}
-	
+		}
+		
+		if(Camera.scrollLock == 4){
+			System.out.println("East scrollX: " +Camera.scrollX);
+			
+			Camera.cameraX += 5;
+			Camera.scrollX += 5;
+			Player.x -= 5;
+			
+			if(Camera.scrollX == 750 || Camera.cameraX >= 1890){
+				Camera.scrollLock = 0;
+				Camera.scrollX = 0;
+			}	
 		}
 		
 		if(Camera.scrollLock == 3){
-			System.out.println("scrollY: " +Camera.scrollY);
+			System.out.println("South scrollY: " +Camera.scrollY);
 			
 			Camera.cameraY += 5;
 			Camera.scrollY += 5;
 			Player.y -= 5;
 			
-			if(Camera.scrollY == 530){
+			if(Camera.scrollY == 530 || Camera.cameraY >= 2065){
 				Camera.scrollLock = 0;
 				Camera.scrollY = 0;
-			}
-				
+			}	
 		}	
+		
+		if(Camera.scrollLock == 2){
+			System.out.println("West scrollX: " +Camera.scrollX);
+			
+			Camera.cameraX -= 5;
+			Camera.scrollX -= 5;
+			Player.x += 5;
+			
+			if(Camera.scrollX == -750 || Camera.cameraX <= 0){
+				Camera.scrollLock = 0;
+				Camera.scrollX = 0;
+			}
+		}
+		
+		
 	}
 	
 	public static void toogleCamera(boolean cOn){
+		System.out.println("toogleCam");
 		cameraOn = cOn;
 		if(cameraOn){
 			if(Player.absoluteX > 0)
 				Camera.cameraX = Player.absoluteX;
 			if(Player.absoluteY > 0)
 				Camera.cameraY = Player.absoluteY;
+			
+			
 			Player.x = 405-15*3;
 			Player.y = 315-20*3;
+			
 			//moveCamera();
 		}
 		if(!cameraOn){
 			
+		}	
+	}
+	
+	//allign Camera with auto Camera
+	public static void alignCamera(){
+		
+    	if(Player.absoluteY > 2065) {
+	    	Camera.cameraY = 2700-630;
+	    	Player.y = - 2700 + Player.absoluteY+810;
+	    }
+		if(Player.absoluteY < 0){
+			Camera.cameraY = 0;
+			Player.y = Player.absoluteY+315;
 		}
 		
-			
-		
+	    if(Player.absoluteX > 1880) {
+	    	Camera.cameraX = 2700-810;
+	    	Player.x = -2700 + Player.absoluteX + 810+315;
+	    }
+	    if(Player.absoluteX < 0) {
+	    	Camera.cameraX = 0;
+	    	Player.x = Player.absoluteX+405;
+	    }   
 	}
 	
 	

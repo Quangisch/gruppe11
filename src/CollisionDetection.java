@@ -22,10 +22,7 @@ public class CollisionDetection implements Runnable{
 		//Player.set
 		
 		//System.out.println("moveable" +Camera.moveFocus);
-		System.out.println("lock"+Camera.scrollLock);
-		
-		
-			
+				
 			if(Player.BoundS.intersects(Map.BoundN)){
 				//Camera.cameraX -= 630;
 				Camera.scrollLock = 1;
