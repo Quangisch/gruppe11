@@ -27,6 +27,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	final static Map map = new Map();
 	final static Player player = new Player();
 	final static Camera camera = new Camera();
+	final static CollisionDetection collisionDetection = new CollisionDetection();
 	
 	//threads
 	final static ScheduledThreadPoolExecutor threadScheduler = new ScheduledThreadPoolExecutor(5);
@@ -34,6 +35,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	final static Thread mapThread = new Thread(map);
 	final static Thread playerThread = new Thread(player);
 	final static Thread cameraThread = new Thread(camera);
+	final static Thread collisionDetectionThread = new Thread(collisionDetection);
 	
 	//instance variables
 	static boolean repaintNow = false;
@@ -70,6 +72,12 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			ingameThread = false;
 			menuThread = true;
 		}
+
+		//start point
+		Player.absoluteX = Player.x = 405-15*3;
+		Player.absoluteY = Player.y = 315-20*3;
+		Camera.cameraX = Player.absoluteX;
+		Camera.cameraY = Player.absoluteY;
 		
 		System.out.println("->Board");
 		start();
@@ -92,10 +100,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		if (ingame){
 			//paint map
 			//g2d.drawImage(map.getImage(),-player.absoluteX, -player.absoluteY, this);
-				
-			
-		
-				
+	
 			g2d.drawImage(map.getImage(),-Camera.cameraX,-Camera.cameraY,this);
 			
 			//paint player interface
@@ -107,7 +112,8 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			if(paintBounds){
 				g2d.setColor(Color.red); //PlayerBounds
 		        g2d.drawRect(Player.x+10,Player.y+10,60,10);g2d.drawRect(Player.x+10,Player.y+90,60,10);g2d.drawRect(Player.x+10,Player.y+10,10,90);g2d.drawRect(Player.x+60,Player.y+10,10,90);
-		        g2d.setColor(Color.blue); //WorldMap Bounds
+		        g2d.setColor(Color.blue); //Map Bounds
+		        g2d.draw(Map.BoundN);g2d.draw(Map.BoundE);g2d.draw(Map.BoundS);g2d.draw(Map.BoundW);
 		        //
 			}
 		}
@@ -132,9 +138,10 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		if(ingameThread){
 			System.out.println("ingame Threads start");
 			ingameThread = false;
-			threadScheduler.scheduleWithFixedDelay(mapThread, 100, 10,TimeUnit.MILLISECONDS);
+			threadScheduler.scheduleWithFixedDelay(mapThread, 50, 10,TimeUnit.MILLISECONDS);
 			threadScheduler.scheduleWithFixedDelay(playerThread, 100, 10,TimeUnit.MILLISECONDS);
-			threadScheduler.scheduleWithFixedDelay(cameraThread, 100, 5,TimeUnit.MILLISECONDS);
+			threadScheduler.scheduleWithFixedDelay(cameraThread, 200, 5,TimeUnit.MILLISECONDS);
+			threadScheduler.scheduleWithFixedDelay(collisionDetectionThread, 500, 10, TimeUnit.MILLISECONDS);
 			
 		}
 		

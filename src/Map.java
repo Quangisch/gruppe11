@@ -4,12 +4,19 @@ import javax.swing.JComponent;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.awt.Image;
 
 public class Map extends JComponent implements Runnable, FileLink{
+	final static Rectangle BoundN = new Rectangle(0,0,810,1);
+	final static Rectangle BoundE = new Rectangle(809,0,1,630);
+	final static Rectangle BoundS = new Rectangle(0,627,810,1);
+	final static Rectangle BoundW = new Rectangle(0,0,1,630);
+	
+	
 	BufferedImage newMap;
 	
 	public Map(){

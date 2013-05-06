@@ -1,11 +1,12 @@
 
 public class Camera implements Runnable{
 	static int cameraX, cameraY;
-	final static int cameraOffsetX = 405;
-	final static int cameraOffsetY = 315;
+	static int scrollX = 0;
+	static int scrollY = 0;
 	final static int cameraSpeed = 2;
-	static boolean moveable = false;
+	static boolean moveFocus = false;
 	static boolean cameraOn = true;
+	static int scrollLock = 0;
 	
 	
 	public Camera (){
@@ -14,26 +15,15 @@ public class Camera implements Runnable{
 	}
 	
 	public void run(){
-		//moveCamera();
-		/*
-		if (cameraX > Player.absoluteX)
-			Camera.cameraX--;
-		
-		if (cameraX < Player.absoluteX)
-			Camera.cameraX++;
-		
-		if (cameraY > Player.absoluteY)
-			Camera.cameraX--;
-		
-		if (cameraY < Player.absoluteY)
-			Camera.cameraX++;
-		*/
-		if(moveable)
+	
 		moveCamera();
+		scrollCamera();
 	}
 	
 	public static void moveCamera(){
-		System.out.println("moveable" +moveable);
+		//when S is pressed
+		if(moveFocus) {
+			
 			if(Camera.cameraX < Player.absoluteX) {
 				Camera.cameraX += cameraSpeed;
 				Player.x -= cameraSpeed;
@@ -51,6 +41,76 @@ public class Camera implements Runnable{
 				Camera.cameraY -= cameraSpeed;
 				Player.y += cameraSpeed;
 			}
+			
+		}
+		
+		
+			
+			/*
+			while (Player.x != 405-15*3 && Player.y != 315-20*3){
+				if(Player.x > 405-15*3 )
+					Camera.cameraX--;
+				if(Player.x < 405-15*3 )
+					Camera.cameraX++;
+				if(Player.x > 315-20*3 )
+					Camera.cameraY--;
+				if(Player.x < 315-20*3 )
+					Camera.cameraY++;
+			}
+			*/
+
+				
+	}
+	
+	
+	public static void scrollCamera(){
+		//scroll between maps
+		if(Camera.scrollLock == 1){
+			System.out.println("scrollY: " +Camera.scrollY);
+			
+			Camera.cameraY -= 5;
+			Camera.scrollY -= 5;
+			Player.y += 5;
+			
+			if(Camera.scrollY == -500){
+				Camera.scrollLock = 0;
+				Camera.scrollY = 0;
+			}
+	
+		}
+		
+		if(Camera.scrollLock == 3){
+			System.out.println("scrollY: " +Camera.scrollY);
+			
+			Camera.cameraY += 5;
+			Camera.scrollY += 5;
+			Player.y -= 5;
+			
+			if(Camera.scrollY == 530){
+				Camera.scrollLock = 0;
+				Camera.scrollY = 0;
+			}
+				
+		}	
+	}
+	
+	public static void toogleCamera(boolean cOn){
+		cameraOn = cOn;
+		if(cameraOn){
+			if(Player.absoluteX > 0)
+				Camera.cameraX = Player.absoluteX;
+			if(Player.absoluteY > 0)
+				Camera.cameraY = Player.absoluteY;
+			Player.x = 405-15*3;
+			Player.y = 315-20*3;
+			//moveCamera();
+		}
+		if(!cameraOn){
+			
+		}
+		
+			
+		
 	}
 	
 	
