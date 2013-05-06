@@ -23,24 +23,24 @@ public class CollisionDetection implements Runnable{
 		
 		//System.out.println("moveable" +Camera.moveFocus);
 				
-			if(Player.BoundS.intersects(Map.BoundN)){
+			if(Player.playerBoundS.intersects(Map.BoundN)){
 				//Camera.cameraX -= 630;
 				Camera.scrollLock = 1;
 			}
 				
-			if(Player.BoundN.intersects(Map.BoundS)){
+			if(Player.playerBoundN.intersects(Map.BoundS)){
 				Camera.scrollLock = 3;
 				//Camera.cameraX += 630;
 				
 			}
 			
-			if(Player.BoundE.intersects(Map.BoundW)){
+			if(Player.playerBoundE.intersects(Map.BoundW)){
 				Camera.scrollLock = 2;
 				//Camera.cameraX -= 810;
 
 			}
 				
-			if(Player.BoundW.intersects(Map.BoundE)){
+			if(Player.playerBoundW.intersects(Map.BoundE)){
 				Camera.scrollLock = 4;
 				//Camera.cameraX += 810;
 	

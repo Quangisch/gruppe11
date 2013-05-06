@@ -2,18 +2,20 @@ clean rebuild based on oldMaster
 - multi Thread support
 - animated movement
 - worldmap & camera
+- punch & block
 
 
 Manual:
 - movement with arrow keys
-- F Sprint for sprint
+- F 	sprint
+- D	punch
+- S	block
 
-- C toggle automatic camera
-- V toogle fixed camera
-- S follow automatic camera
+- C 	toggle camera fixed/automatic
+- Space center camera in fixed camera mode
 
-- B show Borders
-- X get Coordinates
+- B 	show Borders and Hitboxes
+- X 	get Coordinates
 
 clean_rebuild based on oldMaster
 (oldMaster:

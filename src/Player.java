@@ -12,13 +12,14 @@ import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import java.awt.*; 
 import java.awt.event.*; 
+import java.awt.geom.AffineTransform;
 
 public final class Player extends JComponent implements Runnable, FileLink {
 	Graphics2D g2d;
 	BufferedImage playerMove, playerMoveBuff;
 	
 	//player coordinates
-	static int x,y;
+	volatile static int x,y;
 	static int absoluteX, absoluteY;
 	
 	//animation
@@ -26,6 +27,8 @@ public final class Player extends JComponent implements Runnable, FileLink {
 	static final int spriteGridY = 40*3;
 	
 	static boolean moveUp, moveRight, moveDown, moveLeft;
+	static double punchCounter = 1;
+	static boolean punchNow, block, loseLife;
 	static int lastDirection = 5;
 	static int newDirection;
 	static int moveStep = 0;
@@ -37,9 +40,11 @@ public final class Player extends JComponent implements Runnable, FileLink {
 	static final double SPEEDUP = 2;
 	double tmpSpeed = SPEED;
 
+	//interaction
+	static Rectangle attackBound;
 	
 	//worldmapnavigation
-	static Rectangle BoundN,BoundE,BoundS,BoundW;
+	static Rectangle playerBoundN,playerBoundE,playerBoundS,playerBoundW;
 	
 	
 	public Player(){
@@ -62,8 +67,16 @@ public final class Player extends JComponent implements Runnable, FileLink {
 	public void run(){
 		if (Board.printMsg)
 			System.out.println("Player.run");
+		if (!block)
 		move();
 		paintPlayer();
+		
+		if(punchCounter < 1){
+			punchCounter += 0.1;
+			System.out.println("punchCounter: "+punchCounter); 
+		}
+			
+	
 
 	}
 	
@@ -187,6 +200,21 @@ public final class Player extends JComponent implements Runnable, FileLink {
 			newDirection = lastDirection;
 		}
 		
+		if (punchNow && punchCounter >= 1){
+		
+			System.out.println("punchCounter: "+punchCounter); 
+			playerMoveBuff = playerMove.getSubimage((9+(int)punchCounter)*spriteGridX, (lastDirection-1)*spriteGridY, spriteGridX, spriteGridY);
+			if (punchCounter < 3)
+				punchCounter += 0.1;
+			if(punchCounter >= 3) {
+				punchCounter = -5;
+				punchNow = false;
+			}
+		}
+		
+		if (block) {
+			playerMoveBuff = playerMove.getSubimage(14*spriteGridX, 4*spriteGridY, spriteGridX, spriteGridY);
+		}
 		//System.out.println("X: " + x + ", Y: " + y);
 		//g2d.drawImage(playerMoveBuff ,x ,y , this);
 		
@@ -200,18 +228,27 @@ public final class Player extends JComponent implements Runnable, FileLink {
 		int key = e.getKeyCode();
 		Board.repaintNow = true;
 
-			if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W){
+			if (key == KeyEvent.VK_UP && !block){
 				moveUp = true;
 			}
-			if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D){
+			if (key == KeyEvent.VK_RIGHT && !block){
 				moveRight = true;
 			}
-			if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S){	
+			if (key == KeyEvent.VK_DOWN && !block){	
 				moveDown = true;
 			}
-			if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A){
+			if (key == KeyEvent.VK_LEFT && !block){
 				moveLeft = true;
 			}
+			
+			if (key == KeyEvent.VK_D && !block){
+				punchNow = true;
+			}
+			if (key == KeyEvent.VK_S){	
+				block = true;
+			}
+
+			
 			
 			
 			if (key == KeyEvent.VK_SPACE){
@@ -234,21 +271,34 @@ public final class Player extends JComponent implements Runnable, FileLink {
 		int key = e.getKeyCode();
 		Board.repaintNow = true;
 		
-		if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W){
+		if (key == KeyEvent.VK_UP){
 			moveUp = false;
 			moveStep = 0;
 		}
-		if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D){
+		if (key == KeyEvent.VK_RIGHT){
 			moveRight = false;
 			moveStep = 0;
 		}
-		if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S){
+		if (key == KeyEvent.VK_DOWN){
 			moveDown = false;
 			moveStep = 0;
 		}	
-		if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A){
+		if (key == KeyEvent.VK_LEFT){
 			moveLeft = false;
 			moveStep = 0;
+		}
+		
+
+		if (key == KeyEvent.VK_D){
+			
+			if(punchCounter > 1){
+				punchNow = false;
+				punchCounter = -5;
+			}
+				
+		}
+		if (key == KeyEvent.VK_S){	
+			block = false;
 		}
 		
 		
@@ -285,10 +335,41 @@ public final class Player extends JComponent implements Runnable, FileLink {
 	}
 	
 	public void setBounds(){
-	BoundS = new Rectangle (x+10,y+10,60,10);
-	BoundE = new Rectangle (x+10,y+10,10,90);
-	BoundN = new Rectangle (x+10,y+90,60,10);
-	BoundW = new Rectangle (x+60,y+10,10,90);
+	playerBoundS = new Rectangle (x+10,y+10,60,10);
+	playerBoundE = new Rectangle (x+10,y+10,10,90);
+	playerBoundN = new Rectangle (x+10,y+90,60,10);
+	playerBoundW = new Rectangle (x+60,y+10,10,90);
+	}
+	
+	public static void setAttackBounds(){
+		attackBound = new Rectangle(0,0,0,0);
+		
+		if(punchNow && punchCounter >= 1.3 && lastDirection == 1){
+			attackBound = new Rectangle(x+30,y,40,50);
+		}
+		if(punchNow && punchCounter >= 1.3 && lastDirection == 3){
+			attackBound = new Rectangle(x+50,y+10,40,50);
+		}
+		if(punchNow && punchCounter >= 1.3 && lastDirection == 5){
+			attackBound = new Rectangle(x,y+60,40,50);
+		}
+		if(punchNow && punchCounter >= 1.3 && lastDirection == 7){
+			attackBound = new Rectangle(x,y+10,40,50);
+		}
+		
+		if(punchNow && punchCounter >= 1.3 && lastDirection == 2){
+			attackBound = new Rectangle(x+40,y,40,70);
+			//AffineTransform attackBound = AffineTransform.getRotateInstance(Math.PI/4, attackBound.getCenterX(), attackBound.getCenterY());
+		}
+		if(punchNow && punchCounter >= 1.3 && lastDirection == 4){
+			attackBound = new Rectangle(x+40,y+40,40,70);
+		}
+		if(punchNow && punchCounter >= 1.3 && lastDirection == 6){
+			attackBound = new Rectangle(x,y+25,40,70);
+		}
+		if(punchNow && punchCounter >= 1.3 && lastDirection == 8){
+			attackBound = new Rectangle(x,y,40,70);
+		}
 	}
 	
 	public BufferedImage getImage(){

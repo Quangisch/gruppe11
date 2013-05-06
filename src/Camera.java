@@ -6,22 +6,18 @@ public class Camera implements Runnable{
 	static int scrollY = 0;
 	final static int cameraSpeed = 2;
 	static boolean moveFocus = false;
-	static boolean cameraOn = true;
+	static boolean cameraOn = false;
 	static int scrollLock = 0;
 	
 	
 	public Camera (){
-		//cameraX = Player.x;
-		//cameraY = Player.y;
+		//toogleCamera(true);
 	}
 	
 	public void run(){
 		if(!cameraOn){
 			moveCamera();
 			scrollCamera();
-			
-			
-			
 		}
 			
 	
@@ -30,7 +26,7 @@ public class Camera implements Runnable{
 	
 	//center player with fixed camera
 	public static void moveCamera(){
-		System.out.println("moveCam");
+		
 		if(moveFocus) {
 			
 			if(Camera.cameraX < Player.absoluteX) {
@@ -57,7 +53,6 @@ public class Camera implements Runnable{
 	
 	//scroll between map with fixed camera
 	public static void scrollCamera(){
-		System.out.println("scrollCam");
 		if(Camera.scrollLock == 1){
 			System.out.println("North scrollY: " +Camera.scrollY);
 			
@@ -114,14 +109,12 @@ public class Camera implements Runnable{
 	}
 	
 	public static void toogleCamera(boolean cOn){
-		System.out.println("toogleCam");
 		cameraOn = cOn;
 		if(cameraOn){
 			if(Player.absoluteX > 0)
-				Camera.cameraX = Player.absoluteX;
+				Camera.cameraX = Player.absoluteX + Math.abs((405-15*3)-Player.x) - Camera.cameraX;
 			if(Player.absoluteY > 0)
-				Camera.cameraY = Player.absoluteY;
-			
+				Camera.cameraY = Player.absoluteY + Math.abs((315-20*3)-Player.y) - Camera.cameraY;
 			
 			Player.x = 405-15*3;
 			Player.y = 315-20*3;

@@ -27,7 +27,7 @@ public class MainGame extends JFrame{
 
 
 interface FileLink{
-	File player1_move = new File("resources/images/mario_sprite_move3x.png");
+	File player1_move = new File("resources/images/mario_sprite_move2_3x.png");
 	
 	File menu = new File( "resources/images/menu.png");
 	File button = new File( "resources/images/button.png");

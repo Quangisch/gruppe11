@@ -114,7 +114,9 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		        g2d.drawRect(Player.x+10,Player.y+10,60,10);g2d.drawRect(Player.x+10,Player.y+90,60,10);g2d.drawRect(Player.x+10,Player.y+10,10,90);g2d.drawRect(Player.x+60,Player.y+10,10,90);
 		        g2d.setColor(Color.blue); //Map Bounds
 		        g2d.draw(Map.BoundN);g2d.draw(Map.BoundE);g2d.draw(Map.BoundS);g2d.draw(Map.BoundW);
-		        //
+		        g2d.setColor(Color.yellow);
+		        Player.setAttackBounds();
+		        g2d.draw(Player.attackBound);
 			}
 		}
 		
