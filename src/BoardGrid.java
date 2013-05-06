@@ -14,4 +14,3 @@ public class BoardGrid implements GridInterface{
 	
 
 }
-

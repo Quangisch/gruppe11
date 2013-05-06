@@ -1,12 +1,9 @@
 
 public class HalloAmine {
 
-	/**
-	 * @param args
-	 */
+
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-//Blabla
+		System.out.println("Hallo Amine, guck aufn Boden, du hast dein Ohr verlohren!XD");
 	}
 
 }
