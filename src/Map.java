@@ -38,7 +38,7 @@ public class Map extends JComponent implements Runnable, FileLink{
 		try {
 			newMap = ImageIO.read(newMap00_00);
 			} catch (IOException e) {
-				System.err.println("file not found");
+				System.err.println("map not found");
 				System.exit(0);
 			}
 	}

@@ -23,7 +23,8 @@ import javax.swing.Timer;
 
 public class Board extends JPanel implements ActionListener, FileLink{
 	//instantiates classes
-	final static MainMenu mainMenu = new MainMenu();
+	final static MenuIngame ingameMenu = new MenuIngame();
+	final static MenuMain mainMenu = new MenuMain();
 	final static Map map = new Map();
 	final static Player player = new Player();
 	final static Camera camera = new Camera();
@@ -31,6 +32,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	
 	//threads
 	final static ScheduledThreadPoolExecutor threadScheduler = new ScheduledThreadPoolExecutor(5);
+	final static Thread ingameMenuThread = new Thread(ingameMenu);
 	final static Thread mainMenuThread = new Thread(mainMenu);
 	final static Thread mapThread = new Thread(map);
 	final static Thread playerThread = new Thread(player);
@@ -39,12 +41,17 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	
 	//instance variables
 	static boolean repaintNow = false;
-	static boolean printMsg = false;
 	static boolean menuThread = false, ingameThread = false;
 	static int clickCount = 0;
 	
 	/*switch menu/ingame with M*/	static boolean ingame = true;
-	/*paint Bounds with B*/			static boolean paintBounds = false;
+									static boolean menu = false;
+	
+	/*sound/music volume*/			static int musicVolume = 50;
+									static int soundVolume = 50;
+								
+	/*Debug tmpVaribles*/			static boolean paintBounds = false;
+									static boolean printMsg = false;
 	
 	private Timer repaintTimer;
 	private Graphics2D g2d;
@@ -88,19 +95,22 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		super.paint(g);
 		g2d = (Graphics2D) g;
 
-		mainMenu.paintComponents(g2d);
+		ingameMenu.paintComponents(g2d);
 		map.paintComponents(g2d);
 		player.paintComponents(g2d);
 		
 		
 		if (!ingame){
-			//paint menu
+			//paint MenuMain
 		}
 		
-		if (ingame){
+		if(ingame && menu){
+			//paint MenuIngame
+			//g2d.drawImage(menu
+		}
+		
+		if (ingame && !menu){
 			//paint map
-			//g2d.drawImage(map.getImage(),-player.absoluteX, -player.absoluteY, this);
-	
 			g2d.drawImage(map.getImage(),-Camera.cameraX,-Camera.cameraY,this);
 			
 			//paint player interface
@@ -137,9 +147,13 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			repaint();	
 		}
 		
-		if(ingameThread){
+		if(ingame && !menu){
 			System.out.println("ingame Threads start");
 			ingameThread = false;
+			
+			//shutdown menuThreads
+			
+			
 			threadScheduler.scheduleWithFixedDelay(mapThread, 50, 10,TimeUnit.MILLISECONDS);
 			threadScheduler.scheduleWithFixedDelay(playerThread, 100, 10,TimeUnit.MILLISECONDS);
 			threadScheduler.scheduleWithFixedDelay(cameraThread, 200, 5,TimeUnit.MILLISECONDS);
@@ -147,10 +161,17 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			
 		}
 		
-		if(menuThread){
+		if(menu){
 			System.out.println("menu Threads start");
 			menuThread = false;
-			threadScheduler.scheduleWithFixedDelay(mainMenuThread, 500, 10,TimeUnit.MILLISECONDS);
+			
+			//shutdown ingameThreads
+			
+			if(ingame)
+				threadScheduler.scheduleWithFixedDelay(ingameMenuThread, 500, 10,TimeUnit.MILLISECONDS);
+			if(!ingame)
+				threadScheduler.scheduleWithFixedDelay(mainMenuThread, 500, 10,TimeUnit.MILLISECONDS);
+			
 			
 		}
 		

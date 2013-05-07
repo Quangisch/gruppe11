@@ -319,9 +319,9 @@ public final class Player extends JComponent implements Runnable, FileLink {
 		
 		
 		if (key == KeyEvent.VK_M){
-			Board.ingame = !Board.ingame;
-			if(!Board.ingame)
-				System.out.println("menu");
+			Board.menu = !Board.menu;
+			if(!Board.menu)
+				System.out.println("ingame menu");
 			else
 				System.out.println("ingame");
 		}
