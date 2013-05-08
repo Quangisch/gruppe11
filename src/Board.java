@@ -26,12 +26,12 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	//instantiates classes
 	final static MenuIngame ingameMenu = new MenuIngame();
 	final static MenuMain mainMenu = new MenuMain();
-	final static OverWorldMap map = new OverWorldMap();
+	final static OverWorldMap overWorldMap = new OverWorldMap();
 	final static Player player = new Player();
 	final static Enemy enemy = new Enemy(0,0);
 	final static Camera camera = new Camera();
 	final static CollisionDetection collisionDetection = new CollisionDetection();
-	final static DungeonBuilder mapBuilder = new DungeonBuilder();
+	final static DungeonBuilder dungeonBuilder = new DungeonBuilder();
 	
 	
 	//threads
@@ -41,7 +41,8 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	final static ScheduledThreadPoolExecutor menuScheduler = new ScheduledThreadPoolExecutor(menuThreadCounter);
 	final static Thread ingameMenuThread = new Thread(ingameMenu);
 	final static Thread mainMenuThread = new Thread(mainMenu);
-	final static Thread mapThread = new Thread(map);
+	final static Thread mapThread = new Thread(overWorldMap);
+	final static Thread dungeonBuilderThread = new Thread(dungeonBuilder);
 	final static Thread playerThread = new Thread(player);
 	final static Thread enemyThread = new Thread(enemy);
 
@@ -90,6 +91,11 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			menuThread = true;
 		}
 
+		//initiate overWorld/dungeon
+		OverWorldMap.overWorld = true;
+		DungeonNavigator.dungeon = false;
+		
+		
 		//start point
 		Player.absoluteX = Player.x = 405-20*3;
 		Player.absoluteY = Player.y = 315-15*3;
@@ -120,9 +126,9 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		
 		if (ingame && !menu){
 			if(OverWorldMap.overWorld)
-				map.paintComponents(g2d);
-			if(OverWorldMap.dungeon)
-				mapBuilder.paintComponents(g2d);
+				overWorldMap.paintComponents(g2d);
+			if(DungeonNavigator.dungeon)
+				dungeonBuilder.paintComponents(g2d);
 			
 			player.paintComponents(g2d);
 			
@@ -139,9 +145,19 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		        g2d.setColor(Color.yellow); //Attack Bounds
 		        Player.setAttackBounds();
 		        g2d.draw(Player.attackBound);
-		        g2d.setColor(Color.orange); //Dungeon Bounds
+		        g2d.setColor(Color.orange); //Navigation Bounds
 		        OverWorldMap.setBounds();
-		        g2d.draw(OverWorldMap.intoDungeon1);
+		        if(OverWorldMap.overWorld){
+		        	g2d.draw(OverWorldMap.Over1Dungeon1);
+		        }
+		        if(DungeonNavigator.dungeon){
+		        	g2d.draw(DungeonNavigator.Dungeon1Over1);
+		        	g2d.draw(DungeonNavigator.toNorth);
+		        	g2d.draw(DungeonNavigator.toEast);
+		        	g2d.draw(DungeonNavigator.toSouth);
+		        	g2d.draw(DungeonNavigator.toWest);
+		        }
+		        
 			}
 		}
 		
@@ -168,7 +184,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			menuThread = false;
 			ingameThread = false;
 			
-
+			ingameScheduler.scheduleWithFixedDelay(dungeonBuilderThread, 200, 50,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(mapThread, 200, 50,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(playerThread, 400, 10,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(cameraThread, 300, 5,TimeUnit.MILLISECONDS);

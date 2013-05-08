@@ -28,22 +28,40 @@ public class CollisionDetection implements Runnable{
 		//System.out.println("moveable" +Camera.moveFocus);
 			
 		
-		//check Player-relative WindowBorders
+		//check Player position relative to windowBorders
 		if(Player.playerBoundS.intersects(OverWorldMap.BoundN)){Camera.scrollLock = 1;}
 		if(Player.playerBoundN.intersects(OverWorldMap.BoundS)){Camera.scrollLock = 3;}
 		if(Player.playerBoundE.intersects(OverWorldMap.BoundW)){Camera.scrollLock = 2;}
 		if(Player.playerBoundW.intersects(OverWorldMap.BoundE)){Camera.scrollLock = 4;}
 		
-		//check enter/leave overworld-dungeon
-		OverWorldMap.setBounds();
-		if(Player.playerBoundN.intersects(OverWorldMap.intoDungeon1)){System.out.println("enter dungeon"); OverWorldMap.overWorld = false; OverWorldMap.dungeon = true;}
-		if(Player.playerBoundN.intersects(OverWorldMap.intoDungeon1)){System.out.println("enter dungeon"); OverWorldMap.overWorld = false; OverWorldMap.dungeon = true;}
+		//handles overworld <-> dungeon navigation
+		if(OverWorldMap.overWorld){
+			OverWorldMap.setBounds();
+			Camera.cameraLock = false;
+			
+			switch(OverWorldMap.areaID){
+
+				
+				case 1:	if(Player.playerBoundN.intersects(OverWorldMap.Over1Dungeon1)){
+					Player.x = 220; Player.y = 500;
+					DungeonNavigator.areaID = 1;
+					DungeonNavigator.mapID = 0003;
+					System.out.println("leave OverWorldMap1 -> dungeon1");
+					OverWorldMap.overWorld = false;DungeonNavigator.dungeon = true;}
+				
+			}
+			
+		}
+		
+		
+		if(DungeonNavigator.dungeon){
+			DungeonNavigator.setBounds(DungeonNavigator.areaID, DungeonNavigator.mapID);
+			Camera.cameraLock = true;
+			DungeonNavigator.navigate();
 			
 			
-			/*
-			if(Map.BoundS.intersects(Player.BoundS)||Map.BoundW.intersects(Player.BoundW)
-					||Map.BoundN.intersects(Player.BoundN)||Map.BoundE.intersects(Player.BoundE))
-				Camera.cameraOn = true;
-			*/
+			
+		}
+		
 	}
 }

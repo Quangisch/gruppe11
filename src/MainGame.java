@@ -22,7 +22,7 @@ public class MainGame extends JFrame{
 	
 	public static void main(String[] args){
 		new MainGame();
-	
+		//DungeonBuilder();
 	}
 }
 

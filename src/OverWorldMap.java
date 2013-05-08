@@ -16,16 +16,17 @@ public class OverWorldMap extends JComponent implements Runnable, FileLink{
 	final static Rectangle BoundS = new Rectangle(0,627,810,1);
 	final static Rectangle BoundW = new Rectangle(0,0,1,630);
 	
-	static Rectangle intoDungeon1;
+	static Rectangle Over1Dungeon1;
 	
 	//instantias MapBuilder
-	final static DungeonBuilder mapBuilder = new DungeonBuilder();
+	final static DungeonBuilder dungeonBuilder = new DungeonBuilder();
 	
 	//instance variables
-	public static boolean overWorld = true;
-	public static boolean dungeon = false;
+	public static boolean overWorld;
+	public static int areaID = 1;
 	
-	public static boolean loadNewMap = true;
+	
+
 	Graphics2D g2d;
 	
 	
@@ -33,46 +34,31 @@ public class OverWorldMap extends JComponent implements Runnable, FileLink{
 	
 	public OverWorldMap(){
 		System.err.println("->Map");
-
-		
+	
 	}
 	
 	public void paintComponents(Graphics g){
+		System.out.println("paint overworld");
 		g2d = (Graphics2D) g;
 		g2d.drawImage(newMap,-Camera.cameraX,-Camera.cameraY,this);
-		//System.out.println("paint map");
-		//g2d.drawImage(mapBuilder.getSubimages(x, y))
-		
-		 BufferedImage newMap = new BufferedImage(810, 610, BufferedImage.TYPE_INT_ARGB);
-		 Graphics2D g2d = newMap.createGraphics();
-
-
 	}
 	
 	public void run(){
 		if (Board.printMsg)
 			System.out.println("Map.run");
-		
-		if(dungeon)
-			Camera.cameraLock = true;
-		
-		if(loadNewMap){
-			getMap();
-			loadNewMap = false;
-			System.out.println("new map loading");
-		}		
+		getMap();
 	}
 	
 
 	private void getMap(){
-		
 		try {
-			if (overWorld && !dungeon){
+			if (overWorld){
 				newMap = ImageIO.read(OWMap00_00);
 			}
 			
-			if(dungeon && !overWorld){
-				mapBuilder.start();	
+			//thread goes to DungeonBuilder
+			if(DungeonNavigator.dungeon){
+				//dungeonBuilder.start();
 			}
 			
 			} catch (IOException e) {
@@ -81,12 +67,10 @@ public class OverWorldMap extends JComponent implements Runnable, FileLink{
 			}
 	}
 
-	public BufferedImage getImage(){
-		return newMap;
-	}
-	
 	public static void setBounds(){
-		intoDungeon1 = new Rectangle(110-Camera.cameraX, 0-Camera.cameraY,60,90 );
+		
+		Over1Dungeon1 = new Rectangle(110-Camera.cameraX, 0-Camera.cameraY,60,90 );
+
 	}
 		
 }
