@@ -26,12 +26,12 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	//instantiates classes
 	final static MenuIngame ingameMenu = new MenuIngame();
 	final static MenuMain mainMenu = new MenuMain();
-	final static Map map = new Map();
+	final static OverWorldMap map = new OverWorldMap();
 	final static Player player = new Player();
 	final static Enemy enemy = new Enemy(0,0);
 	final static Camera camera = new Camera();
 	final static CollisionDetection collisionDetection = new CollisionDetection();
-	final static MapBuilder mapBuilder = new MapBuilder();
+	final static DungeonBuilder mapBuilder = new DungeonBuilder();
 	
 	
 	//threads
@@ -70,7 +70,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		
 		setDoubleBuffered(true);
 		setFocusable(true);
-		setBackground(Color.BLACK);
+		setBackground(Color.DARK_GRAY);
 		
 		
 		//Listeners
@@ -106,8 +106,8 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		//TODO//mapBuilder.paintComponents(g2d);
-
+		
+		
 		if (!ingame){
 			//paint MenuMain
 			mainMenu.paintComponents(g2d);
@@ -119,7 +119,11 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		}
 		
 		if (ingame && !menu){
-			map.paintComponents(g2d);
+			if(OverWorldMap.overWorld)
+				map.paintComponents(g2d);
+			if(OverWorldMap.dungeon)
+				mapBuilder.paintComponents(g2d);
+			
 			player.paintComponents(g2d);
 			
 			//paint player interface
@@ -131,13 +135,13 @@ public class Board extends JPanel implements ActionListener, FileLink{
 				g2d.setColor(Color.red); //PlayerBounds
 		        g2d.drawRect(Player.x+10,Player.y+10,60,10);g2d.drawRect(Player.x+10,Player.y+90,60,10);g2d.drawRect(Player.x+10,Player.y+10,10,90);g2d.drawRect(Player.x+60,Player.y+10,10,90);
 		        g2d.setColor(Color.blue); //Map Bounds
-		        g2d.draw(Map.BoundN);g2d.draw(Map.BoundE);g2d.draw(Map.BoundS);g2d.draw(Map.BoundW);
+		        g2d.draw(OverWorldMap.BoundN);g2d.draw(OverWorldMap.BoundE);g2d.draw(OverWorldMap.BoundS);g2d.draw(OverWorldMap.BoundW);
 		        g2d.setColor(Color.yellow); //Attack Bounds
 		        Player.setAttackBounds();
 		        g2d.draw(Player.attackBound);
 		        g2d.setColor(Color.orange); //Dungeon Bounds
-		        Map.setBounds();
-		        g2d.draw(Map.intoDungeon1);
+		        OverWorldMap.setBounds();
+		        g2d.draw(OverWorldMap.intoDungeon1);
 			}
 		}
 		

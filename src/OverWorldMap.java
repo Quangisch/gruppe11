@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.awt.Image;
 
-public class Map extends JComponent implements Runnable, FileLink{
+public class OverWorldMap extends JComponent implements Runnable, FileLink{
 	final static Rectangle BoundN = new Rectangle(0,0,810,1);
 	final static Rectangle BoundE = new Rectangle(809,0,1,630);
 	final static Rectangle BoundS = new Rectangle(0,627,810,1);
@@ -19,7 +19,7 @@ public class Map extends JComponent implements Runnable, FileLink{
 	static Rectangle intoDungeon1;
 	
 	//instantias MapBuilder
-	final static MapBuilder mapBuilder = new MapBuilder();
+	final static DungeonBuilder mapBuilder = new DungeonBuilder();
 	
 	//instance variables
 	public static boolean overWorld = true;
@@ -31,7 +31,7 @@ public class Map extends JComponent implements Runnable, FileLink{
 	
 	BufferedImage newMap;
 	
-	public Map(){
+	public OverWorldMap(){
 		System.err.println("->Map");
 
 		
@@ -39,25 +39,13 @@ public class Map extends JComponent implements Runnable, FileLink{
 	
 	public void paintComponents(Graphics g){
 		g2d = (Graphics2D) g;
-		/*TODO*/g2d.drawImage(newMap,-Camera.cameraX,-Camera.cameraY,this);
+		g2d.drawImage(newMap,-Camera.cameraX,-Camera.cameraY,this);
 		//System.out.println("paint map");
 		//g2d.drawImage(mapBuilder.getSubimages(x, y))
+		
 		 BufferedImage newMap = new BufferedImage(810, 610, BufferedImage.TYPE_INT_ARGB);
 		 Graphics2D g2d = newMap.createGraphics();
-		   
-		 
-		 //g2d.drawImage(mapBuilder.getSubimages(2,3),0,0,this);
-		
-		
-		for(int y = 0; y < 7; y++){			
-			for(int x = 0; x < 9; x++){
-				newMap = mapBuilder.getSubimages(x,y);
-				//System.out.println("x: "+mapBuilder.xWall1[x][y]+", y: "+mapBuilder.yWall1[x][y]);
-				//g2d.drawImage(newMap,x*90-90,y*90-90,this);
-			}
-		}
-		
-		
+
 
 	}
 	
@@ -72,10 +60,7 @@ public class Map extends JComponent implements Runnable, FileLink{
 			getMap();
 			loadNewMap = false;
 			System.out.println("new map loading");
-		}
-
-		
-			
+		}		
 	}
 	
 
@@ -84,15 +69,10 @@ public class Map extends JComponent implements Runnable, FileLink{
 		try {
 			if (overWorld && !dungeon){
 				newMap = ImageIO.read(OWMap00_00);
-				
-				
 			}
 			
 			if(dungeon && !overWorld){
-				mapBuilder.start();
-				
-
-				
+				mapBuilder.start();	
 			}
 			
 			} catch (IOException e) {

@@ -9,7 +9,7 @@ public class CollisionDetection implements Runnable{
 	}
 
 	public void run(){
-		//if(Board.printMsg)
+		if(Board.printMsg)
 			System.out.println("CollisionDetection run");
 			
 		try {
@@ -29,16 +29,16 @@ public class CollisionDetection implements Runnable{
 			
 		
 		//check Player-relative WindowBorders
-		if(Player.playerBoundS.intersects(Map.BoundN)){Camera.scrollLock = 1;}
-		if(Player.playerBoundN.intersects(Map.BoundS)){Camera.scrollLock = 3;}
-		if(Player.playerBoundE.intersects(Map.BoundW)){Camera.scrollLock = 2;}
-		if(Player.playerBoundW.intersects(Map.BoundE)){Camera.scrollLock = 4;}
+		if(Player.playerBoundS.intersects(OverWorldMap.BoundN)){Camera.scrollLock = 1;}
+		if(Player.playerBoundN.intersects(OverWorldMap.BoundS)){Camera.scrollLock = 3;}
+		if(Player.playerBoundE.intersects(OverWorldMap.BoundW)){Camera.scrollLock = 2;}
+		if(Player.playerBoundW.intersects(OverWorldMap.BoundE)){Camera.scrollLock = 4;}
 		
-		//check Player-dungeon
-		Map.setBounds();
-		if(Player.playerBoundN.intersects(Map.intoDungeon1)){System.out.println("enter dungeon"); Map.overWorld = false; Map.dungeon = true;}
+		//check enter/leave overworld-dungeon
+		OverWorldMap.setBounds();
+		if(Player.playerBoundN.intersects(OverWorldMap.intoDungeon1)){System.out.println("enter dungeon"); OverWorldMap.overWorld = false; OverWorldMap.dungeon = true;}
+		if(Player.playerBoundN.intersects(OverWorldMap.intoDungeon1)){System.out.println("enter dungeon"); OverWorldMap.overWorld = false; OverWorldMap.dungeon = true;}
 			
-	
 			
 			/*
 			if(Map.BoundS.intersects(Player.BoundS)||Map.BoundW.intersects(Player.BoundW)
