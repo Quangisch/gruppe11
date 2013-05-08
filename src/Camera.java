@@ -7,6 +7,7 @@ public class Camera implements Runnable{
 	final static int cameraSpeed = 2;
 	static boolean moveFocus = false;
 	static boolean cameraOn = false;
+	static boolean cameraLock = false;
 	static int scrollLock = 0;
 	
 	

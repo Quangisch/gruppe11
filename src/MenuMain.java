@@ -35,8 +35,7 @@ public class MenuMain implements Runnable{
 	
 	public void paintComponents(Graphics g){
 		g2d = (Graphics2D) g;
-		if(Board.printMsg)
-			System.out.println("MainMenu.paintComponents");
+
 	}
 	
 	public void run(){

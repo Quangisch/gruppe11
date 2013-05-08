@@ -9,11 +9,15 @@ public class CollisionDetection implements Runnable{
 	}
 
 	public void run(){
+		//if(Board.printMsg)
+			System.out.println("CollisionDetection run");
+			
 		try {
 			check();
 		} catch (InterruptedException ie) {
 			System.err.println("CollisionDetection:" +ie);
 		}
+		
 		
 	}
 	
@@ -22,57 +26,19 @@ public class CollisionDetection implements Runnable{
 		//Player.set
 		
 		//System.out.println("moveable" +Camera.moveFocus);
-				
-			if(Player.playerBoundS.intersects(Map.BoundN)){
-				//Camera.cameraX -= 630;
-				Camera.scrollLock = 1;
-			}
-				
-			if(Player.playerBoundN.intersects(Map.BoundS)){
-				Camera.scrollLock = 3;
-				//Camera.cameraX += 630;
-				
-			}
 			
-			if(Player.playerBoundE.intersects(Map.BoundW)){
-				Camera.scrollLock = 2;
-				//Camera.cameraX -= 810;
-
-			}
-				
-			if(Player.playerBoundW.intersects(Map.BoundE)){
-				Camera.scrollLock = 4;
-				//Camera.cameraX += 810;
+		
+		//check Player-relative WindowBorders
+		if(Player.playerBoundS.intersects(Map.BoundN)){Camera.scrollLock = 1;}
+		if(Player.playerBoundN.intersects(Map.BoundS)){Camera.scrollLock = 3;}
+		if(Player.playerBoundE.intersects(Map.BoundW)){Camera.scrollLock = 2;}
+		if(Player.playerBoundW.intersects(Map.BoundE)){Camera.scrollLock = 4;}
+		
+		//check Player-dungeon
+		Map.setBounds();
+		if(Player.playerBoundN.intersects(Map.intoDungeon1)){System.out.println("enter dungeon"); Map.overWorld = false; Map.dungeon = true;}
+			
 	
-			}
-	
-			/*
-			//Camera.lo
-			
-			if(Camera.cameraX < Player.absoluteX) {
-				Camera.cameraX += Camera.cameraSpeed;
-				Player.x -= Camera.cameraSpeed;
-			}
-			if(Camera.cameraX > Player.absoluteX) {
-				Camera.cameraX -= Camera.cameraSpeed;
-				Player.x += Camera.cameraSpeed;
-			}
-		
-			if(Camera.cameraY < Player.absoluteY) {
-				Camera.cameraY += Camera.cameraSpeed;
-				Player.y -= Camera.cameraSpeed;
-			}
-			if(Camera.cameraY > Player.absoluteY) {
-				Camera.cameraY -= Camera.cameraSpeed;
-				Player.y += Camera.cameraSpeed;
-			}
-			*/
-			
-		
-		 
-		
-			
-			
 			
 			/*
 			if(Map.BoundS.intersects(Player.BoundS)||Map.BoundW.intersects(Player.BoundW)

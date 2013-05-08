@@ -44,8 +44,7 @@ public class MenuIngame extends JComponent implements Runnable{
 	
 	public void paintComponents(Graphics g){
 		g2d = (Graphics2D) g;
-		if(Board.printMsg)
-			System.out.println("IngameMenu.paintComponents");
+
 	}
 	
 	public void run(){

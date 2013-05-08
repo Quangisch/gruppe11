@@ -22,6 +22,7 @@ public class MainGame extends JFrame{
 	
 	public static void main(String[] args){
 		new MainGame();
+	
 	}
 }
 
@@ -32,16 +33,16 @@ interface FileLink{
 	File menu = new File( "resources/images/menu.png");
 	File button = new File( "resources/images/button.png");
 	
+	//interface
 	File heart = new File( "resources/images/heart.png");
 	File coin = new File( "resources/images/coin.png");
 	
-	File map = new File( "resources/images/tiles_alpha1.png");
-	File mapBasic1 = new File( "resources/images/tiles_basic1.png");
-		File mapData00_00 = new File( "resources/data/mapData00_00.txt");
-		File mapData00_01 = new File( "resources/data/mapData00_01.txt");
-		File mapData01_00 = new File( "resources/data/mapData01_00.txt");
-		
-	File newMap00_00 = new File ("resources/images/newMap00_00.png");
+	//map images
+	File OWMap00_00 = new File ("resources/images/newMap00_00.png");
+	File tiles_Dungeon01 = new File ("resources/images/tiles_dungeon01.png");
+	
+	//map data
+	File mapData_Dungeon01 = new File ("resources/data/mapData_Dungeon01.txt");
 		
 }
 

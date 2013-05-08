@@ -62,6 +62,7 @@ public final class Player extends JComponent implements Runnable, FileLink {
 	public void paintComponents(Graphics g){
 		g2d = (Graphics2D) g;
 		//System.out.println("Player.paintComponents");
+		g2d.drawImage(playerMoveBuff,Player.x,Player.y,this);
 	}
 	
 	public void run(){
@@ -307,24 +308,58 @@ public final class Player extends JComponent implements Runnable, FileLink {
 		}
 		
 		if (key == KeyEvent.VK_C){
-			if(!Camera.cameraOn){
-				System.out.println("OverWorld Camera on");
-				Camera.toogleCamera(true);
-			} else {
-				System.out.println("OverWorld Camera off");
-				Camera.toogleCamera(false);
-			}
+			if(!Camera.cameraLock){
+				if(!Camera.cameraOn){
+					System.out.println("OverWorld Camera on");
+					Camera.toogleCamera(true);
+				} else {
+					System.out.println("OverWorld Camera off");
+					Camera.toogleCamera(false);
+				}
+			} else
+				System.err.println("Camera locked!");
+			
+			
 				
+		}
+		
+		if(key == KeyEvent.VK_Y){
+			Board.printMsg = !Board.printMsg;
 		}
 		
 		
 		if (key == KeyEvent.VK_M){
 			Board.menu = !Board.menu;
-			if(!Board.menu)
-				System.out.println("ingame menu");
-			else
-				System.out.println("ingame");
+			Board.menuThread = !Board.menuThread;
+			Board.ingameThread = !Board.ingameThread;
+			/*
+			//get game status
+			if(!Board.menu && Board.ingame)
+				System.out.println("Ingame");
+			if(Board.menu && Board.ingame)
+				System.out.println("IngameMenu");
+			if(Board.menu && !Board.ingame)
+				System.out.println("MainMenu");
+				*/
 		}
+		
+		if (key == KeyEvent.VK_N){
+			Board.ingame = !Board.ingame;
+			Board.menuThread = !Board.menuThread;
+			Board.ingameThread = !Board.ingameThread;
+			
+			/*
+			//get game status
+			if(!Board.menu && Board.ingame)
+				System.out.println("Ingame");
+			if(Board.menu && Board.ingame)
+				System.out.println("IngameMenu");
+			if(Board.menu && !Board.ingame)
+				System.out.println("MainMenu");
+				*/
+		}
+		
+		
 		if (key == KeyEvent.VK_B){
 			Board.paintBounds = !Board.paintBounds;
 		}

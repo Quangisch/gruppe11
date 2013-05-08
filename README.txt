@@ -14,8 +14,11 @@ Manual:
 - C 	toggle camera fixed/automatic
 - Space center camera in fixed camera mode
 
+#Debug Tools
 - B 	show Borders and Hitboxes
 - X 	get Coordinates
+- M	toogle Menu
+- N	toogle Ingame
 
 clean_rebuild based on oldMaster
 (oldMaster:
