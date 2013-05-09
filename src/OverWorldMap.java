@@ -38,7 +38,6 @@ public class OverWorldMap extends JComponent implements Runnable, FileLink{
 	}
 	
 	public void paintComponents(Graphics g){
-		System.out.println("paint overworld");
 		g2d = (Graphics2D) g;
 		g2d.drawImage(newMap,-Camera.cameraX,-Camera.cameraY,this);
 	}

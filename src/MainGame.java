@@ -42,7 +42,7 @@ interface FileLink{
 	File tiles_Dungeon01 = new File ("resources/images/tiles_dungeon01.png");
 	
 	//map data
-	File mapData_Dungeon01 = new File ("resources/data/mapData_Dungeon01.txt");
+	File mapDataID01 = new File ("resources/data/mapDataID01.txt");
 		
 }
 

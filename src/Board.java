@@ -30,6 +30,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	final static Player player = new Player();
 	final static Enemy enemy = new Enemy(0,0);
 	final static Camera camera = new Camera();
+	final static DungeonNavigator dungeonNavigator = new DungeonNavigator();
 	final static CollisionDetection collisionDetection = new CollisionDetection();
 	final static DungeonBuilder dungeonBuilder = new DungeonBuilder();
 	
@@ -43,6 +44,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	final static Thread mainMenuThread = new Thread(mainMenu);
 	final static Thread mapThread = new Thread(overWorldMap);
 	final static Thread dungeonBuilderThread = new Thread(dungeonBuilder);
+	final static Thread dungeonNavigatorThread = new Thread(dungeonNavigator);
 	final static Thread playerThread = new Thread(player);
 	final static Thread enemyThread = new Thread(enemy);
 
@@ -185,11 +187,12 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			ingameThread = false;
 			
 			ingameScheduler.scheduleWithFixedDelay(dungeonBuilderThread, 200, 50,TimeUnit.MILLISECONDS);
-			ingameScheduler.scheduleWithFixedDelay(mapThread, 200, 50,TimeUnit.MILLISECONDS);
+			ingameScheduler.scheduleWithFixedDelay(mapThread, 50, 50,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(playerThread, 400, 10,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(cameraThread, 300, 5,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(collisionDetectionThread, 450, 10, TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(enemyThread,600,10,TimeUnit.MILLISECONDS);
+			ingameScheduler.scheduleWithFixedDelay(dungeonNavigatorThread, 350, 50, TimeUnit.MILLISECONDS);
 			
 			//shutdown menuThreads
 			if(!menuScheduler.isShutdown())
