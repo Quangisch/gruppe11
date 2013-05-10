@@ -12,7 +12,7 @@ public class MainGame extends JFrame{
 		board = new Board();
 		add(board);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize (810, 651);
+		setSize (810, 653);
 		//setLocationRelativeTo(null);
 		setTitle("DC - Prototype");
 		setResizable(false);

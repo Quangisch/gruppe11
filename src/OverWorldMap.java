@@ -13,7 +13,7 @@ import java.awt.Image;
 public class OverWorldMap extends JComponent implements Runnable, FileLink{
 	final static Rectangle BoundN = new Rectangle(0,0,810,1);
 	final static Rectangle BoundE = new Rectangle(809,0,1,630);
-	final static Rectangle BoundS = new Rectangle(0,627,810,1);
+	final static Rectangle BoundS = new Rectangle(0,629,810,1);
 	final static Rectangle BoundW = new Rectangle(0,0,1,630);
 	
 	static Rectangle Over1Dungeon1;

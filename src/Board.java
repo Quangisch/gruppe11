@@ -94,15 +94,15 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		}
 
 		//initiate overWorld/dungeon
-		OverWorldMap.overWorld = true;
-		DungeonNavigator.dungeon = false;
+		OverWorldMap.overWorld = false;
+		DungeonNavigator.dungeon = true;
 		
 		
 		//start point
-		Player.absoluteX = Player.x = 405-20*3;
-		Player.absoluteY = Player.y = 315-15*3;
-		Camera.cameraX = Player.absoluteX;
-		Camera.cameraY = Player.absoluteY;
+		//Player.absoluteX = Player.x = 405-20*3;
+		//Player.absoluteY = Player.y = 315-15*3;
+		//Camera.cameraX = Player.absoluteX;
+		//Camera.cameraY = Player.absoluteY;
 		
 		System.out.println("->Board");
 		start();
@@ -153,11 +153,9 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		        	g2d.draw(OverWorldMap.Over1Dungeon1);
 		        }
 		        if(DungeonNavigator.dungeon){
-		        	g2d.draw(DungeonNavigator.Dungeon1Over1);
-		        	g2d.draw(DungeonNavigator.toNorth);
-		        	g2d.draw(DungeonNavigator.toEast);
-		        	g2d.draw(DungeonNavigator.toSouth);
-		        	g2d.draw(DungeonNavigator.toWest);
+		        	g2d.draw(DungeonNavigator.toExit);
+		        	g2d.draw(DungeonNavigator.toNorth);g2d.draw(DungeonNavigator.toEast);g2d.draw(DungeonNavigator.toSouth);g2d.draw(DungeonNavigator.toWest);
+		        	g2d.draw(DungeonNavigator.toNorth2);g2d.draw(DungeonNavigator.toEast2);g2d.draw(DungeonNavigator.toSouth2);g2d.draw(DungeonNavigator.toWest2);
 		        }
 		        
 			}
@@ -186,13 +184,13 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			menuThread = false;
 			ingameThread = false;
 			
-			ingameScheduler.scheduleWithFixedDelay(dungeonBuilderThread, 200, 50,TimeUnit.MILLISECONDS);
+			ingameScheduler.scheduleWithFixedDelay(dungeonBuilderThread, 500, 50,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(mapThread, 50, 50,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(playerThread, 400, 10,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(cameraThread, 300, 5,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(collisionDetectionThread, 450, 10, TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(enemyThread,600,10,TimeUnit.MILLISECONDS);
-			ingameScheduler.scheduleWithFixedDelay(dungeonNavigatorThread, 350, 50, TimeUnit.MILLISECONDS);
+			ingameScheduler.scheduleWithFixedDelay(dungeonNavigatorThread, 600, 50, TimeUnit.MILLISECONDS);
 			
 			//shutdown menuThreads
 			if(!menuScheduler.isShutdown())

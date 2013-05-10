@@ -29,10 +29,13 @@ public class CollisionDetection implements Runnable{
 			
 		
 		//check Player position relative to windowBorders
-		if(Player.playerBoundS.intersects(OverWorldMap.BoundN)){Camera.scrollLock = 1;}
-		if(Player.playerBoundN.intersects(OverWorldMap.BoundS)){Camera.scrollLock = 3;}
-		if(Player.playerBoundE.intersects(OverWorldMap.BoundW)){Camera.scrollLock = 2;}
-		if(Player.playerBoundW.intersects(OverWorldMap.BoundE)){Camera.scrollLock = 4;}
+		if(!DungeonNavigator.dungeon){
+			if(Player.playerBoundS.intersects(OverWorldMap.BoundN)){Camera.scrollLock = 1;}
+			if(Player.playerBoundN.intersects(OverWorldMap.BoundS)){Camera.scrollLock = 3;}
+			if(Player.playerBoundE.intersects(OverWorldMap.BoundW)){Camera.scrollLock = 2;}
+			if(Player.playerBoundW.intersects(OverWorldMap.BoundE)){Camera.scrollLock = 4;}
+		}
+		
 		
 		//handles overworld <-> dungeon navigation
 		if(OverWorldMap.overWorld){

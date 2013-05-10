@@ -45,6 +45,8 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 		System.out.println("coordinatesData:"+coordinatesData[1][2]);
 		System.err.println("->MapBuilder");
 		
+		readData();
+		
 		for(int y = 0; y < 7; y++){			
 			for(int x = 0; x < 9; x++){
 				System.out.println("Objectx:"+xObjects[0][3][x][y]+",y:"+yObjects[0][3][x][y]);
@@ -91,6 +93,7 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 				for(int xTile = 0; xTile < 9; xTile++){
 					g2d.drawImage(mapBuff.getSubimage((xWall2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yWall2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90,yTile*90,this);
 				}
+				
 			}
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
@@ -103,7 +106,7 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 				}
 			}
 			
-			/*
+			
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
 					g2d.drawImage(mapBuff.getSubimage((xObjects[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yObjects[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90,yTile*90,this);
@@ -115,7 +118,7 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 					g2d.drawImage(mapBuff.getSubimage((xInteraction[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yInteraction[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90,yTile*90,this);
 				}
 			}
-			*/
+			
 			
 		//}
 
@@ -219,11 +222,31 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 	
 	public void translateCoordinates(String layer, int xMap, int yMap, int xLayer, int yLayer, String yString, String xString){
 		
+		if(layer.contentEquals("#interaction#")){
+			if(yString.contentEquals("a")){yInteraction[xMap][yMap][xLayer][yLayer] = 1;}if(yString.contentEquals("b")){yInteraction[xMap][yMap][xLayer][yLayer] = 2;}if(yString.contentEquals("c")){yInteraction[xMap][yMap][xLayer][yLayer] = 3;}
+			if(yString.contentEquals("d")){yInteraction[xMap][yMap][xLayer][yLayer] = 4;}if(yString.contentEquals("e")){yInteraction[xMap][yMap][xLayer][yLayer] = 5;}if(yString.contentEquals("f")){yInteraction[xMap][yMap][xLayer][yLayer] = 6;}
+			if(yString.contentEquals("g")){yInteraction[xMap][yMap][xLayer][yLayer] = 7;}if(yString.contentEquals("h")){yInteraction[xMap][yMap][xLayer][yLayer] = 8;}if(yString.contentEquals("i")){yInteraction[xMap][yMap][xLayer][yLayer] = 9;}
+			if(yString.contentEquals("j")){yInteraction[xMap][yMap][xLayer][yLayer] = 10;}if(yString.contentEquals("k")){yInteraction[xMap][yMap][xLayer][yLayer] = 11;}if(yString.contentEquals("l")){yInteraction[xMap][yMap][xLayer][yLayer] = 12;}
+			if(yString.contentEquals("m")){yInteraction[xMap][yMap][xLayer][yLayer] = 13;}if(yString.contentEquals("n")){yInteraction[xMap][yMap][xLayer][yLayer] = 14;}if(yString.contentEquals("x")){yInteraction[xMap][yMap][xLayer][yLayer] = 14; xInteraction[xMap][yMap][xLayer][yLayer] = 18;}
+			if(!xString.contentEquals("0x"))
+				xInteraction[xMap][yMap][xLayer][yLayer] = Integer.parseInt(xString.toString());
+		}
+		
+		if(layer.contentEquals("#objects#")){
+			if(yString.contentEquals("a")){yObjects[xMap][yMap][xLayer][yLayer] = 1;}if(yString.contentEquals("b")){yObjects[xMap][yMap][xLayer][yLayer] = 2;}if(yString.contentEquals("c")){yObjects[xMap][yMap][xLayer][yLayer] = 3;}
+			if(yString.contentEquals("d")){yObjects[xMap][yMap][xLayer][yLayer] = 4;}if(yString.contentEquals("e")){yObjects[xMap][yMap][xLayer][yLayer] = 5;}if(yString.contentEquals("f")){yObjects[xMap][yMap][xLayer][yLayer] = 6;}
+			if(yString.contentEquals("g")){yObjects[xMap][yMap][xLayer][yLayer] = 7;}if(yString.contentEquals("h")){yObjects[xMap][yMap][xLayer][yLayer] = 8;}if(yString.contentEquals("i")){yObjects[xMap][yMap][xLayer][yLayer] = 9;}
+			if(yString.contentEquals("j")){yObjects[xMap][yMap][xLayer][yLayer] = 10;}if(yString.contentEquals("k")){yObjects[xMap][yMap][xLayer][yLayer] = 11;}if(yString.contentEquals("l")){yObjects[xMap][yMap][xLayer][yLayer] = 12;}
+			if(yString.contentEquals("m")){yObjects[xMap][yMap][xLayer][yLayer] = 13;}if(yString.contentEquals("n")){yObjects[xMap][yMap][xLayer][yLayer] = 14;}if(yString.contentEquals("x")){yObjects[xMap][yMap][xLayer][yLayer] = 14; xObjects[xMap][yMap][xLayer][yLayer] = 18;}
+			if(!xString.contentEquals("0x"))
+				xObjects[xMap][yMap][xLayer][yLayer] = Integer.parseInt(xString.toString());
+		}
+		
 		if(layer.contentEquals("#door#")){
 			if(yString.contentEquals("a")){yDoor[xMap][yMap][xLayer][yLayer] = 1;}if(yString.contentEquals("b")){yDoor[xMap][yMap][xLayer][yLayer] = 2;}if(yString.contentEquals("c")){yDoor[xMap][yMap][xLayer][yLayer] = 3;}
 			if(yString.contentEquals("d")){yDoor[xMap][yMap][xLayer][yLayer] = 4;}if(yString.contentEquals("e")){yDoor[xMap][yMap][xLayer][yLayer] = 5;}if(yString.contentEquals("f")){yDoor[xMap][yMap][xLayer][yLayer] = 6;}
 			if(yString.contentEquals("g")){yDoor[xMap][yMap][xLayer][yLayer] = 7;}if(yString.contentEquals("h")){yDoor[xMap][yMap][xLayer][yLayer] = 8;}if(yString.contentEquals("i")){yDoor[xMap][yMap][xLayer][yLayer] = 9;}
-			if(yString.contentEquals("y")){yDoor[xMap][yMap][xLayer][yLayer] = 10;}if(yString.contentEquals("k")){yDoor[xMap][yMap][xLayer][yLayer] = 11;}if(yString.contentEquals("l")){yDoor[xMap][yMap][xLayer][yLayer] = 12;}
+			if(yString.contentEquals("j")){yDoor[xMap][yMap][xLayer][yLayer] = 10;}if(yString.contentEquals("k")){yDoor[xMap][yMap][xLayer][yLayer] = 11;}if(yString.contentEquals("l")){yDoor[xMap][yMap][xLayer][yLayer] = 12;}
 			if(yString.contentEquals("m")){yDoor[xMap][yMap][xLayer][yLayer] = 13;}if(yString.contentEquals("n")){yDoor[xMap][yMap][xLayer][yLayer] = 14;}if(yString.contentEquals("x")){yDoor[xMap][yMap][xLayer][yLayer] = 14; xDoor[xMap][yMap][xLayer][yLayer] = 18;}
 			if(!xString.contentEquals("0x"))
 				xDoor[xMap][yMap][xLayer][yLayer] = Integer.parseInt(xString.toString());
@@ -233,7 +256,7 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 			if(yString.contentEquals("a")){yWall1[xMap][yMap][xLayer][yLayer] = 1;}if(yString.contentEquals("b")){yWall1[xMap][yMap][xLayer][yLayer] = 2;}if(yString.contentEquals("c")){yWall1[xMap][yMap][xLayer][yLayer] = 3;}
 			if(yString.contentEquals("d")){yWall1[xMap][yMap][xLayer][yLayer] = 4;}if(yString.contentEquals("e")){yWall1[xMap][yMap][xLayer][yLayer] = 5;}if(yString.contentEquals("f")){yWall1[xMap][yMap][xLayer][yLayer] = 6;}
 			if(yString.contentEquals("g")){yWall1[xMap][yMap][xLayer][yLayer] = 7;}if(yString.contentEquals("h")){yWall1[xMap][yMap][xLayer][yLayer] = 8;}if(yString.contentEquals("i")){yWall1[xMap][yMap][xLayer][yLayer] = 9;}
-			if(yString.contentEquals("y")){yWall1[xMap][yMap][xLayer][yLayer] = 10;}if(yString.contentEquals("k")){yWall1[xMap][yMap][xLayer][yLayer] = 11;}if(yString.contentEquals("l")){yWall1[xMap][yMap][xLayer][yLayer] = 12;}
+			if(yString.contentEquals("j")){yWall1[xMap][yMap][xLayer][yLayer] = 10;}if(yString.contentEquals("k")){yWall1[xMap][yMap][xLayer][yLayer] = 11;}if(yString.contentEquals("l")){yWall1[xMap][yMap][xLayer][yLayer] = 12;}
 			if(yString.contentEquals("m")){yWall1[xMap][yMap][xLayer][yLayer] = 13;}if(yString.contentEquals("n")){yWall1[xMap][yMap][xLayer][yLayer] = 14;}if(yString.contentEquals("x")){yWall1[xMap][yMap][xLayer][yLayer] = 14; xWall1[xMap][yMap][xLayer][yLayer] = 18;}
 			if(!xString.contentEquals("0x"))
 				xWall1[xMap][yMap][xLayer][yLayer] = Integer.parseInt(xString.toString());
@@ -243,7 +266,7 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 			if(yString.contentEquals("a")){yWall2[xMap][yMap][xLayer][yLayer] = 1;}if(yString.contentEquals("b")){yWall2[xMap][yMap][xLayer][yLayer] = 2;}if(yString.contentEquals("c")){yWall2[xMap][yMap][xLayer][yLayer] = 3;}
 			if(yString.contentEquals("d")){yWall2[xMap][yMap][xLayer][yLayer] = 4;}if(yString.contentEquals("e")){yWall2[xMap][yMap][xLayer][yLayer] = 5;}if(yString.contentEquals("f")){yWall2[xMap][yMap][xLayer][yLayer] = 6;}
 			if(yString.contentEquals("g")){yWall2[xMap][yMap][xLayer][yLayer] = 7;}if(yString.contentEquals("h")){yWall2[xMap][yMap][xLayer][yLayer] = 8;}if(yString.contentEquals("i")){yWall2[xMap][yMap][xLayer][yLayer] = 9;}
-			if(yString.contentEquals("y")){yWall2[xMap][yMap][xLayer][yLayer] = 10;}if(yString.contentEquals("k")){yWall2[xMap][yMap][xLayer][yLayer] = 11;}if(yString.contentEquals("l")){yWall2[xMap][yMap][xLayer][yLayer] = 12;}
+			if(yString.contentEquals("j")){yWall2[xMap][yMap][xLayer][yLayer] = 10;}if(yString.contentEquals("k")){yWall2[xMap][yMap][xLayer][yLayer] = 11;}if(yString.contentEquals("l")){yWall2[xMap][yMap][xLayer][yLayer] = 12;}
 			if(yString.contentEquals("m")){yWall2[xMap][yMap][xLayer][yLayer] = 13;}if(yString.contentEquals("n")){yWall2[xMap][yMap][xLayer][yLayer] = 14;}if(yString.contentEquals("x")){yWall2[xMap][yMap][xLayer][yLayer] = 14; xWall2[xMap][yMap][xLayer][yLayer] = 18;}
 			if(!xString.contentEquals("0x"))
 				xWall2[xMap][yMap][xLayer][yLayer] = Integer.parseInt(xString.toString());
@@ -263,11 +286,12 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 			if(yString.contentEquals("a")){yFloor2[xMap][yMap][xLayer][yLayer] = 1;}if(yString.contentEquals("b")){yFloor2[xMap][yMap][xLayer][yLayer] = 2;}if(yString.contentEquals("c")){yFloor2[xMap][yMap][xLayer][yLayer] = 3;}
 			if(yString.contentEquals("d")){yFloor2[xMap][yMap][xLayer][yLayer] = 4;}if(yString.contentEquals("e")){yFloor2[xMap][yMap][xLayer][yLayer] = 5;}if(yString.contentEquals("f")){yFloor2[xMap][yMap][xLayer][yLayer] = 6;}
 			if(yString.contentEquals("g")){yFloor2[xMap][yMap][xLayer][yLayer] = 7;}if(yString.contentEquals("h")){yFloor2[xMap][yMap][xLayer][yLayer] = 8;}if(yString.contentEquals("i")){yFloor2[xMap][yMap][xLayer][yLayer] = 9;}
-			if(yString.contentEquals("y")){yFloor2[xMap][yMap][xLayer][yLayer] = 10;}if(yString.contentEquals("k")){yFloor2[xMap][yMap][xLayer][yLayer] = 11;}if(yString.contentEquals("l")){yFloor2[xMap][yMap][xLayer][yLayer] = 12;}
+			if(yString.contentEquals("j")){yFloor2[xMap][yMap][xLayer][yLayer] = 10;}if(yString.contentEquals("k")){yFloor2[xMap][yMap][xLayer][yLayer] = 11;}if(yString.contentEquals("l")){yFloor2[xMap][yMap][xLayer][yLayer] = 12;}
 			if(yString.contentEquals("m")){yFloor2[xMap][yMap][xLayer][yLayer] = 13;}if(yString.contentEquals("n")){yFloor2[xMap][yMap][xLayer][yLayer] = 14;}if(yString.contentEquals("x")){yFloor2[xMap][yMap][xLayer][yLayer] = 14; xFloor2[xMap][yMap][xLayer][yLayer] = 18;}
 			if(!xString.contentEquals("0x"))
 				xFloor2[xMap][yMap][xLayer][yLayer] = Integer.parseInt(xString.toString());
 		}
+		
 	}
 
 
