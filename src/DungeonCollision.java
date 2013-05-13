@@ -11,7 +11,7 @@ public class DungeonCollision {
 	
 	public static void start(){
 		readWalls();
-		//checkCollision();
+		checkCollision();
 	}
 	public static void readWalls(){
 		
@@ -22,13 +22,31 @@ public class DungeonCollision {
 				System.out.println("check: " +DungeonBuilder.xWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]);
 				
 				switch(DungeonBuilder.xWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]){
-				case(11): 	wall1[xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);
-							wall2[xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);
+				case(11): 	wall1[xTile][yTile] = new Rectangle(xTile+90,yTile+90,45,90);
+							wall2[xTile][yTile] = new Rectangle(xTile+90,yTile+90,90,45);
 							System.out.println("A1 Rectangle");
 							break;
-				case(12):	wall1[xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);
+				case(12):	wall1[xTile][yTile] = new Rectangle(xTile+90,yTile+90,90,50);
 							wall2[xTile][yTile] = wall1[xTile][yTile];
 							break;
+				case(13):	wall1[xTile][yTile] = new Rectangle(xTile+90,yTile+90,90,45);
+							wall2[xTile][yTile] = wall1[xTile][yTile];
+							break;
+				case(14):	wall1[xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,50);
+							wall2[xTile][yTile] = wall1[xTile][yTile];
+							break;
+				case(15):	wall1[xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);
+							wall2[xTile][yTile] = wall1[xTile][yTile];
+							break;
+				case(16):	wall1[xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,50);
+							wall2[xTile][yTile] = wall1[xTile][yTile];
+							break;
+				case(17):	wall1[xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,40);
+							wall2[xTile][yTile] = wall1[xTile][yTile];
+							break;
+				/*case(18):	wall1[xTile][yTile] = new Rectangle(xTile*90,yTile*90,,45);
+							wall2[xTile][yTile] = wall1[xTile][yTile];
+							break;*/
 				}
 			}
 		}
