@@ -98,25 +98,17 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		}
 
 		//initiate overWorld/dungeon
-		OverWorldMap.overWorld = true;
-		DungeonNavigator.dungeon = false;
-		
+		OverWorldMap.overWorld = false;
+		DungeonNavigator.dungeon = true;
 		
 		//start point
-<<<<<<< HEAD
+
 		Player.x = 230; Player.y = 500;
 		Player.lastDirection = 1;
 		//Player.absoluteX = Player.x = 405-20*3;
 		//Player.absoluteY = Player.y = 315-15*3;
 		//Camera.cameraX = Player.absoluteX;
-		//Camera.cameraY = Player.absoluteY;
-=======
-		Player.absoluteX = Player.x = 405-20*3;
-		Player.absoluteY = Player.y = 315-15*3;
-		Camera.cameraX = Player.absoluteX;
-		Camera.cameraY = Player.absoluteY;
->>>>>>> 0baa9836e2457425e5d85fb643f349be443b8344
-		
+		//Camera.cameraY = Player.absoluteY;		
 		System.out.println("->Board");
 		start();
 	}
