@@ -4,6 +4,8 @@ import java.awt.Rectangle;
 
 public class CollisionDetection implements Runnable{
 	
+	
+	
 	public CollisionDetection(){
 		
 	}
@@ -60,7 +62,11 @@ public class CollisionDetection implements Runnable{
 		if(DungeonNavigator.dungeon){
 			DungeonNavigator.setBounds();
 			Camera.cameraLock = true;
+			//TODO//DungeonCollision.start();
 		}
 		
 	}
+	
+
+	
 }

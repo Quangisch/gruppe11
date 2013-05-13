@@ -39,6 +39,7 @@ public final class Player extends JComponent implements Runnable, FileLink {
 	static final double SPEED = 1;
 	static final double SPEEDUP = 2;
 	double tmpSpeed = SPEED;
+	static boolean moveable = true;
 
 	//interaction
 	static Rectangle attackBound;
@@ -70,12 +71,16 @@ public final class Player extends JComponent implements Runnable, FileLink {
 	public void run(){
 		if (Board.printMsg)
 			System.out.println("Player.run");
+<<<<<<< HEAD
 		
 		if (life <= 0)
 			Board.gameOver = true;
 		
 		
 		if (!block)
+=======
+		if (!block || moveable)
+>>>>>>> 0baa9836e2457425e5d85fb643f349be443b8344
 		move();
 		paintPlayer();
 		

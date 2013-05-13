@@ -98,17 +98,24 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		}
 
 		//initiate overWorld/dungeon
-		OverWorldMap.overWorld = false;
-		DungeonNavigator.dungeon = true;
+		OverWorldMap.overWorld = true;
+		DungeonNavigator.dungeon = false;
 		
 		
 		//start point
+<<<<<<< HEAD
 		Player.x = 230; Player.y = 500;
 		Player.lastDirection = 1;
 		//Player.absoluteX = Player.x = 405-20*3;
 		//Player.absoluteY = Player.y = 315-15*3;
 		//Camera.cameraX = Player.absoluteX;
 		//Camera.cameraY = Player.absoluteY;
+=======
+		Player.absoluteX = Player.x = 405-20*3;
+		Player.absoluteY = Player.y = 315-15*3;
+		Camera.cameraX = Player.absoluteX;
+		Camera.cameraY = Player.absoluteY;
+>>>>>>> 0baa9836e2457425e5d85fb643f349be443b8344
 		
 		System.out.println("->Board");
 		start();
@@ -183,7 +190,17 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		        	g2d.draw(DungeonNavigator.toNorth);g2d.draw(DungeonNavigator.toEast);g2d.draw(DungeonNavigator.toSouth);g2d.draw(DungeonNavigator.toWest);
 		        	g2d.draw(DungeonNavigator.toNorth2);g2d.draw(DungeonNavigator.toEast2);g2d.draw(DungeonNavigator.toSouth2);g2d.draw(DungeonNavigator.toWest2);
 		        }
+		        /*TODO
+		        for(int yTile = 0; yTile < 7; yTile++){
+		        	for(int xTile = 0; xTile < 9; xTile++){
+		        		g2d.draw(DungeonCollision.wall1[xTile][yTile]);
+		        		g2d.draw(DungeonCollision.wall2[xTile][yTile]);
+		        		
+		        	}
+		        }*/
 		        
+		        //DungeonCollison.readWalls();
+		        //g2d.draw(DungeonCollision.wall1[0][0]);
 			}
 			
 		}
