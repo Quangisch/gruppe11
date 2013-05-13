@@ -3,6 +3,7 @@ import javax.swing.JPanel;
 
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -33,6 +34,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	final static DungeonNavigator dungeonNavigator = new DungeonNavigator();
 	final static CollisionDetection collisionDetection = new CollisionDetection();
 	final static DungeonBuilder dungeonBuilder = new DungeonBuilder();
+	final static PlayerInterface playerInterface = new PlayerInterface();
 	
 	
 	//threads
@@ -47,7 +49,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	final static Thread dungeonNavigatorThread = new Thread(dungeonNavigator);
 	final static Thread playerThread = new Thread(player);
 	final static Thread enemyThread = new Thread(enemy);
-
+	final static Thread playerInterfaceThread = new Thread(playerInterface);
 	
 	final static Thread cameraThread = new Thread(camera);
 	final static Thread collisionDetectionThread = new Thread(collisionDetection);
@@ -59,6 +61,8 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	
 	/*switch menu/ingame with M*/	static boolean ingame = true;
 									static boolean menu = false;
+									static boolean gameOver = false;
+									static boolean win = false;
 	
 	/*sound/music volume*/			static int musicVolume = 50;
 									static int soundVolume = 50;
@@ -99,6 +103,8 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		
 		
 		//start point
+		Player.x = 230; Player.y = 500;
+		Player.lastDirection = 1;
 		//Player.absoluteX = Player.x = 405-20*3;
 		//Player.absoluteY = Player.y = 315-15*3;
 		//Camera.cameraX = Player.absoluteX;
@@ -114,7 +120,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		
+	
 		
 		if (!ingame){
 			//paint MenuMain
@@ -126,14 +132,34 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			
 		}
 		
-		if (ingame && !menu){
+		if(gameOver){
+			ingame = false; menu = true;
+			System.err.println("Game Over");
+			g2d.setColor(Color.red);
+			Font textFont = new Font("Arial", Font.BOLD, 75);  
+			g.setFont(textFont);  
+			g2d.drawString("Game Over",220,300);
+		}
+		
+		if(win){
+			ingame = false; menu = true;
+			System.err.println("Win");
+			g2d.setColor(Color.yellow);
+			Font textFont = new Font("Arial", Font.BOLD, 75);  
+			g.setFont(textFont);  
+			g2d.drawString("Win",330,330);
+		}
+		
+		
+		
+		if (ingame && !menu && !gameOver && !win){
 			if(OverWorldMap.overWorld)
 				overWorldMap.paintComponents(g2d);
 			if(DungeonNavigator.dungeon)
 				dungeonBuilder.paintComponents(g2d);
 			
 			player.paintComponents(g2d);
-			
+			playerInterface.paintComponents(g2d);
 			//paint player interface
 			
 			
@@ -159,7 +185,10 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		        }
 		        
 			}
+			
 		}
+		
+		
 		
 		g.dispose();
 	}
@@ -191,6 +220,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			ingameScheduler.scheduleWithFixedDelay(collisionDetectionThread, 450, 10, TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(enemyThread,600,10,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(dungeonNavigatorThread, 600, 50, TimeUnit.MILLISECONDS);
+			ingameScheduler.scheduleWithFixedDelay(playerInterface, 600, 50, TimeUnit.MILLISECONDS);
 			
 			//shutdown menuThreads
 			if(!menuScheduler.isShutdown())

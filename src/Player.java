@@ -42,6 +42,8 @@ public final class Player extends JComponent implements Runnable, FileLink {
 
 	//interaction
 	static Rectangle attackBound;
+	static int life = 3;
+	static int coins = 0;
 	
 	//worldmapnavigation
 	static Rectangle playerBoundN,playerBoundE,playerBoundS,playerBoundW;
@@ -68,6 +70,11 @@ public final class Player extends JComponent implements Runnable, FileLink {
 	public void run(){
 		if (Board.printMsg)
 			System.out.println("Player.run");
+		
+		if (life <= 0)
+			Board.gameOver = true;
+		
+		
 		if (!block)
 		move();
 		paintPlayer();

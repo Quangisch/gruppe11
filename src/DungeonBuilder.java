@@ -49,13 +49,7 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 		
 		for(int y = 0; y < 7; y++){			
 			for(int x = 0; x < 9; x++){
-				System.out.println("Objectx:"+xObjects[0][3][x][y]+",y:"+yObjects[0][3][x][y]);
-			}
-			System.out.println("");
-		}
-		for(int y = 0; y < 7; y++){			
-			for(int x = 0; x < 9; x++){
-				System.out.println("Interactionx:"+xInteraction[0][3][x][y]+",y:"+yInteraction[0][3][x][y]);
+				System.out.println("Wallx:"+xWall1[0][3][x][y]+",y:"+yWall1[0][3][x][y]);
 			}
 			System.out.println("");
 		}

@@ -14,7 +14,7 @@ public class DungeonNavigator implements Runnable{
 	
 	
 	public DungeonNavigator(){
-		x = 2; y = 1;
+		x = 0; y = 3;
 	}
 	
 	public void run(){
@@ -33,13 +33,13 @@ public class DungeonNavigator implements Runnable{
 	public static void navigate() throws InterruptedException {
 		
 		//System.out.println("DungeonAreaID:"+areaID);
-		//if(Board.printMsg)
+		if(Board.printMsg)
 			System.out.println("Map x:"+x+", y:"+y);
 			
 			//map 0000
 			if(x == 0 && y == 0){
-				//if){x = 1;Player.x = 20;}
-				if((Player.playerBoundW.intersects(DungeonNavigator.toEast2)) || (Player.playerBoundW.intersects(DungeonNavigator.toEast))){x = 1;Player.x = 20;}
+				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){x = 1;Player.x = 20;}
+				if(Player.playerBoundW.intersects(DungeonNavigator.toEast2)){x = 1;Player.x = 20;}
 				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth)){y = 1;Player.y = 20;}
 			}
 			
@@ -111,13 +111,15 @@ public class DungeonNavigator implements Runnable{
 			if(x == 0 && y == 2){
 				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){x = 1;Player.x = 20;}
 				if(Player.playerBoundE.intersects(DungeonNavigator.toExit)){
-					System.out.println("leave Dungeon1 -> OverWorldMap 2");}
+					System.out.println("leave Dungeon1 -> OverWorldMap 2");
+					Board.win = true;
+				}
 			}
 			
 			//map 0102
 			if(x == 1 && y == 2){
 				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth)){y = 1;Player.y = 500;}
-				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){x = 2;Player.x = 20;}
+				//if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){x = 2;Player.x = 20;}
 				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth)){y = 3;Player.y = 20;}
 				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){x = 0;Player.x = 700;}
 			}
