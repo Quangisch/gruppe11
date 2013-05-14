@@ -19,13 +19,13 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 	Graphics2D doorBuff, wall1Buff, wall2Buff, floor1Buff, floor2Buff;
 	
 	//layer variables
-	static int xInteraction[][][][] = new int[5][5][9][7];int yInteraction[][][][] = new int [5][5][9][7];
-	static int xObjects[][][][] = new int[5][5][9][7];int yObjects[][][][] = new int [5][5][9][7];
-	static int xDoor[][][][] = new int[5][5][9][7];int yDoor[][][][] = new int [5][5][9][7];
-	static int xWall1[][][][] = new int[5][5][9][7];int yWall1[][][][] = new int [5][5][9][7];
-	static int xWall2[][][][] = new int[5][5][9][7];int yWall2[][][][] = new int [5][5][9][7];
-	static int xFloor1[][][][] = new int[5][5][9][7];int yFloor1[][][][] = new int [5][5][9][7];
-	static int xFloor2[][][][] = new int[5][5][9][7];int yFloor2[][][][] = new int [5][5][9][7];
+	static int xInteraction[][][][] = new int[5][5][9][7];static int yInteraction[][][][] = new int [5][5][9][7];
+	static int xObjects[][][][] = new int[5][5][9][7];static int yObjects[][][][] = new int [5][5][9][7];
+	static int xDoor[][][][] = new int[5][5][9][7];static int yDoor[][][][] = new int [5][5][9][7];
+	static int xWall1[][][][] = new int[5][5][9][7];static int yWall1[][][][] = new int [5][5][9][7];
+	static int xWall2[][][][] = new int[5][5][9][7];static int yWall2[][][][] = new int [5][5][9][7];
+	static int xFloor1[][][][] = new int[5][5][9][7];static int yFloor1[][][][] = new int [5][5][9][7];
+	static int xFloor2[][][][] = new int[5][5][9][7];static int yFloor2[][][][] = new int [5][5][9][7];
 	
 	static final String[] layerData = {"#interaction#","#objects#","#door#","#wall1#","#wall2#","#floor1#","#floor2#","###"};
 	
