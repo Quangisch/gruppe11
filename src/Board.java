@@ -133,7 +133,6 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		
 		if(gameOver){
 			ingame = false; menu = true;
-			System.err.println("Game Over");
 			g2d.setColor(Color.red);
 			Font textFont = new Font("Arial", Font.BOLD, 75);  
 			g.setFont(textFont);  
@@ -142,7 +141,6 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		
 		if(win){
 			ingame = false; menu = true;
-			System.err.println("Win");
 			g2d.setColor(Color.yellow);
 			Font textFont = new Font("Arial", Font.BOLD, 75);  
 			g.setFont(textFont);  
