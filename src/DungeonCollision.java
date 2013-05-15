@@ -247,41 +247,41 @@ public class DungeonCollision {
 		for(int yTile = 0; yTile < 7; yTile++){
 			for(int xTile = 0; xTile <9; xTile++){
 				
-				if(Player.playerBoundN.intersects(wallN[xTile][yTile])){
-					Player.y += 1;
+				if(Player.playerBoundS.intersects(wallN[xTile][yTile])){
+					Player.y += 5;
 					System.out.println("Wall North!");
 				}
-				if(Player.playerBoundE.intersects(wallE[xTile][yTile])){
-					Player.x -= 1;
+				if(Player.playerBoundS.intersects(wallE[xTile][yTile])){
+					Player.x -= 5;
 					System.out.println("Wall East!");
 				}
 				if(Player.playerBoundS.intersects(wallS[xTile][yTile])){
-					Player.y -= 1;
+					Player.y -= 5;
 					System.out.println("Wall South!");
 				}
-				if(Player.playerBoundW.intersects(wallW[xTile][yTile])){
-					Player.x += 1;
+				if(Player.playerBoundS.intersects(wallW[xTile][yTile])){
+					Player.x += 5;
 					System.out.println("Wall West!");
 				}
 				
-				if(Player.playerBoundN.intersects(wallN[xTile][yTile] ) && Player.playerBoundE.intersects(wallE[xTile][yTile])){
-					Player.y += 1;
-					Player.x -= 1;
+				if(Player.playerBoundS.intersects(wallN[xTile][yTile] ) && Player.playerBoundE.intersects(wallE[xTile][yTile])){
+					Player.y += 5;
+					Player.x -= 5;
 					System.out.println("Wall North-east!");
 				}
-				if(Player.playerBoundN.intersects(wallN[xTile][yTile] ) && Player.playerBoundW.intersects(wallW[xTile][yTile])){
-					Player.y += 1;
-					Player.x += 1;
+				if(Player.playerBoundS.intersects(wallN[xTile][yTile] ) && Player.playerBoundW.intersects(wallW[xTile][yTile])){
+					Player.y += 5;
+					Player.x += 5;
 					System.out.println("WallNorth-west!");
 				}
 				if(Player.playerBoundS.intersects(wallS[xTile][yTile]) && Player.playerBoundE.intersects(wallE[xTile][yTile])){
-					Player.y -= 1;
-					Player.x -= 1;
+					Player.y -= 5;
+					Player.x -= 5;
 					System.out.println("Wall South-east!");
 				}
 				if(Player.playerBoundS.intersects(wallS[xTile][yTile]) && Player.playerBoundW.intersects(wallW[xTile][yTile])){
-					Player.y -= 1;
-					Player.x += 1;
+					Player.y -= 5;
+					Player.x += 5;
 					System.out.println("Wall South-west!");
 				}
 				
