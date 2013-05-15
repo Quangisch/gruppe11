@@ -4,28 +4,30 @@ import java.awt.Rectangle;
 public class DungeonCollision {
 	static Rectangle[][] wall1;
 	static Rectangle[][] wall2;
-	static Rectangle[][] wallN;static Rectangle[][] wallE;static Rectangle[][] wallS;static Rectangle[][] wallW;
-	static Rectangle[][] wallNE;static Rectangle[][] wallSE;static Rectangle[][] wallSW;static Rectangle[][] wallNW;
+	static Rectangle wallN[][] = new Rectangle[9][7];static Rectangle wallE[][] = new Rectangle[9][7];static Rectangle wallS[][] = new Rectangle[9][7];static Rectangle wallW[][] = new Rectangle[9][7];
+	static Rectangle wallNE[][] = new Rectangle[9][7];static Rectangle wallSE[][] = new Rectangle[9][7];static Rectangle wallSW[][] = new Rectangle[9][7];static Rectangle wallNW[][] = new Rectangle[9][7];
 	
 	public DungeonCollision(){
 		
 	}
 	
 	public static void start(){
-		readWalls();
-		checkCollision();
+		System.out.println("DungeonCollision.start");
+		if(DungeonNavigator.loadNewMap);
+			readWalls();
+		//checkCollision();
 	}
 	public static void readWalls(){
 		
-		//wall1[0][0] = new Rectangle(0*90,0*90,45,90);
-				
+		//wallN[0][0] = new Rectangle(0*90,0*90,45,90);
+		
 		
 		for(int yTile = 0; yTile < 7; yTile++){
 			for(int xTile = 0; xTile < 9; xTile++){
-				System.out.println("initialize walls");
+				
 				wallN[xTile][yTile] = wallE[xTile][yTile] = wallS[xTile][yTile] = wallW[xTile][yTile] = new Rectangle(0,0,0,0);
 				wallNE[xTile][yTile] = wallSE[xTile][yTile] = wallSW[xTile][yTile] = wallNW[xTile][yTile] = new Rectangle(0,0,0,0);
-				
+				System.out.println("initialize walls");
 				
 				
 				//yWall A
@@ -33,7 +35,7 @@ public class DungeonCollision {
 					switch(DungeonBuilder.xWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]){
 					case(1): 	wallW[xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);
 								wallN[xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);
-								//System.out.println("A1 Rectangle");
+								System.out.println("A1 Rectangle");
 								break;
 					case(2):	wallN[xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);
 								break;
@@ -54,6 +56,8 @@ public class DungeonCollision {
 								break;
 					}
 				}//yWall A
+				
+				/*
 				
 				//yWall B
 				if(DungeonBuilder.yWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile] == 2){
@@ -154,10 +158,11 @@ public class DungeonCollision {
 								break;
 					}
 				}//ywall D
-				
+				*/
 			}
 						
 		}
+		
 	}
 				//System.out.println("check: " +DungeonBuilder.xWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]);
 				

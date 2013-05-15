@@ -182,7 +182,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		        	g2d.draw(DungeonNavigator.toNorth);g2d.draw(DungeonNavigator.toEast);g2d.draw(DungeonNavigator.toSouth);g2d.draw(DungeonNavigator.toWest);
 		        	g2d.draw(DungeonNavigator.toNorth2);g2d.draw(DungeonNavigator.toEast2);g2d.draw(DungeonNavigator.toSouth2);g2d.draw(DungeonNavigator.toWest2);
 		        }
-		        /*TODO
+		        
 		        for(int yTile = 0; yTile < 7; yTile++){
 		        	for(int xTile = 0; xTile < 9; xTile++){
 		        		g2d.draw(DungeonCollision.wallN[xTile][yTile]);g2d.draw(DungeonCollision.wallE[xTile][yTile]);g2d.draw(DungeonCollision.wallS[xTile][yTile]);g2d.draw(DungeonCollision.wallW[xTile][yTile]);
@@ -190,7 +190,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		        		
 		        	}
 		        }
-		        */
+		        
 		        //DungeonCollison.readWalls();
 		        //g2d.draw(DungeonCollision.wall1[0][0]);
 			}
@@ -227,7 +227,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			ingameScheduler.scheduleWithFixedDelay(playerThread, 400, 10,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(cameraThread, 300, 5,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(collisionDetectionThread, 450, 10, TimeUnit.MILLISECONDS);
-			ingameScheduler.scheduleWithFixedDelay(enemyThread,600,10,TimeUnit.MILLISECONDS);
+			//ingameScheduler.scheduleWithFixedDelay(enemyThread,600,10,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(dungeonNavigatorThread, 600, 50, TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(playerInterface, 600, 50, TimeUnit.MILLISECONDS);
 			
