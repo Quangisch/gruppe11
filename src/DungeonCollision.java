@@ -12,10 +12,11 @@ public class DungeonCollision {
 	}
 	
 	public static void start(){
-		System.out.println("DungeonCollision.start");
+		if(Board.printMsg)
+			System.out.println("DungeonCollision.start");
 		if(DungeonNavigator.loadNewMap);
 			readWalls();
-		//checkCollision();
+		checkCollision();
 	}
 	public static void readWalls(){
 		
@@ -27,7 +28,7 @@ public class DungeonCollision {
 				
 				wallN[xTile][yTile] = wallE[xTile][yTile] = wallS[xTile][yTile] = wallW[xTile][yTile] = new Rectangle(0,0,0,0);
 				wallNE[xTile][yTile] = wallSE[xTile][yTile] = wallSW[xTile][yTile] = wallNW[xTile][yTile] = new Rectangle(0,0,0,0);
-				System.out.println("initialize walls");
+		
 				
 				
 				//yWall A
@@ -35,7 +36,6 @@ public class DungeonCollision {
 					switch(DungeonBuilder.xWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]){
 					case(1): 	wallW[xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);
 								wallN[xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);
-								System.out.println("A1 Rectangle");
 								break;
 					case(2):	wallN[xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);
 								break;
@@ -170,8 +170,9 @@ public class DungeonCollision {
 	public static void checkCollision(){
 		for(int yTile = 0; yTile < 7; yTile++){
 			for(int xTile = 0; xTile <9; xTile++){
-				if(Player.playerBoundN.intersects(wall1[xTile][yTile])){
-					Player.moveable = false;
+				if(Player.playerBoundN.intersects(wallN[xTile][yTile])){
+					Player.y += 1;
+					System.out.println("Blabla");
 				}
 			}
 		}
