@@ -56,7 +56,7 @@ public class CollisionDetection implements Runnable{
 		}
 		
 		
-		if(DungeonNavigator.dungeon){
+		if(DungeonNavigator.dungeon && DungeonNavigator.loadNewMap){
 			DungeonNavigator.setBounds();
 			Camera.cameraLock = true;
 			DungeonCollision.start();
