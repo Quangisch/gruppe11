@@ -3,10 +3,12 @@ import java.awt.Rectangle;
 
 public class DungeonNavigator implements Runnable{
 	public static int x, y;
+	public static int xOld, yOld;
 	public static boolean dungeon;
 	public static int areaID = 1;
 	
 	static boolean loadNewMap = true;
+	static boolean scrollReady = true;
 	
 	public static Rectangle toExit;
 	public static Rectangle toNorth, toEast, toSouth, toWest;
@@ -14,7 +16,7 @@ public class DungeonNavigator implements Runnable{
 	
 	
 	public DungeonNavigator(){
-		x = 0; y = 3;
+		
 	}
 	
 	public void run(){
@@ -36,26 +38,33 @@ public class DungeonNavigator implements Runnable{
 		if(Board.printMsg)
 			System.out.println("Map x:"+x+", y:"+y);
 			
+		if(scrollReady){
+			xOld = x; 
+			yOld = y;
+		}
+			
+		
 			//map 0000
 			if(x == 0 && y == 0){
-				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){x = 1;Player.x = 20;}
-				if(Player.playerBoundW.intersects(DungeonNavigator.toEast2)){x = 1;Player.x = 20;}
-				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth)){y = 1;Player.y = 20;}
+				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
+				if(Player.playerBoundW.intersects(DungeonNavigator.toEast2)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
+				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth)){scrollReady = false;y = 1;Player.y = 20;}
 			}
 			
 			//map 0100
 			if(x == 1 && y == 0){
-				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){x = 2;Player.x = 20;}
-				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){x = 0;Player.x = 700;}
-				if(Player.playerBoundE.intersects(DungeonNavigator.toWest2)){x = 0;Player.x = 700;}	
+				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){scrollReady = false;x = 2;Player.x = 20;}
+				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){scrollReady = false;x = 0;Player.x = 700;}
+				if(Player.playerBoundE.intersects(DungeonNavigator.toWest2)){scrollReady = false;x = 0;Player.x = 700;}	
 			}
 			
 			//map 0200
 			if(x == 2 && y == 0){
 				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth)){	//TO map 0203
+					scrollReady = false;
 					x = 2; y = 3;Player.x = 360;Player.y = 400;
 				}	
-				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){x = 1;Player.x = 700;}
+				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){scrollReady = false;x = 1;Player.x = 700;}
 			}
 			
 			//map 0300
@@ -70,20 +79,20 @@ public class DungeonNavigator implements Runnable{
 			
 			//map 0001
 			if(x == 0 && y == 1){
-				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth)){y = 0;Player.y = 500;}
-				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){x = 1;Player.x = 20;}
+				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth)){scrollReady = false;y = 0;DungeonBuilder.scrollY = -630;}
+				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
 			}
 			
 			//map 0101
 			if(x == 1 && y == 1){
-				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){x = 2;Player.x = 20;}
-				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth)){y = 2;Player.y = 20;}
-				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){x = 0;Player.x = 700;}			
+				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){scrollReady = false;x = 2;DungeonBuilder.scrollX = 810;}
+				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth)){scrollReady = false;y = 2;DungeonBuilder.scrollY = 630;}
+				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){scrollReady = false;x = 0;DungeonBuilder.scrollX = -810;}			
 			}
 			
 			//map 0201
 			if(x == 2 && y == 1){
-				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){x = 1;Player.x = 700;}
+				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){scrollReady = false;x = 1;DungeonBuilder.scrollX = -810;}
 				
 			}
 			//map 0301
@@ -91,15 +100,16 @@ public class DungeonNavigator implements Runnable{
 				if(Player.playerBoundS.intersects(DungeonNavigator.toExit)){ //TO OverWolrdMap.
 					//Camera.cameraX = ; Camera.cameraY = ;
 					//Player.absoluteX = ; Player.absoluteY = ;
-					Player.x = 20; Player.y = 500;
+					Player.x = 20;
+					DungeonBuilder.scrollY = 630;
 					
 					//Camera.cameraLock = false;
 					//DungeonNavigator.dungeon = false; OverWorldMap.overWorld = true; 
 					//OverWorldMap.areaID = 2;
 					System.out.println("leave Dungeon1 -> OverWorldMap 2");
 				}
-				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth)){y = 2;Player.y = 500;}
-				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth2)){y = 2;Player.y = 500;}
+				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth)){scrollReady = false;y = 2;DungeonBuilder.scrollY = 630;}
+				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth2)){scrollReady = false;y = 2;DungeonBuilder.scrollY = 630;}
 			}
 			
 			//map 0401
@@ -109,8 +119,9 @@ public class DungeonNavigator implements Runnable{
 
 			//map 0002
 			if(x == 0 && y == 2){
-				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){x = 1;Player.x = 20;}
+				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
 				if(Player.playerBoundE.intersects(DungeonNavigator.toExit)){
+					scrollReady = false;
 					System.out.println("leave Dungeon1 -> OverWorldMap 2");
 					Board.win = true;
 				}
@@ -118,23 +129,23 @@ public class DungeonNavigator implements Runnable{
 			
 			//map 0102
 			if(x == 1 && y == 2){
-				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth)){y = 1;Player.y = 500;}
-				//if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){x = 2;Player.x = 20;}
-				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth)){y = 3;Player.y = 20;}
-				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){x = 0;Player.x = 700;}
+				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth)){scrollReady = false;y = 1;DungeonBuilder.scrollY = -630;}
+				//if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){scrollReady = false;x = 2;DungeonBuilder.scrollX = 810;}
+				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth)){scrollReady = false;y = 3;DungeonBuilder.scrollY = 630;}
+				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){scrollReady = false;x = 0;DungeonBuilder.scrollX = -810;}
 			}
 			
 			//map 0202
 			if(x == 2 && y == 2){
-				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){x = 1;Player.x = 700;}
+				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){scrollReady = false;x = 1;DungeonBuilder.scrollX = -810;}
 			}
 			
 			//map 0302
 			if(x == 3 && y == 2){
-				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth)){y = 1;Player.y = 500;}
-				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth2)){y = 1;Player.y = 500;}
-				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth)){y = 3;Player.y = 20;}
-				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth2)){y = 3;Player.y = 20;}
+				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth)){scrollReady = false;y = 1;DungeonBuilder.scrollY = -630;}
+				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth2)){scrollReady = false;y = 1;DungeonBuilder.scrollY = -630;}
+				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth)){scrollReady = false;y = 3;DungeonBuilder.scrollY = 630;}
+				if(Player.playerBoundN.intersects(DungeonNavigator.toSouth2)){scrollReady = false;y = 3;DungeonBuilder.scrollY = 630;}
 			}
 			
 			//map 0402
@@ -154,13 +165,13 @@ public class DungeonNavigator implements Runnable{
 					System.out.println("leave dungeon1 -> OverWorldMap1"); 
 				}
 				
-				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){x = 1;Player.x = 30;}
+				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
 			}
 			
 			//map 0103
 			if(x == 1 && y == 3){
-				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){x = 0;Player.x = 700;}
-				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth)){y = 2;Player.y = 500;}
+				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){scrollReady = false;x = 0;DungeonBuilder.scrollX = -810;}
+				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth)){scrollReady = false;y = 2;DungeonBuilder.scrollY = -630;}
 			}
 						
 			//map 0203
@@ -170,14 +181,14 @@ public class DungeonNavigator implements Runnable{
 					Player.x = 450; Player.y = 110;
 					}
 				
-				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){x = 3;Player.x = 20;}
+				if(Player.playerBoundW.intersects(DungeonNavigator.toEast)){scrollReady = false;x = 3;DungeonBuilder.scrollX = 810;}
 			}
 			
 			//map 0303
 			if(x == 3 && y == 3){
-				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth)){y = 2;Player.y = 500;}
-				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth2)){y = 2;Player.y = 500;}
-				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){x = 2;Player.x = 700;}
+				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth)){scrollReady = false;y = 2;DungeonBuilder.scrollY = -630;}
+				if(Player.playerBoundS.intersects(DungeonNavigator.toNorth2)){scrollReady = false;y = 2;DungeonBuilder.scrollY = -630;}
+				if(Player.playerBoundE.intersects(DungeonNavigator.toWest)){scrollReady = false;x = 2;DungeonBuilder.scrollX = -810;}
 			}
 			
 			//map 0403
@@ -210,7 +221,12 @@ public class DungeonNavigator implements Runnable{
 				
 			}
 
-		setBounds();
+		if(scrollReady)
+			setBounds();
+		
+		
+		if(!scrollReady)
+			DungeonBuilder.scrollBetweenMaps();
 	}
 	
 	

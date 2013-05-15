@@ -16,6 +16,11 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 	BufferedImage tileBuff, subMapBuff, mapBuff;
 	BufferedReader readDataBuff;
 	
+	//scroll
+	static int scrollX = 0; static int scrollY = 0;
+	static int scrollPaintX = 0; static int scrollPaintY = 0;
+	final static int SCROLLSPEED_X = 60,  SCROLLSPEED_Y = 50;
+	
 	Graphics2D doorBuff, wall1Buff, wall2Buff, floor1Buff, floor2Buff;
 	
 	//layer variables
@@ -29,20 +34,12 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 	
 	static final String[] layerData = {"#interaction#","#objects#","#door#","#wall1#","#wall2#","#floor1#","#floor2#","###"};
 	
-	/*old*/static final String[][] coordinatesData = 		{{"##00_00##","##00_01##","##00_02##","##00_03##","##00_04##"},
-													{"##01_00##","##01_01##","##01_02##","##01_03##","##01_04##"},
-													{"##02_00##","##02_01##","##02_02##","##02_03##","##02_04##"},
-													{"##03_00##","##03_01##","##03_02##","##03_03##","##03_04##"},
-													{"##04_00##","##04_01##","##04_02##","##04_03##","##04_04##"}};
-	
-	String actualCoordinatesData;
 	static boolean mapDataBuffered = false;
 	
-	static String dungeonIDName, mapIDName;
+	String dungeonIDName, mapIDName;
 	
 	
 	public DungeonBuilder(){
-		System.out.println("coordinatesData:"+coordinatesData[1][2]);
 		System.err.println("->MapBuilder");
 		
 		readData();
@@ -70,51 +67,90 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 	public void paintComponents(Graphics g){
 		g2d = (Graphics2D) g;
 	
-		
-		//if(Map.dungeon){
-		
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xFloor2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yFloor2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90,yTile*90,this);
+					g2d.drawImage(mapBuff.getSubimage((xFloor2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yFloor2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
 				}
 			}
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xFloor1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yFloor1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90,yTile*90,this);
+					g2d.drawImage(mapBuff.getSubimage((xFloor1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yFloor1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
 				}
 			}
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xWall2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yWall2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90,yTile*90,this);
+					g2d.drawImage(mapBuff.getSubimage((xWall2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yWall2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
 				}
 				
 			}
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90,yTile*90,this);
+					g2d.drawImage(mapBuff.getSubimage((xWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
 				}
 			}
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xDoor[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yDoor[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90,yTile*90,this);
-				}
-			}
-			
-			
-			for(int yTile = 0; yTile < 7; yTile++){			
-				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xObjects[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yObjects[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90,yTile*90,this);
+					g2d.drawImage(mapBuff.getSubimage((xDoor[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yDoor[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
 				}
 			}
 			
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xInteraction[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yInteraction[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90,yTile*90,this);
+					g2d.drawImage(mapBuff.getSubimage((xObjects[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yObjects[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
+				}
+			}
+			
+			for(int yTile = 0; yTile < 7; yTile++){			
+				for(int xTile = 0; xTile < 9; xTile++){
+					g2d.drawImage(mapBuff.getSubimage((xInteraction[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yInteraction[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
 				}
 			}
 			
 			
-		//}
+			
+	
+			if(!DungeonNavigator.scrollReady){
+				for(int yTile = 0; yTile < 7; yTile++){			
+					for(int xTile = 0; xTile < 9; xTile++){
+						g2d.drawImage(mapBuff.getSubimage((xFloor2[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yFloor2[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+					}
+				}
+				for(int yTile = 0; yTile < 7; yTile++){			
+					for(int xTile = 0; xTile < 9; xTile++){
+						g2d.drawImage(mapBuff.getSubimage((xFloor1[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yFloor1[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+					}
+				}
+				for(int yTile = 0; yTile < 7; yTile++){			
+					for(int xTile = 0; xTile < 9; xTile++){
+						g2d.drawImage(mapBuff.getSubimage((xWall2[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yWall2[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+					}
+					
+				}
+				for(int yTile = 0; yTile < 7; yTile++){			
+					for(int xTile = 0; xTile < 9; xTile++){
+						g2d.drawImage(mapBuff.getSubimage((xWall1[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yWall1[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+					}
+				}
+				for(int yTile = 0; yTile < 7; yTile++){			
+					for(int xTile = 0; xTile < 9; xTile++){
+						g2d.drawImage(mapBuff.getSubimage((xDoor[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yDoor[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+					}
+				}
+				
+				for(int yTile = 0; yTile < 7; yTile++){			
+					for(int xTile = 0; xTile < 9; xTile++){
+						g2d.drawImage(mapBuff.getSubimage((xObjects[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yObjects[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+					}
+				}
+				
+				for(int yTile = 0; yTile < 7; yTile++){			
+					for(int xTile = 0; xTile < 9; xTile++){
+						g2d.drawImage(mapBuff.getSubimage((xInteraction[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yInteraction[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+					}
+				}
+			}
+			
+		
 
 	}
 	
@@ -183,37 +219,55 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 		} catch (IOException e) {
 			System.err.println("MapBuilder: "+e);
 		}
-		
-
 	}
 	
-	
-	//OLD: not used anymore
-	public BufferedImage getSubTiles(int zLayer, int xTile, int yTile){
-
-		switch(zLayer){
-		
-		case 0: subMapBuff = mapBuff.getSubimage((xFloor2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yFloor2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90);
-				break;
-				
-		case 1: subMapBuff = mapBuff.getSubimage((xFloor1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yFloor1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90);
-				break;
-		
-		case 2: subMapBuff = mapBuff.getSubimage((xWall2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yWall2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90);
-				break;
-				
-		case 3: subMapBuff = mapBuff.getSubimage((xWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90);
-				break;
-				
-		case 4: subMapBuff = mapBuff.getSubimage((xDoor[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yDoor[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90);
-				break;
-		
+	public static void scrollBetweenMaps(){
+		System.out.println("scrollBetween");
+		System.out.println(DungeonNavigator.yOld + ", "+DungeonNavigator.y);
+		System.out.println(DungeonNavigator.xOld + ", "+DungeonNavigator.x);
+		if(DungeonNavigator.yOld > DungeonNavigator.y){
+			DungeonNavigator.scrollReady = false;
+			scrollY += SCROLLSPEED_Y;
+			scrollPaintY += SCROLLSPEED_Y;
+			//System.out.println("scroll to North: " + scrollY);
+			
+			Player.y = 540+scrollY;
+			if(scrollY >= 0){System.out.println("North");scrollY = 0;scrollPaintY = 0;DungeonNavigator.scrollReady = true;}
 		}
-		
-		return subMapBuff;
+		if(DungeonNavigator.xOld < DungeonNavigator.x){
+			DungeonNavigator.scrollReady = false;
+			scrollX -= SCROLLSPEED_X;
+			scrollPaintX -= SCROLLSPEED_X;
+			//System.out.println("scroll to East: " + scrollX);
+			
+			Player.x = scrollX+15;
+			if(scrollX <= 0){System.out.println("East");scrollX = 0;scrollPaintX = 0;DungeonNavigator.scrollReady = true;}
+		}
+		if(DungeonNavigator.yOld < DungeonNavigator.y){
+			DungeonNavigator.scrollReady = false;
+			scrollY -= SCROLLSPEED_Y;
+			scrollPaintY -= SCROLLSPEED_Y;
+			//System.out.println("scroll to South: " + scrollY);
 
+			Player.y = scrollY;
+			if(scrollY <= 0){System.out.println("South");scrollY = 0;scrollPaintY = 0;DungeonNavigator.scrollReady = true;}
+		}	
+		if(DungeonNavigator.xOld > DungeonNavigator.x){
+			DungeonNavigator.scrollReady = false;
+			scrollX += SCROLLSPEED_X;
+			scrollPaintX += SCROLLSPEED_X;
+			//System.out.println("scroll to West: " + scrollX);
+
+			Player.x = 720+scrollX;
+			if(scrollX >= 0){System.out.println("West");scrollX = 0;scrollPaintX = 0;DungeonNavigator.scrollReady = true;}
+		}
+	
+		
 	}
 	
+	
+	
+	//translation table, stores mapData in static Arrays
 	public void translateCoordinates(String layer, int xMap, int yMap, int xLayer, int yLayer, String yString, String xString){
 		
 		if(layer.contentEquals("#interaction#")){

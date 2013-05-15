@@ -102,7 +102,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		DungeonNavigator.dungeon = true;
 		
 		//start point
-
+		DungeonNavigator.x = 0; DungeonNavigator.y = 3;
 		Player.x = 230; Player.y = 500;
 		Player.lastDirection = 1;
 		//Player.absoluteX = Player.x = 405-20*3;

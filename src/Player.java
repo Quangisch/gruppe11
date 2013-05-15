@@ -378,10 +378,10 @@ public final class Player extends JComponent implements Runnable, FileLink {
 	}
 	
 	public void setBounds(){
-	playerBoundS = new Rectangle (x+10,y+10,60,10);
-	playerBoundE = new Rectangle (x+10,y+10,10,90);
-	playerBoundN = new Rectangle (x+10,y+90,60,10);
-	playerBoundW = new Rectangle (x+60,y+10,10,90);
+	playerBoundN = new Rectangle (x+10,y+10,60,10);
+	playerBoundW = new Rectangle (x+10,y+10,10,90);
+	playerBoundS = new Rectangle (x+10,y+90,60,10);
+	playerBoundE = new Rectangle (x+60,y+10,10,90);
 	}
 	
 	public static void setAttackBounds(){
