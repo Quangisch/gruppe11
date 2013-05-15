@@ -185,12 +185,12 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		        /*TODO
 		        for(int yTile = 0; yTile < 7; yTile++){
 		        	for(int xTile = 0; xTile < 9; xTile++){
-		        		g2d.draw(DungeonCollision.wall1[xTile][yTile]);
-		        		g2d.draw(DungeonCollision.wall2[xTile][yTile]);
+		        		g2d.draw(DungeonCollision.wallN[xTile][yTile]);g2d.draw(DungeonCollision.wallE[xTile][yTile]);g2d.draw(DungeonCollision.wallS[xTile][yTile]);g2d.draw(DungeonCollision.wallW[xTile][yTile]);
+		        		g2d.draw(DungeonCollision.wallNE[xTile][yTile]);g2d.draw(DungeonCollision.wallSE[xTile][yTile]);g2d.draw(DungeonCollision.wallSW[xTile][yTile]);g2d.draw(DungeonCollision.wallNW[xTile][yTile]);
 		        		
 		        	}
-		        }*/
-		        
+		        }
+		        */
 		        //DungeonCollison.readWalls();
 		        //g2d.draw(DungeonCollision.wall1[0][0]);
 			}
