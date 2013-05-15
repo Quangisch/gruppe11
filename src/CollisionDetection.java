@@ -45,8 +45,8 @@ public class CollisionDetection implements Runnable{
 			Camera.cameraLock = false;
 			
 			switch(OverWorldMap.areaID){
-				case 1:	if(Player.playerBoundN.intersects(OverWorldMap.Over1Dungeon1)){
-					Player.x = 220; Player.y = 500;
+				case 1:	if(Player.playerBoundS.intersects(OverWorldMap.Over1Dungeon1)){
+					Player.x = 220; Player.y = 520;
 					DungeonNavigator.areaID = 1;
 					DungeonNavigator.x = 0; DungeonNavigator.y = 3;
 					System.out.println("leave OverWorldMap1 -> dungeon1");

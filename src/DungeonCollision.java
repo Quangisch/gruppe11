@@ -20,15 +20,10 @@ public class DungeonCollision {
 	}
 	public static void readWalls(){
 		
-		
+		resetBounds();
 		
 		for(int yTile = 0; yTile < 7; yTile++){
 			for(int xTile = 0; xTile < 9; xTile++){
-				
-				wallN[xTile][yTile] = wallE[xTile][yTile] = wallS[xTile][yTile] = wallW[xTile][yTile] = new Rectangle(0,0,0,0);
-				wallNE[xTile][yTile] = wallSE[xTile][yTile] = wallSW[xTile][yTile] = wallNW[xTile][yTile] = new Rectangle(0,0,0,0);
-		
-				
 				
 				//yWall A
 				if(DungeonBuilder.yWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile] == 1){
@@ -289,4 +284,14 @@ public class DungeonCollision {
 		}
 		
 	}
+	
+	public static void resetBounds(){
+		for(int yTile = 0; yTile < 7; yTile++){
+			for(int xTile = 0; xTile < 9; xTile++){
+				wallN[xTile][yTile] = wallE[xTile][yTile] = wallS[xTile][yTile] = wallW[xTile][yTile] = new Rectangle(0,0,0,0);
+				wallNE[xTile][yTile] = wallSE[xTile][yTile] = wallSW[xTile][yTile] = wallNW[xTile][yTile] = new Rectangle(0,0,0,0);
+			}
+		}
+	}
+	
 }

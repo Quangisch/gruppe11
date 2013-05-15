@@ -155,13 +155,14 @@ public class DungeonNavigator implements Runnable{
 			
 			//map 0003
 			if(x == 0 && y == 3){
-				if(Player.playerBoundN.intersects(DungeonNavigator.toExit)){ //TO OverWorld ID01
+				if(Player.playerBoundS.intersects(DungeonNavigator.toExit)){ //TO OverWorld ID01
 					Camera.cameraX = 0; Camera.cameraY = 0;
 					Player.absoluteX = 0; Player.absoluteY = 0;
 					Player.x = 110; Player.y = 20;
-
+					
 					Camera.cameraLock = false;
 					OverWorldMap.overWorld = true; DungeonNavigator.dungeon = false;
+					DungeonCollision.resetBounds();
 					System.out.println("leave dungeon1 -> OverWorldMap1"); 
 				}
 				
