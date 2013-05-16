@@ -1,0 +1,29 @@
+package core;
+
+import map.DungeonBuilder;
+import map.DungeonCollision;
+import map.DungeonNavigator;
+import map.OverWorldCamera;
+import map.OverWorldMap;
+import menu.MenuIngame;
+import menu.MenuMain;
+import characters.Player;
+import characters.PlayerInterface;
+
+public interface GameObjects{
+	final static MenuIngame menuIngame = new MenuIngame();
+	final static MenuMain menuMain = new MenuMain();
+	
+	final static Player player = new Player();
+	final static PlayerInterface playerInterface = new PlayerInterface(player);
+	
+	final static OverWorldCamera overWorldCamera = new OverWorldCamera(player);
+	final static DungeonBuilder dungeonBuilder = new DungeonBuilder(player);
+	final static DungeonCollision dungeonCollision = new DungeonCollision(player);
+	
+	final static OverWorldMap overWorldMap = new OverWorldMap(player,overWorldCamera);
+	final static DungeonNavigator dungeonNavigator = new DungeonNavigator(player,dungeonBuilder,dungeonCollision,overWorldMap);
+	final static CollisionDetection collisionDetection = new CollisionDetection(player,overWorldMap,dungeonNavigator);
+	
+	final static Player playerReference = new Player(overWorldMap,dungeonNavigator);
+}

@@ -1,50 +1,36 @@
+package core;
 import javax.swing.JFrame;
+
+
 
 import java.awt.Rectangle;
 import java.io.File;
+import static java.util.concurrent.TimeUnit.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 
-public class MainGame extends JFrame{
+public class MainGame{
 
-	public Board board;
+	public static Board board;
 	
 	public MainGame(){
-		board = new Board();
-		add(board);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize (810, 653);
-		//setLocationRelativeTo(null);
-		setTitle("DC - Prototype");
-		setResizable(false);
-		setVisible(true);
+		
 		
 	}
 	
 	public static void main(String[] args){
-		new MainGame();
-		//DungeonBuilder();
+		//new MainGame();
+		GameManager gameManager = new GameManager();
+		Thread gameManagerThread = new Thread(gameManager);
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+		scheduler.scheduleWithFixedDelay(gameManagerThread, 10,20,MILLISECONDS);
 	}
 }
 
 
-interface FileLink{
-	File player1_move = new File("resources/images/mario_sprite_move2_3x.png");
-	
-	File menu = new File( "resources/images/menu.png");
-	File button = new File( "resources/images/interface/button.png");
-	
-	//interface
-	File heart = new File( "resources/images/interface/heart.png");
-	File coin = new File( "resources/images/interface/coin.png");
-	
-	//map images
-	File OWMap00_00 = new File ("resources/images/newMap00_00.png");
-	File tiles_Dungeon01 = new File ("resources/images/tiles_dungeon01.png");
-	
-	//map data
-	File mapDataID01 = new File ("resources/data/mapDataID01.txt");
-		
-}
+
 
 interface GridInterface{
 	BoardGrid A1 = new BoardGrid(0,0);BoardGrid A2 = new BoardGrid(1,0);BoardGrid A3 = new BoardGrid(2,0);BoardGrid A4 = new BoardGrid(3,0);BoardGrid A5 = new BoardGrid(4,0);BoardGrid A6 = new BoardGrid(5,0);BoardGrid A7 = new BoardGrid(6,0);BoardGrid A8 = new BoardGrid(7,0);BoardGrid A9 = new BoardGrid(8,0);

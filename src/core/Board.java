@@ -1,3 +1,5 @@
+package core;
+
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
@@ -23,21 +25,48 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.Timer;
 
+import characters.Enemy;
+import characters.Player;
+import characters.PlayerInterface;
+
+import map.DungeonBuilder;
+import map.DungeonCollision;
+import map.DungeonNavigator;
+import map.OverWorldCamera;
+import map.OverWorldMap;
+import menu.MenuIngame;
+import menu.MenuMain;
+
+
+
+
 public class Board extends JPanel implements ActionListener, FileLink{
 	//instantiates classes
+	/*
 	final static MenuIngame ingameMenu = new MenuIngame();
 	final static MenuMain mainMenu = new MenuMain();
 	final static OverWorldMap overWorldMap = new OverWorldMap();
 	final static Player player = new Player();
-	final static Enemy enemy = new Enemy(0,0);
-	final static Camera camera = new Camera();
+	final static OverWorldCamera camera = new OverWorldCamera();
 	final static DungeonNavigator dungeonNavigator = new DungeonNavigator();
 	final static CollisionDetection collisionDetection = new CollisionDetection();
 	final static DungeonBuilder dungeonBuilder = new DungeonBuilder();
 	final static PlayerInterface playerInterface = new PlayerInterface();
+	*/
+	
+	MenuMain menuMain;
+	MenuIngame menuIngame;
+	
+	Player player;
+	PlayerInterface playerInterface;
+	OverWorldMap overWorldMap;
+	DungeonNavigator dungeonNavigator;
+	DungeonBuilder dungeonBuilder;
+	CollisionDetection collisionDetection;
 	
 	
 	//threads
+	/*
 	static int ingameThreadCounter = 5;
 	static int menuThreadCounter = 5;
 	final static ScheduledThreadPoolExecutor ingameScheduler = new ScheduledThreadPoolExecutor(ingameThreadCounter);
@@ -48,32 +77,28 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	final static Thread dungeonBuilderThread = new Thread(dungeonBuilder);
 	final static Thread dungeonNavigatorThread = new Thread(dungeonNavigator);
 	final static Thread playerThread = new Thread(player);
-	final static Thread enemyThread = new Thread(enemy);
 	final static Thread playerInterfaceThread = new Thread(playerInterface);
 	
 	final static Thread cameraThread = new Thread(camera);
 	final static Thread collisionDetectionThread = new Thread(collisionDetection);
-	
+	*/
 	//instance variables
-	static boolean repaintNow = false;
-	static boolean menuThread = false, ingameThread = false;
-	static int clickCount = 0;
 	
-	/*switch menu/ingame with M*/	static boolean ingame = true;
-									static boolean menu = false;
-									static boolean gameOver = false;
-									static boolean win = false;
-	
-	/*sound/music volume*/			static int musicVolume = 50;
-									static int soundVolume = 50;
-								
-	/*Debug tmpVaribles*/			static boolean paintBounds = false;
-									static boolean printMsg = false;
-	
+
 	private Timer repaintTimer;
 	private Graphics2D g2d;
 
-	public Board(){
+	public Board(MenuMain menuMain, MenuIngame menuIngame, Player player,PlayerInterface playerInterface,OverWorldMap overWorldMap,DungeonNavigator dungeonNavigator,DungeonBuilder dungeonBuilder,CollisionDetection collisionDetection){
+		this.menuMain = menuMain;
+		this.menuIngame = menuIngame;
+		this.player = player;
+		this.playerInterface = playerInterface;
+		this.overWorldMap = overWorldMap;
+		this.dungeonNavigator = dungeonNavigator;
+		this.dungeonBuilder = dungeonBuilder;
+		this.collisionDetection = collisionDetection;
+		
+		
 		
 		setDoubleBuffered(true);
 		setFocusable(true);
@@ -88,27 +113,8 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		repaintTimer = new Timer(5, this);
 		repaintTimer.start();
 		
-		//initiate Threads
-		if (ingame){
-			ingameThread = true;
-			menuThread = false;
-		} else {
-			ingameThread = false;
-			menuThread = true;
-		}
 
-		//initiate overWorld/dungeon
-		OverWorldMap.overWorld = false;
-		DungeonNavigator.dungeon = true;
-		
-		//start point
-		DungeonNavigator.x = 0; DungeonNavigator.y = 3;
-		Player.x = 230; Player.y = 500;
-		Player.lastDirection = 1;
-		//Player.absoluteX = Player.x = 405-20*3;
-		//Player.absoluteY = Player.y = 315-15*3;
-		//Camera.cameraX = Player.absoluteX;
-		//Camera.cameraY = Player.absoluteY;		
+			
 		System.out.println("->Board");
 		start();
 	}
@@ -119,28 +125,28 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
-	
+		/*
 		
-		if (!ingame){
+		if (!GameManager.ingame){
 			//paint MenuMain
-			mainMenu.paintComponents(g2d);
+			menuMain.paintComponents(g2d);
 		}
 		
-		if(ingame && menu){
-			ingameMenu.paintComponents(g2d);
+		if(GameManager.ingame && GameManager.menu){
+			menuIngame.paintComponents(g2d);
 			
 		}
-		
-		if(gameOver){
-			ingame = false; menu = true;
+		*/
+		if(GameManager.gameOver){
+			GameManager.ingame = false; GameManager.menu = true;
 			g2d.setColor(Color.red);
 			Font textFont = new Font("Arial", Font.BOLD, 75);  
 			g.setFont(textFont);  
 			g2d.drawString("Game Over",220,300);
 		}
 		
-		if(win){
-			ingame = false; menu = true;
+		if(GameManager.win){
+			GameManager.ingame = false; GameManager.menu = true;
 			g2d.setColor(Color.yellow);
 			Font textFont = new Font("Arial", Font.BOLD, 75);  
 			g.setFont(textFont);  
@@ -148,8 +154,9 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		}
 		
 		
-		
-		if (ingame && !menu && !gameOver && !win){
+		//TODO
+		if (GameManager.ingame && !GameManager.menu && !GameManager.gameOver && !GameManager.win){
+		//if(false){
 			if(OverWorldMap.overWorld)
 				overWorldMap.paintComponents(g2d);
 			if(DungeonNavigator.dungeon)
@@ -162,38 +169,38 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			
 			
 			
-			if(paintBounds){
-				g2d.setColor(Color.red); //PlayerBounds
-		        //g2d.drawRect(Player.x+10,Player.y+10,60,10);g2d.drawRect(Player.x+10,Player.y+90,60,10);g2d.drawRect(Player.x+10,Player.y+10,10,90);g2d.drawRect(Player.x+60,Player.y+10,10,90);
-				g2d.draw(Player.playerBoundN);g2d.draw(Player.playerBoundE);g2d.draw(Player.playerBoundW);
+			if(GameManager.paintBounds){
+			//if(false){
+				g2d.setColor(Color.red);
+				g2d.draw(player.getBoundN());g2d.draw(player.getBoundE());g2d.draw(player.getBoundW());
+				g2d.setColor(Color.cyan);
+				g2d.draw(player.getBoundDirection());
 				g2d.setColor(Color.green);
-				g2d.draw(Player.playerBoundS);
+				g2d.draw(player.getBoundS());
 		        g2d.setColor(Color.blue); //Map Bounds
-		        g2d.draw(OverWorldMap.BoundN);g2d.draw(OverWorldMap.BoundE);g2d.draw(OverWorldMap.BoundS);g2d.draw(OverWorldMap.BoundW);
+		        g2d.draw(CollisionDetection.BoundN);g2d.draw(CollisionDetection.BoundE);g2d.draw(CollisionDetection.BoundS);g2d.draw(CollisionDetection.BoundW);
 		        g2d.setColor(Color.yellow); //Attack Bounds
-		        Player.setAttackBounds();
-		        g2d.draw(Player.attackBound);
+		        player.setAttackBounds();
+		        g2d.draw(player.getAttackBound());
 		        g2d.setColor(Color.orange); //Navigation Bounds
-		        OverWorldMap.setBounds();
+		        overWorldMap.setDungeonBounds();
 		        if(OverWorldMap.overWorld){
-		        	g2d.draw(OverWorldMap.Over1Dungeon1);
+		        	g2d.draw(overWorldMap.getDungeonBounds());
 		        }
 		        if(DungeonNavigator.dungeon){
 		        	g2d.draw(DungeonNavigator.toExit);
 		        	g2d.draw(DungeonNavigator.toNorth);g2d.draw(DungeonNavigator.toEast);g2d.draw(DungeonNavigator.toSouth);g2d.draw(DungeonNavigator.toWest);
 		        	g2d.draw(DungeonNavigator.toNorth2);g2d.draw(DungeonNavigator.toEast2);g2d.draw(DungeonNavigator.toSouth2);g2d.draw(DungeonNavigator.toWest2);
+		        	
+		        	for(int yTile = 0; yTile < 7; yTile++){
+			        	for(int xTile = 0; xTile < 9; xTile++){
+			        		g2d.draw(dungeonNavigator.getWallN(xTile, yTile));g2d.draw(dungeonNavigator.getWallE(xTile, yTile));g2d.draw(dungeonNavigator.getWallS(xTile, yTile));g2d.draw(dungeonNavigator.getWallW(xTile, yTile));
+			        		g2d.draw(dungeonNavigator.getWallNE(xTile, yTile));g2d.draw(dungeonNavigator.getWallSE(xTile, yTile));g2d.draw(dungeonNavigator.getWallSW(xTile, yTile));g2d.draw(dungeonNavigator.getWallNW(xTile, yTile));
+			        		
+			        	}
+			        }
 		        }
-		        
-		        for(int yTile = 0; yTile < 7; yTile++){
-		        	for(int xTile = 0; xTile < 9; xTile++){
-		        		g2d.draw(DungeonCollision.wallN[xTile][yTile]);g2d.draw(DungeonCollision.wallE[xTile][yTile]);g2d.draw(DungeonCollision.wallS[xTile][yTile]);g2d.draw(DungeonCollision.wallW[xTile][yTile]);
-		        		g2d.draw(DungeonCollision.wallNE[xTile][yTile]);g2d.draw(DungeonCollision.wallSE[xTile][yTile]);g2d.draw(DungeonCollision.wallSW[xTile][yTile]);g2d.draw(DungeonCollision.wallNW[xTile][yTile]);
-		        		
-		        	}
-		        }
-		        
-		        //DungeonCollison.readWalls();
-		        //g2d.draw(DungeonCollision.wall1[0][0]);
+
 			}
 			
 		}
@@ -211,14 +218,14 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		start();
 		//repaint(Player.x-150, Player.y-200,600,800);
 		repaint();
-		if (repaintNow == true){
+		if (GameManager.repaintNow == true){
 			//System.out.println("repaintNow:" +repaintNow);
-			repaintNow = false;
+			GameManager.repaintNow = false;
 			repaint();	
 		}
 		
-		
-		if(ingameThread && ingame && !menu){
+		/*
+		if(ingameThread && GameManager.ingame && !GameManager.menu){
 			System.out.println("ingame Threads start:"+ingameThread);
 			menuThread = false;
 			ingameThread = false;
@@ -228,7 +235,6 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			ingameScheduler.scheduleWithFixedDelay(playerThread, 400, 10,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(cameraThread, 300, 5,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(collisionDetectionThread, 450, 10, TimeUnit.MILLISECONDS);
-			//ingameScheduler.scheduleWithFixedDelay(enemyThread,600,10,TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(dungeonNavigatorThread, 600, 50, TimeUnit.MILLISECONDS);
 			ingameScheduler.scheduleWithFixedDelay(playerInterface, 600, 50, TimeUnit.MILLISECONDS);
 			
@@ -261,7 +267,8 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			System.out.println("Game shutdown");
 			System.exit(0);
 		}
-		
+	
+	*/
 	}
 	
 	
@@ -276,10 +283,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	
 	private class MAdapter extends MouseAdapter{ 
 	      public void mouseClicked( MouseEvent e ) { 
-	    	  clickCount++;
-	    	  System.out.println(clickCount);
+	    	  System.out.println("Click");
 	      } 
 	 }
-	
-	
 }

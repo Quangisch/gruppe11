@@ -1,3 +1,5 @@
+package map;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -9,8 +11,15 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
+import characters.Player;
+
+import core.FileLink;
+
 
 public class DungeonBuilder extends JComponent implements Runnable, FileLink{
+	
+	Player player;
+	
 	Graphics2D g2d;
 	
 	BufferedImage tileBuff, subMapBuff, mapBuff;
@@ -39,17 +48,19 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 	String dungeonIDName, mapIDName;
 	
 	
-	public DungeonBuilder(){
-		System.err.println("->MapBuilder");
+	public DungeonBuilder(Player player){
+		System.err.println("->DungeonBuilder");
+		this.player = player;
 		
 		readData();
-		
+		/*
 		for(int y = 0; y < 7; y++){			
 			for(int x = 0; x < 9; x++){
 				System.out.println("Wallx:"+xWall1[0][3][x][y]+",y:"+yWall1[0][3][x][y]);
 			}
 			System.out.println("");
 		}
+		*/
 		
 	}
 	
@@ -158,6 +169,7 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 	
 	private void readData(){		
 		
+		
 		String searchLine, dataLine;
 		
 		//System.out.println("readData");
@@ -188,7 +200,7 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 						if(searchLine.contentEquals("###END###"))
 							break readMapData;
 						mapIDName = searchLine;
-						System.out.println("Map: "+mapIDName);
+						//System.out.println("Map: "+mapIDName);
 						
 						//Layer
 						for(int layerID = 0; layerID < 7; layerID++){
@@ -221,7 +233,7 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 		}
 	}
 	
-	public static void scrollBetweenMaps(){
+	public void scrollBetweenMaps(){
 		System.out.println("scrollBetween");
 		System.out.println(DungeonNavigator.yOld + ", "+DungeonNavigator.y);
 		System.out.println(DungeonNavigator.xOld + ", "+DungeonNavigator.x);
@@ -231,7 +243,7 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 			scrollPaintY += SCROLLSPEED_Y;
 			//System.out.println("scroll to North: " + scrollY);
 			
-			Player.y = 540+scrollY;
+			player.setY(540+scrollY);
 			if(scrollY >= 0){System.out.println("North");scrollY = 0;scrollPaintY = 0;DungeonNavigator.scrollReady = true;}
 		}
 		if(DungeonNavigator.xOld < DungeonNavigator.x){
@@ -240,7 +252,7 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 			scrollPaintX -= SCROLLSPEED_X;
 			//System.out.println("scroll to East: " + scrollX);
 			
-			Player.x = scrollX+15;
+			player.setX(scrollX+15);
 			if(scrollX <= 0){System.out.println("East");scrollX = 0;scrollPaintX = 0;DungeonNavigator.scrollReady = true;}
 		}
 		if(DungeonNavigator.yOld < DungeonNavigator.y){
@@ -249,7 +261,7 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 			scrollPaintY -= SCROLLSPEED_Y;
 			//System.out.println("scroll to South: " + scrollY);
 
-			Player.y = scrollY;
+			player.setY(scrollY);
 			if(scrollY <= 0){System.out.println("South");scrollY = 0;scrollPaintY = 0;DungeonNavigator.scrollReady = true;}
 		}	
 		if(DungeonNavigator.xOld > DungeonNavigator.x){
@@ -258,7 +270,7 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 			scrollPaintX += SCROLLSPEED_X;
 			//System.out.println("scroll to West: " + scrollX);
 
-			Player.x = 720+scrollX;
+			player.setX(720+scrollX);
 			if(scrollX >= 0){System.out.println("West");scrollX = 0;scrollPaintX = 0;DungeonNavigator.scrollReady = true;}
 		}
 	

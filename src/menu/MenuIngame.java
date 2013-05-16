@@ -1,3 +1,4 @@
+package menu;
 /*====> Ausgangspunkt sind: Sound/Music Regler
  * 							Component für Leben & Geldanzeige 
  * 							Component für Items
@@ -32,6 +33,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
+import core.Board;
+import core.GameManager;
+
+
+
 
 public class MenuIngame extends JComponent implements Runnable{
 	Graphics g2d;
@@ -48,7 +54,7 @@ public class MenuIngame extends JComponent implements Runnable{
 	}
 	
 	public void run(){
-		if (Board.printMsg)
+		if (GameManager.printMsg)
 			System.out.println("IngameMenu.run");
 	}
 	

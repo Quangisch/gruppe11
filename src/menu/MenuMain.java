@@ -1,3 +1,4 @@
+package menu;
 /*===> MainMenu mit 3 Buttons: Start, Options, Quit
  *Ausgangspunkt fürs Menü ist Board.ingame = false; Board.menu = true;
  *
@@ -21,6 +22,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
+import core.Board;
+import core.GameManager;
+
+
+
 
 public class MenuMain implements Runnable{
 
@@ -39,7 +45,7 @@ public class MenuMain implements Runnable{
 	}
 	
 	public void run(){
-		if (Board.printMsg)
+		if (GameManager.printMsg)
 			System.out.println("MainMenu.run");
 	}
 	

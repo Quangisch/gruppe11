@@ -1,3 +1,4 @@
+package characters;
 /*====> evtl. als abstrakte Klasse halten und 
 *ne weitere spezielle Gegnerklasse machen,
 *damit man darauf basierend später weitere
@@ -23,6 +24,10 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
+import core.Board;
+import core.GameManager;
+
+
 import java.awt.Rectangle;
 
 
@@ -45,7 +50,7 @@ public class Enemy implements Runnable{
 	
 	
 	public void run(){
-		if (Board.printMsg)
+		if (GameManager.printMsg)
 			System.out.println("Enemy.run");
 		
 		move();
