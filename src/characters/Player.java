@@ -117,7 +117,7 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 		
 		if(punchCounter < 1){
 			punchCounter += 0.1;
-			System.out.println("punchCounter: "+punchCounter); 
+			//System.out.println("punchCounter: "+punchCounter); 
 		}
 			
 	
@@ -423,23 +423,23 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 			attackBound = new Rectangle(x+50,y+10,40,50);
 		}
 		if(punchNow && punchCounter >= 1.3 && lastDirection == 5){
-			attackBound = new Rectangle(x,y+60,40,50);
+			attackBound = new Rectangle(x,y+30,40,50);
 		}
 		if(punchNow && punchCounter >= 1.3 && lastDirection == 7){
 			attackBound = new Rectangle(x,y+10,40,50);
 		}
 		
 		if(punchNow && punchCounter >= 1.3 && lastDirection == 2){
-			attackBound = new Rectangle(x+40,y,40,70);
+			attackBound = new Rectangle(x+40,y,40,50);
 		}
 		if(punchNow && punchCounter >= 1.3 && lastDirection == 4){
-			attackBound = new Rectangle(x+40,y+40,40,70);
+			attackBound = new Rectangle(x+40,y+40,40,50);
 		}
 		if(punchNow && punchCounter >= 1.3 && lastDirection == 6){
-			attackBound = new Rectangle(x,y+25,40,70);
+			attackBound = new Rectangle(x,y+25,40,50);
 		}
 		if(punchNow && punchCounter >= 1.3 && lastDirection == 8){
-			attackBound = new Rectangle(x,y,40,70);
+			attackBound = new Rectangle(x,y,40,50);
 		}
 	}
 	

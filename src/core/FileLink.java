@@ -12,11 +12,13 @@ public interface FileLink{
 	File heart = new File( "resources/images/interface/heart.png");
 	File coin = new File( "resources/images/interface/coin.png");
 	
-	//map images
+	//mapImages
 	File OWMap00_00 = new File ("resources/images/newMap00_00.png");
 	File tiles_Dungeon01 = new File ("resources/images/tiles_dungeon01.png");
 	
-	//map data
+	//mapData
 	File mapDataID01 = new File ("resources/data/mapDataID01.txt");
-		
+	
+	//enemySprite
+	File goomba = new File("resources/images/goomba_sprite_move.png");
 }

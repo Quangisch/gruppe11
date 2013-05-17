@@ -6,11 +6,13 @@ import java.awt.Rectangle;
 
 import javax.swing.JComponent;
 
+import characters.Goomba;
 import characters.Player;
 
 
 
 import core.Board;
+import core.FileLink;
 import core.GameManager;
 
 
@@ -29,6 +31,7 @@ public class DungeonNavigator extends JComponent implements Runnable{
 	public boolean dungeon;
 	public int areaID = 1;
 	
+	boolean leadNewContent = true;
 	boolean loadNewMap = true;
 	private boolean scrollReady = true;
 	
@@ -58,8 +61,11 @@ public class DungeonNavigator extends JComponent implements Runnable{
 			if(dungeon && scrollReady)
 				navigate();
 			
-			if(!scrollReady)
+			if(dungeon && !scrollReady){
 				dungeonBuilder.scrollBetweenMaps();
+				loadNewMap = true;
+			}
+			
 			
 		} catch (InterruptedException ie) {
 			System.err.println("DungeonNavigator.navigate:"+ie);
@@ -207,6 +213,7 @@ public class DungeonNavigator extends JComponent implements Runnable{
 					dungeonCollision.resetBounds();
 					GameManager.changeMapModus = true;
 					System.out.println("leave dungeon1 -> OverWorldMap1"); 
+					dungeonBuilder.setEnemyLife(0);
 				}
 				
 				if(player.getBoundDirection().intersects(toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
@@ -382,8 +389,32 @@ public class DungeonNavigator extends JComponent implements Runnable{
 
 	}
 	
+	public void spawnEnemy(){
+		System.err.println("spawn Enemy");
+		/*
+		if(x == 0 && y == 3){
+			dungeonBuilder.setEnemyLife(1);
+			dungeonBuilder.setEnemyPosition(DungeonBuilder.scrollX+200, DungeonBuilder.scrollY+300);
+		} else {
+			dungeonBuilder.setEnemyLife(0);
+		}
+		*/
+	}
+	
+	public void setEnemyLife(int life){
+		dungeonBuilder.setEnemyLife(life);
+	}
+	public void setEnemyPosition(int x, int y){
+		dungeonBuilder.setEnemyPosition(x,y);
+	}
+	
 	public void checkDungeonCollision(){
 		dungeonCollision.checkCollisionFloor();
+		dungeonCollision.checkCollisionDoor();
+	}
+	
+	public void checkEnemyCollisionWall(){
+		dungeonCollision.checkGoombaCollisionWall1();
 	}
 
 
@@ -410,10 +441,5 @@ public class DungeonNavigator extends JComponent implements Runnable{
 	public Rectangle getObjectE(int layer,int xTile, int yTile){return DungeonCollision.objectE[layer][xTile][yTile];}
 	public Rectangle getObjectS(int layer,int xTile, int yTile){return DungeonCollision.objectS[layer][xTile][yTile];}
 	public Rectangle getObjectW(int layer,int xTile, int yTile){return DungeonCollision.objectW[layer][xTile][yTile];}
-	
-	public Rectangle getObjectNE(int layer,int xTile, int yTile){return DungeonCollision.objectNE[layer][xTile][yTile];}
-	public Rectangle getObjectSE(int layer,int xTile, int yTile){return DungeonCollision.objectSE[layer][xTile][yTile];}
-	public Rectangle getObjectSW(int layer,int xTile, int yTile){return DungeonCollision.objectSW[layer][xTile][yTile];}
-	public Rectangle getObjectNW(int layer,int xTile, int yTile){return DungeonCollision.objectNW[layer][xTile][yTile];}
 
 }

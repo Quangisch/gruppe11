@@ -67,6 +67,7 @@ public class PlayerInterface extends JComponent implements Runnable,FileLink{
 		g.setFont(textFont);  
 		g2d.drawString(Integer.toString(player.getCoins()),730,35);
 		g2d.drawImage(coinBuff,760,10,this);
+		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
 
 	}
 

@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.Timer;
 
-import characters.AbstractEnemy;
+import characters.Goomba;
 import characters.Player;
 import characters.PlayerInterface;
 
@@ -51,11 +51,12 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	DungeonNavigator dungeonNavigator;
 	DungeonBuilder dungeonBuilder;
 	CollisionDetection collisionDetection;
+	Goomba goomba;
 
 	private Timer repaintTimer;
-	private Graphics2D g2d;
+	static Graphics2D g2d;
 
-	public Board(MenuMain menuMain, MenuIngame menuIngame, Player player,PlayerInterface playerInterface,OverWorldMap overWorldMap,DungeonNavigator dungeonNavigator,DungeonBuilder dungeonBuilder,CollisionDetection collisionDetection){
+	public Board(MenuMain menuMain, MenuIngame menuIngame, Player player,PlayerInterface playerInterface,OverWorldMap overWorldMap,DungeonNavigator dungeonNavigator,DungeonBuilder dungeonBuilder,CollisionDetection collisionDetection,Goomba goomba){
 		this.menuMain = menuMain;
 		this.menuIngame = menuIngame;
 		this.player = player;
@@ -64,8 +65,8 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		this.dungeonNavigator = dungeonNavigator;
 		this.dungeonBuilder = dungeonBuilder;
 		this.collisionDetection = collisionDetection;
-		
-		
+		this.goomba = goomba;
+
 		
 		setDoubleBuffered(true);
 		setFocusable(true);
@@ -87,7 +88,8 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	}
 	
 	public void paint(Graphics g) {
-
+		
+		
 		super.paint(g);
 		g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -145,9 +147,8 @@ public class Board extends JPanel implements ActionListener, FileLink{
 			
 			player.paintComponents(g2d);
 			playerInterface.paintComponents(g2d);
+			goomba.paintComponents(g2d);
 			//paint player interface
-			
-			
 			
 			
 			if(GameManager.paintBounds){
@@ -163,11 +164,13 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		        g2d.setColor(Color.yellow); //Attack Bounds
 		        player.setAttackBounds();
 		        g2d.draw(player.getAttackBound());
+		        
 		        g2d.setColor(Color.orange); //Navigation Bounds
 		        overWorldMap.setDungeonBounds();
 		        if(OverWorldMap.overWorld){
 		        	g2d.draw(overWorldMap.getDungeonBounds());
 		        }
+		        
 		        if(dungeonNavigator.getDungeon()){
 		        	g2d.draw(dungeonNavigator.getToExit());
 		        	g2d.draw(dungeonNavigator.getToNorth());g2d.draw(dungeonNavigator.getToEast());g2d.draw(dungeonNavigator.getToSouth());g2d.draw(dungeonNavigator.getToWest());
@@ -178,8 +181,6 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		        	for(int yTile = 0; yTile < 7; yTile++){
 			        	for(int xTile = 0; xTile < 9; xTile++){
 			        		g2d.draw(dungeonNavigator.getObjectN(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectE(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectS(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectW(layer, xTile, yTile));
-			        		g2d.draw(dungeonNavigator.getObjectNE(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectSE(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectSW(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectNW(layer, xTile, yTile));
-			        		
 			        	}
 			        }
 		        	layer = 2; //door
@@ -187,7 +188,6 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		        	for(int yTile = 0; yTile < 7; yTile++){
 			        	for(int xTile = 0; xTile < 9; xTile++){
 			        		g2d.draw(dungeonNavigator.getObjectN(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectE(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectS(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectW(layer, xTile, yTile));
-			        		g2d.draw(dungeonNavigator.getObjectNE(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectSE(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectSW(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectNW(layer, xTile, yTile));
 			        	}
 			        }
 		        	layer = 5; //floor1
@@ -195,7 +195,6 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		        	for(int yTile = 0; yTile < 7; yTile++){
 			        	for(int xTile = 0; xTile < 9; xTile++){
 			        		g2d.draw(dungeonNavigator.getObjectN(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectE(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectS(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectW(layer, xTile, yTile));
-			        		g2d.draw(dungeonNavigator.getObjectNE(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectSE(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectSW(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectNW(layer, xTile, yTile));
 			        	}
 			        }
 		        	layer = 6; //floor2
@@ -203,11 +202,13 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		        	for(int yTile = 0; yTile < 7; yTile++){
 			        	for(int xTile = 0; xTile < 9; xTile++){
 			        		g2d.draw(dungeonNavigator.getObjectN(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectE(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectS(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectW(layer, xTile, yTile));
-			        		g2d.draw(dungeonNavigator.getObjectNE(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectSE(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectSW(layer, xTile, yTile));g2d.draw(dungeonNavigator.getObjectNW(layer, xTile, yTile));
 			        	}
 			        }
 		        	
-		        	
+		        	 g2d.setColor(Color.pink); //EnemyBounds
+				        g2d.draw(goomba.getBoundMain());
+				        g2d.setColor(Color.green);
+				        g2d.draw(goomba.getBoundS());
 		        }
 
 			}
@@ -237,6 +238,10 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		
 	}
 	
+	public static Graphics2D getG2D(){
+		return g2d;
+	}
+	
 	
 	private class KAdapter extends KeyAdapter {
 		public void keyReleased(KeyEvent kE){
@@ -252,4 +257,5 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	    	  System.out.println("Click");
 	      } 
 	 }
+
 }

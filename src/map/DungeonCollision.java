@@ -3,6 +3,7 @@ package map;
 import java.awt.Rectangle;
 import java.util.Random;
 
+import characters.Goomba;
 import characters.Player;
 
 import core.Board;
@@ -12,9 +13,10 @@ import core.GameManager;
 
 public class DungeonCollision implements Runnable {
 	
-	Player player;
-	DynamicMapAnimation dynamicMapAnimation;
+	static Player player;
+	static DynamicMapAnimation dynamicMapAnimation;
 	static DungeonNavigator dungeonNavigator;
+	static Goomba goomba;
 	
 	/*object[layer][xTile][yTile]
 	 * layer 0 = Interaction
@@ -26,15 +28,17 @@ public class DungeonCollision implements Runnable {
 	 * layer 6 = Floor2
 	 */
 	static Rectangle objectN[][][] = new Rectangle[7][9][7];static Rectangle objectE[][][] = new Rectangle[7][9][7];static Rectangle objectS[][][] = new Rectangle[7][9][7];static Rectangle objectW[][][] = new Rectangle[7][9][7];
-	static Rectangle objectNE[][][] = new Rectangle[7][9][7];static Rectangle objectSE[][][] = new Rectangle[7][9][7];static Rectangle objectSW[][][] = new Rectangle[7][9][7];static Rectangle objectNW[][][] = new Rectangle[7][9][7];
 	
-	public DungeonCollision(Player player,DynamicMapAnimation dynamicMapAnimation){
-		this.player = player;
-		this.dynamicMapAnimation = dynamicMapAnimation;
+public DungeonCollision(){
+		
 	}
 	
-	public DungeonCollision(DungeonNavigator dungeonNavigator){
+	
+	public DungeonCollision(Player player,Goomba goomba, DungeonNavigator dungeonNavigator, DynamicMapAnimation dynamicMapAnimation){
+		this.player = player;
+		this.goomba = goomba;
 		this.dungeonNavigator = dungeonNavigator;
+		this.dynamicMapAnimation = dynamicMapAnimation;
 	}
 	
 	public void run(){
@@ -42,11 +46,11 @@ public class DungeonCollision implements Runnable {
 			System.out.println("DungeonCollision.start");
 			
 		if(dungeonNavigator.getDungeon()){
-			if(dungeonNavigator.getLoadNewMap());
+			if(dungeonNavigator.getLoadNewMap())
 				readMapTiles();
 			
 			if(dungeonNavigator.getScrollReady()){
-				checkCollisionWall1();
+				checkPlayerCollisionWall1();
 				
 			}
 			
@@ -432,16 +436,16 @@ public class DungeonCollision implements Runnable {
 				//yFloor1 N
 				if(DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 11){
 					switch(DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(8):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);System.out.println("Lava in here!");break;
-					case(9):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);System.out.println("Lava in here!");break;
-					case(10):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);System.out.println("Lava in here!");break;
+					case(8):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
+					case(9):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
+					case(10):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
 					}
 				}//yFloor2 N
 				if(DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 12){
 					switch(DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(8):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);System.out.println("Lava in here!");break;
-					case(9):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);System.out.println("Lava in here!");break;
-					case(10):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);System.out.println("Lava in here!");break;
+					case(8):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
+					case(9):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
+					case(10):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
 					}
 				}//==================================================//
 				
@@ -450,6 +454,7 @@ public class DungeonCollision implements Runnable {
 			}
 						
 		}
+		dungeonNavigator.spawnEnemy();
 		dungeonNavigator.setLoadNewMap(false);
 		
 	}
@@ -507,6 +512,10 @@ public class DungeonCollision implements Runnable {
 
 	}
 	
+	public boolean getLoadNewMap(){
+		return dungeonNavigator.getLoadNewMap();
+	}
+	
 	public void checkCollisionDoor(){
 		for(int yTile = 0; yTile < 7; yTile++){
 			for(int xTile = 0; xTile <9; xTile++){
@@ -519,48 +528,65 @@ public class DungeonCollision implements Runnable {
 		
 	}
 	
+	public Rectangle getObjectN(int layer, int xTile, int yTile){
+		return objectN[layer][xTile][yTile];
+	}
+	public Rectangle getObjectE(int layer, int xTile, int yTile){
+		return objectE[layer][xTile][yTile];
+	}
+	public Rectangle getObjectS(int layer, int xTile, int yTile){
+		return objectS[layer][xTile][yTile];
+	}
+	public Rectangle getObjectW(int layer, int xTile, int yTile){
+		return objectW[layer][xTile][yTile];
+	}
 	
-	public void checkCollisionWall1(){
+	
+	private void checkPlayerCollisionWall1(){
 		for(int yTile = 0; yTile < 7; yTile++){
 			for(int xTile = 0; xTile <9; xTile++){
+				if(player.getBoundS().intersects(objectN[3][xTile][yTile])){player.setY(player.getY()+10);}
+				if(player.getBoundS().intersects(objectE[3][xTile][yTile])){player.setX(player.getX()-10);}
+				if(player.getBoundS().intersects(objectS[3][xTile][yTile])){player.setY(player.getY()-10);}
+				if(player.getBoundS().intersects(objectW[3][xTile][yTile])){player.setX(player.getX()+10);}
 				
-				if(player.getBoundS().intersects(objectN[3][xTile][yTile])){player.setY(player.getY()+10);System.out.println("Wall North!");}
-				if(player.getBoundS().intersects(objectE[3][xTile][yTile])){player.setX(player.getX()-10);System.out.println("Wall East!");}
-				if(player.getBoundS().intersects(objectS[3][xTile][yTile])){player.setY(player.getY()-10);System.out.println("Wall South!");}
-				if(player.getBoundS().intersects(objectW[3][xTile][yTile])){player.setX(player.getX()+10);System.out.println("Wall West!");}
-				
-				if(player.getBoundS().intersects(objectN[3][xTile][yTile] ) && player.getBoundE().intersects(objectE[3][xTile][yTile])){
-					player.setY(player.getY()+10);
-					player.setX(player.getX()-10);
-					System.out.println("Wall North-east!");
-				}
-				if(player.getBoundS().intersects(objectN[3][xTile][yTile] ) && player.getBoundW().intersects(objectW[3][xTile][yTile])){
-					player.setY(player.getY()+10);
-					player.setX(player.getX()+10);
-					System.out.println("WallNorth-west!");
-				}
-				if(player.getBoundS().intersects(objectS[3][xTile][yTile]) && player.getBoundE().intersects(objectE[3][xTile][yTile])){
-					player.setY(player.getY()-10);
-					player.setX(player.getX()-10);
-					System.out.println("Wall South-east!");
-				}
-				if(player.getBoundS().intersects(objectS[3][xTile][yTile]) && player.getBoundW().intersects(objectW[3][xTile][yTile])){
-					player.setY(player.getY()-10);
-					player.setX(player.getX()+10);
-					System.out.println("Wall South-west!");
-				}
-				
+				if(player.getBoundS().intersects(objectN[3][xTile][yTile] ) && player.getBoundS().intersects(objectE[3][xTile][yTile])){
+					player.setY(player.getY()+10);player.setX(player.getX()-10);}
+				if(player.getBoundS().intersects(objectN[3][xTile][yTile] ) && player.getBoundS().intersects(objectW[3][xTile][yTile])){
+					player.setY(player.getY()+10);player.setX(player.getX()+10);}
+				if(player.getBoundS().intersects(objectS[3][xTile][yTile]) && player.getBoundS().intersects(objectE[3][xTile][yTile])){
+					player.setY(player.getY()-10);player.setX(player.getX()-10);}
+				if(player.getBoundS().intersects(objectS[3][xTile][yTile]) && player.getBoundS().intersects(objectW[3][xTile][yTile])){
+					player.setY(player.getY()-10);player.setX(player.getX()+10);}
 			}
 		}
-		
 	}
+	public void checkGoombaCollisionWall1(){
+		for(int yTile = 0; yTile < 7; yTile++){
+			for(int xTile = 0; xTile <9; xTile++){
+				if(goomba.getBoundS().intersects(objectN[3][xTile][yTile])){goomba.setY(goomba.getY()+25);goomba.setNewRandomMove();}
+				if(goomba.getBoundS().intersects(objectE[3][xTile][yTile])){goomba.setX(goomba.getX()-25);goomba.setNewRandomMove();}
+				if(goomba.getBoundS().intersects(objectS[3][xTile][yTile])){goomba.setY(goomba.getY()-25);goomba.setNewRandomMove();}
+				if(goomba.getBoundS().intersects(objectW[3][xTile][yTile])){goomba.setX(goomba.getX()+25);goomba.setNewRandomMove();}
+				
+				if(goomba.getBoundS().intersects(objectN[3][xTile][yTile] ) && goomba.getBoundS().intersects(objectE[3][xTile][yTile])){
+					goomba.setY(goomba.getY()+25);goomba.setX(goomba.getX()-25);goomba.setNewRandomMove();}
+				if(goomba.getBoundS().intersects(objectN[3][xTile][yTile] ) && goomba.getBoundS().intersects(objectW[3][xTile][yTile])){
+					goomba.setY(goomba.getY()+25);goomba.setX(goomba.getX()+25);goomba.setNewRandomMove();}
+				if(goomba.getBoundS().intersects(objectS[3][xTile][yTile]) && goomba.getBoundS().intersects(objectE[3][xTile][yTile])){
+					goomba.setY(goomba.getY()-25);goomba.setX(goomba.getX()-25);goomba.setNewRandomMove();}
+				if(goomba.getBoundS().intersects(objectS[3][xTile][yTile]) && goomba.getBoundS().intersects(objectW[3][xTile][yTile])){
+					goomba.setY(goomba.getY()-25);goomba.setX(goomba.getX()+25);goomba.setNewRandomMove();}
+			}
+		}
+	}
+	
 	
 	void resetBounds(){
 		for(int yTile = 0; yTile < 7; yTile++){
 			for(int xTile = 0; xTile < 9; xTile++){
 				for(int layer = 0; layer < 7; layer++){
 					objectN[layer][xTile][yTile] = objectE[layer][xTile][yTile] = objectS[layer][xTile][yTile] = objectW[layer][xTile][yTile] = new Rectangle(0,0,0,0);
-					objectNE[layer][xTile][yTile] = objectSE[layer][xTile][yTile] = objectSW[layer][xTile][yTile] = objectNW[layer][xTile][yTile] = new Rectangle(0,0,0,0);
 				}
 			}
 		}

@@ -4,23 +4,32 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
+import characters.Goomba;
 import characters.Player;
 
+import core.Board;
 import core.FileLink;
 import core.GameManager;
 
 
-public class DungeonBuilder extends JComponent implements FileLink{
+public class DungeonBuilder extends JComponent implements FileLink {
 	
 	Player player;
+	static Board board;
 	static DungeonNavigator dungeonNavigator;
+	static Goomba goomba;
 	DynamicMapAnimation dynamicMapAnimation;
 	
 	Graphics2D g2d;
@@ -58,8 +67,10 @@ public class DungeonBuilder extends JComponent implements FileLink{
 		
 	}
 	
-	public DungeonBuilder(DungeonNavigator dungeonNavigator){
+	public DungeonBuilder(DungeonNavigator dungeonNavigator, Board board, Goomba goomba){
 		this.dungeonNavigator = dungeonNavigator;
+		this.board = board;
+		this.goomba = goomba;
 	}
 
 	public void paintComponents(Graphics g){
@@ -351,6 +362,17 @@ public class DungeonBuilder extends JComponent implements FileLink{
 		}
 		
 	}
+	
+	public void setEnemyLife(int life){
+		System.out.println("DungeonBuilder.spawnEnemy");
+		goomba.setLife(life);	
+	}
+	
+	public void setEnemyPosition(int x, int y){
+		goomba.setX(x);
+		goomba.setY(y);
+	}
 
+	
 
 }

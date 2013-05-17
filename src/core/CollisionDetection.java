@@ -4,6 +4,7 @@ package core;
 
 import java.awt.Rectangle;
 
+import characters.Goomba;
 import characters.Player;
 
 import map.DungeonCollision;
@@ -19,6 +20,7 @@ import map.OverWorldMap;
 public class CollisionDetection implements Runnable{
 	
 	Player player;
+	Goomba goomba;
 	OverWorldMap overWorldMap;
 	DungeonNavigator dungeonNavigator;
 	
@@ -28,10 +30,11 @@ public class CollisionDetection implements Runnable{
 	final static Rectangle BoundW = new Rectangle(0,0,1,630);
 	
 	
-	public CollisionDetection(Player player, OverWorldMap overWorldMap, DungeonNavigator dungeonNavigator){
+	public CollisionDetection(Player player, OverWorldMap overWorldMap, DungeonNavigator dungeonNavigator, Goomba goomba){
 		this.player = player;
 		this.overWorldMap = overWorldMap;
 		this.dungeonNavigator = dungeonNavigator;
+		this.goomba = goomba;
 	}
 
 	public void run(){
@@ -39,7 +42,8 @@ public class CollisionDetection implements Runnable{
 			System.out.println("CollisionDetection run");
 			
 		try {
-			check();
+			checkMap();
+			
 		} catch (InterruptedException ie) {
 			System.err.println("CollisionDetection:" +ie);
 		}
@@ -47,7 +51,7 @@ public class CollisionDetection implements Runnable{
 		
 	}
 	
-	private  void check() throws InterruptedException{
+	private void checkMap() throws InterruptedException{
 		//PlayerBounds - MapBounds
 		//Player.set
 		
@@ -79,8 +83,10 @@ public class CollisionDetection implements Runnable{
 					dungeonNavigator.readData();
 					player.setOldX(player.getX());
 					player.setOldY(player.getY());
-					OverWorldMap.overWorld = false;dungeonNavigator.setDungeon(true);}
-			
+					OverWorldMap.overWorld = false;dungeonNavigator.setDungeon(true);
+					//dungeonNavigator.setEnemyLife(1);
+					//dungeonNavigator.setEnemyPosition(200,300);
+					}
 			}	
 		}
 		
@@ -88,16 +94,42 @@ public class CollisionDetection implements Runnable{
 		if(dungeonNavigator.getDungeon()){
 			dungeonNavigator.setBounds();
 			overWorldMap.setCameraLock(true);
-			
+			checkEnemy();
 			if(dungeonNavigator.getScrollReady()){
 				dungeonNavigator.checkDungeonCollision();
 				
 			}
-			
 		}
-		
 	}
 	
+	private void checkEnemy(){
+		goomba.setBoundS();
+		goomba.setBoundMain();
+		player.setAttackBounds();
+		if(player.getBoundS().intersects(goomba.getBoundS())){
+			System.err.println("hitEnemy!");
+			player.setLoseLifeType(1);
+			player.setLoseLife(true);
+			sleepNow();
+			player.setLoseLife(false);
+		}
+		
+		if(player.getAttackBound().intersects(goomba.getBoundMain())){
+			goomba.loseLife();
+		}
+		
+		dungeonNavigator.checkEnemyCollisionWall();
+		
+	}
 
+	private void sleepNow(){
+		try{
+			System.out.println("start.Sleep");
+			Thread.sleep(100);
+			System.out.println("stop.Sleep");
+		} catch (InterruptedException ie){
+			System.err.println("DungeonCollision.sleepNow:"+ie);
+		}
+	}
 	
 }

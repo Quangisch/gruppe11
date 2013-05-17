@@ -11,11 +11,10 @@ import characters.*;
 
 public class GameManager extends JFrame implements Runnable, GameObjects{
 
-	final Board board;
-	
 	ScheduledThreadPoolExecutor playerScheduler;
 	ScheduledThreadPoolExecutor menuScheduler;
 	ScheduledThreadPoolExecutor mapScheduler;
+	ScheduledThreadPoolExecutor enemyScheduler;
 	
 	Thread menuIngameThread;
 	Thread menuMainThread;
@@ -26,7 +25,7 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 	Thread playerInterfaceThread;
 	Thread collisionDetectionThread;
 	Thread dynamicMapAnimationThread;
-	
+	Thread goombaThread;
 	
 	
 	public static boolean printMsg = false;
@@ -47,9 +46,7 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 	
 	public GameManager(){
 		
-		
-		board = new Board(menuMain, menuIngame, player,playerInterface,overWorldMap,dungeonNavigator,dungeonBuilder, collisionDetection);
-		add(board);
+		add(GameObjects.board);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize (810, 653);
 		//setLocationRelativeTo(null);
@@ -85,6 +82,7 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 		playerScheduler = new ScheduledThreadPoolExecutor(3);
 		menuScheduler = new ScheduledThreadPoolExecutor(2);
 		mapScheduler = new ScheduledThreadPoolExecutor(3);
+		enemyScheduler = new ScheduledThreadPoolExecutor(3);
 		
 		menuIngameThread = new Thread(menuIngame);
 		menuMainThread = new Thread(menuMain);
@@ -96,7 +94,7 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 		playerInterfaceThread = new Thread(playerInterface);
 		collisionDetectionThread = new Thread(collisionDetection);
 		dynamicMapAnimationThread = new Thread(dynamicMapAnimation);
-		
+		goombaThread = new Thread(goomba);
 		
 	}
 	
@@ -137,10 +135,13 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 					playerScheduler.scheduleWithFixedDelay(playerInterface, 600, 10, TimeUnit.MILLISECONDS);
 					playerScheduler.scheduleWithFixedDelay(collisionDetectionThread, 450, 10, TimeUnit.MILLISECONDS);
 					
+					
 					mapScheduler.scheduleWithFixedDelay(dungeonNavigatorThread, 30, 50, TimeUnit.MILLISECONDS);
 					mapScheduler.scheduleWithFixedDelay(dungeonCollision, 20, 50,TimeUnit.MILLISECONDS);
 					mapScheduler.scheduleWithFixedDelay(overWorldMapThread, 50, 50,TimeUnit.MILLISECONDS);
 					mapScheduler.scheduleWithFixedDelay(dynamicMapAnimationThread,100,50,TimeUnit.MILLISECONDS);
+					
+					enemyScheduler.scheduleWithFixedDelay(goombaThread,200,10,TimeUnit.MILLISECONDS);
 					
 					
 			/*TODO
