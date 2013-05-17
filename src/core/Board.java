@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.Timer;
 
-import characters.Enemy;
+import characters.AbstractEnemy;
 import characters.Player;
 import characters.PlayerInterface;
 

@@ -66,7 +66,9 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 	int life = 3;
 	int coins = 0;
 	boolean visible = true;
-	boolean loseLife = false;
+	volatile boolean loseLife = false;
+	int loseLifeType = 0;
+	//loseLifeTyp: 0 = bouncing off short, 1 = bouncing off long, 2 = respawn at entry point
 	
 	//worldmapnavigation
 	Rectangle boundN,boundE,boundS,boundW,boundDirection;
@@ -105,7 +107,12 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 			GameManager.gameOver = true;
 
 		if (!block || moveable)
-		move();
+			move();
+		
+		if(!moveable){
+			moveUp = moveLeft = moveDown = moveRight = false;
+		}
+		
 		paintPlayer();
 		
 		if(punchCounter < 1){
@@ -149,7 +156,7 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 		absoluteX += dx;
 		absoluteY += dy;
 		
-	
+			
     	//fixed Camera
     	if(!overWorldMap.getCameraStatus()){
     		x += dx;
@@ -250,6 +257,9 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 		if (block) {
 			playerMoveBuff = playerMove.getSubimage(14*spriteGridX, 4*spriteGridY, spriteGridX, spriteGridY);
 		}
+		
+		
+		
 		//System.out.println("X: " + x + ", Y: " + y);
 		//g2d.drawImage(playerMoveBuff ,x ,y , this);
 		
@@ -263,24 +273,21 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 		int key = e.getKeyCode();
 		GameManager.repaintNow = true;
 
-			if (key == KeyEvent.VK_UP && !block){
+			if (key == KeyEvent.VK_UP && moveable){
 				moveUp = true;
 			}
-			if (key == KeyEvent.VK_RIGHT && !block){
+			if (key == KeyEvent.VK_RIGHT && moveable){
 				moveRight = true;
 			}
-			if (key == KeyEvent.VK_DOWN && !block){	
+			if (key == KeyEvent.VK_DOWN && moveable){	
 				moveDown = true;
 			}
-			if (key == KeyEvent.VK_LEFT && !block){
+			if (key == KeyEvent.VK_LEFT && moveable){
 				moveLeft = true;
 			}
 			
-			if (key == KeyEvent.VK_D && !block){
+			if (key == KeyEvent.VK_D && moveable){
 				punchNow = true;
-			}
-			if (key == KeyEvent.VK_S){	
-				block = true;
 			}
 
 			
@@ -332,11 +339,7 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 			}
 				
 		}
-		if (key == KeyEvent.VK_S){	
-			block = false;
-		}
-		
-		
+
 		if (key == KeyEvent.VK_F){
 			tmpSpeed = SPEED;
 		}
@@ -459,6 +462,9 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 	public int getLife(){return life;}
 	public int getCoins(){return coins;}
 	public boolean getVisible(){return visible;}
+	public boolean getMoveable(){return moveable;}
+	public int getLoseLifeType(){return loseLifeType;}
+	public boolean getLoseLife(){return loseLife;}
 	
 	
 	public void setX(int x){this.x = x;}
@@ -468,10 +474,12 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 	public void setAbsoluteX(int absoluteX){this.absoluteX = absoluteX;}
 	public void setAbsoluteY(int absoluteY){this.absoluteY = absoluteY;}
 	public void setLastDirection(int lastDirection){this.lastDirection = lastDirection;}
-	public void setLife(int life){if(life < this.life)loseLife=true;this.life = life;}
+	public void setLife(int life){this.life = life;}
 	public void setCoins(int coins){this.coins = coins;}
 	public void setVisible(boolean visible){this.visible = visible;}
-	public void setMoveable(boolean movable){this.moveable = moveable;}
+	public void setMoveable(boolean moveable){this.moveable = moveable;}
+	public void setLoseLifeType(int loseLifeType){this.loseLifeType = loseLifeType;}
+	public void setLoseLife(boolean loseLife){this.loseLife = loseLife;}
 	
 	
 	//get Bounds

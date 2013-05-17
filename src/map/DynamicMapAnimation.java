@@ -4,6 +4,8 @@ import java.util.Random;
 
 public class DynamicMapAnimation implements Runnable {
 
+	static DungeonNavigator dungeonNavigator;
+	
 	int shakeX[][][] = new int[7][9][7]; int shakeY[][][] = new int[7][9][7];
 	int autoShakeX[][][] = new int[7][9][7]; int autoShakeY[][][] = new int[7][9][7];
 	int randomNum;
@@ -13,10 +15,13 @@ public class DynamicMapAnimation implements Runnable {
 	public DynamicMapAnimation() {
 		
 	}
+	public DynamicMapAnimation(DungeonNavigator dungeonNavigator){
+		this.dungeonNavigator = dungeonNavigator;
+	}
 	
 	public void run(){
 		resetShake();
-
+		
 	}
 	
 	

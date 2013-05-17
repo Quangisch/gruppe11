@@ -134,7 +134,7 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 				}
 			
 					playerScheduler.scheduleWithFixedDelay(playerThread, 400, 10,TimeUnit.MILLISECONDS);
-					playerScheduler.scheduleWithFixedDelay(playerInterface, 600, 50, TimeUnit.MILLISECONDS);
+					playerScheduler.scheduleWithFixedDelay(playerInterface, 600, 10, TimeUnit.MILLISECONDS);
 					playerScheduler.scheduleWithFixedDelay(collisionDetectionThread, 450, 10, TimeUnit.MILLISECONDS);
 					
 					mapScheduler.scheduleWithFixedDelay(dungeonNavigatorThread, 30, 50, TimeUnit.MILLISECONDS);

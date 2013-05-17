@@ -30,4 +30,5 @@ public interface GameObjects{
 	final static Player playerReference = new Player(overWorldMap,dungeonNavigator);
 	final static DungeonCollision dungeonCollisionReference = new DungeonCollision(dungeonNavigator);
 	final static DungeonBuilder dungeonBuilderReference = new DungeonBuilder(dungeonNavigator);
+	final static DynamicMapAnimation dynamicMapAnimationReference = new DynamicMapAnimation(dungeonNavigator);
 }

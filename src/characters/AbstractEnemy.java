@@ -31,7 +31,7 @@ import core.GameManager;
 import java.awt.Rectangle;
 
 
-public class Enemy implements Runnable{
+public class AbstractEnemy implements Runnable{
 	//non static classes
 	public int x, y;
 	public Rectangle enemyBound;
@@ -39,7 +39,7 @@ public class Enemy implements Runnable{
 	
 	
 	
-	public Enemy(int x, int y){
+	public AbstractEnemy(int x, int y){
 		System.err.println("->Enemy");
 		
 		this.x = x;

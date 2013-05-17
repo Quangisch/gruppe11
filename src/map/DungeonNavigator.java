@@ -30,7 +30,7 @@ public class DungeonNavigator extends JComponent implements Runnable{
 	public int areaID = 1;
 	
 	boolean loadNewMap = true;
-	boolean scrollReady = true;
+	private boolean scrollReady = true;
 	
 	Rectangle toExit;
 	Rectangle toNorth, toEast, toSouth, toWest;
@@ -204,7 +204,7 @@ public class DungeonNavigator extends JComponent implements Runnable{
 					overWorldMap.setLoadNewMap(true);
 					overWorldMap.setCameraLock(false);
 					OverWorldMap.overWorld = true; dungeon = false;
-					DungeonCollision.resetBounds();
+					dungeonCollision.resetBounds();
 					GameManager.changeMapModus = true;
 					System.out.println("leave dungeon1 -> OverWorldMap1"); 
 				}
@@ -382,7 +382,9 @@ public class DungeonNavigator extends JComponent implements Runnable{
 
 	}
 	
-	
+	public void checkDungeonCollision(){
+		dungeonCollision.checkCollisionFloor();
+	}
 
 
 	//get set

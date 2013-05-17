@@ -45,10 +45,9 @@ public class DungeonCollision implements Runnable {
 			if(dungeonNavigator.getLoadNewMap());
 				readMapTiles();
 			
-			if(dungeonNavigator.scrollReady){
+			if(dungeonNavigator.getScrollReady()){
 				checkCollisionWall1();
-				checkCollisionFloor();
-				checkCollisionDoor();
+				
 			}
 			
 		}
@@ -433,16 +432,16 @@ public class DungeonCollision implements Runnable {
 				//yFloor1 N
 				if(DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 11){
 					switch(DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(8):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(9):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(10):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
+					case(8):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);System.out.println("Lava in here!");break;
+					case(9):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);System.out.println("Lava in here!");break;
+					case(10):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);System.out.println("Lava in here!");break;
 					}
 				}//yFloor2 N
 				if(DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 12){
 					switch(DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(8):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(9):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(10):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
+					case(8):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);System.out.println("Lava in here!");break;
+					case(9):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);System.out.println("Lava in here!");break;
+					case(10):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);System.out.println("Lava in here!");break;
 					}
 				}//==================================================//
 				
@@ -459,36 +458,47 @@ public class DungeonCollision implements Runnable {
 	public void checkCollisionFloor(){
 		for(int yTile = 0; yTile < 7; yTile++){
 			for(int xTile = 0; xTile <9; xTile++){
+
 				
 				//Trap,Hole
-				if(DungeonBuilder.yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 14
-						&& (DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 7)
-						|| DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 9
-						|| DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 8
-						|| DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 10){
+				if((DungeonBuilder.yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 14
+						&&(DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 7 || DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 9))
+							&&(objectS[5][xTile][yTile]).intersects(player.getBoundS())){
 					
-					if((objectS[5][xTile][yTile]).intersects(player.getBoundS())){
-						
-						dynamicMapAnimation.startShake(false,-2,2,5,xTile,yTile);
-					}
-					if(objectS[5][xTile][yTile].contains(player.getBoundS())||objectS[6][xTile][yTile].contains(player.getBoundS())){
-						DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] = 18;
-						DungeonBuilder.yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] = 14;
-						player.resetPosition();
-						System.err.println("Trap!");
-						player.setLife(player.getLife()-1);
-					}
+					dynamicMapAnimation.startShake(false,-2,2,5,xTile,yTile);
+				}
+				if((objectS[5][xTile][yTile].contains(player.getBoundS())||objectS[6][xTile][yTile].contains(player.getBoundS()))
+						&& ((DungeonBuilder.yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 14 && (DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 7 || DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 9))
+								  ||(DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 14 && (DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 8 || DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 10)))){
+					DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] = 18;
+					DungeonBuilder.yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] = 14;
+					System.err.println("Trap!");
+					player.setLoseLifeType(2);
+					player.setLoseLife(true);
+					sleepNow();
+					player.setLoseLife(false);			
 				}//Trap,Hole
 				
 				//LavaPit
+					/*
+				if((DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 11 || DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 12)
+						&& (DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 9
+						|| DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 8
+						|| DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 10))
+					*/
+					if(((DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 11 || DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 12)
+							&& (DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 9
+							|| DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 8
+							|| DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 10)) 
+								&&objectS[6][xTile][yTile].contains(player.getBoundS()) && !(objectS[5][xTile][yTile].intersects(player.getBoundS())||objectN[5][xTile][yTile].intersects(player.getBoundS()))){
+						System.err.println("Lava!");
+						player.setLoseLifeType(1);
+						player.setLoseLife(true);
+						sleepNow();
+						player.setLoseLife(false);
+					}
+					
 				
-				if(objectS[6][xTile][yTile].contains(player.getBoundS()) && 
-						!(objectS[5][xTile][yTile].intersects(player.getBoundS())||objectN[5][xTile][yTile].intersects(player.getBoundS()))){
-					player.resetPosition();
-					System.err.println("Lava!");
-					player.setLife(player.getLife()-1);
-					dynamicMapAnimation.startShake(true,-1, 1, 6, xTile, yTile);
-				}
 				
 			}
 		}
@@ -545,7 +555,7 @@ public class DungeonCollision implements Runnable {
 		
 	}
 	
-	public static void resetBounds(){
+	void resetBounds(){
 		for(int yTile = 0; yTile < 7; yTile++){
 			for(int xTile = 0; xTile < 9; xTile++){
 				for(int layer = 0; layer < 7; layer++){
@@ -555,5 +565,16 @@ public class DungeonCollision implements Runnable {
 			}
 		}
 	}
+	
+	private void sleepNow(){
+		try{
+			System.out.println("start.Sleep");
+			Thread.sleep(1000);
+			System.out.println("stop.Sleep");
+		} catch (InterruptedException ie){
+			System.err.println("DungeonCollision.sleepNow:"+ie);
+		}
+	}
+	
 	
 }

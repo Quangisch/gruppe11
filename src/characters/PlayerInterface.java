@@ -27,6 +27,8 @@ public class PlayerInterface extends JComponent implements Runnable,FileLink{
 	BufferedImage coinBuff, heartBuff;
 	
 	double pulseScale = 1;
+	int fallBack;
+	int counterTimer = 0;
 	
 	public PlayerInterface(Player player){
 		this.player = player;
@@ -46,8 +48,11 @@ public class PlayerInterface extends JComponent implements Runnable,FileLink{
 		
 		pulseHeart();
 		
-		if(player.loseLife)
+		if(player.getLoseLifeType() != -1){
 			loseLife();
+			counterTimer++;
+		}
+			
 		
 	}
 	
@@ -72,26 +77,97 @@ public class PlayerInterface extends JComponent implements Runnable,FileLink{
 	}
 	
 	public void loseLife(){
-		try{
-			for(int i = 0; i < 5; i++){
-				player.setVisible(false);
-				if(i == 0){
-					player.setMoveable(false);
-					Thread.sleep(300);
-					player.setMoveable(true);
-				}
-					
-				Thread.sleep(180);
-				player.setVisible(true);
-				Thread.sleep(500);
-			}
-			if(player.life > 1)
-				player.loseLife = false;
-		} catch (InterruptedException ie) {
-			System.err.println("PlayerInterface.loseLife:"+ie);
-		} finally {
-			player.setVisible(true);
+		if(GameManager.printMsg){
+			System.out.println(counterTimer);
+			System.err.println(player.getLoseLifeType());
+			System.out.println(player.getMoveable());
 		}
+	
+			if(player.loseLifeType == -2){
+				if((0 < counterTimer & counterTimer < 5))player.setVisible(false);
+				if((5 < counterTimer & counterTimer< 50))player.setVisible(true);
+				if((50 < counterTimer & counterTimer< 55))player.setVisible(false);
+				if((55 < counterTimer & counterTimer< 100))player.setVisible(true);
+				if((100 < counterTimer & counterTimer < 105))player.setVisible(false);
+				if((105 < counterTimer & counterTimer < 150))player.setVisible(true);
+				if((150 < counterTimer & counterTimer < 155))player.setVisible(false);
+				if((155 < counterTimer & counterTimer < 200))player.setVisible(true);
+				
+			}
+			
+			
+			if(player.loseLifeType == 0){
+				
+			}//Type0
+			
+			if(player.loseLifeType == 1){
+				fallBack = 5;
+				
+				if(counterTimer < 10){
+					player.setMoveable(false);
+					switch(player.getLastDirection()){
+					case 1: player.setY(player.getY()+fallBack);
+							break;
+					case 2: player.setX(player.getX()-fallBack); player.setY(player.getY()+fallBack);
+							break;
+					case 3: player.setX(player.getX()-fallBack);
+							break;
+					case 4: player.setX(player.getX()-fallBack); player.setY(player.getY()-fallBack);
+							break;
+					case 5: player.setY(player.getY()-fallBack);
+							break;
+					case 6: player.setX(player.getX()+fallBack); player.setY(player.getY()-fallBack);
+							break;
+					case 7: player.setX(player.getX()+fallBack);
+							break;
+					case 8: player.setX(player.getX()+fallBack); player.setY(player.getY()+fallBack);
+							break;
+					}
+				} else {
+					player.setMoveable(true);
+					counterTimer = 201;
+					player.setLife(player.getLife()-1);
+				}
+			}//Type1
+			
+			if(player.loseLifeType == 2){
+				
+				if(player.loseLife){
+					player.setLoseLife(false);
+					player.setLife(player.getLife()-1);
+					if(player.getLife() > 0)
+						player.resetPosition();
+				}
+			
+				
+				player.setMoveable(false);
+				if((0 < counterTimer & counterTimer < 10))player.setVisible(false);
+				if((10 < counterTimer & counterTimer < 50))player.setVisible(true);
+				if((50 < counterTimer & counterTimer < 60))player.setVisible(false);
+				if((60 < counterTimer & counterTimer < 100))player.setVisible(true);
+				if((100 < counterTimer & counterTimer < 110))player.setVisible(false);
+				if((110 < counterTimer & counterTimer < 150))player.setVisible(true);
+				if((150 < counterTimer & counterTimer < 160))player.setVisible(false);
+				if((160 < counterTimer & counterTimer < 200))player.setVisible(true);
+				
+				if(counterTimer > 100)
+					player.setMoveable(true);
+				
+			}//Type2
+			
+			if(counterTimer > 200){
+				counterTimer = 0;
+				player.setVisible(true);
+				player.setMoveable(true);
+				fallBack = 0;
+				if(player.getLife() > 1)
+					player.setLoseLifeType(-1);
+				if(player.getLife() == 1)
+					player.setLoseLifeType(-2);
+			}
+			
+		
+		
 		
 	}
 	
