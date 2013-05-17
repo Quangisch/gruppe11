@@ -46,6 +46,9 @@ public class PlayerInterface extends JComponent implements Runnable,FileLink{
 		
 		pulseHeart();
 		
+		if(player.loseLife)
+			loseLife();
+		
 	}
 	
 	public void paintComponents(Graphics g){
@@ -62,10 +65,34 @@ public class PlayerInterface extends JComponent implements Runnable,FileLink{
 
 	}
 
-	public void pulseHeart(){
+	private void pulseHeart(){
 		pulseScale += 0.005;
 		if(pulseScale >= 1.03)
 			pulseScale = 1;
+	}
+	
+	public void loseLife(){
+		try{
+			for(int i = 0; i < 5; i++){
+				player.setVisible(false);
+				if(i == 0){
+					player.setMoveable(false);
+					Thread.sleep(300);
+					player.setMoveable(true);
+				}
+					
+				Thread.sleep(180);
+				player.setVisible(true);
+				Thread.sleep(500);
+			}
+			if(player.life > 1)
+				player.loseLife = false;
+		} catch (InterruptedException ie) {
+			System.err.println("PlayerInterface.loseLife:"+ie);
+		} finally {
+			player.setVisible(true);
+		}
+		
 	}
 	
 }

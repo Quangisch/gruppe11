@@ -25,6 +25,7 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 	Thread playerThread;
 	Thread playerInterfaceThread;
 	Thread collisionDetectionThread;
+	Thread dynamicMapAnimationThread;
 	
 	
 	
@@ -57,30 +58,33 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 		setVisible(true);
 		
 
-		//initiate dungeon
+		//initiate start dungeon
 		if(false){
+			dungeonNavigator.setAreaID(1);
+			dungeonNavigator.setX(0); dungeonNavigator.setY(3);
 			OverWorldMap.overWorld = false;
-			DungeonNavigator.dungeon = true;
-			DungeonNavigator.x = 0; DungeonNavigator.y = 3;
+			dungeonNavigator.setDungeon(true);
+			
 			player.setX(230); 
 			player.setY(500);
 			player.setLastDirection(1);
 		}
+	
 		
 		
-		//initiate overWorld
+		//initiate start overWorld
 		if(true){
 			OverWorldMap.overWorld = true;
-			DungeonNavigator.dungeon = false;
-			player.setAbsoluteX(405-20*3); player.setX(405-20*3);
-			player.setAbsoluteY(315-15*3); player.setY(315-15*3);
-			overWorldMap.setCameraX(player.getAbsoluteX());
-			overWorldMap.setCameraY(player.getAbsoluteY());
+			dungeonNavigator.setDungeon(false);
+			overWorldMap.setCameraX(0); overWorldMap.setCameraY(0);
+			player.setAbsoluteX(0);player.setAbsoluteY(0);
+			player.setX(110); player.setY(20);
+			
 		}
 		
 		playerScheduler = new ScheduledThreadPoolExecutor(3);
 		menuScheduler = new ScheduledThreadPoolExecutor(2);
-		mapScheduler = new ScheduledThreadPoolExecutor(2);
+		mapScheduler = new ScheduledThreadPoolExecutor(3);
 		
 		menuIngameThread = new Thread(menuIngame);
 		menuMainThread = new Thread(menuMain);
@@ -91,12 +95,20 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 		playerThread = new Thread(player);
 		playerInterfaceThread = new Thread(playerInterface);
 		collisionDetectionThread = new Thread(collisionDetection);
+		dynamicMapAnimationThread = new Thread(dynamicMapAnimation);
 		
 		
 	}
 	
 	public void run(){
 		
+		/*
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException ie){
+			System.err.println("GameManager:"+ie);
+		}
+		*/
 		if(switchGameState){
 			switchGameState = false;
 			
@@ -128,6 +140,7 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 					mapScheduler.scheduleWithFixedDelay(dungeonNavigatorThread, 30, 50, TimeUnit.MILLISECONDS);
 					mapScheduler.scheduleWithFixedDelay(dungeonCollision, 20, 50,TimeUnit.MILLISECONDS);
 					mapScheduler.scheduleWithFixedDelay(overWorldMapThread, 50, 50,TimeUnit.MILLISECONDS);
+					mapScheduler.scheduleWithFixedDelay(dynamicMapAnimationThread,100,50,TimeUnit.MILLISECONDS);
 					
 					
 			/*TODO

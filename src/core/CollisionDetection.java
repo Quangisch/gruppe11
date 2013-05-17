@@ -55,7 +55,7 @@ public class CollisionDetection implements Runnable{
 			
 		
 		//check Player position relative to windowBorders
-		if(!DungeonNavigator.dungeon){
+		if(!dungeonNavigator.getDungeon()){
 			if(player.getBoundN().intersects(BoundN)){overWorldMap.setScrollLock(1);}
 			if(player.getBoundS().intersects(BoundS)){overWorldMap.setScrollLock(3);}
 			if(player.getBoundW().intersects(BoundW)){overWorldMap.setScrollLock(2);}
@@ -71,18 +71,22 @@ public class CollisionDetection implements Runnable{
 			switch(OverWorldMap.areaID){
 				case 1:	if(player.getBoundS().intersects(overWorldMap.getDungeonBounds())){
 					player.setX(220); player.setY(520);
-					DungeonNavigator.areaID = 1;
-					DungeonNavigator.x = 0; DungeonNavigator.y = 3;
+					dungeonNavigator.setAreaID(1);
+					dungeonNavigator.setX(0); dungeonNavigator.setY(3);
 					GameManager.changeMapModus = true;
 					System.out.println("leave OverWorldMap1 -> dungeon1");
-					OverWorldMap.overWorld = false;DungeonNavigator.dungeon = true;}
+					dungeonNavigator.setLoadNewMap(true);
+					dungeonNavigator.readData();
+					player.setOldX(player.getX());
+					player.setOldY(player.getY());
+					OverWorldMap.overWorld = false;dungeonNavigator.setDungeon(true);}
 			
 			}	
 		}
 		
 		
-		if(DungeonNavigator.dungeon){
-			DungeonNavigator.setBounds();
+		if(dungeonNavigator.getDungeon()){
+			dungeonNavigator.setBounds();
 			overWorldMap.setCameraLock(true);
 			//dungeonNavigator.startCollision();
 		}

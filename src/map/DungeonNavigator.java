@@ -24,17 +24,17 @@ public class DungeonNavigator extends JComponent implements Runnable{
 	
 	Graphics2D g2d;
 	
-	public static int x, y;
-	public static int xOld, yOld;
-	public static boolean dungeon;
-	public static int areaID = 1;
+	public int x, y;
+	public int xOld, yOld;
+	public boolean dungeon;
+	public int areaID = 1;
 	
-	static boolean loadNewMap = true;
-	static boolean scrollReady = true;
+	boolean loadNewMap = true;
+	boolean scrollReady = true;
 	
-	public static Rectangle toExit;
-	public static Rectangle toNorth, toEast, toSouth, toWest;
-	public static Rectangle toNorth2, toEast2, toSouth2,toWest2;
+	Rectangle toExit;
+	Rectangle toNorth, toEast, toSouth, toWest;
+	Rectangle toNorth2, toEast2, toSouth2,toWest2;
 	
 	
 	public DungeonNavigator(Player player, DungeonBuilder dungeonBuilder, DungeonCollision dungeonCollision,OverWorldMap overWorldMap){
@@ -55,12 +55,22 @@ public class DungeonNavigator extends JComponent implements Runnable{
 			if(GameManager.printMsg)
 				System.out.println("DungeonNavigator.run");
 			
-			if(dungeon)
+			if(dungeon && scrollReady)
 				navigate();
+			
+			if(!scrollReady)
+				dungeonBuilder.scrollBetweenMaps();
+			
 		} catch (InterruptedException ie) {
 			System.err.println("DungeonNavigator.navigate:"+ie);
 		}
 		
+	}
+	
+	public void readData(){
+		dungeonBuilder.readMapData();
+		dungeonCollision.readMapTiles();
+		System.out.println("DungeonNavigator.readData");
 	}
 	
 	public void navigate() throws InterruptedException {
@@ -77,25 +87,25 @@ public class DungeonNavigator extends JComponent implements Runnable{
 		
 			//map 0000
 			if(x == 0 && y == 0){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toEast2)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toSouth)){scrollReady = false;y = 1;DungeonBuilder.scrollY = 630;}
+				if(player.getBoundDirection().intersects(toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
+				if(player.getBoundDirection().intersects(toEast2)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
+				if(player.getBoundDirection().intersects(toSouth)){scrollReady = false;y = 1;DungeonBuilder.scrollY = 630;}
 			}
 			
 			//map 0100
 			if(x == 1 && y == 0){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toEast)){scrollReady = false;x = 2;DungeonBuilder.scrollX = 810;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toWest)){scrollReady = false;x = 0;DungeonBuilder.scrollX = -810;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toWest2)){scrollReady = false;x = 0;DungeonBuilder.scrollX = -810;}	
+				if(player.getBoundDirection().intersects(toEast)){scrollReady = false;x = 2;DungeonBuilder.scrollX = 810;}
+				if(player.getBoundDirection().intersects(toWest)){scrollReady = false;x = 0;DungeonBuilder.scrollX = -810;}
+				if(player.getBoundDirection().intersects(toWest2)){scrollReady = false;x = 0;DungeonBuilder.scrollX = -810;}	
 			}
 			
 			//map 0200
 			if(x == 2 && y == 0){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toNorth)){	//TO map 0203
+				if(player.getBoundDirection().intersects(toNorth)){	//TO map 0203
 					scrollReady = false;
 					x = 2; y = 3;player.setX(360);player.setY(400);
 				}	
-				if(player.getBoundDirection().intersects(DungeonNavigator.toWest)){scrollReady = false;x = 1;DungeonBuilder.scrollX = -810;}
+				if(player.getBoundDirection().intersects(toWest)){scrollReady = false;x = 1;DungeonBuilder.scrollX = -810;}
 			}
 			
 			//map 0300
@@ -110,25 +120,25 @@ public class DungeonNavigator extends JComponent implements Runnable{
 			
 			//map 0001
 			if(x == 0 && y == 1){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toNorth)){scrollReady = false;y = 0;DungeonBuilder.scrollY = -630;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
+				if(player.getBoundDirection().intersects(toNorth)){scrollReady = false;y = 0;DungeonBuilder.scrollY = -630;}
+				if(player.getBoundDirection().intersects(toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
 			}
 			
 			//map 0101
 			if(x == 1 && y == 1){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toEast)){scrollReady = false;x = 2;DungeonBuilder.scrollX = 810;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toSouth)){scrollReady = false;y = 2;DungeonBuilder.scrollY = 630;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toWest)){scrollReady = false;x = 0;DungeonBuilder.scrollX = -810;}			
+				if(player.getBoundDirection().intersects(toEast)){scrollReady = false;x = 2;DungeonBuilder.scrollX = 810;}
+				if(player.getBoundDirection().intersects(toSouth)){scrollReady = false;y = 2;DungeonBuilder.scrollY = 630;}
+				if(player.getBoundDirection().intersects(toWest)){scrollReady = false;x = 0;DungeonBuilder.scrollX = -810;}			
 			}
 			
 			//map 0201
 			if(x == 2 && y == 1){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toWest)){scrollReady = false;x = 1;DungeonBuilder.scrollX = -810;}
+				if(player.getBoundDirection().intersects(toWest)){scrollReady = false;x = 1;DungeonBuilder.scrollX = -810;}
 				
 			}
 			//map 0301
 			if(x == 3 && y == 1){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toExit)){ //TO OverWorldMap.3
+				if(player.getBoundDirection().intersects(toExit)){ //TO OverWorldMap.3
 					//Camera.cameraX = ; Camera.cameraY = ;
 					//Player.absoluteX = ; Player.absoluteY = ;
 					player.setX(20);
@@ -139,8 +149,8 @@ public class DungeonNavigator extends JComponent implements Runnable{
 					//OverWorldMap.areaID = 3;
 					System.out.println("leave Dungeon1 -> OverWorldMap 3");
 				}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toSouth)){scrollReady = false;y = 2;DungeonBuilder.scrollY = 630;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toSouth2)){scrollReady = false;y = 2;DungeonBuilder.scrollY = 630;}
+				if(player.getBoundDirection().intersects(toSouth)){scrollReady = false;y = 2;DungeonBuilder.scrollY = 630;}
+				if(player.getBoundDirection().intersects(toSouth2)){scrollReady = false;y = 2;DungeonBuilder.scrollY = 630;}
 			}
 			
 			//map 0401
@@ -150,8 +160,8 @@ public class DungeonNavigator extends JComponent implements Runnable{
 
 			//map 0002
 			if(x == 0 && y == 2){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toExit)){
+				if(player.getBoundDirection().intersects(toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
+				if(player.getBoundDirection().intersects(toExit)){
 					scrollReady = false;
 					System.out.println("leave Dungeon1 -> OverWorldMap 2");
 					GameManager.win = true;
@@ -160,23 +170,23 @@ public class DungeonNavigator extends JComponent implements Runnable{
 			
 			//map 0102
 			if(x == 1 && y == 2){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toNorth)){scrollReady = false;y = 1;DungeonBuilder.scrollY = -630;}
-				//if(player.getBoundDirection.intersects(DungeonNavigator.toEast)){scrollReady = false;x = 2;DungeonBuilder.scrollX = 810;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toSouth)){scrollReady = false;y = 3;DungeonBuilder.scrollY = 630;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toWest)){scrollReady = false;x = 0;DungeonBuilder.scrollX = -810;}
+				if(player.getBoundDirection().intersects(toNorth)){scrollReady = false;y = 1;DungeonBuilder.scrollY = -630;}
+				//if(player.getBoundDirection.intersects(toEast)){scrollReady = false;x = 2;DungeonBuilder.scrollX = 810;}
+				if(player.getBoundDirection().intersects(toSouth)){scrollReady = false;y = 3;DungeonBuilder.scrollY = 630;}
+				if(player.getBoundDirection().intersects(toWest)){scrollReady = false;x = 0;DungeonBuilder.scrollX = -810;}
 			}
 			
 			//map 0202
 			if(x == 2 && y == 2){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toWest)){scrollReady = false;x = 1;DungeonBuilder.scrollX = -810;}
+				if(player.getBoundDirection().intersects(toWest)){scrollReady = false;x = 1;DungeonBuilder.scrollX = -810;}
 			}
 			
 			//map 0302
 			if(x == 3 && y == 2){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toNorth)){scrollReady = false;y = 1;DungeonBuilder.scrollY = -630;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toNorth2)){scrollReady = false;y = 1;DungeonBuilder.scrollY = -630;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toSouth)){scrollReady = false;y = 3;DungeonBuilder.scrollY = 630;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toSouth2)){scrollReady = false;y = 3;DungeonBuilder.scrollY = 630;}
+				if(player.getBoundDirection().intersects(toNorth)){scrollReady = false;y = 1;DungeonBuilder.scrollY = -630;}
+				if(player.getBoundDirection().intersects(toNorth2)){scrollReady = false;y = 1;DungeonBuilder.scrollY = -630;}
+				if(player.getBoundDirection().intersects(toSouth)){scrollReady = false;y = 3;DungeonBuilder.scrollY = 630;}
+				if(player.getBoundDirection().intersects(toSouth2)){scrollReady = false;y = 3;DungeonBuilder.scrollY = 630;}
 			}
 			
 			//map 0402
@@ -186,43 +196,43 @@ public class DungeonNavigator extends JComponent implements Runnable{
 			
 			//map 0003
 			if(x == 0 && y == 3){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toExit)){ //TO OverWorld ID01
+				if(player.getBoundDirection().intersects(toExit)){ //TO OverWorld ID01
 					overWorldMap.setCameraX(0); overWorldMap.setCameraY(0);
 					player.setAbsoluteX(0);player.setAbsoluteY(0);
 					player.setX(110); player.setY(20);
 					
 					overWorldMap.setLoadNewMap(true);
 					overWorldMap.setCameraLock(false);
-					OverWorldMap.overWorld = true; DungeonNavigator.dungeon = false;
+					OverWorldMap.overWorld = true; dungeon = false;
 					DungeonCollision.resetBounds();
 					GameManager.changeMapModus = true;
 					System.out.println("leave dungeon1 -> OverWorldMap1"); 
 				}
 				
-				if(player.getBoundDirection().intersects(DungeonNavigator.toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
+				if(player.getBoundDirection().intersects(toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}
 			}
 			
 			//map 0103
 			if(x == 1 && y == 3){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toWest)){scrollReady = false;x = 0;DungeonBuilder.scrollX = -810;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toNorth)){scrollReady = false;y = 2;DungeonBuilder.scrollY = -630;}
+				if(player.getBoundDirection().intersects(toWest)){scrollReady = false;x = 0;DungeonBuilder.scrollX = -810;}
+				if(player.getBoundDirection().intersects(toNorth)){scrollReady = false;y = 2;DungeonBuilder.scrollY = -630;}
 			}
 						
 			//map 0203
 			if(x == 2 && y == 3){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toSouth)){ //TO map 0200
+				if(player.getBoundDirection().intersects(toSouth)){ //TO map 0200
 					x = 2; y = 0;
 					player.setX(450); player.setY(110);
 					}
 				
-				if(player.getBoundDirection().intersects(DungeonNavigator.toEast)){scrollReady = false;x = 3;DungeonBuilder.scrollX = 810;}
+				if(player.getBoundDirection().intersects(toEast)){scrollReady = false;x = 3;DungeonBuilder.scrollX = 810;}
 			}
 			
 			//map 0303
 			if(x == 3 && y == 3){
-				if(player.getBoundDirection().intersects(DungeonNavigator.toNorth)){scrollReady = false;y = 2;DungeonBuilder.scrollY = -630;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toNorth2)){scrollReady = false;y = 2;DungeonBuilder.scrollY = -630;}
-				if(player.getBoundDirection().intersects(DungeonNavigator.toWest)){scrollReady = false;x = 2;DungeonBuilder.scrollX = -810;}
+				if(player.getBoundDirection().intersects(toNorth)){scrollReady = false;y = 2;DungeonBuilder.scrollY = -630;}
+				if(player.getBoundDirection().intersects(toNorth2)){scrollReady = false;y = 2;DungeonBuilder.scrollY = -630;}
+				if(player.getBoundDirection().intersects(toWest)){scrollReady = false;x = 2;DungeonBuilder.scrollX = -810;}
 			}
 			
 			//map 0403
@@ -257,16 +267,13 @@ public class DungeonNavigator extends JComponent implements Runnable{
 
 		if(scrollReady)
 			setBounds();
-		
-		
-		if(!scrollReady)
-			dungeonBuilder.scrollBetweenMaps();
+
 	}
 	
 	
 
 	
-	public static void setBounds(){
+	public void setBounds(){
 		
 		//reset Bounds
 		toExit = new Rectangle(0,0,0,0);
@@ -275,9 +282,9 @@ public class DungeonNavigator extends JComponent implements Runnable{
 		
 		if(areaID == 1){
 			if(x == 0 && y == 0){
-				toEast = new Rectangle(809,135,1,100);
-				toEast2 = new Rectangle(809,405,1,100);
-				toSouth = new Rectangle(40,629,360,1);
+				toEast = new Rectangle(809,140,1,90);
+				toEast2 = new Rectangle(809,410,1,90);
+				toSouth = new Rectangle(45,629,350,1);
 			}
 			if(x == 1 && y == 0){
 				toEast = new Rectangle(809,225,1,100);
@@ -319,7 +326,7 @@ public class DungeonNavigator extends JComponent implements Runnable{
 				toExit= new Rectangle(0,400,1,100); //TO OverWorld ID02
 			}
 			if(x == 1 && y == 2){
-				toNorth = new Rectangle(580,0,100,1);
+				toNorth = new Rectangle(620,0,20,1);
 				toEast = new Rectangle(809,130,1,100);
 				toSouth = new Rectangle(580,629,100,1);
 				toWest = new Rectangle(0,400,1,100);
@@ -376,14 +383,35 @@ public class DungeonNavigator extends JComponent implements Runnable{
 	}
 	
 	
-	public Rectangle getWallN(int xTile, int yTile){return DungeonCollision.wallN[xTile][yTile];}
-	public Rectangle getWallE(int xTile, int yTile){return DungeonCollision.wallE[xTile][yTile];}
-	public Rectangle getWallS(int xTile, int yTile){return DungeonCollision.wallS[xTile][yTile];}
-	public Rectangle getWallW(int xTile, int yTile){return DungeonCollision.wallW[xTile][yTile];}
+
+
+	//get set
+	public int getX(){return x;} public int getY(){return y;}
+	public int getOldX(){return xOld;} public int getOldY(){return yOld;}
+	public boolean getDungeon(){return dungeon;} public int getAreaID(){return areaID;}
+	public boolean getLoadNewMap(){return loadNewMap;}
+	public boolean getScrollReady(){return scrollReady;}
 	
-	public Rectangle getWallNE(int xTile, int yTile){return DungeonCollision.wallNE[xTile][yTile];}
-	public Rectangle getWallSE(int xTile, int yTile){return DungeonCollision.wallSE[xTile][yTile];}
-	public Rectangle getWallSW(int xTile, int yTile){return DungeonCollision.wallSW[xTile][yTile];}
-	public Rectangle getWallNW(int xTile, int yTile){return DungeonCollision.wallNW[xTile][yTile];}
 	
+	public void setX(int x){this.x = x;} public void setY(int y){this.y = y;}
+	public void setOldX(int xOld){this.xOld = xOld;} public void setOldY(int yOld){this.yOld = yOld;}
+	public void setDungeon(boolean dungeon){this.dungeon = dungeon;} public void setAreaID(int areaID){this.areaID = areaID;}
+	public void setLoadNewMap(boolean loadNewMap){this.loadNewMap = loadNewMap;}
+	public void setScrollReady(boolean scrollReady){this.scrollReady = scrollReady;}
+	
+	//get Rectangles for Board
+	public Rectangle getToExit(){return toExit;}
+	public Rectangle getToNorth(){return toNorth;}public Rectangle getToEast(){return toEast;}public Rectangle getToSouth(){return toSouth;}public Rectangle getToWest(){return toWest;}
+	public Rectangle getToNorth2(){return toNorth2;}public Rectangle getToEast2(){return toEast2;}public Rectangle getToSouth2(){return toSouth2;}public Rectangle getToWest2(){return toWest2;}
+	
+	public Rectangle getObjectN(int layer,int xTile, int yTile){return DungeonCollision.objectN[layer][xTile][yTile];}
+	public Rectangle getObjectE(int layer,int xTile, int yTile){return DungeonCollision.objectE[layer][xTile][yTile];}
+	public Rectangle getObjectS(int layer,int xTile, int yTile){return DungeonCollision.objectS[layer][xTile][yTile];}
+	public Rectangle getObjectW(int layer,int xTile, int yTile){return DungeonCollision.objectW[layer][xTile][yTile];}
+	
+	public Rectangle getObjectNE(int layer,int xTile, int yTile){return DungeonCollision.objectNE[layer][xTile][yTile];}
+	public Rectangle getObjectSE(int layer,int xTile, int yTile){return DungeonCollision.objectSE[layer][xTile][yTile];}
+	public Rectangle getObjectSW(int layer,int xTile, int yTile){return DungeonCollision.objectSW[layer][xTile][yTile];}
+	public Rectangle getObjectNW(int layer,int xTile, int yTile){return DungeonCollision.objectNW[layer][xTile][yTile];}
+
 }

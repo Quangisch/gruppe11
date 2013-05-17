@@ -39,6 +39,7 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 	
 	//player coordinates
 	volatile int x,y;
+	int oldX, oldY;
 	int absoluteX, absoluteY;
 	
 	//animation
@@ -47,7 +48,7 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 	
 	boolean moveUp, moveRight, moveDown, moveLeft;
 	double punchCounter = 1;
-	boolean punchNow, block, loseLife;
+	boolean punchNow, block;
 	int lastDirection = 5;
 	int newDirection;
 	int moveStep = 0;
@@ -64,6 +65,8 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 	Rectangle attackBound;
 	int life = 3;
 	int coins = 0;
+	boolean visible = true;
+	boolean loseLife = false;
 	
 	//worldmapnavigation
 	Rectangle boundN,boundE,boundS,boundW,boundDirection;
@@ -89,7 +92,8 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 	public void paintComponents(Graphics g){
 		g2d = (Graphics2D) g;
 		//System.out.println("Player.paintComponents");
-		g2d.drawImage(playerMoveBuff,x,y,this);
+		if(visible)
+			g2d.drawImage(playerMoveBuff,x,y,this);
 	}
 	
 	public void run(){
@@ -440,6 +444,12 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 		return playerMoveBuff;
 	}
 	
+	public void resetPosition(){
+		x = oldX;
+		y = oldY;
+	}
+	
+	
 	//get,set variables
 	public int getX(){return x;}
 	public int getY(){return y;}
@@ -448,14 +458,20 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 	public int getLastDirection(){return lastDirection;}
 	public int getLife(){return life;}
 	public int getCoins(){return coins;}
+	public boolean getVisible(){return visible;}
+	
 	
 	public void setX(int x){this.x = x;}
 	public void setY(int y){this.y = y;}
+	public void setOldX(int oldX){this.oldX = oldX;}
+	public void setOldY(int oldY){this.oldY = oldY;}
 	public void setAbsoluteX(int absoluteX){this.absoluteX = absoluteX;}
 	public void setAbsoluteY(int absoluteY){this.absoluteY = absoluteY;}
 	public void setLastDirection(int lastDirection){this.lastDirection = lastDirection;}
-	public void setLife(int life){this.life = life;}
+	public void setLife(int life){if(life < this.life)loseLife=true;this.life = life;}
 	public void setCoins(int coins){this.coins = coins;}
+	public void setVisible(boolean visible){this.visible = visible;}
+	public void setMoveable(boolean movable){this.moveable = moveable;}
 	
 	
 	//get Bounds

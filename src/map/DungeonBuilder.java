@@ -14,11 +14,14 @@ import javax.swing.JComponent;
 import characters.Player;
 
 import core.FileLink;
+import core.GameManager;
 
 
-public class DungeonBuilder extends JComponent implements Runnable, FileLink{
+public class DungeonBuilder extends JComponent implements FileLink{
 	
 	Player player;
+	static DungeonNavigator dungeonNavigator;
+	DynamicMapAnimation dynamicMapAnimation;
 	
 	Graphics2D g2d;
 	
@@ -48,126 +51,108 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 	String dungeonIDName, mapIDName;
 	
 	
-	public DungeonBuilder(Player player){
+	public DungeonBuilder(Player player, DynamicMapAnimation dynamicMapAnimation){
 		System.err.println("->DungeonBuilder");
 		this.player = player;
-		
-		readData();
-		/*
-		for(int y = 0; y < 7; y++){			
-			for(int x = 0; x < 9; x++){
-				System.out.println("Wallx:"+xWall1[0][3][x][y]+",y:"+yWall1[0][3][x][y]);
-			}
-			System.out.println("");
-		}
-		*/
+		this.dynamicMapAnimation = dynamicMapAnimation;
 		
 	}
 	
-	public void run(){
-		
-		
-		if(DungeonNavigator.loadNewMap){
-			System.out.println("loadNewMap:"+DungeonNavigator.loadNewMap);
-			readData();
-			DungeonNavigator.loadNewMap = false;
-		}
-		
+	public DungeonBuilder(DungeonNavigator dungeonNavigator){
+		this.dungeonNavigator = dungeonNavigator;
 	}
-	
+
 	public void paintComponents(Graphics g){
 		g2d = (Graphics2D) g;
 	
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xFloor2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yFloor2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
+					g2d.drawImage(mapBuff.getSubimage((xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,(yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollX+scrollX+dynamicMapAnimation.getShakeX(6,xTile,yTile),yTile*90+scrollY+scrollX+dynamicMapAnimation.getShakeY(6,xTile,yTile),this);
 				}
 			}
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xFloor1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yFloor1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
+					g2d.drawImage(mapBuff.getSubimage((xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,(yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollX+dynamicMapAnimation.getShakeX(5,xTile,yTile),yTile*90+scrollY+dynamicMapAnimation.getShakeY(5,xTile,yTile),this);
 				}
 			}
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xWall2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yWall2[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
+					g2d.drawImage(mapBuff.getSubimage((xWall2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,(yWall2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
 				}
 				
 			}
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yWall1[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
+					g2d.drawImage(mapBuff.getSubimage((xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,(yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
 				}
 			}
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xDoor[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yDoor[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
-				}
-			}
-			
-			for(int yTile = 0; yTile < 7; yTile++){			
-				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xObjects[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yObjects[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
+					g2d.drawImage(mapBuff.getSubimage((xDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,(yDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
 				}
 			}
 			
 			for(int yTile = 0; yTile < 7; yTile++){			
 				for(int xTile = 0; xTile < 9; xTile++){
-					g2d.drawImage(mapBuff.getSubimage((xInteraction[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,(yInteraction[DungeonNavigator.x][DungeonNavigator.y][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
+					g2d.drawImage(mapBuff.getSubimage((xObjects[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,(yObjects[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
+				}
+			}
+			
+			for(int yTile = 0; yTile < 7; yTile++){			
+				for(int xTile = 0; xTile < 9; xTile++){
+					g2d.drawImage(mapBuff.getSubimage((xInteraction[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,(yInteraction[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollX,yTile*90+scrollY,this);
 				}
 			}
 			
 			
 			
 	
-			if(!DungeonNavigator.scrollReady){
+			if(!dungeonNavigator.getScrollReady()){
 				for(int yTile = 0; yTile < 7; yTile++){			
 					for(int xTile = 0; xTile < 9; xTile++){
-						g2d.drawImage(mapBuff.getSubimage((xFloor2[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yFloor2[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+						g2d.drawImage(mapBuff.getSubimage((xFloor2[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,(yFloor2[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
 					}
 				}
 				for(int yTile = 0; yTile < 7; yTile++){			
 					for(int xTile = 0; xTile < 9; xTile++){
-						g2d.drawImage(mapBuff.getSubimage((xFloor1[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yFloor1[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+						g2d.drawImage(mapBuff.getSubimage((xFloor1[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,(yFloor1[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
 					}
 				}
 				for(int yTile = 0; yTile < 7; yTile++){			
 					for(int xTile = 0; xTile < 9; xTile++){
-						g2d.drawImage(mapBuff.getSubimage((xWall2[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yWall2[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+						g2d.drawImage(mapBuff.getSubimage((xWall2[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,(yWall2[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
 					}
 					
 				}
 				for(int yTile = 0; yTile < 7; yTile++){			
 					for(int xTile = 0; xTile < 9; xTile++){
-						g2d.drawImage(mapBuff.getSubimage((xWall1[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yWall1[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+						g2d.drawImage(mapBuff.getSubimage((xWall1[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,(yWall1[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
 					}
 				}
 				for(int yTile = 0; yTile < 7; yTile++){			
 					for(int xTile = 0; xTile < 9; xTile++){
-						g2d.drawImage(mapBuff.getSubimage((xDoor[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yDoor[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
-					}
-				}
-				
-				for(int yTile = 0; yTile < 7; yTile++){			
-					for(int xTile = 0; xTile < 9; xTile++){
-						g2d.drawImage(mapBuff.getSubimage((xObjects[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yObjects[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+						g2d.drawImage(mapBuff.getSubimage((xDoor[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,(yDoor[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
 					}
 				}
 				
 				for(int yTile = 0; yTile < 7; yTile++){			
 					for(int xTile = 0; xTile < 9; xTile++){
-						g2d.drawImage(mapBuff.getSubimage((xInteraction[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,(yInteraction[DungeonNavigator.xOld][DungeonNavigator.yOld][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+						g2d.drawImage(mapBuff.getSubimage((xObjects[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,(yObjects[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
+					}
+				}
+				
+				for(int yTile = 0; yTile < 7; yTile++){			
+					for(int xTile = 0; xTile < 9; xTile++){
+						g2d.drawImage(mapBuff.getSubimage((xInteraction[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,(yInteraction[dungeonNavigator.getOldX()][dungeonNavigator.getOldY()][xTile][yTile]-1)*90,90,90),xTile*90+scrollPaintX,yTile*90+scrollPaintY,this);
 					}
 				}
 			}
 			
-		
-
 	}
 	
 
 	
-	private void readData(){		
+	public void readMapData(){		
 		
 		
 		String searchLine, dataLine;
@@ -231,47 +216,60 @@ public class DungeonBuilder extends JComponent implements Runnable, FileLink{
 		} catch (IOException e) {
 			System.err.println("MapBuilder: "+e);
 		}
+
+		dungeonNavigator.setLoadNewMap(false);
 	}
 	
 	public void scrollBetweenMaps(){
-		System.out.println("scrollBetween");
-		System.out.println(DungeonNavigator.yOld + ", "+DungeonNavigator.y);
-		System.out.println(DungeonNavigator.xOld + ", "+DungeonNavigator.x);
-		if(DungeonNavigator.yOld > DungeonNavigator.y){
-			DungeonNavigator.scrollReady = false;
+		if(GameManager.printMsg){
+			System.out.println("scrollBetween");
+			System.out.println(dungeonNavigator.getOldY() + ", "+dungeonNavigator.getY());
+			System.out.println(dungeonNavigator.getOldX() + ", "+dungeonNavigator.getX());
+		}
+		
+		if(dungeonNavigator.getOldY() > dungeonNavigator.getY()){
+			dungeonNavigator.setScrollReady(false);
 			scrollY += SCROLLSPEED_Y;
 			scrollPaintY += SCROLLSPEED_Y;
 			//System.out.println("scroll to North: " + scrollY);
 			
 			player.setY(540+scrollY);
-			if(scrollY >= 0){System.out.println("North");scrollY = 0;scrollPaintY = 0;DungeonNavigator.scrollReady = true;}
+			player.setOldX(player.getX());
+			player.setOldY(player.getY());
+			if(scrollY >= 0){System.out.println("North");scrollY = 0;scrollPaintY = 0;dungeonNavigator.setScrollReady(true);}
 		}
-		if(DungeonNavigator.xOld < DungeonNavigator.x){
-			DungeonNavigator.scrollReady = false;
+		if(dungeonNavigator.getOldX() < dungeonNavigator.getX()){
+			dungeonNavigator.setScrollReady(false);
 			scrollX -= SCROLLSPEED_X;
 			scrollPaintX -= SCROLLSPEED_X;
 			//System.out.println("scroll to East: " + scrollX);
 			
 			player.setX(scrollX+15);
-			if(scrollX <= 0){System.out.println("East");scrollX = 0;scrollPaintX = 0;DungeonNavigator.scrollReady = true;}
+			player.setOldX(player.getX());
+			player.setOldY(player.getY());
+			if(scrollX <= 0){System.out.println("East");scrollX = 0;scrollPaintX = 0;dungeonNavigator.setScrollReady(true);}
 		}
-		if(DungeonNavigator.yOld < DungeonNavigator.y){
-			DungeonNavigator.scrollReady = false;
+		if(dungeonNavigator.getOldY() < dungeonNavigator.getY()){
+			dungeonNavigator.setScrollReady(false);
 			scrollY -= SCROLLSPEED_Y;
 			scrollPaintY -= SCROLLSPEED_Y;
 			//System.out.println("scroll to South: " + scrollY);
 
 			player.setY(scrollY);
-			if(scrollY <= 0){System.out.println("South");scrollY = 0;scrollPaintY = 0;DungeonNavigator.scrollReady = true;}
+			player.setOldX(player.getX());
+			player.setOldY(player.getY());
+			if(scrollY <= 0){System.out.println("South");scrollY = 0;scrollPaintY = 0;dungeonNavigator.setScrollReady(true);}
 		}	
-		if(DungeonNavigator.xOld > DungeonNavigator.x){
-			DungeonNavigator.scrollReady = false;
+		if(dungeonNavigator.getOldX() > dungeonNavigator.getX()){
+			dungeonNavigator.setScrollReady(false);
 			scrollX += SCROLLSPEED_X;
 			scrollPaintX += SCROLLSPEED_X;
 			//System.out.println("scroll to West: " + scrollX);
 
 			player.setX(720+scrollX);
-			if(scrollX >= 0){System.out.println("West");scrollX = 0;scrollPaintX = 0;DungeonNavigator.scrollReady = true;}
+			player.setOldX(player.getX());
+			player.setOldY(player.getY());
+			if(scrollX >= 0){System.out.println("West");scrollX = 0;scrollPaintX = 0;dungeonNavigator.setScrollReady(true);}
 		}
 	
 		
