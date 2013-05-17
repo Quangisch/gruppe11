@@ -18,8 +18,8 @@ import java.awt.Image;
 
 public class OverWorldMap extends JComponent implements Runnable, FileLink{
 	
-	Player player;
-	OverWorldCamera overWorldCamera;
+	private static Player player;
+	private static OverWorldCamera overWorldCamera;
 	
 	
 	static Rectangle enterDungeonBound;
@@ -36,11 +36,15 @@ public class OverWorldMap extends JComponent implements Runnable, FileLink{
 	
 	BufferedImage newMap;
 	
+	public OverWorldMap(){
+		System.err.println("->Map");
+		
+	}
+	
 	public OverWorldMap(Player player, OverWorldCamera overWorldCamera){
 		this.player = player;
 		this.overWorldCamera = overWorldCamera;
-		System.err.println("->Map");
-	
+
 	}
 	
 	public void paintComponents(Graphics g){

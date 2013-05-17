@@ -40,8 +40,8 @@ import java.awt.Rectangle;
 abstract class AbstractEnemy extends JComponent {
 	
 	Graphics2D g2d;
-	Player player;
-	DungeonCollision dungeonCollision;
+	private Player player;
+	private DungeonCollision dungeonCollision;
 	
 	//non static classes
 	int x, y;

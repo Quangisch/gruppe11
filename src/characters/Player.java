@@ -29,9 +29,9 @@ import java.awt.geom.AffineTransform;
 
 public class Player extends JComponent implements Runnable, FileLink, GameObjects {
 	
-	static OverWorldMap overWorldMap;
-	static DungeonNavigator dungeonNavigator;
-	static OverWorldCamera overWorldCamera;
+	private static OverWorldMap overWorldMap;
+	private static DungeonNavigator dungeonNavigator;
+	private static OverWorldCamera overWorldCamera;
 	
 	
 	Graphics2D g2d;
@@ -87,6 +87,7 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 	}
 	
 	public Player(OverWorldMap overWorldMap,DungeonNavigator dungeonNavigator){
+		this.overWorldCamera = overWorldCamera;
 		this.overWorldMap = overWorldMap;
 		this.dungeonNavigator = dungeonNavigator;
 	}
@@ -162,16 +163,18 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
     		x += dx;
         	y += dy;
     	}
-
- 
+    	
+  
 		//moveable Camera
 		if(overWorldMap.getCameraStatus()){
+			System.out.println("moveableCam");
 			if(absoluteY < 2065 || absoluteY > 0){
 		    	overWorldMap.setCameraY(absoluteY);
 		    } 
 		    if(absoluteX < 1900|| absoluteX > 0){
 				overWorldMap.setCameraX(absoluteX);
 			} 
+			
 		    overWorldMap.alignCamera();
  		 }		
 	

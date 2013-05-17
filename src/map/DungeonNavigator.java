@@ -19,10 +19,10 @@ import core.GameManager;
 
 public class DungeonNavigator extends JComponent implements Runnable{
 	
-	Player player;
-	DungeonBuilder dungeonBuilder;
-	DungeonCollision dungeonCollision;
-	OverWorldMap overWorldMap;
+	private static Player player;
+	private static DungeonBuilder dungeonBuilder;
+	private static DungeonCollision dungeonCollision;
+	private static OverWorldMap overWorldMap;
 	
 	Graphics2D g2d;
 	
@@ -39,13 +39,15 @@ public class DungeonNavigator extends JComponent implements Runnable{
 	Rectangle toNorth, toEast, toSouth, toWest;
 	Rectangle toNorth2, toEast2, toSouth2,toWest2;
 	
+	public DungeonNavigator(){
+		
+	}
 	
-	public DungeonNavigator(Player player, DungeonBuilder dungeonBuilder, DungeonCollision dungeonCollision,OverWorldMap overWorldMap){
+	public DungeonNavigator(Player player,OverWorldMap overWorldMap, DungeonBuilder dungeonBuilder, DungeonCollision dungeonCollision){
 		this.player = player;
+		this.overWorldMap = overWorldMap;
 		this.dungeonBuilder = dungeonBuilder;
 		this.dungeonCollision = dungeonCollision;
-		this.overWorldMap = overWorldMap;
-		
 	}
 	
 	public void paintComponent(Graphics g){
@@ -207,13 +209,23 @@ public class DungeonNavigator extends JComponent implements Runnable{
 					player.setAbsoluteX(0);player.setAbsoluteY(0);
 					player.setX(110); player.setY(20);
 					
-					overWorldMap.setLoadNewMap(true);
+					//overWorldMap.setLoadNewMap(true);
 					overWorldMap.setCameraLock(false);
 					OverWorldMap.overWorld = true; dungeon = false;
 					dungeonCollision.resetBounds();
-					GameManager.changeMapModus = true;
+					//GameManager.changeMapModus = true;
 					System.out.println("leave dungeon1 -> OverWorldMap1"); 
 					dungeonBuilder.setEnemyLife(0);
+					
+	
+					/*
+					OverWorldMap.overWorld = true;
+					dungeon = false;
+					overWorldMap.setCameraX(0); overWorldMap.setCameraY(0);
+					player.setAbsoluteX(0);player.setAbsoluteY(0);
+					player.setX(110); player.setY(20);
+					*/
+					
 				}
 				
 				if(player.getBoundDirection().intersects(toEast)){scrollReady = false;x = 1;DungeonBuilder.scrollX = 810;}

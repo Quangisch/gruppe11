@@ -26,11 +26,11 @@ import core.GameManager;
 
 public class DungeonBuilder extends JComponent implements FileLink {
 	
-	Player player;
-	static Board board;
-	static DungeonNavigator dungeonNavigator;
-	static Goomba goomba;
-	DynamicMapAnimation dynamicMapAnimation;
+	private static Player player;
+	private static Board board;
+	private static DungeonNavigator dungeonNavigator;
+	private static Goomba goomba;
+	private static DynamicMapAnimation dynamicMapAnimation;
 	
 	Graphics2D g2d;
 	
@@ -60,14 +60,15 @@ public class DungeonBuilder extends JComponent implements FileLink {
 	String dungeonIDName, mapIDName;
 	
 	
-	public DungeonBuilder(Player player, DynamicMapAnimation dynamicMapAnimation){
+	public DungeonBuilder(){
 		System.err.println("->DungeonBuilder");
-		this.player = player;
-		this.dynamicMapAnimation = dynamicMapAnimation;
+		
 		
 	}
 	
-	public DungeonBuilder(DungeonNavigator dungeonNavigator, Board board, Goomba goomba){
+	public DungeonBuilder(Player player, Goomba goomba, DungeonNavigator dungeonNavigator, DynamicMapAnimation dynamicMapAnimation, Board board){
+		this.player = player;
+		this.dynamicMapAnimation = dynamicMapAnimation;
 		this.dungeonNavigator = dungeonNavigator;
 		this.board = board;
 		this.goomba = goomba;

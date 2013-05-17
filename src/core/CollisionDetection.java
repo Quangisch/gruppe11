@@ -19,22 +19,26 @@ import map.OverWorldMap;
 
 public class CollisionDetection implements Runnable{
 	
-	Player player;
-	Goomba goomba;
-	OverWorldMap overWorldMap;
-	DungeonNavigator dungeonNavigator;
+	private static Player player;
+	private static Goomba goomba;
+	private static OverWorldMap overWorldMap;
+	private static DungeonNavigator dungeonNavigator;
 	
 	final static Rectangle BoundN = new Rectangle(0,0,810,1);
 	final static Rectangle BoundE = new Rectangle(809,0,1,630);
 	final static Rectangle BoundS = new Rectangle(0,629,810,1);
 	final static Rectangle BoundW = new Rectangle(0,0,1,630);
 	
+	public CollisionDetection(){
+		
+	}
 	
-	public CollisionDetection(Player player, OverWorldMap overWorldMap, DungeonNavigator dungeonNavigator, Goomba goomba){
+	public CollisionDetection(Player player, Goomba goomba, OverWorldMap overWorldMap, DungeonNavigator dungeonNavigator){
 		this.player = player;
+		this.goomba = goomba;
 		this.overWorldMap = overWorldMap;
 		this.dungeonNavigator = dungeonNavigator;
-		this.goomba = goomba;
+		
 	}
 
 	public void run(){

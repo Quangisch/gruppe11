@@ -13,31 +13,42 @@ import characters.Player;
 import characters.PlayerInterface;
 
 public interface GameObjects{
-	final static DynamicMapAnimation dynamicMapAnimation = new DynamicMapAnimation();
-	final static MenuIngame menuIngame = new MenuIngame();
-	final static MenuMain menuMain = new MenuMain();
+	
 	
 	
 	final static Player player = new Player();
 	final static Goomba goomba = new Goomba();
-	final static PlayerInterface playerInterface = new PlayerInterface(player);
+	final static PlayerInterface playerInterface = new PlayerInterface();
+	final static CollisionDetection collisionDetection = new CollisionDetection();
 	
-	final static OverWorldCamera overWorldCamera = new OverWorldCamera(player);
-	final static DungeonBuilder dungeonBuilder = new DungeonBuilder(player,dynamicMapAnimation);
+	final static OverWorldMap overWorldMap = new OverWorldMap();
+	final static OverWorldCamera overWorldCamera = new OverWorldCamera();
+	
+	final static DungeonBuilder dungeonBuilder = new DungeonBuilder();
 	final static DungeonCollision dungeonCollision = new DungeonCollision();
+	final static DungeonNavigator dungeonNavigator = new DungeonNavigator();
 	
-	final static OverWorldMap overWorldMap = new OverWorldMap(player,overWorldCamera);
-	final static DungeonNavigator dungeonNavigator = new DungeonNavigator(player,dungeonBuilder,dungeonCollision,overWorldMap);
-	final static CollisionDetection collisionDetection = new CollisionDetection(player,overWorldMap,dungeonNavigator,goomba);
+	final static DynamicMapAnimation dynamicMapAnimation = new DynamicMapAnimation();
+	final static MenuMain menuMain = new MenuMain();
+	final static MenuIngame menuIngame = new MenuIngame();
+	
 	
 	final static Board board = new Board(menuMain, menuIngame, player,playerInterface,overWorldMap,dungeonNavigator,dungeonBuilder, collisionDetection,goomba);
 	
 	
 	//===
-	final static Goomba goombaReference = new Goomba(player,dungeonCollision);
 	final static Player playerReference = new Player(overWorldMap,dungeonNavigator);
+	final static Goomba goombaReference = new Goomba(player,dungeonCollision);
+	final static PlayerInterface playerInterfaceReference = new PlayerInterface(player);
+	final static CollisionDetection collisionDetectionReference = new CollisionDetection(player,goomba, overWorldMap,dungeonNavigator);
+	
+	final static OverWorldMap overWorldMapReference = new OverWorldMap(player,overWorldCamera);
+	final static OverWorldCamera overWorldCameraReference = new OverWorldCamera(player);
+	
+	final static DungeonNavigator dungeonNavigatorReference = new DungeonNavigator(player,overWorldMap,dungeonBuilder,dungeonCollision);
+	final static DungeonBuilder dungeonBuilderReference = new DungeonBuilder(player,goomba,dungeonNavigator,dynamicMapAnimation,board);
 	final static DungeonCollision dungeonCollisionReference = new DungeonCollision(player,goomba,dungeonNavigator,dynamicMapAnimation);
-	final static DungeonBuilder dungeonBuilderReference = new DungeonBuilder(dungeonNavigator, board, goomba);
+	
 	final static DynamicMapAnimation dynamicMapAnimationReference = new DynamicMapAnimation(dungeonNavigator);
 	
 	

@@ -6,7 +6,7 @@ import characters.Player;
 
 public class OverWorldCamera implements Runnable{
 	
-	Player player;
+	private static Player player;
 	
 	
 	int cameraX, cameraY;
@@ -21,19 +21,22 @@ public class OverWorldCamera implements Runnable{
 	int scrollLock = 0;
 	
 	
-	public OverWorldCamera (Player player){
+	public OverWorldCamera (){
 		System.err.println("->OverWorldCamera");
-		this.player = player;
 		//toogleCamera(true);
 	}
 	
+	public OverWorldCamera(Player player){
+		this.player = player;
+	}
+	
 	public void run(){
+	
 		if(!cameraOn){
 			moveCamera();
 			scrollCamera();
 		}
-			
-	
+
 		//System.out.println("CscrollX: " +cameraX);
 	}
 	
@@ -59,9 +62,8 @@ public class OverWorldCamera implements Runnable{
 				cameraY -= CAMERASPEED;
 				player.setY(player.getY()+CAMERASPEED);
 			}
-			
 		}
-				
+			
 	}
 	
 	//scroll between map with fixed camera
@@ -140,7 +142,7 @@ public class OverWorldCamera implements Runnable{
 			player.setX(405-15*3);
 			player.setY(315-20*3);
 			
-			//moveCamera();
+			moveCamera();
 		}
 		if(!cameraOn){
 			

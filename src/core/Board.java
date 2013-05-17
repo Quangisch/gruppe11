@@ -42,16 +42,16 @@ import menu.MenuMain;
 
 public class Board extends JPanel implements ActionListener, FileLink{
 	
-	MenuMain menuMain;
-	MenuIngame menuIngame;
+	private MenuMain menuMain;
+	private MenuIngame menuIngame;
 	
-	Player player;
-	PlayerInterface playerInterface;
-	OverWorldMap overWorldMap;
-	DungeonNavigator dungeonNavigator;
-	DungeonBuilder dungeonBuilder;
-	CollisionDetection collisionDetection;
-	Goomba goomba;
+	private Player player;
+	private PlayerInterface playerInterface;
+	private OverWorldMap overWorldMap;
+	private DungeonNavigator dungeonNavigator;
+	private DungeonBuilder dungeonBuilder;
+	private CollisionDetection collisionDetection;
+	private Goomba goomba;
 
 	private Timer repaintTimer;
 	static Graphics2D g2d;
@@ -59,6 +59,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	public Board(MenuMain menuMain, MenuIngame menuIngame, Player player,PlayerInterface playerInterface,OverWorldMap overWorldMap,DungeonNavigator dungeonNavigator,DungeonBuilder dungeonBuilder,CollisionDetection collisionDetection,Goomba goomba){
 		this.menuMain = menuMain;
 		this.menuIngame = menuIngame;
+		
 		this.player = player;
 		this.playerInterface = playerInterface;
 		this.overWorldMap = overWorldMap;

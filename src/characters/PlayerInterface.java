@@ -21,7 +21,7 @@ import core.GameManager;
 
 public class PlayerInterface extends JComponent implements Runnable,FileLink{
 	
-	Player player;
+	private static Player player;
 	
 	Graphics2D g2d;
 	BufferedImage coinBuff, heartBuff;
@@ -30,9 +30,7 @@ public class PlayerInterface extends JComponent implements Runnable,FileLink{
 	int fallBack;
 	int counterTimer = 0;
 	
-	public PlayerInterface(Player player){
-		this.player = player;
-		
+	public PlayerInterface(){
 		try{
 			heartBuff = ImageIO.read(heart);
 			coinBuff = ImageIO.read(coin);
@@ -40,6 +38,10 @@ public class PlayerInterface extends JComponent implements Runnable,FileLink{
 			System.err.println("PlayerInterface: " + e);
 		}
 		
+	}
+	
+	public PlayerInterface(Player player){
+		this.player = player;
 	}
 	
 	public void run(){

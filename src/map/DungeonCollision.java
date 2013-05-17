@@ -13,10 +13,10 @@ import core.GameManager;
 
 public class DungeonCollision implements Runnable {
 	
-	static Player player;
-	static DynamicMapAnimation dynamicMapAnimation;
-	static DungeonNavigator dungeonNavigator;
-	static Goomba goomba;
+	private static Player player;
+	private static DynamicMapAnimation dynamicMapAnimation;
+	private static DungeonNavigator dungeonNavigator;
+	private static Goomba goomba;
 	
 	/*object[layer][xTile][yTile]
 	 * layer 0 = Interaction
