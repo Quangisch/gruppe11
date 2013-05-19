@@ -208,6 +208,13 @@ public class GameManager extends JFrame implements Runnable, GameObjects, Action
 		player.setLife(3);
 		player.setLastDirection(1);
 		
+		win = false;
+		gameOver = false;
+		ingame = false;
+		menu = true;
+		//reset static variables
+		GameManager dummy = new GameManager();
+		
 	}
 
 }

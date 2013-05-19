@@ -82,6 +82,7 @@ public class MenuMain extends JComponent implements Runnable, FileLink, GridInte
 		
 		if(!GameManager.win && !GameManager.gameOver){
 			
+			//MainMenu
 			if(!options){
 				g2d.drawImage(buttonMain, C4.getX(), C4.getY(), null);
 				if(!GameManager.ingame)
@@ -89,6 +90,7 @@ public class MenuMain extends JComponent implements Runnable, FileLink, GridInte
 				g2d.drawImage(buttonMain, F4.getX(), F4.getY(), null);
 			}
 			
+			//MainMenu Options
 			if(options){
 				g2d.drawImage(buttonMain, C2.getX(), C2.getY(), null);
 				g2d.drawImage(buttonMain, C6.getX(), C6.getY(), null);
@@ -96,6 +98,7 @@ public class MenuMain extends JComponent implements Runnable, FileLink, GridInte
 			}
 		} 
 		
+		//führt zum Main Menue
 		if((GameManager.win || GameManager.gameOver) && GameManager.ingame){
 			g2d.drawImage(buttonMain, F4.getX(), F4.getY(), null);
 		}
@@ -112,6 +115,7 @@ public class MenuMain extends JComponent implements Runnable, FileLink, GridInte
 		int clickX = mE.getX();
 		int clickY = mE.getY();
 		
+		//menutree
 		if(!GameManager.win && !GameManager.gameOver){
 			System.out.println("PaintMenu");
 			//MenuMain
@@ -120,8 +124,7 @@ public class MenuMain extends JComponent implements Runnable, FileLink, GridInte
 				if(startButton.contains(clickX, clickY)){
 					System.out.println("clickStart");
 					GameManager.ingame = true;
-					GameManager.menu = false;
-										
+					GameManager.menu = false;					
 				}
 				
 				if(optionsButton.contains(clickX, clickY)){
@@ -158,7 +161,6 @@ public class MenuMain extends JComponent implements Runnable, FileLink, GridInte
 					player.setLife(5);
 					DungeonNavigator.setGoombaLife(2);
 					goomba.setSpeed(1);
-					
 				}
 				
 				if(hardButton.contains(clickX, clickY)){
@@ -173,20 +175,14 @@ public class MenuMain extends JComponent implements Runnable, FileLink, GridInte
 					options = false;
 				}
 			}
-		}
+		}//menutree
 		
+		//Screen between win/lose and menu state
 		if((GameManager.win || GameManager.gameOver) && GameManager.ingame){
 			
 			if(quitButton.contains(clickX, clickY)){
 				
 				System.out.println("Back MainMenu");
-				
-				GameManager.win = false;
-				GameManager.gameOver = false;
-				GameManager.ingame = false;
-				GameManager.menu = true;
-				player.setLife(3);
-				GameManager dummy = new GameManager();
 				GameManager.resetGame();
 			}
 		}
