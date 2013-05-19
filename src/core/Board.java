@@ -242,8 +242,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	}
 	
 	private class MAdapter extends MouseAdapter{ 
-	      public void mouseClicked(MouseEvent mE) { 
-	    	  System.out.println("Click");
+	      public void mouseClicked(MouseEvent mE) {
 	    	  menuMain.mouseClicked(mE);
 	      } 
 	 }

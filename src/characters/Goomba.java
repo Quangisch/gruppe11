@@ -66,7 +66,8 @@ public class Goomba extends AbstractEnemy implements Runnable, FileLink {
 	}
 	
 	private void followPlayer(){
-		System.out.println("goomba:"+x+" to "+ player.getX());
+		if(GameManager.printMsg)
+			System.out.println("goomba:"+x+" to "+ player.getX());
 		
 		if(x > player.getX()){
 			moveRight = false;

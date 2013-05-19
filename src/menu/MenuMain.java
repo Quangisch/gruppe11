@@ -78,13 +78,9 @@ public class MenuMain extends JComponent implements Runnable, FileLink, GridInte
 	public void paintComponents(Graphics g){
 		g2d = (Graphics2D) g;
 		
-		System.out.println(GameManager.win);
-		System.err.println(GameManager.gameOver);
-		
 		g2d.drawImage(menuMain, 0, 0, null);
 		
 		if(!GameManager.win && !GameManager.gameOver){
-			System.out.println("paintMenuMain");
 			
 			if(!options){
 				g2d.drawImage(buttonMain, C4.getX(), C4.getY(), null);

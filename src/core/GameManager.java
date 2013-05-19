@@ -39,8 +39,8 @@ public class GameManager extends JFrame implements Runnable, GameObjects, Action
 	public static boolean repaintNow = false;
 	public static boolean paintBounds = false;
 	
-	public static boolean menu = false;
-	public static boolean ingame = true;
+	public static boolean menu = true;
+	public static boolean ingame = false;
 	
 	public static int musicVolume = 50;
 	public static int soundVolume = 50;
@@ -206,6 +206,7 @@ public class GameManager extends JFrame implements Runnable, GameObjects, Action
 		player.setVisible(true);
 		player.setMoveable(true);
 		player.setLife(3);
+		player.setLastDirection(1);
 		
 	}
 
