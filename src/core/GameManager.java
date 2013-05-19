@@ -141,7 +141,7 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 					mapScheduler.scheduleWithFixedDelay(overWorldMapThread, 50, 50,TimeUnit.MILLISECONDS);
 					mapScheduler.scheduleWithFixedDelay(dynamicMapAnimationThread,100,50,TimeUnit.MILLISECONDS);
 					
-					enemyScheduler.scheduleWithFixedDelay(goombaThread,200,10,TimeUnit.MILLISECONDS);
+					enemyScheduler.scheduleWithFixedDelay(goombaThread,200,15,TimeUnit.MILLISECONDS);
 					
 					
 			/*TODO

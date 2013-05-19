@@ -247,7 +247,7 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 		
 		if (punchNow && punchCounter >= 1){
 		
-			System.out.println("punchCounter: "+punchCounter); 
+			//System.out.println("punchCounter: "+punchCounter); 
 			playerMoveBuff = playerMove.getSubimage((9+(int)punchCounter)*spriteGridX, (lastDirection-1)*spriteGridY, spriteGridX, spriteGridY);
 			if (punchCounter < 3)
 				punchCounter += 0.1;

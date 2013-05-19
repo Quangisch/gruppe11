@@ -564,19 +564,19 @@ public DungeonCollision(){
 	public void checkGoombaCollisionWall1(){
 		for(int yTile = 0; yTile < 7; yTile++){
 			for(int xTile = 0; xTile <9; xTile++){
-				if(goomba.getBoundS().intersects(objectN[3][xTile][yTile])){goomba.setY(goomba.getY()+25);goomba.setNewRandomMove();}
-				if(goomba.getBoundS().intersects(objectE[3][xTile][yTile])){goomba.setX(goomba.getX()-25);goomba.setNewRandomMove();}
-				if(goomba.getBoundS().intersects(objectS[3][xTile][yTile])){goomba.setY(goomba.getY()-25);goomba.setNewRandomMove();}
-				if(goomba.getBoundS().intersects(objectW[3][xTile][yTile])){goomba.setX(goomba.getX()+25);goomba.setNewRandomMove();}
+				if(goomba.getBoundS().intersects(objectN[3][xTile][yTile])){goomba.setY(goomba.getY()+25);}
+				if(goomba.getBoundS().intersects(objectE[3][xTile][yTile])){goomba.setX(goomba.getX()-25);}
+				if(goomba.getBoundS().intersects(objectS[3][xTile][yTile])){goomba.setY(goomba.getY()-25);}
+				if(goomba.getBoundS().intersects(objectW[3][xTile][yTile])){goomba.setX(goomba.getX()+25);}
 				
 				if(goomba.getBoundS().intersects(objectN[3][xTile][yTile] ) && goomba.getBoundS().intersects(objectE[3][xTile][yTile])){
-					goomba.setY(goomba.getY()+25);goomba.setX(goomba.getX()-25);goomba.setNewRandomMove();}
+					goomba.setY(goomba.getY()+25);goomba.setX(goomba.getX()-25);}
 				if(goomba.getBoundS().intersects(objectN[3][xTile][yTile] ) && goomba.getBoundS().intersects(objectW[3][xTile][yTile])){
-					goomba.setY(goomba.getY()+25);goomba.setX(goomba.getX()+25);goomba.setNewRandomMove();}
+					goomba.setY(goomba.getY()+25);goomba.setX(goomba.getX()+25);}
 				if(goomba.getBoundS().intersects(objectS[3][xTile][yTile]) && goomba.getBoundS().intersects(objectE[3][xTile][yTile])){
-					goomba.setY(goomba.getY()-25);goomba.setX(goomba.getX()-25);goomba.setNewRandomMove();}
+					goomba.setY(goomba.getY()-25);goomba.setX(goomba.getX()-25);}
 				if(goomba.getBoundS().intersects(objectS[3][xTile][yTile]) && goomba.getBoundS().intersects(objectW[3][xTile][yTile])){
-					goomba.setY(goomba.getY()-25);goomba.setX(goomba.getX()+25);goomba.setNewRandomMove();}
+					goomba.setY(goomba.getY()-25);goomba.setX(goomba.getX()+25);}
 			}
 		}
 	}

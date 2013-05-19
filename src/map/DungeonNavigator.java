@@ -403,14 +403,14 @@ public class DungeonNavigator extends JComponent implements Runnable{
 	
 	public void spawnEnemy(){
 		System.err.println("spawn Enemy");
-		/*
-		if(x == 0 && y == 3){
-			dungeonBuilder.setEnemyLife(1);
-			dungeonBuilder.setEnemyPosition(DungeonBuilder.scrollX+200, DungeonBuilder.scrollY+300);
+		
+		if(x == 1 && y == 2){
+			dungeonBuilder.setEnemyLife(2);
+			dungeonBuilder.setEnemyPosition(DungeonBuilder.scrollX+200, DungeonBuilder.scrollY+50);
 		} else {
 			dungeonBuilder.setEnemyLife(0);
 		}
-		*/
+		
 	}
 	
 	public void setEnemyLife(int life){
@@ -422,7 +422,7 @@ public class DungeonNavigator extends JComponent implements Runnable{
 	
 	public void checkDungeonCollision(){
 		dungeonCollision.checkCollisionFloor();
-		dungeonCollision.checkCollisionDoor();
+		//dungeonCollision.checkCollisionDoor();
 	}
 	
 	public void checkEnemyCollisionWall(){

@@ -98,13 +98,15 @@ abstract class AbstractEnemy extends JComponent {
 			}
 		
 		
-		randomMove = random.nextInt(4);
+		//randomMove = random.nextInt(4);
+		
+		moveRight = true;
+		lastDirection = 2;
 		
 	}
 	
 	public void paintComponents(Graphics g){
 		g2d = (Graphics2D) g;
-		lastDirection = 2;
 		if(visible)
 			g2d.drawImage(enemyMoveBuff,x,y,this);
 	}
@@ -112,9 +114,23 @@ abstract class AbstractEnemy extends JComponent {
 	
 	
 	void move(){
+		//moveUp = moveRight = moveDown = moveLeft = false;
+		/*
+		if(x > 270){
+			moveRight = false;
+			moveLeft = true;
+			lastDirection = 6;
+		}
 		
-		dx=dy=0;
-		moveUp = moveRight = moveDown = moveLeft = false;
+		if(x < 90){
+			moveLeft = false;
+			moveRight = true;
+			lastDirection = 2;
+		}
+		*/
+		
+		
+			
 		
 		switch(randomMove){
 		
@@ -126,6 +142,7 @@ abstract class AbstractEnemy extends JComponent {
 				break;
 		case 4: moveLeft = moveUp = true;
 		}
+		
 		
 		
 
@@ -147,7 +164,8 @@ abstract class AbstractEnemy extends JComponent {
 		    		interStep = 0;
 		    		interStep += speed;
 		    		//moveStep = Math.round((int)interStep);
-		    		moveStep += 1;
+		    		moveStep++;
+		    		System.out.println("moveStep:"+moveStep);
 		    }
 		}
     		x += dx;
@@ -156,7 +174,7 @@ abstract class AbstractEnemy extends JComponent {
 	
 	void paintEnemy(){
 		//System.out.println("AbstractE.paintEnemy");
-		//get Image/Subimmages
+		//get Image/Subimages
 		if ( moveUp == true &&  moveRight == true && moveDown != true &&moveLeft != true || lastDirection == 2){
 			if (newDirection != lastDirection || moveStep >= 3)
 				moveStep = 0;
@@ -188,38 +206,10 @@ abstract class AbstractEnemy extends JComponent {
 		
 
 	}
-	
-	public void loseLife(){
-		System.out.println("loseLife");
-		int fallBack = 3;
-		
-		for(int i = 0; i < 10; i++){
-			switch(player.getLastDirection()){
-			case 1: y -= fallBack;
-					break;
-			case 2: x += fallBack; y -= fallBack;
-					break;
-			case 3: x += fallBack;
-					break;
-			case 4: x += fallBack; y += fallBack;
-					break;
-			case 5: y += fallBack;
-					break;
-			case 6: x -= fallBack; y += fallBack;
-					break;
-			case 7: x -= fallBack;
-					break;
-			case 8: x -= fallBack;y -= fallBack;
-					break;
-			}
-		}
-		//life -= 1;
-		  
-		 
-	}
+
 	
 	public void setNewRandomMove(){
-		randomMove = random.nextInt(4);
+		//randomMove = random.nextInt(4);
 	}
 
 	
