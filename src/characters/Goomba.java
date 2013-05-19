@@ -129,7 +129,14 @@ public class Goomba extends AbstractEnemy implements Runnable, FileLink {
 		
 		life -= 1;
 	}
-
+	
+	public void setLife(int life){
+		this.life = life;
+	}
+	
+	public void setSpeed(int speed){
+		this.speed = speed;
+	}
 	
 	
 

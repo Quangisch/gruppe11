@@ -35,6 +35,8 @@ public class DungeonNavigator extends JComponent implements Runnable{
 	boolean loadNewMap = true;
 	private boolean scrollReady = true;
 	
+	static int goombaLife = 2;
+	
 	Rectangle toExit;
 	Rectangle toNorth, toEast, toSouth, toWest;
 	Rectangle toNorth2, toEast2, toSouth2,toWest2;
@@ -402,10 +404,11 @@ public class DungeonNavigator extends JComponent implements Runnable{
 	}
 	
 	public void spawnEnemy(){
-		System.err.println("spawn Enemy");
+		
 		
 		if(x == 1 && y == 2){
-			dungeonBuilder.setEnemyLife(2);
+			System.err.println("spawn Enemy");
+			dungeonBuilder.setEnemyLife(goombaLife);
 			dungeonBuilder.setEnemyPosition(DungeonBuilder.scrollX+200, DungeonBuilder.scrollY+50);
 		} else {
 			dungeonBuilder.setEnemyLife(0);
@@ -443,6 +446,7 @@ public class DungeonNavigator extends JComponent implements Runnable{
 	public void setDungeon(boolean dungeon){this.dungeon = dungeon;} public void setAreaID(int areaID){this.areaID = areaID;}
 	public void setLoadNewMap(boolean loadNewMap){this.loadNewMap = loadNewMap;}
 	public void setScrollReady(boolean scrollReady){this.scrollReady = scrollReady;}
+	public static void setGoombaLife(int life){goombaLife = life;}
 	
 	//get Rectangles for Board
 	public Rectangle getToExit(){return toExit;}

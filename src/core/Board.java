@@ -34,7 +34,6 @@ import map.DungeonCollision;
 import map.DungeonNavigator;
 import map.OverWorldCamera;
 import map.OverWorldMap;
-import menu.MenuIngame;
 import menu.MenuMain;
 
 
@@ -43,7 +42,6 @@ import menu.MenuMain;
 public class Board extends JPanel implements ActionListener, FileLink{
 	
 	private MenuMain menuMain;
-	private MenuIngame menuIngame;
 	
 	private Player player;
 	private PlayerInterface playerInterface;
@@ -56,9 +54,8 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	private Timer repaintTimer;
 	static Graphics2D g2d;
 
-	public Board(MenuMain menuMain, MenuIngame menuIngame, Player player,PlayerInterface playerInterface,OverWorldMap overWorldMap,DungeonNavigator dungeonNavigator,DungeonBuilder dungeonBuilder,CollisionDetection collisionDetection,Goomba goomba){
+	public Board(MenuMain menuMain, Player player,PlayerInterface playerInterface,OverWorldMap overWorldMap,DungeonNavigator dungeonNavigator,DungeonBuilder dungeonBuilder,CollisionDetection collisionDetection,Goomba goomba){
 		this.menuMain = menuMain;
-		this.menuIngame = menuIngame;
 		
 		this.player = player;
 		this.playerInterface = playerInterface;
@@ -89,34 +86,26 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	}
 	
 	public void paint(Graphics g) {
-		
+		//System.out.println("paintBoard");
 		
 		super.paint(g);
 		g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		/*
 		
-		if (!GameManager.ingame){
+		
+		if (GameManager.menu){
 			//paint MenuMain
 			menuMain.paintComponents(g2d);
 		}
-		
-		if(GameManager.ingame && GameManager.menu){
-			menuIngame.paintComponents(g2d);
-			
-		}
-		*/
+	
 		if(GameManager.gameOver){
-			
-			try{
+			//try{
 				player.setVisible(false);
-				Thread.sleep(800);
-			} catch (InterruptedException ie) {
-				
-			}
+				//Thread.sleep(800);
+			//} catch (InterruptedException ie) { }
 			
-			GameManager.ingame = false; GameManager.menu = true;
+			GameManager.menu = true;
 			g2d.setColor(Color.red);
 			Font textFont = new Font("Arial", Font.BOLD, 75);  
 			g.setFont(textFont);  
@@ -124,13 +113,12 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		}
 		
 		if(GameManager.win){
-			try{
+			//try{
 				player.setVisible(false);
-				Thread.sleep(800);
-			} catch (InterruptedException ie) {
+				//Thread.sleep(800);
+			//} catch (InterruptedException ie) { }
 				
-			}
-			GameManager.ingame = false; GameManager.menu = true;
+			GameManager.menu = true;
 			g2d.setColor(Color.yellow);
 			Font textFont = new Font("Arial", Font.BOLD, 75);  
 			g.setFont(textFont);  
@@ -254,8 +242,9 @@ public class Board extends JPanel implements ActionListener, FileLink{
 	}
 	
 	private class MAdapter extends MouseAdapter{ 
-	      public void mouseClicked( MouseEvent e ) { 
+	      public void mouseClicked(MouseEvent mE) { 
 	    	  System.out.println("Click");
+	    	  menuMain.mouseClicked(mE);
 	      } 
 	 }
 

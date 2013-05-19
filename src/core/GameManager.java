@@ -1,32 +1,36 @@
 package core;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 
 import map.*;
-import menu.MenuIngame;
 import menu.MenuMain;
 import characters.*;
+import javax.swing.Timer;
 
-public class GameManager extends JFrame implements Runnable, GameObjects{
+public class GameManager extends JFrame implements Runnable, GameObjects, ActionListener{
 
-	ScheduledThreadPoolExecutor playerScheduler;
-	ScheduledThreadPoolExecutor menuScheduler;
-	ScheduledThreadPoolExecutor mapScheduler;
-	ScheduledThreadPoolExecutor enemyScheduler;
+	ScheduledThreadPoolExecutor playerScheduler = new ScheduledThreadPoolExecutor(3);
+	ScheduledThreadPoolExecutor menuScheduler = new ScheduledThreadPoolExecutor(2);
+	ScheduledThreadPoolExecutor mapScheduler = new ScheduledThreadPoolExecutor(3);
+	ScheduledThreadPoolExecutor enemyScheduler = new ScheduledThreadPoolExecutor(3);
 	
-	Thread menuIngameThread;
-	Thread menuMainThread;
-	Thread overWorldMapThread;
-	Thread dungeonCollisionThread;
-	Thread dungeonNavigatorThread;
-	Thread playerThread;
-	Thread playerInterfaceThread;
-	Thread collisionDetectionThread;
-	Thread dynamicMapAnimationThread;
-	Thread goombaThread;
+	Thread menuMainThread = new Thread(menuMain);
 	
+	Thread overWorldMapThread = new Thread(overWorldMap);
+	Thread dungeonCollisionThread = new Thread(dungeonCollision);
+	Thread dungeonNavigatorThread = new Thread(dungeonNavigator);
+	Thread playerThread = new Thread(player);
+	Thread playerInterfaceThread = new Thread(playerInterface);
+	Thread collisionDetectionThread = new Thread(collisionDetection);
+	Thread dynamicMapAnimationThread = new Thread(dynamicMapAnimation);
+	Thread goombaThread = new Thread(goomba);
+	
+	
+	Timer timer;
 	
 	public static boolean printMsg = false;
 	public static boolean win = false;
@@ -54,6 +58,8 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 		setResizable(false);
 		setVisible(true);
 		
+		Timer timer = new Timer(10,this);
+		timer.start();
 
 		//initiate start dungeon
 		if(false){
@@ -79,98 +85,74 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 			
 		}
 		
-		playerScheduler = new ScheduledThreadPoolExecutor(3);
-		menuScheduler = new ScheduledThreadPoolExecutor(2);
-		mapScheduler = new ScheduledThreadPoolExecutor(3);
-		enemyScheduler = new ScheduledThreadPoolExecutor(3);
 		
-		menuIngameThread = new Thread(menuIngame);
-		menuMainThread = new Thread(menuMain);
-		
-		overWorldMapThread = new Thread(overWorldMap);
-		dungeonCollisionThread = new Thread(dungeonCollision);
-		dungeonNavigatorThread = new Thread(dungeonNavigator);
-		playerThread = new Thread(player);
-		playerInterfaceThread = new Thread(playerInterface);
-		collisionDetectionThread = new Thread(collisionDetection);
-		dynamicMapAnimationThread = new Thread(dynamicMapAnimation);
-		goombaThread = new Thread(goomba);
 		
 	}
 	
 	public void run(){
 		
-		/*
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException ie){
-			System.err.println("GameManager:"+ie);
-		}
-		*/
+		//System.out.println("GameManager.run");
+		
 		if(switchGameState){
 			switchGameState = false;
 			
-			//main menu
-			if(menu && !ingame){
-				if(!playerScheduler.isShutdown() && !mapScheduler.isShutdown()){
+			
+			playerScheduler.scheduleWithFixedDelay(playerThread, 400, 10,TimeUnit.MILLISECONDS);
+			playerScheduler.scheduleWithFixedDelay(playerInterface, 600, 10, TimeUnit.MILLISECONDS);
+			playerScheduler.scheduleWithFixedDelay(collisionDetectionThread, 450, 10, TimeUnit.MILLISECONDS);
+	
+			mapScheduler.scheduleWithFixedDelay(dungeonNavigatorThread, 30, 50, TimeUnit.MILLISECONDS);
+			mapScheduler.scheduleWithFixedDelay(dungeonCollision, 20, 50,TimeUnit.MILLISECONDS);
+			mapScheduler.scheduleWithFixedDelay(overWorldMapThread, 50, 50,TimeUnit.MILLISECONDS);
+			mapScheduler.scheduleWithFixedDelay(dynamicMapAnimationThread,100,50,TimeUnit.MILLISECONDS);
+				
+			enemyScheduler.scheduleWithFixedDelay(goombaThread,200,15,TimeUnit.MILLISECONDS);
+			menuScheduler.scheduleWithFixedDelay(menuMainThread,10,10,TimeUnit.MILLISECONDS);
+			
+			
+			/*TODO
+			
+			//menu
+			if(menu){
+				System.err.println("start menu");
+				
+				if(!playerScheduler.isShutdown() && !mapScheduler.isShutdown() && !enemyScheduler.isShutdown()){
 					playerScheduler.shutdown();
 					mapScheduler.shutdown();
+					enemyScheduler.shutdown();
+					
+					System.err.println("shutdown ingame");
 				}
+	
 				if(menuScheduler.isShutdown())
-					menuScheduler.scheduleWithFixedDelay(menuMainThread,10,20,TimeUnit.MILLISECONDS);
-			}
-			//ingame menu
-			if(menu && ingame){
-				if(menuScheduler.isShutdown())
-					menuScheduler.scheduleWithFixedDelay(menuIngame, 10, 20, TimeUnit.MILLISECONDS);
+					menuScheduler.scheduleWithFixedDelay(menuMainThread,10,20,TimeUnit.MILLISECONDS);	
 			}
 			
 			//ingame
 			if(ingame && !menu){
+				System.err.println("start ingame");
+				
 				if(!menuScheduler.isShutdown()){
 					menuScheduler.shutdown();
-				}
-			
-					playerScheduler.scheduleWithFixedDelay(playerThread, 400, 10,TimeUnit.MILLISECONDS);
-					playerScheduler.scheduleWithFixedDelay(playerInterface, 600, 10, TimeUnit.MILLISECONDS);
-					playerScheduler.scheduleWithFixedDelay(collisionDetectionThread, 450, 10, TimeUnit.MILLISECONDS);
-					
-					
-					mapScheduler.scheduleWithFixedDelay(dungeonNavigatorThread, 30, 50, TimeUnit.MILLISECONDS);
-					mapScheduler.scheduleWithFixedDelay(dungeonCollision, 20, 50,TimeUnit.MILLISECONDS);
-					mapScheduler.scheduleWithFixedDelay(overWorldMapThread, 50, 50,TimeUnit.MILLISECONDS);
-					mapScheduler.scheduleWithFixedDelay(dynamicMapAnimationThread,100,50,TimeUnit.MILLISECONDS);
-					
-					enemyScheduler.scheduleWithFixedDelay(goombaThread,200,15,TimeUnit.MILLISECONDS);
-					
-					
-			/*TODO
-				if(overWorldMap.overWorld){
-					if(!mapScheduler.isShutdown()){
-						mapScheduler.remove(dungeonNavigatorThread);
-						mapScheduler.remove(dungeonBuilderThread);
-					}
-						mapScheduler.scheduleWithFixedDelay(overWorldMapThread, 50, 50,TimeUnit.MILLISECONDS);
-				}
 				
-				if(dungeonNavigator.dungeon){
-					if(!mapScheduler.isShutdown()){
-						mapScheduler.remove(overWorldMapThread);
-					}
-						mapScheduler.scheduleWithFixedDelay(dungeonNavigatorThread, 50, 50, TimeUnit.MILLISECONDS);
-						mapScheduler.scheduleWithFixedDelay(dungeonBuilderThread, 20, 50,TimeUnit.MILLISECONDS);
+				playerScheduler.scheduleWithFixedDelay(playerThread, 400, 10,TimeUnit.MILLISECONDS);
+				playerScheduler.scheduleWithFixedDelay(playerInterface, 600, 10, TimeUnit.MILLISECONDS);
+				playerScheduler.scheduleWithFixedDelay(collisionDetectionThread, 450, 10, TimeUnit.MILLISECONDS);
+				
+					
+				mapScheduler.scheduleWithFixedDelay(dungeonNavigatorThread, 30, 50, TimeUnit.MILLISECONDS);
+				mapScheduler.scheduleWithFixedDelay(dungeonCollision, 20, 50,TimeUnit.MILLISECONDS);
+				mapScheduler.scheduleWithFixedDelay(overWorldMapThread, 50, 50,TimeUnit.MILLISECONDS);
+				mapScheduler.scheduleWithFixedDelay(dynamicMapAnimationThread,100,50,TimeUnit.MILLISECONDS);
+					
+				enemyScheduler.scheduleWithFixedDelay(goombaThread,200,15,TimeUnit.MILLISECONDS);
 				}
-			*/
 			}
-		}
-		/*
-		if(changeMapModus){
-			System.out.println("hrr");
-			changeMapModus = false;
-			changeMapThreads();
-		}
 		*/
+		}
+		
 	}
+	
 	/*
 	public void changeMapThreads(){
 		if(dungeonNavigator.dungeon){
@@ -189,6 +171,43 @@ public class GameManager extends JFrame implements Runnable, GameObjects{
 		}
 	}
 	*/
+
+	
+	//TODO
+	public void actionPerformed(ActionEvent arg0) {
+		
+		//if(win || gameOver){
+			/*
+			playerScheduler.shutdown();
+			playerScheduler.shutdown();
+			playerScheduler.shutdown();
+			
+			mapScheduler.shutdown();
+			mapScheduler.shutdown();
+			mapScheduler.shutdown();
+			mapScheduler.shutdown();
+			
+			enemyScheduler.shutdown();
+			menuScheduler.shutdown();
+			*/
+		//}
+		
+	}
+	
+	public static void resetGame(){
+		OverWorldMap.overWorld = true;
+		dungeonNavigator.setDungeon(false);
+		dungeonNavigator.setX(0);
+		dungeonNavigator.setY(0);
+		dungeonNavigator.spawnEnemy();
+		overWorldMap.setCameraX(0); overWorldMap.setCameraY(0);
+		player.setAbsoluteX(0);player.setAbsoluteY(0);
+		player.setX(110); player.setY(20);
+		player.setVisible(true);
+		player.setMoveable(true);
+		player.setLife(3);
+		
+	}
 
 }
 

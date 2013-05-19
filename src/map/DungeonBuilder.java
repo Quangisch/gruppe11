@@ -365,7 +365,6 @@ public class DungeonBuilder extends JComponent implements FileLink {
 	}
 	
 	public void setEnemyLife(int life){
-		System.out.println("DungeonBuilder.spawnEnemy");
 		goomba.setLife(life);	
 	}
 	

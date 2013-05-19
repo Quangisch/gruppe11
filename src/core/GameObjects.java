@@ -6,7 +6,6 @@ import map.DungeonNavigator;
 import map.DynamicMapAnimation;
 import map.OverWorldCamera;
 import map.OverWorldMap;
-import menu.MenuIngame;
 import menu.MenuMain;
 import characters.Goomba;
 import characters.Player;
@@ -16,7 +15,7 @@ public interface GameObjects{
 	
 	
 	
-	final static Player player = new Player();
+	static Player player = new Player();
 	final static Goomba goomba = new Goomba();
 	final static PlayerInterface playerInterface = new PlayerInterface();
 	final static CollisionDetection collisionDetection = new CollisionDetection();
@@ -30,10 +29,8 @@ public interface GameObjects{
 	
 	final static DynamicMapAnimation dynamicMapAnimation = new DynamicMapAnimation();
 	final static MenuMain menuMain = new MenuMain();
-	final static MenuIngame menuIngame = new MenuIngame();
 	
-	
-	final static Board board = new Board(menuMain, menuIngame, player,playerInterface,overWorldMap,dungeonNavigator,dungeonBuilder, collisionDetection,goomba);
+	final static Board board = new Board(menuMain, player,playerInterface,overWorldMap,dungeonNavigator,dungeonBuilder, collisionDetection,goomba);
 	
 	
 	//===
@@ -50,6 +47,7 @@ public interface GameObjects{
 	final static DungeonCollision dungeonCollisionReference = new DungeonCollision(player,goomba,dungeonNavigator,dynamicMapAnimation);
 	
 	final static DynamicMapAnimation dynamicMapAnimationReference = new DynamicMapAnimation(dungeonNavigator);
+	final static MenuMain menuMainReference = new MenuMain(player, goomba);
 	
 	
 }

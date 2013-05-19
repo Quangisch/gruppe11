@@ -370,17 +370,27 @@ public class Player extends JComponent implements Runnable, FileLink, GameObject
 		
 		if (key == KeyEvent.VK_M){
 			GameManager.menu = !GameManager.menu;
+			GameManager.switchGameState = true;
 			
-			//Board.menuThread = !Board.menuThread;
-			//Board.ingameThread = !Board.ingameThread;
+			System.out.println("switchGameState:"+GameManager.switchGameState);
+			
+			if(GameManager.menu && GameManager.ingame)
+				System.out.println("-->Ingame Menu");
+			if(GameManager.menu && !GameManager.ingame)
+				System.out.println("-->Main Menu");
 			
 		}
 		
 		if (key == KeyEvent.VK_N){
 			GameManager.ingame = !GameManager.ingame;
+			GameManager.switchGameState = true;
 			
-			//Board.menuThread = !Board.menuThread;
-			//Board.ingameThread = !Board.ingameThread;
+			System.out.println("switchGameState:"+GameManager.switchGameState);
+			
+			if(GameManager.menu && GameManager.ingame)
+				System.out.println("-->Ingame Menu");
+			if(GameManager.menu && !GameManager.ingame)
+				System.out.println("-->Main Menu");
 
 		}
 		
