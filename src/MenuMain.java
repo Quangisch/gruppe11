@@ -45,7 +45,7 @@ public class MenuMain implements Runnable{
 	}
 	
 	public void run(){
-		if (Board.printMsg)
+		//if (Board.printMsg)
 			System.out.println("MainMenu.run");
 	}
 	
@@ -58,8 +58,8 @@ public class MenuMain implements Runnable{
 		private JButton einstellung;
 		private JButton info;
 		private JButton ende;
-
-			public static void main (String[]args) throws Exception{ 
+		/*
+			public void main() { 
 					 
 			
 				
@@ -73,7 +73,7 @@ public class MenuMain implements Runnable{
 			frame.setVisible(true);
 			
 		}
-			
+			*/
 			public frame(String title) {
 				
 				super(title);
@@ -141,7 +141,7 @@ public class MenuMain implements Runnable{
 			}
 
 			
-			public static void fenster() {
+			public void fenster() {
 				
 				JFrame fenster = new JFrame("Game");
 				fenster.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

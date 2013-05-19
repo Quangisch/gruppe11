@@ -116,7 +116,7 @@ public class MainMenuFrame {
 	
 	public static void main(String[] args) {		
 		
-		new MainMenuFrame();
+		//new MainMenuFrame();
 	}
 }
 

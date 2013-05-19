@@ -128,7 +128,7 @@ public class Board extends JPanel implements ActionListener, FileLink{
 		
 		//TODO
 		if (GameManager.ingame && !GameManager.menu && !GameManager.gameOver && !GameManager.win){
-		//if(false){
+		
 			if(OverWorldMap.overWorld)
 				overWorldMap.paintComponents(g2d);
 			if(dungeonNavigator.getDungeon())
