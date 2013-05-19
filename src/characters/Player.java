@@ -1,3 +1,4 @@
+package characters;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
@@ -10,44 +11,67 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
+
+import map.DungeonNavigator;
+import map.OverWorldCamera;
+import map.OverWorldMap;
+
+
+import core.Board;
+import core.FileLink;
+import core.GameManager;
+import core.GameObjects;
+
+
 import java.awt.*; 
 import java.awt.event.*; 
 import java.awt.geom.AffineTransform;
 
-public final class Player extends JComponent implements Runnable, FileLink {
+public class Player extends JComponent implements Runnable, FileLink, GameObjects {
+	
+	private static OverWorldMap overWorldMap;
+	private static DungeonNavigator dungeonNavigator;
+	private static OverWorldCamera overWorldCamera;
+	
+	
 	Graphics2D g2d;
 	BufferedImage playerMove, playerMoveBuff;
 	
 	//player coordinates
-	volatile static int x,y;
-	static int absoluteX, absoluteY;
+	volatile int x,y;
+	int oldX, oldY;
+	int absoluteX, absoluteY;
 	
 	//animation
-	static final int spriteGridX = 30*3;
-	static final int spriteGridY = 40*3;
+	final int spriteGridX = 30*3;
+	final int spriteGridY = 40*3;
 	
-	static boolean moveUp, moveRight, moveDown, moveLeft;
-	static double punchCounter = 1;
-	static boolean punchNow, block, loseLife;
-	static int lastDirection = 5;
-	static int newDirection;
-	static int moveStep = 0;
-	static double interStep = 0.1;
+	boolean moveUp, moveRight, moveDown, moveLeft;
+	double punchCounter = 1;
+	boolean punchNow, block;
+	int lastDirection = 5;
+	int newDirection;
+	int moveStep = 0;
+	double interStep = 0.1;
 	
 	//movement
-	static int dx, dy;
-	static final double SPEED = 1;
-	static final double SPEEDUP = 2;
+	int dx, dy;
+	double SPEED = 1;
+	final double SPEEDUP = 2;
 	double tmpSpeed = SPEED;
-	static boolean moveable = true;
+	boolean moveable = true;
 
 	//interaction
-	static Rectangle attackBound;
-	static int life = 3;
-	static int coins = 0;
+	Rectangle attackBound;
+	int life = 3;
+	int coins = 0;
+	boolean visible = true;
+	volatile boolean loseLife = false;
+	int loseLifeType = 0;
+	//loseLifeTyp: 0 = bouncing off short, 1 = bouncing off long, 2 = respawn at entry point
 	
 	//worldmapnavigation
-	static Rectangle playerBoundN,playerBoundE,playerBoundS,playerBoundW;
+	Rectangle boundN,boundE,boundS,boundW,boundDirection;
 	
 	
 	public Player(){
@@ -62,27 +86,39 @@ public final class Player extends JComponent implements Runnable, FileLink {
 			}
 	}
 	
+	public Player(OverWorldMap overWorldMap,DungeonNavigator dungeonNavigator){
+		this.overWorldCamera = overWorldCamera;
+		this.overWorldMap = overWorldMap;
+		this.dungeonNavigator = dungeonNavigator;
+	}
+	
 	public void paintComponents(Graphics g){
 		g2d = (Graphics2D) g;
 		//System.out.println("Player.paintComponents");
-		g2d.drawImage(playerMoveBuff,Player.x,Player.y,this);
+		if(visible)
+			g2d.drawImage(playerMoveBuff,x,y,this);
 	}
 	
 	public void run(){
-		if (Board.printMsg)
+		
+		if (GameManager.printMsg)
 			System.out.println("Player.run");
 
 		if (life <= 0)
-			Board.gameOver = true;
-		
-	
+			GameManager.gameOver = true;
+
 		if (!block || moveable)
-		move();
+			move();
+		
+		if(!moveable){
+			moveUp = moveLeft = moveDown = moveRight = false;
+		}
+		
 		paintPlayer();
 		
 		if(punchCounter < 1){
 			punchCounter += 0.1;
-			System.out.println("punchCounter: "+punchCounter); 
+			//System.out.println("punchCounter: "+punchCounter); 
 		}
 			
 	
@@ -121,27 +157,27 @@ public final class Player extends JComponent implements Runnable, FileLink {
 		absoluteX += dx;
 		absoluteY += dy;
 		
-	
+			
     	//fixed Camera
-    	if(!Camera.cameraOn){
+    	if(!overWorldMap.getCameraStatus()){
     		x += dx;
         	y += dy;
     	}
-		/*
-    	System.out.println("Player: "+x+","+y);
-		System.out.println("Camera: "+Camera.cameraX+","+Camera.cameraY);
-		System.err.println("Absolut:"+absoluteX+","+absoluteY);
-		*/
+    	
+  
 		//moveable Camera
-		if(Camera.cameraOn){
+		if(overWorldMap.getCameraStatus()){
+			System.out.println("moveableCam");
 			if(absoluteY < 2065 || absoluteY > 0){
-		    	Camera.cameraY = absoluteY;
+		    	overWorldMap.setCameraY(absoluteY);
 		    } 
 		    if(absoluteX < 1900|| absoluteX > 0){
-				Camera.cameraX = absoluteX;
+				overWorldMap.setCameraX(absoluteX);
 			} 
-		    Camera.alignCamera();
+			
+		    overWorldMap.alignCamera();
  		 }		
+	
 
 		setBounds();
 		dx = dy = 0;
@@ -211,7 +247,7 @@ public final class Player extends JComponent implements Runnable, FileLink {
 		
 		if (punchNow && punchCounter >= 1){
 		
-			System.out.println("punchCounter: "+punchCounter); 
+			//System.out.println("punchCounter: "+punchCounter); 
 			playerMoveBuff = playerMove.getSubimage((9+(int)punchCounter)*spriteGridX, (lastDirection-1)*spriteGridY, spriteGridX, spriteGridY);
 			if (punchCounter < 3)
 				punchCounter += 0.1;
@@ -224,10 +260,13 @@ public final class Player extends JComponent implements Runnable, FileLink {
 		if (block) {
 			playerMoveBuff = playerMove.getSubimage(14*spriteGridX, 4*spriteGridY, spriteGridX, spriteGridY);
 		}
+		
+		
+		
 		//System.out.println("X: " + x + ", Y: " + y);
 		//g2d.drawImage(playerMoveBuff ,x ,y , this);
 		
-		//playerBounds
+		//boundS
 		
 
 	}
@@ -235,38 +274,35 @@ public final class Player extends JComponent implements Runnable, FileLink {
 
 	public void keyPressed(KeyEvent e){
 		int key = e.getKeyCode();
-		Board.repaintNow = true;
+		GameManager.repaintNow = true;
 
-			if (key == KeyEvent.VK_UP && !block){
+			if (key == KeyEvent.VK_UP && moveable){
 				moveUp = true;
 			}
-			if (key == KeyEvent.VK_RIGHT && !block){
+			if (key == KeyEvent.VK_RIGHT && moveable){
 				moveRight = true;
 			}
-			if (key == KeyEvent.VK_DOWN && !block){	
+			if (key == KeyEvent.VK_DOWN && moveable){	
 				moveDown = true;
 			}
-			if (key == KeyEvent.VK_LEFT && !block){
+			if (key == KeyEvent.VK_LEFT && moveable){
 				moveLeft = true;
 			}
 			
-			if (key == KeyEvent.VK_D && !block){
+			if (key == KeyEvent.VK_D && moveable){
 				punchNow = true;
-			}
-			if (key == KeyEvent.VK_S){	
-				block = true;
 			}
 
 			
 			
 			
 			if (key == KeyEvent.VK_SPACE){
-				Camera.moveFocus = true;
+				overWorldMap.setMoveFocus(true);
 			}
 			
 			if (key == KeyEvent.VK_X){
 				System.out.println("Player: "+x+","+y);
-				System.out.println("Camera: "+Camera.cameraX+","+Camera.cameraY);
+				System.out.println("Camera: "+overWorldMap.getCameraX()+","+overWorldMap.getCameraY());
 				System.err.println("Absolut:"+absoluteX+","+absoluteY);
 			}
 				
@@ -278,7 +314,7 @@ public final class Player extends JComponent implements Runnable, FileLink {
 	
 	public void keyReleased(KeyEvent e){
 		int key = e.getKeyCode();
-		Board.repaintNow = true;
+		GameManager.repaintNow = true;
 		
 		if (key == KeyEvent.VK_UP){
 			moveUp = false;
@@ -306,23 +342,19 @@ public final class Player extends JComponent implements Runnable, FileLink {
 			}
 				
 		}
-		if (key == KeyEvent.VK_S){	
-			block = false;
-		}
-		
-		
+
 		if (key == KeyEvent.VK_F){
 			tmpSpeed = SPEED;
 		}
 		
 		if (key == KeyEvent.VK_C){
-			if(!Camera.cameraLock){
-				if(!Camera.cameraOn){
+			if(!overWorldMap.getCameraLock()){
+				if(!overWorldMap.getCameraStatus()){
 					System.out.println("OverWorld Camera on");
-					Camera.toogleCamera(true);
+					overWorldMap.toogleCamera(true);
 				} else {
 					System.out.println("OverWorld Camera off");
-					Camera.toogleCamera(false);
+					overWorldMap.toogleCamera(false);
 				}
 			} else
 				System.err.println("Camera locked!");
@@ -332,59 +364,69 @@ public final class Player extends JComponent implements Runnable, FileLink {
 		}
 		
 		if(key == KeyEvent.VK_Y){
-			Board.printMsg = !Board.printMsg;
+			GameManager.printMsg = !GameManager.printMsg;
 		}
 		
 		
 		if (key == KeyEvent.VK_M){
-			Board.menu = !Board.menu;
-			Board.menuThread = !Board.menuThread;
-			Board.ingameThread = !Board.ingameThread;
-			/*
-			//get game status
-			if(!Board.menu && Board.ingame)
-				System.out.println("Ingame");
-			if(Board.menu && Board.ingame)
-				System.out.println("IngameMenu");
-			if(Board.menu && !Board.ingame)
-				System.out.println("MainMenu");
-				*/
+			GameManager.menu = !GameManager.menu;
+			GameManager.switchGameState = true;
+			
+			System.out.println("switchGameState:"+GameManager.switchGameState);
+			
+			if(GameManager.menu && GameManager.ingame)
+				System.out.println("-->Ingame Menu");
+			if(GameManager.menu && !GameManager.ingame)
+				System.out.println("-->Main Menu");
+			
 		}
 		
 		if (key == KeyEvent.VK_N){
-			Board.ingame = !Board.ingame;
-			Board.menuThread = !Board.menuThread;
-			Board.ingameThread = !Board.ingameThread;
+			GameManager.ingame = !GameManager.ingame;
+			GameManager.switchGameState = true;
 			
-			/*
-			//get game status
-			if(!Board.menu && Board.ingame)
-				System.out.println("Ingame");
-			if(Board.menu && Board.ingame)
-				System.out.println("IngameMenu");
-			if(Board.menu && !Board.ingame)
-				System.out.println("MainMenu");
-				*/
+			System.out.println("switchGameState:"+GameManager.switchGameState);
+			
+			if(GameManager.menu && GameManager.ingame)
+				System.out.println("-->Ingame Menu");
+			if(GameManager.menu && !GameManager.ingame)
+				System.out.println("-->Main Menu");
+
 		}
 		
 		
 		if (key == KeyEvent.VK_B){
-			Board.paintBounds = !Board.paintBounds;
+			GameManager.paintBounds = !GameManager.paintBounds;
 		}
 		if (key == KeyEvent.VK_SPACE){
-			Camera.moveFocus = false;
+			overWorldMap.setMoveFocus(false);
 		}
 		
 	}
 	
 	public void setBounds(){
-	playerBoundN = new Rectangle (x+10,y+10,60,10);
-	playerBoundW = new Rectangle (x+10,y+10,10,90);
-	playerBoundS = new Rectangle (x+18,y+90,44,10);
-	playerBoundE = new Rectangle (x+60,y+10,10,90);
+		
+			boundN = new Rectangle (x+10,y+10,60,10);
+			boundW = new Rectangle (x+10,y+10,10,90);
+			boundS = new Rectangle (x+18,y+90,44,10);
+			boundE = new Rectangle (x+60,y+10,10,90);
+			
+			switch(lastDirection){
+			case 1:	boundDirection = boundN;
+					break;
+			case 3:	boundDirection = boundE;
+					break;
+			case 5:	boundDirection = boundS;
+					break;
+			case 7:	boundDirection = boundW;
+					break;
+			}
+				
+		
+	
 	}
 	
-	public static void setAttackBounds(){
+	public void setAttackBounds(){
 		attackBound = new Rectangle(0,0,0,0);
 		
 		if(punchNow && punchCounter >= 1.3 && lastDirection == 1){
@@ -394,24 +436,23 @@ public final class Player extends JComponent implements Runnable, FileLink {
 			attackBound = new Rectangle(x+50,y+10,40,50);
 		}
 		if(punchNow && punchCounter >= 1.3 && lastDirection == 5){
-			attackBound = new Rectangle(x,y+60,40,50);
+			attackBound = new Rectangle(x,y+30,40,50);
 		}
 		if(punchNow && punchCounter >= 1.3 && lastDirection == 7){
 			attackBound = new Rectangle(x,y+10,40,50);
 		}
 		
 		if(punchNow && punchCounter >= 1.3 && lastDirection == 2){
-			attackBound = new Rectangle(x+40,y,40,70);
-			//AffineTransform attackBound = AffineTransform.getRotateInstance(Math.PI/4, attackBound.getCenterX(), attackBound.getCenterY());
+			attackBound = new Rectangle(x+40,y,40,50);
 		}
 		if(punchNow && punchCounter >= 1.3 && lastDirection == 4){
-			attackBound = new Rectangle(x+40,y+40,40,70);
+			attackBound = new Rectangle(x+40,y+40,40,50);
 		}
 		if(punchNow && punchCounter >= 1.3 && lastDirection == 6){
-			attackBound = new Rectangle(x,y+25,40,70);
+			attackBound = new Rectangle(x,y+25,40,50);
 		}
 		if(punchNow && punchCounter >= 1.3 && lastDirection == 8){
-			attackBound = new Rectangle(x,y,40,70);
+			attackBound = new Rectangle(x,y,40,50);
 		}
 	}
 	
@@ -419,4 +460,46 @@ public final class Player extends JComponent implements Runnable, FileLink {
 		return playerMoveBuff;
 	}
 	
+	public void resetPosition(){
+		x = oldX;
+		y = oldY;
+	}
+	
+	
+	//get,set variables
+	public int getX(){return x;}
+	public int getY(){return y;}
+	public int getAbsoluteX(){return absoluteX;}
+	public int getAbsoluteY(){return absoluteY;}
+	public int getLastDirection(){return lastDirection;}
+	public int getLife(){return life;}
+	public int getCoins(){return coins;}
+	public boolean getVisible(){return visible;}
+	public boolean getMoveable(){return moveable;}
+	public int getLoseLifeType(){return loseLifeType;}
+	public boolean getLoseLife(){return loseLife;}
+	
+	
+	public void setX(int x){this.x = x;}
+	public void setY(int y){this.y = y;}
+	public void setOldX(int oldX){this.oldX = oldX;}
+	public void setOldY(int oldY){this.oldY = oldY;}
+	public void setAbsoluteX(int absoluteX){this.absoluteX = absoluteX;}
+	public void setAbsoluteY(int absoluteY){this.absoluteY = absoluteY;}
+	public void setLastDirection(int lastDirection){this.lastDirection = lastDirection;}
+	public void setLife(int life){this.life = life;}
+	public void setCoins(int coins){this.coins = coins;}
+	public void setVisible(boolean visible){this.visible = visible;}
+	public void setMoveable(boolean moveable){this.moveable = moveable;}
+	public void setLoseLifeType(int loseLifeType){this.loseLifeType = loseLifeType;}
+	public void setLoseLife(boolean loseLife){this.loseLife = loseLife;}
+	
+	
+	//get Bounds
+	public Rectangle getBoundN(){return boundN;}
+	public Rectangle getBoundE(){return boundE;}
+	public Rectangle getBoundS(){return boundS;}
+	public Rectangle getBoundW(){return boundW;}
+	public Rectangle getBoundDirection(){return boundDirection;}
+	public Rectangle getAttackBound(){return attackBound;}
 }

@@ -1,3 +1,5 @@
+package core;
+
 
 public class BoardGrid implements GridInterface{
 	public int x,y;
