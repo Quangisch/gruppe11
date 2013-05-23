@@ -343,14 +343,14 @@ public class DungeonNavigator extends JComponent implements Runnable{
 				
 			}
 			if(x == 0 && y == 2){
-				toEast = new Rectangle(809,400,1,100);
-				toExit= new Rectangle(0,400,1,100); //TO OverWorld ID02
+				toEast = new Rectangle(809,400,50,100);
+				toExit= new Rectangle(-49,400,50,100); //TO OverWorld ID02
 			}
 			if(x == 1 && y == 2){
-				toNorth = new Rectangle(620,0,20,1);
+				toNorth = new Rectangle(620,0,1,1);
 				toEast = new Rectangle(809,130,1,100);
-				toSouth = new Rectangle(580,629,100,1);
-				toWest = new Rectangle(0,400,1,100);
+				toSouth = new Rectangle(580,629,100,50);
+				toWest = new Rectangle(-49,400,50,100);
 			}
 			if(x == 2 && y == 2){
 				toWest = new Rectangle(0,130,1,100);
@@ -365,12 +365,12 @@ public class DungeonNavigator extends JComponent implements Runnable{
 				
 			}
 			if(x == 0 && y == 3){
-				toExit = new Rectangle(220,629,100,1); //TO OverWorld ID01
-				toEast = new Rectangle(809,120,1,100);
+				toExit = new Rectangle(220,629,100,50); //TO OverWorld ID01
+				toEast = new Rectangle(809,120,50,100);
 			}
 			if(x == 1 && y == 3){
-				toWest = new Rectangle(0,130,1,100);
-				toNorth = new Rectangle(580,0,100,1);
+				toWest = new Rectangle(-49,130,50,100);
+				toNorth = new Rectangle(580,-49,100,50);
 			}
 			if(x == 2 && y == 3){
 				toEast = new Rectangle(809,220,1,100);
@@ -425,7 +425,7 @@ public class DungeonNavigator extends JComponent implements Runnable{
 	
 	public void checkDungeonCollision(){
 		dungeonCollision.checkCollisionFloor();
-		//dungeonCollision.checkCollisionDoor();
+		dungeonCollision.checkCollisionDoor();
 	}
 	
 	public void checkEnemyCollisionWall(){

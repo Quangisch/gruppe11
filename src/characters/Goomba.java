@@ -15,6 +15,7 @@ public class Goomba extends AbstractEnemy implements Runnable, FileLink {
 	
 	private static Player player;
 	private static DungeonCollision dungeonCollision;
+	private int changeStep = 10;
 	
 	public Goomba(){
 		initializeEnemy(FileLink.goomba, 400, 200, 65, 75, 1, 0, true, true, 0, 3);
@@ -48,13 +49,11 @@ public class Goomba extends AbstractEnemy implements Runnable, FileLink {
 			
 			followPlayer();
 			move();
-			
 			paintEnemy();
-			if(oldLife < life){
-				
+			if(oldLife < life)
 				oldLife = life;
-			}
-				
+			
+			System.out.println(changeStep);
 			
 		}
 		
@@ -66,38 +65,102 @@ public class Goomba extends AbstractEnemy implements Runnable, FileLink {
 	}
 	
 	private void followPlayer(){
-		if(GameManager.printMsg)
-			System.out.println("goomba:"+x+" to "+ player.getX());
-		
-		if(x > player.getX()){
+		if(GameManager.printMsg){
+			System.out.println("goombaX:"+x+" to "+ player.getX());
+			System.out.println("goombaY:"+y+" to "+ player.getY());
+		}
+			
+		/*
+		if(x > player.getX() && y > player.getY()){
+			moveUp = true;
 			moveRight = false;
+			moveDown = false;
 			moveLeft = true;
 			
 			lastDirection = 2;
 		}
 		
-		if(x < player.getX()){
-			moveLeft = false;
+		if(x < player.getX() && y < player.getY()){
+			moveUp = false;
 			moveRight = true;
-			
-			lastDirection = 6;
-		}
-		
-		System.out.println("goomba:"+y+" to "+ player.getY());
-		
-		if(y > player.getY()){
-			moveDown = false;
-			moveUp = true;
+			moveDown = true;
+			moveLeft = false;
 			
 			lastDirection = 4;
 		}
 		
-		if(y < player.getY()){
+		if(y < player.getY() && x < player.getX()){
 			moveUp = false;
+			moveLeft = false;
+			moveRight = true;
 			moveDown = true;
+			
+			lastDirection = 6;
+		}
+				
+		if(y > player.getY() && x > player.getX()){
+			moveUp = true;
+			moveRight = false;
+			moveDown = false;
+			moveLeft = true;
 			
 			lastDirection = 8;
 		}
+		*/
+		
+		if(y > player.getY() && (Math.abs((y - player.getY())) > Math.abs((x - player.getX()))) && changeStep > 30 || lastDirection == 1){
+			moveUp = true;
+			moveRight = false;
+			moveDown = false;
+			moveLeft = false;
+			
+			lastDirection = 1;
+
+			if(lastDirection != newDirection)
+				changeStep = 0;
+			changeStep++;
+		}
+		
+		if(x < player.getX() && (Math.abs((y - player.getY())) < Math.abs((x - player.getX()))) && changeStep > 30 || lastDirection == 3){
+			moveUp = false;
+			moveLeft = false;
+			moveDown = false;
+			moveRight = true;
+			
+			lastDirection = 3;
+
+			if(lastDirection != newDirection)
+				changeStep = 0;
+			changeStep++;
+		}
+
+		if(y < player.getY() && (Math.abs((y - player.getY())) > Math.abs((x - player.getX()))) && changeStep > 30 || lastDirection == 5){
+			moveUp = false;
+			moveRight = false;
+			moveDown = true;
+			moveLeft = false;
+
+			lastDirection = 5;
+
+			if(lastDirection != newDirection)
+				changeStep = 0;
+			changeStep++;
+		}
+		
+		if(x > player.getX() && (Math.abs((y - player.getY())) < Math.abs((x - player.getX()))) && changeStep > 30 || lastDirection == 7){
+			moveUp = false;
+			moveRight = false;
+			moveDown = false;
+			moveLeft = true;
+	
+			lastDirection = 7;
+
+			if(lastDirection != newDirection)
+				changeStep = 0;
+			changeStep++;
+		}
+
+		
 		
 		
 	}

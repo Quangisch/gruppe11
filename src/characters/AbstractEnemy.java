@@ -101,7 +101,7 @@ abstract class AbstractEnemy extends JComponent {
 		//randomMove = random.nextInt(4);
 		
 		moveRight = true;
-		lastDirection = 2;
+		lastDirection = 5;
 		
 	}
 	
@@ -129,9 +129,7 @@ abstract class AbstractEnemy extends JComponent {
 		}
 		*/
 		
-		
-			
-		
+		/*
 		switch(randomMove){
 		
 		case 1: moveUp = moveRight = true;
@@ -142,8 +140,9 @@ abstract class AbstractEnemy extends JComponent {
 				break;
 		case 4: moveLeft = moveUp = true;
 		}
+		*/
 		
-		
+		//System.out.println(moveUp+","+moveRight+","+moveDown+","+moveLeft);
 		
 
 		if (moveLeft) dx = -1;
@@ -160,47 +159,48 @@ abstract class AbstractEnemy extends JComponent {
 
 		    //toogles movement sprites/animation
 		    if (dx != 0 || dy != 0){
-		    	if (moveStep >= 7 || newDirection != lastDirection || interStep > 8)
+		    	if (moveStep >= 3)
 		    		interStep = 0;
-		    		interStep += speed;
-		    		//moveStep = Math.round((int)interStep);
-		    		moveStep++;
-		    		System.out.println("moveStep:"+moveStep);
+		    	interStep += speed;
+		    	//moveStep = Math.round((int)interStep);
+		    	moveStep++;
+		    	
 		    }
 		}
     		x += dx;
         	y += dy;
+        	dx = dy = 0;
 	}
 	
 	void paintEnemy(){
 		//System.out.println("AbstractE.paintEnemy");
 		//get Image/Subimages
-		if ( moveUp == true &&  moveRight == true && moveDown != true &&moveLeft != true || lastDirection == 2){
+		if ( moveUp == true &&  moveRight != true && moveDown != true &&moveLeft != true || lastDirection == 1){
 			if (newDirection != lastDirection || moveStep >= 3)
 				moveStep = 0;
 			enemyMoveBuff = enemyMove.getSubimage(moveStep*spriteGridX, 1*spriteGridY, spriteGridX, spriteGridY);
-			lastDirection = 2;
+			lastDirection = 1;
 			newDirection = lastDirection;
 		}
-		if ( moveUp != true &&  moveRight == true && moveDown == true &&moveLeft != true || lastDirection == 4){
+		if ( moveUp != true &&  moveRight == true && moveDown != true &&moveLeft != true || lastDirection == 3){
 			if (newDirection != lastDirection || moveStep >= 3)
 				moveStep = 0;
 			enemyMoveBuff = enemyMove.getSubimage(moveStep*spriteGridX, 3*spriteGridY, spriteGridX, spriteGridY);
-			lastDirection = 4;
+			lastDirection = 3;
 			newDirection = lastDirection;
 		}
-		if ( moveUp != true &&  moveRight != true && moveDown == true &&moveLeft == true|| lastDirection == 6){
+		if ( moveUp != true &&  moveRight != true && moveDown == true &&moveLeft != true|| lastDirection == 5){
 			if (newDirection != lastDirection || moveStep >= 3)
 				moveStep = 0;
 			enemyMoveBuff = enemyMove.getSubimage(moveStep*spriteGridX, 5*spriteGridY, spriteGridX, spriteGridY);
-			lastDirection = 6;
+			lastDirection = 5;
 			newDirection = lastDirection;
 		}
-		if ( moveUp == true &&  moveRight != true && moveDown != true &&moveLeft == true || lastDirection == 8){
+		if ( moveUp != true &&  moveRight != true && moveDown != true &&moveLeft == true || lastDirection == 7){
 			if (newDirection != lastDirection || moveStep >= 3)
 				moveStep = 0;
 			enemyMoveBuff = enemyMove.getSubimage(moveStep*spriteGridX, 7*spriteGridY, spriteGridX, spriteGridY);
-			lastDirection = 8;
+			lastDirection = 7;
 			newDirection = lastDirection;
 		}
 		
