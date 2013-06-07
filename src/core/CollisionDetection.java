@@ -1,139 +1,116 @@
 package core;
 
+import game.objects.EnemyManager;
+import game.objects.MarioDark;
+import game.objects.Moveable;
+import game.objects.Player;
 
+import java.util.ArrayList;
 
-import java.awt.Rectangle;
-
-import characters.Goomba;
-import characters.Player;
-
-import map.DungeonCollision;
 import map.DungeonNavigator;
-import map.OverWorldCamera;
-import map.OverWorldMap;
-
-
-
-
-
+import map.OverWorldNavigator;
 
 public class CollisionDetection implements Runnable{
 	
-	private static Player player;
-	private static Goomba goomba;
-	private static OverWorldMap overWorldMap;
+	private static CollisionDetection collisionDetection;
 	private static DungeonNavigator dungeonNavigator;
+	private static OverWorldNavigator overWorldNavigator;
 	
-	final static Rectangle BoundN = new Rectangle(0,0,810,1);
-	final static Rectangle BoundE = new Rectangle(809,0,1,630);
-	final static Rectangle BoundS = new Rectangle(0,629,810,1);
-	final static Rectangle BoundW = new Rectangle(0,0,1,630);
+	private ArrayList<Moveable> moveableObject = new ArrayList<Moveable>();
 	
-	public CollisionDetection(){
-		
+	private CollisionDetection(){
+		System.err.println("construct CollisionDetection");
 	}
 	
-	public CollisionDetection(Player player, Goomba goomba, OverWorldMap overWorldMap, DungeonNavigator dungeonNavigator){
-		this.player = player;
-		this.goomba = goomba;
-		this.overWorldMap = overWorldMap;
-		this.dungeonNavigator = dungeonNavigator;
-		
-	}
-
 	public void run(){
-		if(GameManager.printMsg)
-			System.out.println("CollisionDetection run");
-			
-		try {
-			checkMap();
-			
-		} catch (InterruptedException ie) {
-			System.err.println("CollisionDetection:" +ie);
-		}
-		
-		
-	}
 	
-	private void checkMap() throws InterruptedException{
-		//PlayerBounds - MapBounds
-		//Player.set
 		
-		//System.out.println("moveable" +Camera.moveFocus);
+		moveableObject = GameManager.getMoveableList();
+	
+		//System.out.println("moveableListSize@"+moveableObject.size());
+		if(moveableObject.size() > 1){
 			
-		
-		//check Player position relative to windowBorders
-		if(!dungeonNavigator.getDungeon()){
-			if(player.getBoundN().intersects(BoundN)){overWorldMap.setScrollLock(1);}
-			if(player.getBoundS().intersects(BoundS)){overWorldMap.setScrollLock(3);}
-			if(player.getBoundW().intersects(BoundW)){overWorldMap.setScrollLock(2);}
-			if(player.getBoundE().intersects(BoundE)){overWorldMap.setScrollLock(4);}
-		}
-		
-		
-		//handles overworld <-> dungeon navigation
-		if(OverWorldMap.overWorld){
-			overWorldMap.setDungeonBounds();
-			overWorldMap.setCameraLock(false);
+			for(int index = 0; index < moveableObject.size();index++){
+				
+				
+				if(!moveableObject.get(index).isHumanPlayer()){
+					int type = moveableObject.get(index).getMoveableType();
+					int IDNumber = moveableObject.get(index).getMoveableID();
+					
+					if(Player.getInstance().getBoundCore().intersects(moveableObject.get(index).getBoundCore())){
+						
+						//moveableObject.get(index).setObjectBack(10);
+				
+						if(EnemyManager.getAttackDamage(type) == 1 || EnemyManager.getAttackDamage(type) == 2)
+							MarioDark.getInstance(false, IDNumber).waitNow(500);
 			
-			switch(OverWorldMap.areaID){
-				case 1:	if(player.getBoundS().intersects(overWorldMap.getDungeonBounds())){
-					player.setX(220); player.setY(520);
-					dungeonNavigator.setAreaID(1);
-					dungeonNavigator.setX(0); dungeonNavigator.setY(3);
-					GameManager.changeMapModus = true;
-					System.out.println("leave OverWorldMap1 -> dungeon1");
-					dungeonNavigator.setLoadNewMap(true);
-					dungeonNavigator.readData();
-					player.setOldX(player.getX());
-					player.setOldY(player.getY());
-					OverWorldMap.overWorld = false;dungeonNavigator.setDungeon(true);
-					//dungeonNavigator.setEnemyLife(1);
-					//dungeonNavigator.setEnemyPosition(200,300);
+						Player.getInstance().setObjectBack(20,moveableObject.get(index).getBoundCore());
+						moveableObject.get(index).setObjectBack(10,moveableObject.get(index).getBoundCore());
+						
+						if(EnemyManager.getAttackDamage(type) == 1 || EnemyManager.getAttackDamage(type) == 2)
+							MarioDark.getInstance(false, IDNumber).waitNow(500);
+							
+						moveableObject.get(index).startFlashTimer(100, 20);
+						Player.getInstance().loseLife(EnemyManager.getAttackDamage(type));
+						Player.getInstance().startInvincibleTimer(1000);
+						break;
 					}
-			}	
-		}
-		
-		
-		if(dungeonNavigator.getDungeon()){
-			dungeonNavigator.setBounds();
-			overWorldMap.setCameraLock(true);
-			checkEnemy();
-			if(dungeonNavigator.getScrollReady()){
-				dungeonNavigator.checkDungeonCollision();
+					
+					if(Player.getInstance().getAttackBound().intersects(moveableObject.get(index).getBoundCore())){
+						moveableObject.get(index).setObjectBack(50,Player.getInstance().getAttackBound());
+						moveableObject.get(index).setLife(moveableObject.get(index).getLife()-Player.getInstance().getAttackDamage());
+						if(EnemyManager.getAttackDamage(type) == 1 || EnemyManager.getAttackDamage(type) == 2)
+							MarioDark.getInstance(false, IDNumber).waitNow(500);
+						
+						moveableObject.get(index).startFlashTimer(100, 20);
+						
+					}
+					
+				}
 				
 			}
+			
 		}
+		
+		
+		
+		
+		
+		//checkCollision
+		if(GameManager.dungeon && GameManager.mapLoaded && GameManager.scrollDirection == 0){
+			for(int index = 0; index < moveableObject.size(); index++){
+				DungeonNavigator.getInstance().checkCollision(moveableObject.get(index));
+			}
+		}
+		
+		if(GameManager.overWorld && GameManager.mapLoaded){
+			for(int index = 0; index < moveableObject.size(); index++){
+				//OverWorldNavigator.getInstance().checkCollision(moveableObject.get(index));
+				
+			}
+			
+			OverWorldNavigator.getInstance().checkCollision();
+			
+		}
+		
+		
+		
 	}
 	
-	private void checkEnemy(){
-		goomba.setBoundS();
-		goomba.setBoundMain();
-		player.setAttackBounds();
-		if(player.getBoundS().intersects(goomba.getBoundS())){
-			System.err.println("hitEnemy!");
-			player.setLoseLifeType(1);
-			player.setLoseLife(true);
-			sleepNow();
-			player.setLoseLife(false);
-		}
-		
-		if(player.getAttackBound().intersects(goomba.getBoundMain())){
-			goomba.loseLife();
-		}
-		
-		dungeonNavigator.checkEnemyCollisionWall();
-		
+	public void getObjects(){
+		moveableObject = GameManager.getMoveableList();
 	}
+	
+	
+	public static CollisionDetection getInstance(){
+		if(collisionDetection == null){
+			collisionDetection = new CollisionDetection();
+			dungeonNavigator = DungeonNavigator.getInstance();
+			overWorldNavigator = OverWorldNavigator.getInstance();
+		}
+			
+		return collisionDetection;
+	}
+	
 
-	private void sleepNow(){
-		try{
-			System.out.println("start.Sleep");
-			Thread.sleep(100);
-			System.out.println("stop.Sleep");
-		} catch (InterruptedException ie){
-			System.err.println("DungeonCollision.sleepNow:"+ie);
-		}
-	}
-	
 }

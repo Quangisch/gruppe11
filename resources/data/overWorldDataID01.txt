@@ -1,0 +1,39 @@
+###OverWorldID01###
+18
+x
+14
+##toExit##
+1619x0990,0001x0150
+dungeon
+0000x0002@ID00
+0020x0370
+##wall##
+XX 1 2 3 4 5 6 7 8 9101112131415161718
+01xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+01xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+02xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+02xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+03xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+03xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+04xxxxxx       xxxxxxxxxxxxxxxxxxxxxxx
+04xxxxxxx      xxxxxxxxxxxxxxxxxxxxxxx
+05xxxxx              xxxxxxxxxxxxxxxxx
+05xxxxx    ww        xxxxxxxxxxxxxxxxx
+06x        ww        xxxxxxxxxxxxxxxxx
+06x                  xxxxxxxxxxxxxxxxx
+07x xx          xx   xxxxxxxxxxxxxxxxx
+07x                  xxxxxxxxxxxxxxxxx
+08x     xx            xxxxxxxxxxxxxxxx
+08x        xxxx       xxxxxxxxxxxxxxxx
+09x                   xxxxxxxxxxxxxxxx
+09x    xxxxxxxxxx     xxxxxxxxxxxxxxxx
+10x                   xxxxxxxxxxxxxxxx
+10x                   xxxxxxxxxxxxxxxx
+11x                   xxxxxxxxxxxxxxxx
+11x  xxxxxxxx         xxxxxxxxxxxxxxxx
+12x    xxxxxxxxxx                     
+12x    xxxxxxxxxx                     
+13x   xxxxxxxxx                       
+13x  xxxxxxxxxx                       
+14x                                  x
+14xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx

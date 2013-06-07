@@ -1,0 +1,73 @@
+###OverWorldID00###
+30
+x
+31
+##toExit##
+0090x0000,0090x0020
+dungeon
+0000x0003@ID00
+0225x0550
+##wall##
+XX
+01xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+01x    xx   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+02x         xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+02x         xxxxxxxxxxxxxxxxxxxxxxxxxxx  xxxxxxxxxxxxxxxxxxxxx
+03x       xxx    xx      xxxxxxxxxxxxxx  xxxx      xxxxxxxxxxx
+03x      xxxx    xx      xxxxxxxxxxxxxx  xx x      xxxxxxxxxxx
+04x                  xxxxxxxxxx          xx              xxxxx
+04x                  xxxxxxxxxx          xx              xxxxx
+05xxxxxxxxx     xx   xxxxxxxx            xx              xxxxx
+05xxxxxxxxx          xxxxxxxx            xx      llll    xxxxx
+06xxxxxxxxx          xxxxxx              xx      llll    xxxxx
+06xxxxxxxxx          xxxxxx              xx              xxxxx
+07x                  xxxxxx           xxxxx              xx   
+07x                  xxxxxx        xxxxxxxx              xx   
+08x                  xxxx              xxxx    xxxx           
+08x          xxxx    xxxx              xxxx    xxxx           
+09x           xxxxxxxxxxx              xx      xxxx           
+09x           xxxxxxxxxxx              xx      xxxx           
+10x            xxxxxxxxxx     xx       xx      xxxx           
+10x            xxxxxxxxxx              xx      xxxx           
+11xxx                xxxx                      xxxxxxxx       
+11xxx    llll        xxxx                      xxxxxxxx       
+12xxx    llll        xxxxxxxxxxxxxx            xxxxxxxx  xx   
+12xxx                xxxxxxxxxxxxxx            xxxxxxxx  xx   
+13xxx              xxxxxxxxxxxxxxxx            xxxxxxxxxxxx   
+13xxx              xxxxxxxxxxxxxxxx            xxxxxxxxxxxx   
+14xxx                  xxxxxxxxxx      xx        xxxxxxxxxx   
+14xxx                  xxxxxxxxxx      xx        xxxxxxxxxx   
+15xxx                      xxxxxxxxxxxxxxxx      xxxxxxxxxxxxx
+15xxx                      xxxxxxxxxxxxxxxx      xxxxxxxxxxxxx
+16xxx     xx    xx         xxxxxxxxxxxxxxxxxx            xxxxx
+16xxx                      xxxxxxxxxxxxxxxxxxxx          xxxxx
+17xxx                      xxxxxxxxxxxxxxxxxxxx          xxxxx
+17xxx                        xxxxxxxxxxxxxxxxxx        xxxxxxx
+18xxxxxxx     xxxxxxxxxx     xxxxxxxxxxxxxxxxxxxxxx        xxx
+18xxxxxxxxx  xxxxxxxxxx      xxxxxxxxxxxxxxxxxxxxxx        xxx
+19xxxxxxxxx  xxxxxxxxxx      xxxxxxxxxxxxxxxxxxxxxx      xxxxx
+19xxxxxxx          xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx    xxxxxxx
+20xxxxxxx          xxxxxxxxxxxxxxxxxxxxxxxx    xxxx      xxxxx
+20xxxxxxx          xxxxxxxxxxxxxxxxxxxxxxxx    xxxx      xxxxx
+21xxxxxxx          xxxxxxxxxxxxxxxxxxxxxx      xxxx      xxxxx
+21xxxxxxx    wwwwwwxxxxxxxxxxxxxxxxxxxxxx      xxxx      xxxxx
+22xxxxx      wwwwww  xxxxxxxxxxxxxx                      xxxxx
+22xxxxx      wwwwwwwwxxxxxxxxxxxxxx                      xxxxx
+23x          wwxxwwww                          xxxx      xxxxx
+23x          wwxxwwwwxx                        xxxx      xxxxx
+24x          ww  wwww                xxxx      xxxx      xxxxx
+24x        wwwwwwwwwwwwwwxx          xxxx      xxxx      xxxxx
+25x        wwwwwwwwwwwwww            xxxx      xxxxxxxx  xxxxx
+25x        wwwwwwwwwwwwww            xxxx      xxxxxxxx  xxxxx
+26x     xx wwwwwwwwwwwwww   xx                 xxxxxx    xxxxx
+26x        wwww                                xxxxxx    xxxxx
+27x        wwww          xx                  xxxxxx      xxxxx
+27x                      xx                  xxxxxx      xxxxx
+28x                xxxxxxxx             xx   xxxx        xxxxx
+28x                xxxxxxxx                  xxxx        xxxxx
+29x  xxxx          xxxx             xx     xxxxxxxxxxxxxxxxxxx
+29x  xxxx          xxxx                    xxxxxxxxxxxxxxxxxxx
+30x  xxxx                                  xxxxxxxxxxxxxxxxxxx
+30x  xxxx                                  xxxxxxxxxxxxxxxxxxx
+31xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+31xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx

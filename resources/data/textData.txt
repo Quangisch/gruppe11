@@ -1,0 +1,60 @@
+#Shop#
+ID0000
+P01
+What do you want?
+A01
+You don't have enough coins…
+A02
+Thank you!
+
+#NPC#
+ID0000
+P01
+Ahhh... Here you are!
+Can you find Dolan please?
+He went into that cave
+and didn't come back...
+A01
+Here, get this gloves!
+I hope they will be of use
+A02
+...
+ID0001
+P01
+Who are you?
+...
+I see, my wife sent you
+to get me back out of
+this cave.
+We can't leave yet, though
+The monsters in this cave
+are plotting something
+against our village.
+I have to stop them!
+Will you help me?
+A01
+You are a nice fellow!
+Keep going deeper into
+this cave.
+I'll be right behind you.
+A02
+I see...
+P02
+Where are you going?
+I will stay and wait
+here for you...
+P03
+Wow... You did it!
+#Fairy#
+P01
+Cat or Dogs?
+A01
+A Cat Lover?
+Get some Armor...
+A02
+A Dog Lover?
+Get some Mana...
+P02
+You don't like cats anymore?
+P03
+You don't like dogs anymore?

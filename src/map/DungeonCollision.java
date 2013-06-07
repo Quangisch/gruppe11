@@ -1,596 +1,528 @@
 package map;
 
-import java.awt.Rectangle;
-import java.util.Random;
+import game.objects.Moveable;
+import game.objects.Player;
 
-import characters.Goomba;
-import characters.Player;
+import java.awt.Rectangle;
 
 import core.Board;
 import core.GameManager;
 
-
-
-public class DungeonCollision implements Runnable {
+abstract class DungeonCollision extends DungeonBuilder{
 	
-	private static Player player;
-	private static DynamicMapAnimation dynamicMapAnimation;
-	private static DungeonNavigator dungeonNavigator;
-	private static Goomba goomba;
-	
-	/*object[layer][xTile][yTile]
-	 * layer 0 = Interaction
-	 * layer 1 = Objects
-	 * layer 2 = Doors
-	 * layer 3 = Wall1
-	 * layer 4 = Wall2
-	 * layer 5 = Floor1
-	 * layer 6 = Floor2
+	/*
+	 * layer 0 = Floor2
+	 * layer 1 = Floor1
+	 * layer 2 = Wall1
+	 * layer 3 = Wall2
+	 * layer 4 = Doors
+	 * layer 5 = Objects
+	 * layer 6 = Interaction
 	 */
-	static Rectangle objectN[][][] = new Rectangle[7][9][7];static Rectangle objectE[][][] = new Rectangle[7][9][7];static Rectangle objectS[][][] = new Rectangle[7][9][7];static Rectangle objectW[][][] = new Rectangle[7][9][7];
 	
-public DungeonCollision(){
+	
+	//mapObjectBound[layer][orientation][xTile][yTile][element]
+	Rectangle[][][][][] mapObjectBound = new Rectangle[7][13][9][7][3];
+	
+	protected DungeonCollision(){
 		
 	}
 	
-	
-	public DungeonCollision(Player player,Goomba goomba, DungeonNavigator dungeonNavigator, DynamicMapAnimation dynamicMapAnimation){
-		this.player = player;
-		this.goomba = goomba;
-		this.dungeonNavigator = dungeonNavigator;
-		this.dynamicMapAnimation = dynamicMapAnimation;
-	}
-	
-	public void run(){
-		if(GameManager.printMsg)
-			System.out.println("DungeonCollision.start");
-			
-		if(dungeonNavigator.getDungeon()){
-			if(dungeonNavigator.getLoadNewMap())
-				readMapTiles();
-			
-			if(dungeonNavigator.getScrollReady()){
-				checkPlayerCollisionWall1();
-				
-			}
-			
-		}
+	public void checkCollision(Moveable object){
+		checkCollisionFloor(object);
+		//checkCollisionDoor(object);
+		
+		checkCollisionWall(object);
 		
 	}
-	public void readMapTiles(){
+	
+
+	protected void buildCollisionObjects(){
 		
-		resetBounds();
+		clearObjectBounds();
+		int xTileData[][][][][] = getXTileDataArray();
+		int yTileData[][][][][] = getYTileDataArray();
 		
+		int xMapSize = getMapRowX();
+		int yMapSize = getMapRowY();
+		
+		for(int yMapTmp = 0; yMapTmp < xMapSize; yMapTmp++){
+		for(int xMapTmp = 0; xMapTmp < yMapSize; xMapTmp++){	
+		for(int layer = 0; layer < 7; layer++){
 		for(int yTile = 0; yTile < 7; yTile++){
 			for(int xTile = 0; xTile < 9; xTile++){
 				
+				
 			
-				//yWall A
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 1){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(1): 	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(2):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(3):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(4):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(5):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(6):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(7):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,45);break;
-					case(8):	objectN[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);objectE[3][xTile][yTile] = objectN[3][xTile][yTile];break;
-					case(9):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;
-					case(10): 	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(11):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(12):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(13):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(14):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(15):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(16):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(17):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(18):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;
+				//Tile yRow A
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 1){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1): 	addCornerBlockRect(xMapTmp,yMapTmp,3,8,xTile,yTile);break;
+					case(2):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(3):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(4):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(5):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(6):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(7):	addBlockRect(xMapTmp,yMapTmp,3,8,xTile,yTile);break;
+					case(8):	addBlockRect(xMapTmp,yMapTmp,3,2,xTile,yTile);break;
+					case(9):	addCornerBlockRect(xMapTmp,yMapTmp,3,2,xTile,yTile);break;
+					case(10): 	addCornerBlockRect(xMapTmp,yMapTmp,3,8,xTile,yTile);break;
+					case(11):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(12):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(13):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(14):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(15):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(16):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(17):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(18):	addCornerBlockRect(xMapTmp,yMapTmp,3,2,xTile,yTile);break;
 					}
-				}//yWall A
+				}//Tile yRow A
 				
 				
-				//yWall B
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 2){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(1):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(2):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);objectS[3][xTile][yTile] = objectE[3][xTile][yTile];break;
-					case(3):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;
-					case(4):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;	
-					case(5):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;	
-					case(6):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;	
-					case(7):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;	
-					case(8):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;	
-					case(9):	objectN[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;
-					case(10):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(11):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,0,0);break;
-					case(12):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(13):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;
-					case(14):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,0,0);break;	
-					case(15):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,0,0);break;	
-					case(16):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,45);break;	
-					case(17):	objectN[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;	
-					case(18):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;
+				//Tile yRow B
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 2){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1):	addBlockRect(xMapTmp,yMapTmp,3,7,xTile,yTile);break;
+					case(2):	addBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
+					case(3):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(4):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(5):	addBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(6):	addBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
+					case(7):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(8):	addBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(9):	addBlockRect(xMapTmp,yMapTmp,3,2,xTile,yTile);break;
+					case(10):	addBlockRect(xMapTmp,yMapTmp,3,7,xTile,yTile);break;
+					case(11):	addFullBlockRect(xMapTmp,yMapTmp,4,xTile,yTile);break;
+					case(12):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(13):	addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
+					case(14):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(15):	break;
+					case(16):	addBlockRect(xMapTmp,yMapTmp,4,3,xTile,yTile);addBlockRect(xMapTmp,yMapTmp,3,8,xTile,yTile);break;
+					case(17):	addBlockRect(xMapTmp,yMapTmp,4,7,xTile,yTile);addBlockRect(xMapTmp,yMapTmp,3,2,xTile,yTile);break;
+					case(18):	addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
 					}
-				}//yWall B
+				}//Tile yRow B
 				
-				//yWall C
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 3){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(1):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(2):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;	
-					case(3):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;	
-					case(4):	objectN[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;	
-					case(5):	objectS[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;
-					case(6):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;
-					case(7):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;
-					case(8):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(9):	objectS[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;
-					case(10):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(11):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;	
-					case(12):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;	
-					case(13):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;	
-					case(14):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;
-					case(15):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;
-					case(16):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;
-					case(17):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;
-					case(18):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;
+				//Tile yRow C
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 3){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1):	addBlockRect(xMapTmp,yMapTmp,3,7,xTile,yTile);break;
+					case(2):	addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
+					case(3):	break;
+					case(4):	break;
+					case(5):	addBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
+					case(6):	addBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(7):	addBlockRect(xMapTmp,yMapTmp,4,3,xTile,yTile);addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
+					case(8):	addBlockRect(xMapTmp,yMapTmp,3,7,xTile,yTile);break;
+					case(9):	addBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
+					case(10):	addBlockRect(xMapTmp,yMapTmp,3,7,xTile,yTile);break;
+					case(11):	addBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
+					case(12):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(13):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(14):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(15):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(16):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(17):	addBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(18):	addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
 					}
-				}//ywall C
+				}//Tile yRow C
 
-				//ywall D
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 4){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(1):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(2):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;
-					case(3):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;
-					case(4):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;
-					case(5):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;
-					case(6):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,45);break;
-					case(7):	objectS[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;
-					case(8):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,45);break;
-					case(9):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;
-					case(10):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(11):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;
-					case(12):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,0,0);break;
-					case(13):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;
-					case(14):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,45);break;
-					case(15):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;
-					case(16):	objectS[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;
-					case(17):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(18):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;
+				//Tile yRow D
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 4){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1):	addBlockRect(xMapTmp,yMapTmp,3,7,xTile,yTile);break;
+					case(2):	addBlockRect(xMapTmp,yMapTmp,3,2,xTile,yTile);break;
+					case(3):	break;
+					case(4):	break;
+					case(5):	addBlockRect(xMapTmp,yMapTmp,3,2,xTile,yTile);break;
+					case(6):	addBlockRect(xMapTmp,yMapTmp,3,8,xTile,yTile);break;
+					case(7):	addBlockRect(xMapTmp,yMapTmp,4,3,xTile,yTile);addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
+					case(8):	addBlockRect(xMapTmp,yMapTmp,3,8,xTile,yTile);break;
+					case(9):	addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
+					case(10):	addBlockRect(xMapTmp,yMapTmp,3,7,xTile,yTile);break;
+					case(11):	addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
+					case(12):	break;
+					case(13):	addBlockRect(xMapTmp,yMapTmp,3,2,xTile,yTile);break;
+					case(14):	addBlockRect(xMapTmp,yMapTmp,3,8,xTile,yTile);break;
+					case(15):	addBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(16):	addBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
+					case(17):	addBlockRect(xMapTmp,yMapTmp,3,7,xTile,yTile);break;
+					case(18):	addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
 					}
-				}//ywall D
+				}//Tile yRow D
 	
-				//ywall E
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 5){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(1):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,45);break;
-					case(2):	objectS[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;
-					case(3):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,0,0);break;
-					case(4):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,0,0);break;
-					case(5):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,0,0);break;
-					case(6):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,0,0);break;
-					case(7):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,0,0);break;
-					case(8):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;
-					case(9):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;
-					case(10):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(11):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;
-					case(12):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,0,0);break;
-					case(13):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;
-					case(14):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;
-					case(15):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,45);break;
-					case(16):	objectN[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;
-					case(17):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(18):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;
+				//Tile yRow E
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 5){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1):	addBlockRect(xMapTmp,yMapTmp,3,8,xTile,yTile);break;
+					case(2):	addBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
+					case(3):	addFullBlockRect(xMapTmp,yMapTmp,6,xTile,yTile);break;
+					case(4):	addFullBlockRect(xMapTmp,yMapTmp,6,xTile,yTile);break;
+					case(5):	addFullBlockRect(xMapTmp,yMapTmp,6,xTile,yTile);break;
+					case(6):	addFullBlockRect(xMapTmp,yMapTmp,6,xTile,yTile);break;
+					case(7):	break;
+					case(8):	addBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(9):	addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
+					case(10):	addBlockRect(xMapTmp,yMapTmp,3,7,xTile,yTile);break;
+					case(11):	addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
+					case(12):	break;
+					case(13):	addBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
+					case(14):	addBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(15):	addBlockRect(xMapTmp,yMapTmp,3,8,xTile,yTile);break;
+					case(16):	addBlockRect(xMapTmp,yMapTmp,3,2,xTile,yTile);break;
+					case(17):	addBlockRect(xMapTmp,yMapTmp,3,7,xTile,yTile);break;
+					case(18):	addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
 					}
-				}//ywall E
+				}//Tile yRow E
 				
-				//yWall F
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 6){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(1):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;
-					case(2):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;	
-					case(3):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;	
-					case(4):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,0,0);break;	
-					case(5):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,0,0);break;
-					case(6):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(7):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(8):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,45);break;
-					case(9):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;
-					case(10): 	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(11):	objectN[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;
-					case(12):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(13):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(14):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(15):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(16):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(17):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,45);break;
-					case(18):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;
+				//Tile yRow F
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 6){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1):	addBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(2):	addBlockRect(xMapTmp,yMapTmp,3,2,xTile,yTile);break;
+					case(3):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(4):	break;
+					case(5):	break;
+					case(6):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(7):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(8):	addBlockRect(xMapTmp,yMapTmp,3,8,xTile,yTile);break;
+					case(9):	addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
+					case(10):	addBlockRect(xMapTmp,yMapTmp,3,7,xTile,yTile);break;
+					case(11):	addBlockRect(xMapTmp,yMapTmp,3,2,xTile,yTile);break;
+					case(12):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(13):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(14):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(15):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(16):	addBlockRect(xMapTmp,yMapTmp,3,1,xTile,yTile);break;
+					case(17):	addBlockRect(xMapTmp,yMapTmp,3,8,xTile,yTile);break;
+					case(18):	addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
 					}	
-				}//ywall F
+				}//Tile yRow F
 				
-				//yWall G
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 7){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(1):	objectW[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;
-					case(2):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;
-					case(3):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;
-					case(4):	objectS[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;	
-					case(5):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;	
-					case(6):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;	
-					case(7):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;	
-					case(8):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;	
-					case(9):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;
+				//Tile yRow G
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 7){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1):	addCornerBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(2):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(3):	addBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(4):	addBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
+					case(5):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(6):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(7):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(8):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(9):	addCornerBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
+					case(10):	addCornerBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(11):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(12):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(13):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(14):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(15):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(16):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(17):	addBlockRect(xMapTmp,yMapTmp,3,5,xTile,yTile);break;
+					case(18):	addCornerBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
 					}
-				}//yWall G
-				//yWall H
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 8){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(4):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;
-					case(5):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;	
-					case(6):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;	
-					case(7):	objectS[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;
+				}//Tile yRow G
+				
+				//Tile yRow H
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 8){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1):	break;
+					case(2):	break;
+					case(3):	break;
+					case(4):	addFullBlockRect(xMapTmp,yMapTmp,4,xTile,yTile);addBlockRect(xMapTmp,yMapTmp,3,7,xTile,yTile);break;
+					case(5):	addFullBlockRect(xMapTmp,yMapTmp,4,xTile,yTile);addBlockRect(xMapTmp,yMapTmp,3,3,xTile,yTile);break;
+					case(6):	addBlockRect(xMapTmp,yMapTmp,4,5,xTile,yTile);addBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(7):	addBlockRect(xMapTmp,yMapTmp,4,5,xTile,yTile);addBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
+					case(8):	break;
+					case(9):	break;
+					case(10):	break;
+					case(11):	addCornerBlockRect(xMapTmp,yMapTmp,1,8,xTile,yTile);break;
+					case(12):	addBlockRect(xMapTmp,yMapTmp,1,1,xTile,yTile);break;
+					case(13):	addBlockRect(xMapTmp,yMapTmp,1,1,xTile,yTile);break;
+					case(14):	addCornerBlockRect(xMapTmp,yMapTmp,1,2,xTile,yTile);break;
+					case(15):	addCornerBlockRect(xMapTmp,yMapTmp,1,8,xTile,yTile);break;
+					case(16):	addBlockRect(xMapTmp,yMapTmp,1,1,xTile,yTile);break;
+					case(17):	addBlockRect(xMapTmp,yMapTmp,1,1,xTile,yTile);break;
+					case(18):	addCornerBlockRect(xMapTmp,yMapTmp,1,2,xTile,yTile);break;
 					}
-				}//yWall H
+				}//Tile yRow H
 
-				//yWall I
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 8){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(4):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(5):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;	
-					case(6):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;	
-					case(7):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;		
+				//Tile yRow I
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 9){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1):	break;
+					case(2):	break;
+					case(3):	break;
+					case(4):	break;
+					case(5):	break;
+					case(6):	break;
+					case(7):	break;
+					case(8):	break;
+					case(9):	break;
+					case(10):	break;
+					case(11):	addBlockRect(xMapTmp,yMapTmp,1,7,xTile,yTile);break;
+					case(12):	addCornerBlockRect(xMapTmp,yMapTmp,1,8,xTile,yTile);break;
+					case(13):	addCornerBlockRect(xMapTmp,yMapTmp,1,2,xTile,yTile);break;
+					case(14):	addBlockRect(xMapTmp,yMapTmp,1,3,xTile,yTile);break;
+					case(15):	addBlockRect(xMapTmp,yMapTmp,1,7,xTile,yTile);break;
+					case(16):	addCornerBlockRect(xMapTmp,yMapTmp,1,8,xTile,yTile);break;
+					case(17):	addCornerBlockRect(xMapTmp,yMapTmp,1,2,xTile,yTile);break;
+					case(18):	addBlockRect(xMapTmp,yMapTmp,1,3,xTile,yTile);break;
 					}
-				}//yWall I
+				}//Tile yRow I
 
-				//yWall J
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 9){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(4):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;
-					case(5):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;	
-					case(6):	objectE[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;	
-					case(7):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(8):	objectE[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(9):	objectE[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(10):	objectE[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
+				//Tile yRow J
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 10){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1):	break;
+					case(2):	break;
+					case(3):	break;
+					case(4):	addBlockRect(xMapTmp,yMapTmp,4,7,xTile,yTile);addBlockRect(xMapTmp,yMapTmp,3,8,xTile,yTile);break;
+					case(5):	break;
+					case(6):	break;
+					case(7):	addBlockRect(xMapTmp,yMapTmp,4,3,xTile,yTile);addBlockRect(xMapTmp,yMapTmp,3,2,xTile,yTile);break;
+					case(8):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(9):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(10):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(11):	addBlockRect(xMapTmp,yMapTmp,1,7,xTile,yTile);break;
+					case(12):	addCornerBlockRect(xMapTmp,yMapTmp,1,6,xTile,yTile);break;
+					case(13):	addCornerBlockRect(xMapTmp,yMapTmp,1,4,xTile,yTile);break;
+					case(14):	addBlockRect(xMapTmp,yMapTmp,1,3,xTile,yTile);break;
+					case(15):	addBlockRect(xMapTmp,yMapTmp,1,7,xTile,yTile);break;
+					case(16):	addCornerBlockRect(xMapTmp,yMapTmp,1,6,xTile,yTile);break;
+					case(17):	addCornerBlockRect(xMapTmp,yMapTmp,1,4,xTile,yTile);break;
+					case(18):	addBlockRect(xMapTmp,yMapTmp,1,3,xTile,yTile);break;
 					}
-				}//yWall J
+				}//Tile yRow J
 
-				//yWall K
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 10){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(4):	objectS[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;	
-					case(5):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;
-					case(6):	objectS[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;
-					case(7):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;
+				//Tile yRow K
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 11){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1):	break;
+					case(2):	break;
+					case(3):	break;
+					case(4):	addBlockRect(xMapTmp,yMapTmp,4,7,xTile,yTile);addBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(5):	break;
+					case(6):	break;
+					case(7):	addBlockRect(xMapTmp,yMapTmp,4,3,xTile,yTile);addBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
+					case(8):	addFullBlockRect(xMapTmp,yMapTmp,0,xTile,yTile);break;
+					case(9):	addFullBlockRect(xMapTmp,yMapTmp,0,xTile,yTile);break;
+					case(10):	addFullBlockRect(xMapTmp,yMapTmp,0,xTile,yTile);break;
+					case(11):	addCornerBlockRect(xMapTmp,yMapTmp,1,6,xTile,yTile);break;
+					case(12):	addBlockRect(xMapTmp,yMapTmp,1,5,xTile,yTile);break;
+					case(13):	addBlockRect(xMapTmp,yMapTmp,1,5,xTile,yTile);break;
+					case(14):	addCornerBlockRect(xMapTmp,yMapTmp,1,4,xTile,yTile);break;
+					case(15):	addCornerBlockRect(xMapTmp,yMapTmp,1,6,xTile,yTile);break;
+					case(16):	addBlockRect(xMapTmp,yMapTmp,1,5,xTile,yTile);break;
+					case(17):	addBlockRect(xMapTmp,yMapTmp,1,5,xTile,yTile);break;
+					case(18):	addCornerBlockRect(xMapTmp,yMapTmp,1,4,xTile,yTile);break;
 					}
-				}//yWall K
+				}//Tile yRow K
 
-				//yWall L
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 11){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(4):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(6):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
+				//Tile yRow L
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 12){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1):	break;
+					case(2):	break;
+					case(3):	break;
+					case(4):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(5):	addFullBlockRect(xMapTmp,yMapTmp,6,xTile,yTile);break;
+					case(6):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(7):	addFullBlockRect(xMapTmp,yMapTmp,6,xTile,yTile);break;
+					case(8):	addFullBlockRect(xMapTmp,yMapTmp,0,xTile,yTile);break;
+					case(9):	addFullBlockRect(xMapTmp,yMapTmp,0,xTile,yTile);break;
+					case(10):	addFullBlockRect(xMapTmp,yMapTmp,0,xTile,yTile);break;
+					case(11):	break;
+					case(12):	break;
+					case(13):	break;
+					case(14):	break;
+					case(15):	break;
+					case(16):	break;
+					case(17):	break;
+					case(18):	break;
 					}
-				}//yWall L
+				}//Tile yRow L
 
-				//yWall M
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 12){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(4):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(6):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(8):	objectE[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(9):	objectE[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(10):	objectE[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(11):	objectS[3][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;
-					case(12):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;
+				//Tile yRow M
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 13){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1):	break;
+					case(2):	break;
+					case(3):	break;
+					case(4):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(5):	addFullBlockRect(xMapTmp,yMapTmp,6,xTile,yTile);break;
+					case(6):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(7):	addFullBlockRect(xMapTmp,yMapTmp,6,xTile,yTile);break;
+					case(8):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(9):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(10):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(11):	addBlockRect(xMapTmp,yMapTmp,3,4,xTile,yTile);break;
+					case(12):	addBlockRect(xMapTmp,yMapTmp,3,6,xTile,yTile);break;
+					case(13):	break;
+					case(14):	break;
+					case(15):	break;
+					case(16):	break;
+					case(17):	break;
+					case(18):	break;
 					}
-				}//yWall M
+				}//Tile yRow M
 
-				//yWall N
-				if(DungeonBuilder.yWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 13){
-					switch(DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(4):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(6):	objectS[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(11):	objectN[3][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;
-					case(12):	objectN[3][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,45);break;
+				//Tile yRow N
+				if(yTileData[xMapTmp][yMapTmp][layer][xTile][yTile] == 14){
+					switch(xTileData[xMapTmp][yMapTmp][layer][xTile][yTile]){
+					case(1):	break;
+					case(2):	break;
+					case(3):	break;
+					case(4):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(5):	break;
+					case(6):	addFullBlockRect(xMapTmp,yMapTmp,3,xTile,yTile);break;
+					case(7):	addFullBlockRect(xMapTmp,yMapTmp,1,xTile,yTile);break;
+					case(8):	addFullBlockRect(xMapTmp,yMapTmp,0,xTile,yTile);break;
+					case(9):	addFullBlockRect(xMapTmp,yMapTmp,1,xTile,yTile);break;
+					case(10):	addFullBlockRect(xMapTmp,yMapTmp,0,xTile,yTile);break;
+					case(11):	addBlockRect(xMapTmp,yMapTmp,3,2,xTile,yTile);break;
+					case(12):	addBlockRect(xMapTmp,yMapTmp,3,8,xTile,yTile);break;
+					case(13):	break;
+					case(14):	break;
+					case(15):	addFullBlockRect(xMapTmp,yMapTmp,5,xTile,yTile);break;
+					case(16):	addFullBlockRect(xMapTmp,yMapTmp,5,xTile,yTile);break;
+					case(17):	break;
+					case(18):	break;
 					}
-				}//yWall N
+				}//Tile yRow N
 				
-				
-				
-				//__________Door-Layer 2_______________//
-				//yDoor B
-				if(DungeonBuilder.yDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 2){
-					switch(DungeonBuilder.xDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(16):	objectN[2][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,90);break;	
-					case(17):	objectN[2][xTile][yTile] = new Rectangle((xTile*90),yTile*90,45,90);break;
+			
+			}			
+		}
+		}
+		}
+		}
+		//addCornerBlockRect(int xMap, int yMap, int layer, int orientation, int xTile, int yTile){
+	
+	}
+				//System.out.println("check: " +xTileData[getX()][getY()][xTile][yTile]);
+	
+	protected void getMapObjectData(){
+		mapObjectBound = getMapObjectBounds(getXMap(),getYMap());
+	}
+	
+	protected void checkCollisionFloor(Moveable object){
+		int xMap = getXMap();
+		int yMap = getYMap();
+		
+		
+		for(int yTile = 0; yTile < 7; yTile++){
+			for(int xTile = 0; xTile < 9; xTile++){
+				for(int element = 0; element < 3; element++){
+
+					//Trap,Hole
+					if(getYTileDataElement(xMap, yMap, 0, xTile, yTile) == 14
+							&&(getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 7 || getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 9)
+								&& (mapObjectBound[1][0][xTile][yTile][element]).intersects(object.getBoundS())){
+						//Shake Tile
+						//TODO
 					}
-				}
-				//yDoor C
-				if(DungeonBuilder.yDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 3){
-					switch(DungeonBuilder.xDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(7):	objectE[2][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;
-					}	
-				}//yDoor D
-				if(DungeonBuilder.yDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 4){
-					switch(DungeonBuilder.xDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(7):	objectE[2][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;
-					}
-				}//yDoor H
-				if(DungeonBuilder.yDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 8){
-					switch(DungeonBuilder.xDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(4):	objectS[2][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,90,45);break;
-					case(5):	objectS[2][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;	
-					case(6):	objectS[2][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;	
-					case(7):	objectS[2][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;
-					}
-				}//yDoor I
-				if(DungeonBuilder.yDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 9){
-					switch(DungeonBuilder.xDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(4):	objectN[2][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					case(5):	objectN[2][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;	
-					case(6):	objectN[2][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;	
-					case(7):	objectN[2][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;
-					}
-				}//yDoor J
-				if(DungeonBuilder.yDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 10){
-					switch(DungeonBuilder.xDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(4):	objectE[2][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;
-					case(5):	objectW[2][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;	
-					case(6):	objectE[2][xTile][yTile] = new Rectangle((xTile*90)+45,yTile*90,45,45);break;	
-					case(7):	objectW[2][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;
-					}
-				}//yDoor K
-				if(DungeonBuilder.yDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 11){
-					switch(DungeonBuilder.xDoor[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(4):	objectE[2][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;	
-					case(5):	objectW[2][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;
-					case(6):	objectE[2][xTile][yTile] = new Rectangle((xTile*90)+45,(yTile*90)+45,45,45);break;
-					case(7):	objectW[2][xTile][yTile] = new Rectangle(xTile*90,(yTile*90)+45,45,45);break;
-					}
-				}//==================================================//
-				
-				//__________Floor 1 | Layer 5 (Edge)_______________//
-				if(DungeonBuilder.yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 8){
-					switch(DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(11):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);objectN[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(12):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;	
-					case(13):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;	
-					case(14):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);objectN[5][xTile][yTile] = new Rectangle(xTile*90+45,yTile*90,45,90);break;
-					case(15):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);objectN[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(16):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;	
-					case(17):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;	
-					case(18):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);objectN[5][xTile][yTile] = new Rectangle(xTile*90+45,yTile*90,45,90);break;
-					}
-				}
-				if(DungeonBuilder.yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 9){
-					switch(DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(11):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(12):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);objectN[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;	
-					case(13):	objectS[5][xTile][yTile] = new Rectangle(xTile*90+45,yTile*90,45,90);objectN[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;	
-					case(14):	objectS[5][xTile][yTile] = new Rectangle(xTile*90+45,yTile*90,45,90);break;
-					case(15):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(16):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);objectN[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;	
-					case(17):	objectS[5][xTile][yTile] = new Rectangle(xTile*90+45,yTile*90,45,90);objectN[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,45);break;	
-					case(18):	objectS[5][xTile][yTile] = new Rectangle(xTile*90+45,yTile*90,45,90);break;
-					}
-				}
-				if(DungeonBuilder.yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 10){
-					switch(DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(11):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(12):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);objectN[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90+45,90,45);break;	
-					case(13):	objectS[5][xTile][yTile] = new Rectangle(xTile*90+45,yTile*90,45,90);objectN[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90+45,90,45);break;	
-					case(14):	objectS[5][xTile][yTile] = new Rectangle(xTile*90+45,yTile*90,45,90);break;
-					case(15):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(16):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);objectN[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90+45,90,45);break;	
-					case(17):	objectS[5][xTile][yTile] = new Rectangle(xTile*90+45,yTile*90,45,90);objectN[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90+45,90,45);break;	
-					case(18):	objectS[5][xTile][yTile] = new Rectangle(xTile*90+45,yTile*90,45,90);break;
-					}
-				}
-				if(DungeonBuilder.yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 11){
-					switch(DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(11):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90+45,90,45);objectN[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(12):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90+45,90,45);break;	
-					case(13):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90+45,90,45);break;	
-					case(14):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90+45,90,45);objectN[5][xTile][yTile] = new Rectangle(xTile*90+45,yTile*90,45,90);break;
-					case(15):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90+45,90,45);objectN[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,45,90);break;
-					case(16):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90+45,90,45);break;	
-					case(17):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90+45,90,45);break;	
-					case(18):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90+45,90,45);objectN[5][xTile][yTile] = new Rectangle(xTile*90+45,yTile*90,45,90);break;
-					}
-				}//==================================================//
-				//__________Floor 1-2 | Layer 5-6 (Traps)_______________//
-				//yFloor1 N
-				if(DungeonBuilder.yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 14){
-					switch(DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(7):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(9):	objectS[5][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					}
-				}//yFloor2 N
-				if(DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 14){
-					switch(DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(8):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(10):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					}
-				}//==================================================//
-				
-				//__________Floor 2 | Layer 6 (Water)_______________//
-				//yFloor1 N
-				if(DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 8){
-					switch(DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(8):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(9):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(10):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					}
-				}//yFloor2 N
-				if(DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 9){
-					switch(DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(8):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(9):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(10):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					}
-				}//==================================================//
-				//__________Floor 2 | Layer 6 (Lava)_______________//
-				//yFloor1 N
-				if(DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 11){
-					switch(DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(8):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(9):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(10):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					}
-				}//yFloor2 N
-				if(DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 12){
-					switch(DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]){
-					case(8):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(9):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					case(10):	objectS[6][xTile][yTile] = new Rectangle(xTile*90,yTile*90,90,90);break;
-					}
-				}//==================================================//
-				
-				
-				
-			}
+					if((mapObjectBound[1][0][xTile][yTile][element].contains(object.getBoundS())||mapObjectBound[0][0][xTile][yTile][element].contains(object.getBoundS()))
+							&& ((getYTileDataElement(xMap, yMap, 1, xTile, yTile) == 14 && (getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 7 || getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 9))
+									  ||(getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 14 && (getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 8 || getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 10)))){
 						
-		}
-		dungeonNavigator.spawnEnemy();
-		dungeonNavigator.setLoadNewMap(false);
-		
-	}
-				//System.out.println("check: " +DungeonBuilder.xWall1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile]);
-	
-	public void checkCollisionFloor(){
-		for(int yTile = 0; yTile < 7; yTile++){
-			for(int xTile = 0; xTile <9; xTile++){
-
+						setXTileDataElement(18, xMap, yMap, 1, xTile, yTile);
+						setXTileDataElement(14, xMap, yMap, 1, xTile, yTile);
+						System.err.println("Trap!");
+						
+						object.setObjectBack(100,mapObjectBound[1][0][xTile][yTile][element]);
+						object.setLife(object.getLife()-1);
+						
 				
-				//Trap,Hole
-				if((DungeonBuilder.yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 14
-						&&(DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 7 || DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 9))
-							&&(objectS[5][xTile][yTile]).intersects(player.getBoundS())){
+					}//Trap,Hole
 					
-					dynamicMapAnimation.startShake(false,-2,2,5,xTile,yTile);
-				}
-				if((objectS[5][xTile][yTile].contains(player.getBoundS())||objectS[6][xTile][yTile].contains(player.getBoundS()))
-						&& ((DungeonBuilder.yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 14 && (DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 7 || DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 9))
-								  ||(DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 14 && (DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 8 || DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 10)))){
-					DungeonBuilder.xFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] = 18;
-					DungeonBuilder.yFloor1[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] = 14;
-					System.err.println("Trap!");
-					player.setLoseLifeType(2);
-					player.setLoseLife(true);
-					sleepNow();
-					player.setLoseLife(false);			
-				}//Trap,Hole
-				
-				//LavaPit
-					/*
-				if((DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 11 || DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 12)
-						&& (DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 9
-						|| DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 8
-						|| DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 10))
-					*/
-					if(((DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 11 || DungeonBuilder.yFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 12)
-							&& (DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 9
-							|| DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 8
-							|| DungeonBuilder.xFloor2[dungeonNavigator.getX()][dungeonNavigator.getY()][xTile][yTile] == 10)) 
-								&&objectS[6][xTile][yTile].contains(player.getBoundS()) && !(objectS[5][xTile][yTile].intersects(player.getBoundS())||objectN[5][xTile][yTile].intersects(player.getBoundS()))){
-						System.err.println("Lava!");
-						player.setLoseLifeType(1);
-						player.setLoseLife(true);
-						sleepNow();
-						player.setLoseLife(false);
+					
+					for(int index = 0; index < GameManager.getMoveableList().size()-1; index ++){
+						
+						if(((getYTileDataElement(xMap, yMap, 0, xTile, yTile) == 11 || getYTileDataElement(xMap, yMap, 0, xTile, yTile) == 12)
+								&& (getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 8
+								|| getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 9
+								|| getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 10)) 
+									&& mapObjectBound[0][0][xTile][yTile][element].contains(object.getBoundCore()) 
+									&& !(mapObjectBound[1][0][xTile][yTile][element].intersects(object.getBoundCore())
+									|| mapObjectBound[1][0][xTile][yTile][element].intersects(object.getBoundCore()))){
+							
+							System.err.println("checkCollision");
+							object.setObjectBack(100,mapObjectBound[0][0][xTile][yTile][element]);
+							object.startFlashTimer(100,15);
+							System.err.println("Lava!");
+							object.setLife(object.getLife()-1);
+							sleepNow();
+							
+						}
 					}
 					
-				
+				}
+			
 				
 			}
-		}
-		
-				
+		}		
 
 	}
 	
-	public boolean getLoadNewMap(){
-		return dungeonNavigator.getLoadNewMap();
-	}
-	
-	public void checkCollisionDoor(){
-		for(int yTile = 0; yTile < 7; yTile++){
-			for(int xTile = 0; xTile <9; xTile++){
-				if(player.getBoundS().intersects(objectN[2][xTile][yTile])){player.setY(player.getY()+10);System.err.println("Door Locked!");}
-				if(player.getBoundS().intersects(objectE[2][xTile][yTile])){player.setX(player.getX()-10);System.err.println("Door Locked!");}
-				if(player.getBoundS().intersects(objectS[2][xTile][yTile])){player.setY(player.getY()-10);System.err.println("Door Locked!");}
-				if(player.getBoundS().intersects(objectW[2][xTile][yTile])){player.setX(player.getX()+10);System.err.println("Door Locked!");}
-			}
-		}
+	protected void checkCollisionDoor(Moveable object){
 		
-	}
-	
-	public Rectangle getObjectN(int layer, int xTile, int yTile){
-		return objectN[layer][xTile][yTile];
-	}
-	public Rectangle getObjectE(int layer, int xTile, int yTile){
-		return objectE[layer][xTile][yTile];
-	}
-	public Rectangle getObjectS(int layer, int xTile, int yTile){
-		return objectS[layer][xTile][yTile];
-	}
-	public Rectangle getObjectW(int layer, int xTile, int yTile){
-		return objectW[layer][xTile][yTile];
-	}
-	
-	
-	private void checkPlayerCollisionWall1(){
-		for(int yTile = 0; yTile < 7; yTile++){
-			for(int xTile = 0; xTile <9; xTile++){
-				if(player.getBoundS().intersects(objectN[3][xTile][yTile])){player.setY(player.getY()+10);}
-				if(player.getBoundS().intersects(objectE[3][xTile][yTile])){player.setX(player.getX()-10);}
-				if(player.getBoundS().intersects(objectS[3][xTile][yTile])){player.setY(player.getY()-10);}
-				if(player.getBoundS().intersects(objectW[3][xTile][yTile])){player.setX(player.getX()+10);}
-				
-				if(player.getBoundS().intersects(objectN[3][xTile][yTile] ) && player.getBoundS().intersects(objectE[3][xTile][yTile])){
-					player.setY(player.getY()+10);player.setX(player.getX()-10);}
-				if(player.getBoundS().intersects(objectN[3][xTile][yTile] ) && player.getBoundS().intersects(objectW[3][xTile][yTile])){
-					player.setY(player.getY()+10);player.setX(player.getX()+10);}
-				if(player.getBoundS().intersects(objectS[3][xTile][yTile]) && player.getBoundS().intersects(objectE[3][xTile][yTile])){
-					player.setY(player.getY()-10);player.setX(player.getX()-10);}
-				if(player.getBoundS().intersects(objectS[3][xTile][yTile]) && player.getBoundS().intersects(objectW[3][xTile][yTile])){
-					player.setY(player.getY()-10);player.setX(player.getX()+10);}
-			}
-		}
-	}
-	public void checkGoombaCollisionWall1(){
-		for(int yTile = 0; yTile < 7; yTile++){
-			for(int xTile = 0; xTile <9; xTile++){
-				if(goomba.getBoundS().intersects(objectN[3][xTile][yTile])){goomba.setY(goomba.getY()+25);}
-				if(goomba.getBoundS().intersects(objectE[3][xTile][yTile])){goomba.setX(goomba.getX()-25);}
-				if(goomba.getBoundS().intersects(objectS[3][xTile][yTile])){goomba.setY(goomba.getY()-25);}
-				if(goomba.getBoundS().intersects(objectW[3][xTile][yTile])){goomba.setX(goomba.getX()+25);}
-				
-				if(goomba.getBoundS().intersects(objectN[3][xTile][yTile] ) && goomba.getBoundS().intersects(objectE[3][xTile][yTile])){
-					goomba.setY(goomba.getY()+25);goomba.setX(goomba.getX()-25);}
-				if(goomba.getBoundS().intersects(objectN[3][xTile][yTile] ) && goomba.getBoundS().intersects(objectW[3][xTile][yTile])){
-					goomba.setY(goomba.getY()+25);goomba.setX(goomba.getX()+25);}
-				if(goomba.getBoundS().intersects(objectS[3][xTile][yTile]) && goomba.getBoundS().intersects(objectE[3][xTile][yTile])){
-					goomba.setY(goomba.getY()-25);goomba.setX(goomba.getX()-25);}
-				if(goomba.getBoundS().intersects(objectS[3][xTile][yTile]) && goomba.getBoundS().intersects(objectW[3][xTile][yTile])){
-					goomba.setY(goomba.getY()-25);goomba.setX(goomba.getX()+25);}
-			}
-		}
-	}
-	
-	
-	void resetBounds(){
-		for(int yTile = 0; yTile < 7; yTile++){
-			for(int xTile = 0; xTile < 9; xTile++){
-				for(int layer = 0; layer < 7; layer++){
-					objectN[layer][xTile][yTile] = objectE[layer][xTile][yTile] = objectS[layer][xTile][yTile] = objectW[layer][xTile][yTile] = new Rectangle(0,0,0,0);
+		for(int orientation = 0; orientation < 13; orientation++){
+			for(int yTile = 0; yTile < 7; yTile++){
+				for(int xTile = 0; xTile < 9; xTile++){
+					for(int element = 0; element < 3; element++){
+						
+						if(object.getBoundS().intersects(mapObjectBound[4][orientation][xTile][yTile][element])){
+							object.setY(object.getY()+10);
+							System.err.println("Door Locked!");
+						}
+					}
+					
 				}
 			}
 		}
+		
+		
 	}
+	
+	
+	protected void checkCollisionWall(Moveable object){
+	
+		
+		for(int layer = 2; layer < 4; layer++){
+			for(int yTile = 0; yTile < 7; yTile++){
+				for(int xTile = 0; xTile < 9; xTile++){
+					for(int element = 0; element < 3; element++){
+						
+				
+						if(object.getBoundS().intersects(mapObjectBound[layer][1][xTile][yTile][element]))
+							object.setObjectBack(10,(mapObjectBound[layer][1][xTile][yTile][element]));
+						if(object.getBoundS().intersects(mapObjectBound[layer][3][xTile][yTile][element]))
+							object.setObjectBack(10,(mapObjectBound[layer][3][xTile][yTile][element]));
+						if(object.getBoundS().intersects(mapObjectBound[layer][5][xTile][yTile][element]))
+							object.setObjectBack(10,(mapObjectBound[layer][5][xTile][yTile][element]));
+						if(object.getBoundS().intersects(mapObjectBound[layer][7][xTile][yTile][element]))
+							object.setObjectBack(10,(mapObjectBound[layer][7][xTile][yTile][element]));
+						if(object.getBoundS().intersects(mapObjectBound[layer][2][xTile][yTile][element]))
+							object.setObjectBack(10,(mapObjectBound[layer][2][xTile][yTile][element]));
+						if(object.getBoundS().intersects(mapObjectBound[layer][4][xTile][yTile][element]))
+							object.setObjectBack(10,(mapObjectBound[layer][4][xTile][yTile][element]));
+						if(object.getBoundS().intersects(mapObjectBound[layer][6][xTile][yTile][element]))
+							object.setObjectBack(10,(mapObjectBound[layer][6][xTile][yTile][element]));
+						if(object.getBoundS().intersects(mapObjectBound[layer][8][xTile][yTile][element]))
+							object.setObjectBack(10,(mapObjectBound[layer][8][xTile][yTile][element]));
+							
+						
+					}
+				}
+			}
+		}
+		
+		
+	}
+	
+	
+
 	
 	private void sleepNow(){
 		try{
@@ -602,5 +534,82 @@ public DungeonCollision(){
 		}
 	}
 	
+	private void addBlockRect(int xMap, int yMap, int layer, int orientation, int xTile, int yTile){
+		
+		int x = xTile * 90;
+		int y = yTile * 90;
+		
+		if(orientation == 1)
+			addObjectBound(xMap,yMap,layer,1,xTile,yTile,0,new Rectangle(x,y,90,45));
+		if(orientation == 2)
+			addObjectBound(xMap,yMap,layer,2,xTile,yTile,0,new Rectangle(x+45,y,45,45));
+		if(orientation == 3)
+			addObjectBound(xMap,yMap,layer,3,xTile,yTile,0,new Rectangle(x+45,y,45,90));
+		if(orientation == 4)
+			addObjectBound(xMap,yMap,layer,4,xTile,yTile,0,new Rectangle(x+45,y+45,45,45));
+		if(orientation == 5)
+			addObjectBound(xMap,yMap,layer,5,xTile,yTile,0,new Rectangle(x,y+45,90,45));
+		if(orientation == 6)
+			addObjectBound(xMap,yMap,layer,6,xTile,yTile,0,new Rectangle(x,y+45,45,45));
+		if(orientation == 7)
+			addObjectBound(xMap,yMap,layer,7,xTile,yTile,0,new Rectangle(x,y,45,90));
+		if(orientation == 8)
+			addObjectBound(xMap,yMap,layer,8,xTile,yTile,0,new Rectangle(x,y,45,45));
+		
+		if(orientation < 1 || orientation > 8)
+			System.err.println("DungeonCollision.Error: Wrong Parameters - Can't add blockRect.");
+		
+	}
 	
+	private void addCornerBlockRect(int xMap, int yMap, int layer, int orientation, int xTile, int yTile){
+		
+		/*
+		 * orientation 2: 6 free
+		 * orientation 4: 8 free
+		 * orientation 6: 2 free
+		 * orientation 8: 4 free
+		 */
+		
+		int x = xTile * 90;
+		int y = yTile * 90;
+		
+		if(orientation == 2){
+			addObjectBound(xMap,yMap,layer,3,xTile,yTile,0,new Rectangle(x,y,45,45));
+			addObjectBound(xMap,yMap,layer,3,xTile,yTile,1,new Rectangle(x+45,y+45,45,45));
+			addObjectBound(xMap,yMap,layer,3,xTile,yTile,2,new Rectangle(x+45,y,45,45));
+		}
+	
+		if(orientation == 4){
+			addObjectBound(xMap,yMap,layer,3,xTile,yTile,0,new Rectangle(x+45,y,45,45));
+			addObjectBound(xMap,yMap,layer,3,xTile,yTile,1,new Rectangle(x,y+45,45,45));
+			addObjectBound(xMap,yMap,layer,3,xTile,yTile,2,new Rectangle(x+45,y+45,45,45));
+		}
+		
+		if(orientation == 6){
+			addObjectBound(xMap,yMap,layer,3,xTile,yTile,0,new Rectangle(x,y,45,45));
+			addObjectBound(xMap,yMap,layer,3,xTile,yTile,1,new Rectangle(x+45,y+45,45,45));
+			addObjectBound(xMap,yMap,layer,3,xTile,yTile,2,new Rectangle(x,y+45,45,45));
+		}
+		
+		if(orientation == 8){
+			addObjectBound(xMap,yMap,layer,3,xTile,yTile,0,new Rectangle(x+45,y,45,45));
+			addObjectBound(xMap,yMap,layer,3,xTile,yTile,1,new Rectangle(x,y+45,45,45));
+			addObjectBound(xMap,yMap,layer,3,xTile,yTile,2,new Rectangle(x,y,45,45));
+		}
+		
+		if(orientation != 2 && orientation != 4 && orientation != 6 && orientation != 8)
+			System.err.println("DungeonCollision.Error: Wrong Parameters - Can't add blockCornerRect.");
+
+	}
+	
+	private void addFullBlockRect(int xMap, int yMap, int layer, int xTile, int yTile){
+		
+		int x = xTile * 90;
+		int y = yTile * 90;
+		
+		addObjectBound(xMap,yMap,layer,0,xTile,yTile,0,new Rectangle(x,y,90,90));
+
+	}
 }
+
+
