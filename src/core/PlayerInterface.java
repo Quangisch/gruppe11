@@ -1,4 +1,6 @@
-package game.objects;
+package core;
+
+import game.objects.Player;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics;
@@ -9,8 +11,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
-import core.FileLink;
-import core.GameManager;
 
 public class PlayerInterface extends JComponent implements Runnable, FileLink{
 	

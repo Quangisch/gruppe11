@@ -2,7 +2,6 @@ package core;
 
 import game.objects.DrawableObject;
 import game.objects.Player;
-import game.objects.PlayerInterface;
 
 import java.awt.Color;
 import java.awt.Graphics;

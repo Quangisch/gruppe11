@@ -9,6 +9,7 @@ import map.DungeonNavigator;
 
 import core.Board;
 import core.GameManager;
+import core.PlayerInterface;
 
 public class Player extends PlayerObjectManager implements Runnable{
 	private static Player player1 = null;

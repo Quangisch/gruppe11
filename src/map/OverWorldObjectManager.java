@@ -16,7 +16,7 @@ abstract class OverWorldObjectManager extends Map{
 
 	private final Rectangle NULLRECT = new Rectangle(0,0,0,0);
 	
-	private ArrayList<Rectangle> wallBound = new ArrayList<Rectangle>(); 
+	private ArrayList<WallBound<Integer, Rectangle[]>> wallBoundList = new ArrayList<WallBound<Integer, Rectangle[]>>(); 
 	
 	protected OverWorldObjectManager(){
 		
@@ -26,13 +26,18 @@ abstract class OverWorldObjectManager extends Map{
 		return navigationBound;	
 	}
 	
-	protected void addWallBound(Rectangle element){
-		wallBound.add(element);
-		addWallBoundPaint(element);
+	protected void addWallBound(int orientation, Rectangle[] rectangle){
+		
+		WallBound<Integer, Rectangle[]> wallBound = new WallBound<Integer, Rectangle[]>(orientation, rectangle);
+		wallBoundList.add(wallBound);
+		
+		for(int i = 0; i < 4; i++)
+			addWallBoundPaint(rectangle[i]);
+	
 	}
 	
-	protected ArrayList<Rectangle> getWallBound(){
-		return wallBound;
+	protected ArrayList<WallBound<Integer, Rectangle[]>> getWallBound(){
+		return wallBoundList;
 	}
 	
 	protected void addToExitBound(Rectangle element){
@@ -65,6 +70,24 @@ abstract class OverWorldObjectManager extends Map{
 	
 	protected ArrayList<int[]> getNavigationToExitData(){
 		return toExitBoundData;
+	}
+	
+	public class WallBound<O, R>{
+		final O orientation;
+		final R rectangleArray;
+		
+		private WallBound(O orientation, R rectangleArray){
+			this.orientation = orientation;
+			this.rectangleArray = rectangleArray;
+		}
+		
+		public O getOrientation(){
+			return orientation;
+		}
+		
+		public R getRectangleArray(){
+			return rectangleArray;
+		}
 	}
 
 }
