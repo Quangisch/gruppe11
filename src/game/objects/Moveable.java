@@ -235,9 +235,11 @@ public class Moveable extends Sprite{
 		moveable = !moveable;
 	}
 	
-	public void setObjectBack(int distance, Rectangle objectRect){
+	public void setObjectBack(int distance, boolean referenceObject, Rectangle objectRect){
 		//System.out.println("setBack");
 		
+		if(!referenceObject)
+			objectRect = new Rectangle(0,0,810,630);
 		
 		switch(getLastDirection()){
 		

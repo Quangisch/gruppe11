@@ -139,101 +139,137 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 			dataLine = readDataBuff.readLine();
 			//dataLine = readDataBuff.readLine();
 			
-			for(int yRow = 0; yRow < yRowSize/2; yRow++){
+			
+			
+			String upperLine = null;
+			String lowerLine = null;
+			for(int yRow = 0; yRow < yRowSize; yRow++){
 		
-
-					String upperLine = readDataBuff.readLine();
-					String lowerLine = readDataBuff.readLine();
-					dataLine = dataLine.substring(2);
-					
-					System.out.println(dataLine);
-					
-					int blockCounter = 0;
-					
-					for(int xRow = 0; xRow < xRowSize/2; xRow++){
+				//System.out.println("yRow@"+yRow+", to max@"+yRowSize);
+				
+				String copyLine;
+					//initialRoutine
+					//if(yRow == 0){
 						
-						blockCounter = (blockCounter + 1) % 2;
+					if(yRow == 0){
+						upperLine = "";
+						for(int i = 0; i < (xRowSize+2); i++)
+							upperLine = upperLine.concat("x");
+					} else {
+							
+							
+						copyLine = readDataBuff.readLine();
+						copyLine = copyLine.substring(2);
+						copyLine = copyLine.concat("x");
+						upperLine = "x";
+						upperLine =  upperLine.concat(copyLine);
+							
+					}
+						
+					readDataBuff.mark(xRowSize*4);
+						
+					copyLine = readDataBuff.readLine();
+					copyLine = copyLine.substring(2);
+					copyLine = copyLine.concat("x");
+					dataLine = "x";
+					dataLine = dataLine.concat(copyLine);
+					
+					if(yRow < yRowSize - 1){
+						copyLine = readDataBuff.readLine();
+						copyLine = copyLine.substring(2);
+						copyLine = copyLine.concat("x");
+						lowerLine = "x";
+						lowerLine = lowerLine.concat(copyLine);
+					} else {
+						lowerLine = "";
+						for(int i = 0; i < (xRowSize+2); i++)
+							lowerLine = lowerLine.concat("x");
+					}
+					
+					
+					
+					readDataBuff.reset();
+					
+					/*
+					System.err.println("UpperLine :"+upperLine);
+					System.err.println("DataLine  :"+dataLine);
+					System.err.println("LowerLine :"+lowerLine);
+					*/
+					
+					//System.out.println(lowerLine+"@yRow:"+yRow+", to:"+yRowSize);
+					
+					readDataBuff.mark(xRowSize*4);
+					
+					for(int xRow = 0; xRow < xRowSize; xRow++){
+				
+						//System.out.println("xRow@"+xRow+", to max@"+xRowSize);
 						
 						String upperBlock;
+						String dataBlock;
 						String lowerBlock;
 						
-						upperBlock = upperLine.substring(0, 2);
-						lowerBlock = lowerLine.substring(0, 2);
+						upperBlock = upperLine.substring(xRow,3+xRow);
+						dataBlock = dataLine.substring(xRow,3+xRow);
+						lowerBlock = lowerLine.substring(xRow,3+xRow);
 						
-						upperBlock = upperLine.substring(2);
-						lowerBlock = lowerLine.substring(2);
+						/*
+						System.out.println("UpperBlock: "+upperBlock+"@row"+xRow+"x"+yRow);
+						System.out.println("DataBlock:  "+dataBlock);
+						System.out.println("LowerBlock: "+lowerBlock);
+						*/
 						
-						Rectangle rectNE = new Rectangle(90*xRow,90*yRow,45,45);
-						Rectangle rectSE = new Rectangle(90*(xRow+1),90*yRow,45,45);
-						Rectangle rectSW = new Rectangle(90*(xRow+1),90*(yRow+1),45,45);
-						Rectangle rectNW = new Rectangle(90*xRow,90*(yRow+1),45,45);
-						Rectangle nullRect = new Rectangle(0,0,0,0);
+						if(dataBlock.substring(1,2).contentEquals("x")){
+							
+							int pushDirection = 0;
+							
+							if((upperBlock.contentEquals("   ") && lowerBlock.contentEquals("xxx"))
+									|| (upperBlock.contentEquals("x x") && lowerBlock.contentEquals("xxx")))
+								pushDirection = 1;
+							if((upperBlock.contentEquals("xx ") && lowerBlock.contentEquals("xxx"))
+									|| (upperBlock.contentEquals("x  ") && lowerBlock.contentEquals("xxx")))
+								pushDirection = 2;
+							if((upperBlock.contentEquals("xx ") && lowerBlock.contentEquals("xx "))
+								|| (upperBlock.contentEquals("xxx") && lowerBlock.contentEquals("xxx")))
+								pushDirection = 3;
+							if((upperBlock.contentEquals("xxx") && lowerBlock.contentEquals("xx "))
+									|| (upperBlock.contentEquals("xxx") && lowerBlock.contentEquals("x  ")))
+								pushDirection = 4;
+							if((upperBlock.contentEquals("xxx") && lowerBlock.contentEquals("   "))
+									|| (upperBlock.contentEquals("xxx") && lowerBlock.contentEquals("x x")))
+								pushDirection = 5;
+							if((upperBlock.contentEquals("xxx") && lowerBlock.contentEquals(" xx"))
+									|| (upperBlock.contentEquals("xxx") && lowerBlock.contentEquals("  x")))
+								pushDirection = 6;
+							if((upperBlock.contentEquals(" xx") && lowerBlock.contentEquals(" xx"))
+									|| (upperBlock.contentEquals("xxx") && lowerBlock.contentEquals("xxx")))
+								pushDirection = 7;
+							if((upperBlock.contentEquals(" xx") && lowerBlock.contentEquals("xxx"))
+									|| (upperBlock.contentEquals("  x") && lowerBlock.contentEquals("xxx")))
+								pushDirection = 8;
+							
+							if((upperBlock.contentEquals(" x ") && lowerBlock.contentEquals(" x "))
+									|| (upperBlock.contentEquals("   ") && dataBlock.contentEquals("xxx") && lowerBlock.contentEquals("   "))
+									|| (upperBlock.contentEquals(" x ") && dataBlock.contentEquals(" x ") && lowerBlock.contentEquals("   "))
+									|| (upperBlock.contentEquals("   ") && dataBlock.contentEquals(" x ") && lowerBlock.contentEquals(" x ")))
+								pushDirection = 0;
+							
 						
-						Rectangle[] rectArray = new Rectangle[4];
-						int upperOrientationID = 0;
-						int lowerOrientationID = 0;
-						int orientation = 0;
-						
-						if(upperBlock.contentEquals("  ")){
-							rectArray[0] = nullRect; rectArray[1] = nullRect;
-							upperOrientationID = 0;
-						} if(upperBlock.contentEquals("x ")){
-							rectArray[2] = rectNW; rectArray[3] = nullRect;
-							upperOrientationID = 1;
-						} if(upperBlock.contentEquals(" x")){
-							rectArray[2] = nullRect; rectArray[3] = rectNE;
-							upperOrientationID = 2;
-						}  if(upperBlock.contentEquals("xx")){
-							rectArray[0] = rectNW; rectArray[1] = rectNE;
-							upperOrientationID = 3;
+							String data = dataBlock.substring(1, 2);
+							
+							if(data.contentEquals("x"))
+								addWallBound(pushDirection, new Rectangle(45*xRow,45*yRow,45,45));
+							
+							
+						}// if data == x
+						else {
+							System.out.println("emptyBlock@ "+xRow+"x"+yRow);
 						}
+
+						readDataBuff.reset();
 						
-						if(lowerBlock.contentEquals("  ")){
-							rectArray[2] = nullRect; rectArray[3] = nullRect;
-							lowerOrientationID = 0;
-						} if(lowerBlock.contentEquals("x ")){
-							rectArray[2] = rectSW; rectArray[3] = nullRect;
-							lowerOrientationID = 1;
-						} if(lowerBlock.contentEquals(" x")){
-							rectArray[2] = nullRect; rectArray[3] = rectSE;
-							lowerOrientationID = 2;
-						} if(lowerBlock.contentEquals("xx")){
-							rectArray[2] = rectSW; rectArray[3] = rectSE;
-							lowerOrientationID = 3;
-						}
-						
-						if(upperOrientationID == 0 && lowerOrientationID == 0)
-							orientation = 0;
-						else if(upperOrientationID == 3 && lowerOrientationID == 0)
-							orientation = 1;
-						else if(upperOrientationID == 3 && lowerOrientationID == 2)
-							orientation = 2;
-						else if(upperOrientationID == 2 && lowerOrientationID == 2)
-							orientation = 3;
-						else if(upperOrientationID == 2 && lowerOrientationID == 3)
-							orientation = 4;
-						else if(upperOrientationID == 0 && lowerOrientationID == 3)
-							orientation = 5;
-						else if(upperOrientationID == 1 && lowerOrientationID == 3)
-							orientation = 6;
-						else if(upperOrientationID == 1 && lowerOrientationID == 1)
-							orientation = 7;
-						else if(upperOrientationID == 3 && lowerOrientationID == 1)
-							orientation = 8;
-						else 
-							orientation = -1;
-						
-						//addWallBound(new Rectangle(45*xRow,45*yRow,45,45));
-							
-							
-							
-							
-						addWallBound(orientation, rectArray);	
-						
-						
-					}
+					} //for xRow End
 				
-			}
+			}//for yRow End
 			
 			
 		} catch (FileNotFoundException e) {

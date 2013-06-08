@@ -64,6 +64,7 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 		
 		System.out.println("Player@"+playerX+"x"+playerY);
 		
+		initializeBounds();
 		
 		GameManager.mapLoaded = true;
 	}

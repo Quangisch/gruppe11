@@ -16,7 +16,7 @@ abstract class OverWorldObjectManager extends Map{
 
 	private final Rectangle NULLRECT = new Rectangle(0,0,0,0);
 	
-	private ArrayList<WallBound<Integer, Rectangle[]>> wallBoundList = new ArrayList<WallBound<Integer, Rectangle[]>>(); 
+	private ArrayList<WallBound<Integer, Rectangle>> wallBoundList = new ArrayList<WallBound<Integer, Rectangle>>(); 
 	
 	protected OverWorldObjectManager(){
 		
@@ -26,17 +26,16 @@ abstract class OverWorldObjectManager extends Map{
 		return navigationBound;	
 	}
 	
-	protected void addWallBound(int orientation, Rectangle[] rectangle){
+	protected void addWallBound(int pushDirection, Rectangle rectangle){
 		
-		WallBound<Integer, Rectangle[]> wallBound = new WallBound<Integer, Rectangle[]>(orientation, rectangle);
+		WallBound<Integer, Rectangle> wallBound = new WallBound<Integer, Rectangle>(pushDirection, rectangle);
 		wallBoundList.add(wallBound);
 		
-		for(int i = 0; i < 4; i++)
-			addWallBoundPaint(rectangle[i]);
+		addWallBoundNPaint(rectangle);
 	
 	}
 	
-	protected ArrayList<WallBound<Integer, Rectangle[]>> getWallBound(){
+	protected ArrayList<WallBound<Integer, Rectangle>> getWallBoundList(){
 		return wallBoundList;
 	}
 	
@@ -59,34 +58,32 @@ abstract class OverWorldObjectManager extends Map{
 		dataType[3] = yMap;
 		dataType[4] = xPlayer;
 		dataType[5] = yPlayer;
-		
-		System.out.println("yolo?");
-		
+	
 		System.err.println("Player@"+dataType[4]+"x"+dataType[5]);
 		toExitBoundData.add(dataType);
 		
-		System.out.println("yolo!!!");
 	}
 	
 	protected ArrayList<int[]> getNavigationToExitData(){
 		return toExitBoundData;
 	}
 	
-	public class WallBound<O, R>{
-		final O orientation;
-		final R rectangleArray;
+	
+	public class WallBound<P, R>{
+		final P pushDirection;
+		final R rectangle;
 		
-		private WallBound(O orientation, R rectangleArray){
-			this.orientation = orientation;
-			this.rectangleArray = rectangleArray;
+		private WallBound(P pushDirection, R rectangle){
+			this.pushDirection = pushDirection;
+			this.rectangle = rectangle;
 		}
 		
-		public O getOrientation(){
-			return orientation;
+		public P getPushDirection(){
+			return pushDirection;
 		}
 		
-		public R getRectangleArray(){
-			return rectangleArray;
+		public R getRectangle(){
+			return rectangle;
 		}
 	}
 

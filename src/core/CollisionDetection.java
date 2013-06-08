@@ -44,8 +44,8 @@ public class CollisionDetection implements Runnable{
 						if(EnemyManager.getAttackDamage(type) == 1 || EnemyManager.getAttackDamage(type) == 2)
 							MarioDark.getInstance(false, IDNumber).waitNow(500);
 			
-						Player.getInstance().setObjectBack(20,moveableObject.get(index).getBoundCore());
-						moveableObject.get(index).setObjectBack(10,moveableObject.get(index).getBoundCore());
+						Player.getInstance().setObjectBack(20,true,moveableObject.get(index).getBoundCore());
+						moveableObject.get(index).setObjectBack(10,true,moveableObject.get(index).getBoundCore());
 						
 						if(EnemyManager.getAttackDamage(type) == 1 || EnemyManager.getAttackDamage(type) == 2)
 							MarioDark.getInstance(false, IDNumber).waitNow(500);
@@ -57,7 +57,7 @@ public class CollisionDetection implements Runnable{
 					}
 					
 					if(Player.getInstance().getAttackBound().intersects(moveableObject.get(index).getBoundCore())){
-						moveableObject.get(index).setObjectBack(50,Player.getInstance().getAttackBound());
+						moveableObject.get(index).setObjectBack(50,true,Player.getInstance().getAttackBound());
 						moveableObject.get(index).setLife(moveableObject.get(index).getLife()-Player.getInstance().getAttackDamage());
 						if(EnemyManager.getAttackDamage(type) == 1 || EnemyManager.getAttackDamage(type) == 2)
 							MarioDark.getInstance(false, IDNumber).waitNow(500);

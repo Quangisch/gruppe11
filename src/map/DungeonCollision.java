@@ -430,7 +430,7 @@ abstract class DungeonCollision extends DungeonBuilder{
 						setXTileDataElement(14, xMap, yMap, 1, xTile, yTile);
 						System.err.println("Trap!");
 						
-						object.setObjectBack(100,mapObjectBound[1][0][xTile][yTile][element]);
+						object.setObjectBack(100,false,null);
 						object.setLife(object.getLife()-1);
 						
 				
@@ -448,7 +448,7 @@ abstract class DungeonCollision extends DungeonBuilder{
 									|| mapObjectBound[1][0][xTile][yTile][element].intersects(object.getBoundCore()))){
 							
 							System.err.println("checkCollision");
-							object.setObjectBack(100,mapObjectBound[0][0][xTile][yTile][element]);
+							object.setObjectBack(100,false, null);
 							object.startFlashTimer(100,15);
 							System.err.println("Lava!");
 							object.setLife(object.getLife()-1);
@@ -496,21 +496,21 @@ abstract class DungeonCollision extends DungeonBuilder{
 						
 				
 						if(object.getBoundS().intersects(mapObjectBound[layer][1][xTile][yTile][element]))
-							object.setObjectBack(10,(mapObjectBound[layer][1][xTile][yTile][element]));
+							object.setObjectBack(10,true,(mapObjectBound[layer][1][xTile][yTile][element]));
 						if(object.getBoundS().intersects(mapObjectBound[layer][3][xTile][yTile][element]))
-							object.setObjectBack(10,(mapObjectBound[layer][3][xTile][yTile][element]));
+							object.setObjectBack(10,true,(mapObjectBound[layer][3][xTile][yTile][element]));
 						if(object.getBoundS().intersects(mapObjectBound[layer][5][xTile][yTile][element]))
-							object.setObjectBack(10,(mapObjectBound[layer][5][xTile][yTile][element]));
+							object.setObjectBack(10,true,(mapObjectBound[layer][5][xTile][yTile][element]));
 						if(object.getBoundS().intersects(mapObjectBound[layer][7][xTile][yTile][element]))
-							object.setObjectBack(10,(mapObjectBound[layer][7][xTile][yTile][element]));
+							object.setObjectBack(10,true,(mapObjectBound[layer][7][xTile][yTile][element]));
 						if(object.getBoundS().intersects(mapObjectBound[layer][2][xTile][yTile][element]))
-							object.setObjectBack(10,(mapObjectBound[layer][2][xTile][yTile][element]));
+							object.setObjectBack(10,true,(mapObjectBound[layer][2][xTile][yTile][element]));
 						if(object.getBoundS().intersects(mapObjectBound[layer][4][xTile][yTile][element]))
-							object.setObjectBack(10,(mapObjectBound[layer][4][xTile][yTile][element]));
+							object.setObjectBack(10,true,(mapObjectBound[layer][4][xTile][yTile][element]));
 						if(object.getBoundS().intersects(mapObjectBound[layer][6][xTile][yTile][element]))
-							object.setObjectBack(10,(mapObjectBound[layer][6][xTile][yTile][element]));
+							object.setObjectBack(10,true,(mapObjectBound[layer][6][xTile][yTile][element]));
 						if(object.getBoundS().intersects(mapObjectBound[layer][8][xTile][yTile][element]))
-							object.setObjectBack(10,(mapObjectBound[layer][8][xTile][yTile][element]));
+							object.setObjectBack(10,true,(mapObjectBound[layer][8][xTile][yTile][element]));
 							
 						
 					}

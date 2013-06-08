@@ -29,7 +29,8 @@ abstract class Map extends JComponent{
 	
 	
 	private ArrayList<Rectangle> navigationBoundPaint = new ArrayList<Rectangle>();
-	private ArrayList<Rectangle> wallBoundPaint = new ArrayList<Rectangle>();
+	private ArrayList<Rectangle> wallBoundNPaint = new ArrayList<Rectangle>();
+	private ArrayList<Rectangle> wallBoundSPaint = new ArrayList<Rectangle>();
 	
 	protected Map(){
 		
@@ -46,10 +47,18 @@ abstract class Map extends JComponent{
 			g2d.drawImage(mapImage, x, y, this);
 		
 		
-		if(wallBoundPaint.size() > 0 && GameManager.showBounds){
+		if(wallBoundNPaint.size() > 0 && GameManager.showBounds){
 			g2d.setColor(Color.BLUE);
-			for(int index = 0; index < wallBoundPaint.size(); index++){
-				Rectangle tmp = wallBoundPaint.get(index);
+			for(int index = 0; index < wallBoundNPaint.size(); index++){
+				Rectangle tmp = wallBoundNPaint.get(index);
+				g2d.drawRect(tmp.x-cam.getX(),tmp.y-cam.getY(),45,45);
+			}
+		}
+		
+		if(wallBoundSPaint.size() > 0 && GameManager.showBounds){
+			g2d.setColor(Color.CYAN);
+			for(int index = 0; index < wallBoundSPaint.size(); index++){
+				Rectangle tmp = wallBoundSPaint.get(index);
 				g2d.drawRect(tmp.x-cam.getX(),tmp.y-cam.getY(),45,45);
 			}
 		}
@@ -128,21 +137,27 @@ abstract class Map extends JComponent{
 	
 	protected void clearArrayList(){
 		navigationBoundPaint.clear();
-		wallBoundPaint.clear();
+		wallBoundNPaint.clear();
+		wallBoundSPaint.clear();
 	}
 	
-	protected void addWallBoundPaint(Rectangle element){
-		wallBoundPaint.add(element);
+	protected void addWallBoundNPaint(Rectangle element){
+		wallBoundNPaint.add(element);
+	}
+	
+	protected void addWallBoundSPaint(Rectangle element){
+		wallBoundSPaint.add(element);
 	}
 	
 	protected void addNavigationBoundPaint(Rectangle element){
 		navigationBoundPaint.add(element);
 	}
 	
+	/*
 	protected ArrayList<Rectangle> getWallBoundPaint(){
 		return wallBoundPaint;
 	}
-	
+	*/
 	protected void setMapImage(BufferedImage mapImage){
 		this.mapImage = mapImage;
 	}

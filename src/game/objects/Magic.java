@@ -107,7 +107,7 @@ public class Magic extends Initializer implements FileLink{
 				
 				if(getBoundCore().intersects(moveableList.get(index).getBoundCore()) && !moveableList.get(index).equals(caster)){
 					moveableList.get(index).setLife(moveableList.get(index).getLife()-damage[type]);
-					moveableList.get(index).setObjectBack(20,this.getBoundCore());
+					moveableList.get(index).setObjectBack(20,true,this.getBoundCore());
 					setAlive(false);
 					System.out.println("magicHit");
 					break;

@@ -27,6 +27,7 @@ public class DungeonNavigator extends DungeonCollision{
 	}
 	
 	public void initializeMap(int xMap, int yMap, int ID, int playerX, int playerY){
+		
 		GameManager.mapLoaded = false;
 		
 		setXMap(xMap);
