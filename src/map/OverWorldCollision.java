@@ -77,6 +77,6 @@ abstract class OverWorldCollision extends OverWorldBuilder{
 	
 	public void initializeBounds(){
 		
-		wallBound = getWallBound();
+		//wallBound = getWallBound();
 	}
 }

@@ -1,6 +1,8 @@
 package core;
 
+
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -17,34 +19,109 @@ import javax.swing.JComponent;
 import core.Board;
 import core.FileLink;
 import core.GameManager;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-public class Menu extends JComponent implements FileLink{
+public class Menu extends JComponent implements FileLink, ChangeListener{
 	
 	private static Menu menu;
 	private Graphics2D g2d;
-	
-	Rectangle startButton = new Rectangle();
-	Rectangle optionsButton = new Rectangle();
-	Rectangle beendeButton = new Rectangle();
-	Rectangle tonButton = new Rectangle();
+
+	private boolean options;
+	private JSlider slSouth;
+	private JSlider slNorth;
 	
 	BufferedImage menuBuff = new BufferedImage(810,630, BufferedImage.TYPE_INT_ARGB);
-	BufferedImage buttonBuff = new BufferedImage(32, 82, BufferedImage.TYPE_INT_ARGB);
+	BufferedImage buttonBuff = new BufferedImage(322, 82, BufferedImage.TYPE_INT_ARGB);
+	
+	final int xStart = 270; 
+	final int yStart = 180;
+	final int xRec = 322;
+	final int yRec = 82;
+	
+	Rectangle startButton = new Rectangle(xStart,yStart,xRec,yRec);
+	Rectangle optionsButton = new Rectangle(xStart,yStart+yRec,xRec,yRec);
+	Rectangle beendeButton = new Rectangle(xStart,yStart+3*yRec,xRec,yRec);
+	
+
+	Rectangle level1Button = new Rectangle(xStart,yStart-yRec,xRec,yRec);
+	Rectangle level2Button = new Rectangle(xStart,yStart,xRec,yRec);
+	Rectangle soundButton = new Rectangle(xStart,yStart+2*yRec,xRec,yRec);
+	Rectangle returnButton = new Rectangle(xStart,yStart+3*yRec,xRec,yRec);
 	
 	
 	private Menu(){
 		initializeMenu();
 	}
+
 	
 	public void paintComponents(Graphics g){
 		
+		System.out.println("options@"+options);
 		g2d = (Graphics2D) g;
 		
-		g2d.drawImage(menuBuff, 0, 0, null);
+		//g2d.drawImage(menuBuff, 0, 0, null);
+		
+		
+		if(options){
+			
+			/*g2d.drawImage(...Buff, xStart, yStart-yRec, null);
+			g2d.drawImage(...Buff, xStart, yStart, null);
+			g2d.drawImage(...Buff, xStart, yStart+2*yRec, null);
+			g2d.drawImage(...Buff, xStart, yStart+3*yRec, null);
+			Bilder für Return-,Sound-,Level1 und Level2Button hinzufügen*/
+			
+			g2d.setColor(Color.pink);
+			g2d.draw(soundButton);
+		
+			g2d.setColor(Color.green);
+			g2d.draw(level1Button);
+			
+			g2d.setColor(Color.green);
+			g2d.draw(level2Button);
+			
+			g2d.setColor(Color.red);
+			g2d.draw(returnButton);
+			
+			slSouth = new JSlider(JSlider.HORIZONTAL,0,100,50);
+			Board.getInstance().add(slSouth);
+			
+			slSouth.setMinorTickSpacing(10);//kleine Makierungsabstand;
+			slSouth.setMajorTickSpacing(50);//große Markierungsabstand;
+			slSouth.setPaintTicks(true);
+			slSouth.setPaintLabels(true);
+			slSouth.setSnapToTicks(false);//Zwischenposition wird angewählt
+			slSouth.setBounds(xStart,yStart+2*yRec,xRec,yRec);
+			slSouth.setPreferredSize(new Dimension(600,330));
+			System.out.print("slSouth");
+			slNorth = new JSlider(JSlider.HORIZONTAL,0,100,50);
+			Board.getInstance().add(slNorth);
+			
+			slNorth.setMinorTickSpacing(10);//kleine Makierungsabstand;
+			slNorth.setMajorTickSpacing(50);//große Markierungsabstand;
+			slNorth.setPaintTicks(true);
+			slNorth.setPaintLabels(true);
+			slNorth.setSnapToTicks(false);//Zwischenposition wird angewählt
+			slNorth.setBounds(xStart,yStart+2*yRec,xRec,yRec);
+			slNorth.setPreferredSize(new Dimension(800,630));
+			System.out.print("slNorth");
+			
+			Board.getInstance().validate();
+			Board.getInstance().repaint();
+			
+			
+			
+		}
+		
 		
 		
 		//mainMenu
-		if(!GameManager.getInstance().getIngame()){
+		if(!GameManager.getInstance().getIngame() && !options){
+			
+			g2d.drawImage(buttonBuff, xStart, yStart, null);
+			g2d.drawImage(buttonBuff, xStart, yStart+yRec, null);
+			g2d.drawImage(buttonBuff, xStart, yStart+3*yRec, null);
 			
 			g2d.setColor(Color.cyan);
 			g2d.draw(startButton);
@@ -52,13 +129,11 @@ public class Menu extends JComponent implements FileLink{
 			g2d.setColor(Color.red);
 			g2d.draw(beendeButton);
 			
-			
-			
 		}
 		
 		
 		//ingameMenu
-		if(GameManager.getInstance().getIngame()){
+		if(GameManager.getInstance().getIngame() && !options){
 			
 		}
 		
@@ -122,14 +197,32 @@ public class Menu extends JComponent implements FileLink{
 	public void mouseClicked(MouseEvent mE){
 		int clickX = mE.getX();
 		int clickY = mE.getY();
-	
-		if(startButton.contains(clickX, clickY)){
-			GameManager.getInstance().switchGameState(false, true);
-		}
 		
-		if(beendeButton.contains(clickX, clickY)){
-			System.exit(0);
+		if(!options){
+			if(startButton.contains(clickX, clickY)){
+				GameManager.getInstance().switchGameState(false, true);
+			}
+			if(optionsButton.contains(clickX, clickY)){
+				options = true;
+			}
+			if(beendeButton.contains(clickX, clickY)){
+				System.exit(0);
+			}
 		}
+		if(options){
+
+			if(soundButton.contains(clickX, clickY)){
+			}
+			if(level1Button.contains(clickX, clickY)){
+			}
+			if(level2Button.contains(clickX, clickY)){
+			}
+			if(returnButton.contains(clickX, clickY)){
+				options = false;
+			}
+			
+		}
+	
 		
 	}
 
@@ -137,5 +230,12 @@ public class Menu extends JComponent implements FileLink{
 		if(menu == null)
 			menu = new Menu();
 		return menu;
+	}
+
+
+	@Override
+	public void stateChanged(ChangeEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
