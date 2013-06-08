@@ -59,28 +59,34 @@ public class Board extends JPanel implements Runnable{
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		
-		//if(GameManager.mapLoaded){
+		if(GameManager.getInstance().getMenu()){
+			Menu.getInstance().paintComponents(g2d);
+		}
+		
+		
+		if(GameManager.getInstance().getIngame() && !GameManager.getInstance().getMenu()){
+			
+			//if(GameManager.mapLoaded){
 			if(GameManager.overWorld)
 				OverWorldNavigator.getInstance().paintComponents(g2d);
 			
 			if(GameManager.dungeon)
 				DungeonNavigator.getInstance().paintComponents(g2d);
-		//}
+			//}
 		
-		
-		
-		//sort objects, specified in sortYOrder(), to draw them according to their Y-Value, respectivly in the proper Z-Order
-		ArrayList<DrawableObject> drawablePaint = sortDrawable();
-		for(int i = 0; i < drawableList.size(); i++){
-			drawablePaint.get(i).paintComponents(g2d);
+			//sort objects, specified in sortYOrder(), to draw them according to their Y-Value, respectivly in the proper Z-Order
+			ArrayList<DrawableObject> drawablePaint = sortDrawable();
+			for(int i = 0; i < drawableList.size(); i++){
+				drawablePaint.get(i).paintComponents(g2d);
+			}
+			
+			if(GameManager.overWorld && topMap != null)
+				g2d.drawImage(topMap, OverWorldNavigator.getInstance().getXCoordinate(), OverWorldNavigator.getInstance().getYCoordinate(), this);
+			
+			if(PlayerInterface.getInstance().getIniStatus());
+			PlayerInterface.getInstance().paintComponents(g2d);
 		}
 		
-		
-		if(GameManager.overWorld && topMap != null)
-			g2d.drawImage(topMap, OverWorldNavigator.getInstance().getXCoordinate(), OverWorldNavigator.getInstance().getYCoordinate(), this);
-		
-		if(PlayerInterface.getInstance().getIniStatus());
-		PlayerInterface.getInstance().paintComponents(g2d);
 		
 		
 	}
@@ -185,10 +191,21 @@ public class Board extends JPanel implements Runnable{
 	private class KAdapter extends KeyAdapter{
 	
 		public void keyPressed(KeyEvent kE){
-			player1.keyPressed(kE);
+			
+			if(GameManager.getInstance().getIngame() && !GameManager.getInstance().getMenu())
+				player1.keyPressed(kE);
+			
+			if(!GameManager.getInstance().getIngame())
+				Menu.getInstance().keyPressed(kE);
+			
 		}
 		public void keyReleased(KeyEvent kE){
-			player1.keyReleased(kE);
+			
+			if(GameManager.getInstance().getIngame() && !GameManager.getInstance().getMenu())
+				player1.keyReleased(kE);
+			
+			if(!GameManager.getInstance().getIngame())
+				Menu.getInstance().keyReleased(kE);
 		}
 		
 	}
@@ -196,14 +213,11 @@ public class Board extends JPanel implements Runnable{
 	private class MAdapter extends MouseAdapter{ 
 
 	      public void mouseClicked(MouseEvent mE) {
-	    	System.out.println("click");
-	    	JLabel _lbl = new JLabel("Label");//make label and assign text in 1 line
-
-            Board.getInstance().add(_lbl);//add label we made
-
-            Board.getInstance().revalidate();
-            Board.getInstance().repaint();
-
+	    	 System.out.println("click");
+	    	
+	    	 if(!GameManager.getInstance().getIngame())
+	    		 Menu.getInstance().mouseClicked(mE);
+	    	 
 	      } 
 	 }
 	

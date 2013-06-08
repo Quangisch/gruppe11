@@ -7,8 +7,8 @@ public interface FileLink{
 	File enemyDark = new File("resources/images/marioDark_sprite_move2_3x.png");
 	File enemyBright = new File("resources/images/marioBright_sprite_move2_3x.png");
 	
-	File menu = new File("resources/images/menu.png");
-	File button = new File("resources/images/interface/button.png");
+	File menuFile = new File("resources/images/menu.png");
+	File buttonFile = new File("resources/images/interface/button.png");
 	
 	File magicID00 = new File("resources/images/magic/magicID00.png");
 	File magicID01 = new File("resources/images/magic/magicID01.png");

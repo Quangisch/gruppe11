@@ -17,8 +17,9 @@ public class GameManager {
 	
 	public static volatile boolean win;
 	public static volatile boolean lose;
-	public static volatile boolean menu;
-	public static volatile boolean ingame;
+	public volatile boolean menu;
+	public volatile boolean ingame;
+	public static volatile boolean switchGameState;
 	
 	public static volatile boolean overWorld;
 	public static volatile boolean dungeon;
@@ -81,9 +82,12 @@ public class GameManager {
 	//
 	public void setWin(boolean win){this.win = win;}
 	public void setLose(boolean lose){this.lose = lose;}
-	public void setMenu(boolean menu){this.menu = menu;}
-	public void setIngame(boolean ingame){this.ingame = ingame;}
-	
+
+	public void switchGameState(boolean menu, boolean ingame){
+		this.menu = menu;
+		this.ingame = ingame;
+		GameManager.switchGameState = true;
+	}
 	
 	public boolean getMapLoaded(){return mapLoaded;}
 	public boolean getOverWorld(){return overWorld;}
