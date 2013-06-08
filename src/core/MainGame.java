@@ -42,10 +42,14 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		initializeObjects();
 		initializeMap();
 		initializeThreads();
+		
+		
+		paintBoardThread.start();
+		managerThread = new Thread(this);
+		threadPoolManager = new ScheduledThreadPoolExecutor(1);
+		threadPoolManager.scheduleWithFixedDelay(managerThread,100,1000, TimeUnit.MILLISECONDS);
+		
 		GameManager.getInstance().setGameInitialized(true);
-		
-		startThreads();
-		
 		
 	}
 
@@ -96,6 +100,9 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 	}
 	
 	private void initializeMap(){
+		
+		GameManager.getInstance().switchGameState(true, false);
+		
 		GameManager.overWorld = false;
 		GameManager.dungeon = true;
 		
@@ -111,12 +118,9 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		cameraThread = new Thread(Camera.getInstance());
 		collisionThread = new Thread(CollisionDetection.getInstance());
 		interfaceThread = new Thread(PlayerInterface.getInstance());
-		
-		managerThread = new Thread(this);
-		
+
 		threadPool = new ScheduledThreadPoolExecutor(4);
-		//threadPoolManager = new ScheduledThreadPoolExecutor(1);
-		
+
 	}
 	
 	
@@ -125,20 +129,34 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		threadPool.scheduleWithFixedDelay(cameraThread, 20, 50, TimeUnit.MILLISECONDS);
 		threadPool.scheduleWithFixedDelay(collisionThread, 30, 10, TimeUnit.MILLISECONDS);
 		threadPool.scheduleWithFixedDelay(interfaceThread, 40, 20, TimeUnit.MILLISECONDS);
-		//threadPoolManager.scheduleWithFixedDelay(managerThread,100,1000, TimeUnit.MILLISECONDS);
-		paintBoardThread.start();
+		
 		//PlayerInterface.getInstance().buildText();
 	}
 	
 	public void run(){
+		
+		if(GameManager.getInstance().getMenu() && GameManager.switchGameState){
+			GameManager.switchGameState = false;
+			threadPool.shutdown();
+		}
+			
+		
+		if(GameManager.getInstance().getIngame() && GameManager.switchGameState){
+			GameManager.switchGameState = false;
+			startThreads();
+		}
+			
+		
 		System.out.println("ThreadPoolManager.check");
 		
+		/*
 		if(!collisionThread.isAlive()){
 			collisionThread = null;
 			collisionThread = new Thread(CollisionDetection.getInstance());
 			threadPool.scheduleWithFixedDelay(collisionThread, 30, 10, TimeUnit.MILLISECONDS);
 			System.err.println("==========> COLLISION THREAD DEAD>=====================");
 		}
+		*/
 		
 
 		
