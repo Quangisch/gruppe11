@@ -63,7 +63,7 @@ public class Board extends JPanel implements Runnable{
 		}
 		
 		
-		if(GameManager.getInstance().getIngame() && !GameManager.getInstance().getMenu()){
+		if(GameManager.getInstance().getIngame() && !GameManager.getInstance().getMenu() && GameManager.mapLoaded){
 			
 			//if(GameManager.mapLoaded){
 			if(GameManager.overWorld)
@@ -86,7 +86,7 @@ public class Board extends JPanel implements Runnable{
 			PlayerInterface.getInstance().paintComponents(g2d);
 		}
 		
-		
+		//g2d.draw(Player.getInstance().getBoundDirection(0));
 		
 	}
 	
@@ -104,10 +104,14 @@ public class Board extends JPanel implements Runnable{
 	
 	}
 	
-	public void setTopMap(File topMapFile){
+	public void setTopMap(boolean setImage,File topMapFile){
 		
 		try {
-			topMap = ImageIO.read(topMapFile);
+			if(setImage)
+				topMap = ImageIO.read(topMapFile);
+			else
+				topMap = new BufferedImage(810,630,BufferedImage.TYPE_INT_ARGB);
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -38,7 +38,7 @@ abstract class EnemyLogic extends EnemyMove {
 	private void checkLife(){
 		if(getLife() <= 0){
 			setAlive(false);
-			setVisible(false);
+			setVisibleDrawable(false);
 			System.out.println("Enemy.Death");
 		}
 	}

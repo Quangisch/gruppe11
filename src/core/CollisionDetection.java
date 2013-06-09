@@ -1,6 +1,5 @@
 package core;
 
-import game.objects.EnemyManager;
 import game.objects.MarioDark;
 import game.objects.Moveable;
 import game.objects.Player;
@@ -37,33 +36,27 @@ public class CollisionDetection implements Runnable{
 					int type = moveableObject.get(index).getMoveableType();
 					int IDNumber = moveableObject.get(index).getMoveableID();
 					
-					if(Player.getInstance().getBoundCore().intersects(moveableObject.get(index).getBoundCore())){
+					if(Player.getInstance().getBoundCore().intersects(moveableObject.get(index).getBoundCore()) && type > 0){
+						/*
+						moveableObject.get(index).startWaitTimer(500);
+						moveableObject.get(index).setObjectBack(10,0,true,moveableObject.get(index).getBoundCore());
+						moveableObject.get(index).startInvincibleTimer(1800);
+						*/
 						
-						//moveableObject.get(index).setObjectBack(10);
-				
-						if(EnemyManager.getAttackDamage(type) == 1 || EnemyManager.getAttackDamage(type) == 2)
-							MarioDark.getInstance(false, IDNumber).waitNow(500);
-			
-						Player.getInstance().setObjectBack(20,true,moveableObject.get(index).getBoundCore());
-						moveableObject.get(index).setObjectBack(10,true,moveableObject.get(index).getBoundCore());
+						System.out.println("loseLife");
 						
-						if(EnemyManager.getAttackDamage(type) == 1 || EnemyManager.getAttackDamage(type) == 2)
-							MarioDark.getInstance(false, IDNumber).waitNow(500);
-							
-						moveableObject.get(index).startFlashTimer(100, 20);
 						Player.getInstance().loseLife(EnemyManager.getAttackDamage(type));
-						Player.getInstance().startInvincibleTimer(1000);
+						Player.getInstance().startInvincibleTimer(1800);
+						Player.getInstance().setObjectBack(20,0,true,moveableObject.get(index).getBoundCore());
+		
 						break;
 					}
 					
-					if(Player.getInstance().getAttackBound().intersects(moveableObject.get(index).getBoundCore())){
-						moveableObject.get(index).setObjectBack(50,true,Player.getInstance().getAttackBound());
+					if(Player.getInstance().getAttackBound().intersects(moveableObject.get(index).getBoundN().union(moveableObject.get(index).getBoundS()))){
+						moveableObject.get(index).setObjectBack(50,0,true,Player.getInstance().getAttackBound());
 						moveableObject.get(index).setLife(moveableObject.get(index).getLife()-Player.getInstance().getAttackDamage());
-						if(EnemyManager.getAttackDamage(type) == 1 || EnemyManager.getAttackDamage(type) == 2)
-							MarioDark.getInstance(false, IDNumber).waitNow(500);
 						
-						moveableObject.get(index).startFlashTimer(100, 20);
-						
+		
 					}
 					
 				}

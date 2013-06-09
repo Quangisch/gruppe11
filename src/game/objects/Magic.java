@@ -5,6 +5,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import core.Board;
 import core.FileLink;
@@ -12,8 +15,8 @@ import core.GameManager;
 
 public class Magic extends Initializer implements FileLink{
 	
-	private Timer runTimer;
-	private TimerTask runTask;
+	private Thread runThread;
+	private ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
 	private Magic magicInstance;
 	
 	private int type;
@@ -84,12 +87,12 @@ public class Magic extends Initializer implements FileLink{
 		setHeight(50);
 		setSubRowY(0);
 		
-		runTimer = new Timer();
-		runTask = new RunTask();
-		runTimer.scheduleAtFixedRate(runTask, 10, 20);
+		runThread = new Thread(new RunTimer());
+		execRun = Executors.newSingleThreadScheduledExecutor();
+		execRun.scheduleWithFixedDelay(runThread, 10, 20, TimeUnit.MILLISECONDS);
+		
 		Board.getInstance().addDrawable(this);
-		
-		
+	
 	}
 	
 	private void running(){
@@ -98,16 +101,14 @@ public class Magic extends Initializer implements FileLink{
 		
 		if(getAlive()){
 		
-			//System.out.println("Position@"+getX()+"x"+getY()+",visible:"+getVisible());
+			//System.out.println("Position@"+getX()+"x"+getY()+",visible:"+getVisibleDrawable());
 			//System.out.println(getLastDirection()+","+getMoveUp()+"x"+getMoveRight()+"x"+getMoveDown()+"x"+getMoveLeft());
 			
 			for(int index = 0; index < moveableList.size(); index++){
-				
 
-				
 				if(getBoundCore().intersects(moveableList.get(index).getBoundCore()) && !moveableList.get(index).equals(caster)){
 					moveableList.get(index).setLife(moveableList.get(index).getLife()-damage[type]);
-					moveableList.get(index).setObjectBack(20,true,this.getBoundCore());
+					moveableList.get(index).setObjectBack(20,0,true,this.getBoundCore());
 					setAlive(false);
 					System.out.println("magicHit");
 					break;
@@ -129,13 +130,13 @@ public class Magic extends Initializer implements FileLink{
 	
 
 	
-	public static Magic getInstance(int type, Moveable caster){
+	public static Magic addInstance(int type, Moveable caster){
 		return new Magic(type, caster);
 	}
 	
-	private class RunTask extends TimerTask{
+	private class RunTimer implements Runnable{
 		
-		private RunTask(){
+		private RunTimer(){
 			
 		}
 		
@@ -147,13 +148,10 @@ public class Magic extends Initializer implements FileLink{
 				running();
 			
 			else {
-				setVisible(false);
+				setVisibleDrawable(false);
 				magicInstance = null;
-				runTimer.cancel();
-				runTimer.purge();
-				runTimer = null;
-				runTask = null;
-				System.err.println("remove Magic, @type "+type);
+				execRun.shutdown();
+				execRun = null;
 				
 			}
 		}

@@ -8,14 +8,18 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
+import core.Board;
 import core.FileLink;
 import core.GameManager;
 
 
  public class DrawableObject extends JComponent implements FileLink{
 
+	
+	 
 	private Graphics2D g2d;
 	private volatile int x, y;
+	private int lostLifeX, lostLifeY;
 	
 	private int width;
 	private int height;
@@ -61,16 +65,22 @@ import core.GameManager;
 			
 			g2d.setColor(Color.CYAN);
 			g2d.draw(getBoundHitSpace());
+			
+			g2d.setColor(Color.RED);
+			g2d.draw(getBoundN());
+			g2d.draw(getBoundE());
+			g2d.draw(getBoundS());
+			g2d.draw(getBoundW());
 		}
 		
 		if(image != null && visible)
-			g2d.drawImage(image, x, y, this);
+			g2d.drawImage(image, x, y, Board.getInstance());
 		
 	}
 	
 	//set
 	public void setImage(BufferedImage image){this.image = image;}
-	public void setVisible(boolean visible){this.visible = visible;}
+	public void setVisibleDrawable(boolean visible){this.visible = visible;}
 	
 	public synchronized void setX(int x){this.x = x;}
 	public synchronized void setY(int y){this.y = y;}
@@ -132,12 +142,18 @@ import core.GameManager;
 	
 	//get
 	public BufferedImage getImage(){return image;}
-	public boolean getVisible(){return visible;}
+	public boolean getVisibleDrawable(){return visible;}
 	
 	@Override
 	public int getX(){return x;}
 	@Override
 	public int getY(){return y;}
+	
+	public void setLostLifeX(int lostLifeX){this.lostLifeX = lostLifeX;}
+	public void setLostLifeY(int lostLifeY){this.lostLifeY = lostLifeY;}
+	
+	public int getLostLifeX(){return lostLifeX;}
+	public int getLostLifeY(){return lostLifeY;}
 	
 	public boolean getAlive(){return alive;}
 	

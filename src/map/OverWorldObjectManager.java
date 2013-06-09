@@ -10,12 +10,10 @@ abstract class OverWorldObjectManager extends Map{
 												new Rectangle(800,0,20,630),
 												new Rectangle(0,620,810,20),
 												new Rectangle(-10,0,20,630)};
+	private final Rectangle NULLRECT = new Rectangle(0,0,0,0);
 	
 	private ArrayList<Rectangle> toExitBound = new ArrayList<Rectangle>();
 	private ArrayList<int[]> toExitBoundData = new ArrayList<int[]>();
-
-	private final Rectangle NULLRECT = new Rectangle(0,0,0,0);
-	
 	private ArrayList<WallBound<Integer, Rectangle>> wallBoundList = new ArrayList<WallBound<Integer, Rectangle>>(); 
 	
 	protected OverWorldObjectManager(){
@@ -31,8 +29,12 @@ abstract class OverWorldObjectManager extends Map{
 		WallBound<Integer, Rectangle> wallBound = new WallBound<Integer, Rectangle>(pushDirection, rectangle);
 		wallBoundList.add(wallBound);
 		
-		addWallBoundNPaint(rectangle);
-	
+		if(pushDirection == 1)
+			addWallBoundNPaint(rectangle);
+		else if(pushDirection == 5)
+			addWallBoundSPaint(rectangle);
+		else
+			addWallBoundPaint(rectangle);
 	}
 	
 	protected ArrayList<WallBound<Integer, Rectangle>> getWallBoundList(){
@@ -62,6 +64,12 @@ abstract class OverWorldObjectManager extends Map{
 		System.err.println("Player@"+dataType[4]+"x"+dataType[5]);
 		toExitBoundData.add(dataType);
 		
+	}
+	
+	protected void clearBoundArrayList(){
+		wallBoundList.clear();
+		toExitBound.clear();
+		toExitBoundData.clear();
 	}
 	
 	protected ArrayList<int[]> getNavigationToExitData(){

@@ -56,6 +56,13 @@ public class GameManager {
 			System.err.println("Board: Can't add NullElements.");
 	}
 	
+	public static synchronized void updateGameObject(){
+		for(int i = 0; i < moveableList.size()-1; i++){
+			if(moveableList.get(i) == null || !moveableList.get(i).getAlive())
+				moveableList.remove(i);
+		}
+	}
+	
 	public static ArrayList<Moveable> getMoveableList(){
 		return moveableList;
 	}

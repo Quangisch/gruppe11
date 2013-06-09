@@ -1,6 +1,5 @@
 package map;
 
-import game.objects.EnemyManager;
 import game.objects.Player;
 
 
@@ -25,6 +24,7 @@ import javax.imageio.ImageIO;
 
 import map.DungeonObjectManager.NavigationData;
 
+import core.EnemyManager;
 import core.FileLink;
 import core.GameManager;
 

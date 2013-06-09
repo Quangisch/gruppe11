@@ -10,10 +10,11 @@ import java.util.ArrayList;
 
 import javax.swing.JComponent;
 
+import core.Board;
 import core.GameManager;
 
 abstract class Map extends JComponent{
-
+	
 	private Graphics2D g2d;
 	private volatile int x = 0;
 	private volatile int y = 0;
@@ -31,6 +32,7 @@ abstract class Map extends JComponent{
 	private ArrayList<Rectangle> navigationBoundPaint = new ArrayList<Rectangle>();
 	private ArrayList<Rectangle> wallBoundNPaint = new ArrayList<Rectangle>();
 	private ArrayList<Rectangle> wallBoundSPaint = new ArrayList<Rectangle>();
+	private ArrayList<Rectangle> wallBoundPaint = new ArrayList<Rectangle>();
 	
 	protected Map(){
 		
@@ -44,7 +46,7 @@ abstract class Map extends JComponent{
 		//System.out.println("Camera_"+Camera.getInstance().getX()+"x"+Camera.getInstance().getY());
 	
 		if(mapImage != null && visible)
-			g2d.drawImage(mapImage, x, y, this);
+			g2d.drawImage(mapImage, x, y, Board.getInstance());
 		
 		
 		if(wallBoundNPaint.size() > 0 && GameManager.showBounds){
@@ -54,6 +56,16 @@ abstract class Map extends JComponent{
 				g2d.drawRect(tmp.x-cam.getX(),tmp.y-cam.getY(),45,45);
 			}
 		}
+		
+		if(wallBoundPaint.size() > 0 && GameManager.showBounds){
+			g2d.setColor(Color.RED);
+			for(int index = 0; index < wallBoundPaint.size(); index++){
+				Rectangle tmp = wallBoundPaint.get(index);
+				g2d.drawRect(tmp.x-cam.getX(),tmp.y-cam.getY(),45,45);
+			}
+		}
+		
+		
 		
 		if(wallBoundSPaint.size() > 0 && GameManager.showBounds){
 			g2d.setColor(Color.CYAN);
@@ -66,7 +78,7 @@ abstract class Map extends JComponent{
 		if(navigationBoundPaint.size() > 0 && GameManager.showBounds){
 			
 			
-			g2d.setColor(Color.CYAN);
+			g2d.setColor(Color.YELLOW);
 			
 			for(int index = 0; index < navigationBoundPaint.size(); index++){
 				Rectangle tmp = navigationBoundPaint.get(index);
@@ -135,10 +147,16 @@ abstract class Map extends JComponent{
 		
 	}
 	
-	protected void clearArrayList(){
+	protected void resetMap(){
+		
 		navigationBoundPaint.clear();
 		wallBoundNPaint.clear();
 		wallBoundSPaint.clear();
+		wallBoundPaint.clear();
+		
+		x = y = width = height = 0;
+		mapImage = null;
+
 	}
 	
 	protected void addWallBoundNPaint(Rectangle element){
@@ -147,6 +165,10 @@ abstract class Map extends JComponent{
 	
 	protected void addWallBoundSPaint(Rectangle element){
 		wallBoundSPaint.add(element);
+	}
+	
+	protected void addWallBoundPaint(Rectangle element){
+		wallBoundPaint.add(element);
 	}
 	
 	protected void addNavigationBoundPaint(Rectangle element){

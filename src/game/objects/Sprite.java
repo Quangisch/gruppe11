@@ -2,6 +2,7 @@ package game.objects;
 
 
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +35,10 @@ abstract class Sprite extends DrawableObject{
 	private Timer interactionTimer;
 	private TimerTask interactionTask;
 	
+	private double staticInterStep;
+	private int staticCycle;
+	private int staticX;
+	private int staticY;
 	
 	protected Sprite(){
 		
@@ -172,9 +177,29 @@ abstract class Sprite extends DrawableObject{
 			}
 	
 		}
-
+		
 		setImage(subSpriteBuff);
 
+	}
+	
+	//item Sprites
+	protected void setStaticSubSprite(){
+		/*
+		if(staticInterStep > staticCycle)
+			staticInterStep = 0;
+			
+		if(staticCycle != 0)
+			staticInterStep += 0.1;
+		*/
+		int staticStep = (int)(staticInterStep);
+			
+		subSpriteBuff = spriteBuff.getSubimage(staticStep*subSpriteWidth+staticX, staticY*subSpriteHeight, subSpriteWidth, subSpriteHeight);
+		
+		BufferedImage resized = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+	    resized.createGraphics().setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    resized.createGraphics().drawImage(subSpriteBuff, 0, 0, 100, 100, 0, 0, 25, 25, null);
+		
+		setImage(resized);
 	}
 	
 	
@@ -192,6 +217,10 @@ abstract class Sprite extends DrawableObject{
 		
 		System.err.println("Sprite:LastDirection@"+lastDirection);
 	}
+	
+	protected void setStaticX(int x){this.staticX = x;}
+	protected void setStaticY(int y){this.staticY = y;}
+	protected void setStaticCycle(int cycle){this.staticCycle = cycle;}
 	
 	protected void setMoveStep(int moveStep){this.moveStep = moveStep;}
 	protected void setSubRowY(int subRowY){this.subRowY = subRowY;}

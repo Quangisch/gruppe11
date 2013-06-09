@@ -25,19 +25,21 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 	protected boolean loadMap(File mapImage, File mapData){
 		
 		try {
-			GameManager.mapLoaded = false;
 			
+			resetMap();
+			clearBoundArrayList();
+			
+
 			mapBuff = ImageIO.read(mapImage);
 			readData(mapData);
 			
 			setMapImage(mapBuff);
-			GameManager.mapLoaded = true;
 			
 		} catch (IOException e) {
 			System.err.println("OverWorldMap: MapFile not found");
 			System.exit(0);
 		} 
-		
+
 		
 		
 		if(GameManager.mapLoaded)

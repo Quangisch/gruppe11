@@ -25,11 +25,14 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 	}
 	
 	public void initializeMap(int x, int y, int ID, int playerX, int playerY){
+		
 		GameManager.mapLoaded = false;
+		
+		Board.getInstance().setTopMap(false, null);
 		
 		switch(ID){
 		case(0):	loadMap(overWorldMapID00,overWorldDataID00);
-					Board.getInstance().setTopMap(overWorldTOPID00);
+					Board.getInstance().setTopMap(true, overWorldTOPID00);
 					setWidthMap(2700);
 					setHeightMap(2700);
 					Player.getInstance().setLocks(true);
@@ -50,18 +53,13 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 		setYCoordinate(-y);
 		Camera.getInstance().setX(x);
 		Camera.getInstance().setY(y);
-		/*
-		setXCoordinate(0);
-		setYCoordinate(0);
-		
-		Camera.getInstance().setX(0);
-		Camera.getInstance().setY(0);
-		*/
-		System.out.println("xy@"+x+"x"+y);
-		
 		Player.getInstance().setX(playerX);
 		Player.getInstance().setY(playerY);
 		
+		
+	
+		
+		System.out.println("xy@"+x+"x"+y);
 		System.out.println("Player@"+playerX+"x"+playerY);
 		
 		initializeBounds();
@@ -136,15 +134,14 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 		ArrayList<Rectangle> toExitRect = getToExitBound();
 		ArrayList<int[]> toExitData = getNavigationToExitData();
 		
-		
-		
 		for(int index = 0; index < toExitRect.size(); index++){
 			
-			//System.out.println("toEXIT==========>@"+toExitRect.get(index).x+"x"+toExitRect.get(index).y+", "+toExitRect.get(index).width+"x"+toExitRect.get(index).height);
 			Camera cam = Camera.getInstance();
+			Rectangle rect = toExitRect.get(index);
+			//System.out.println("toEXIT==========>@"+toExitRect.get(index).x+"x"+toExitRect.get(index).y+", "+toExitRect.get(index).width+"x"+toExitRect.get(index).height);
+			//System.out.println("cam@"+cam.getX()+"x"+cam.getY());
 			
-			if(Player.getInstance().getBoundDirection(1).intersects(toExitRect.get(index).x-cam.getX(),toExitRect.get(index).y-cam.getY(),
-															toExitRect.get(index).width,toExitRect.get(index).height)){
+			if((Player.getInstance().getBoundDirection(1).intersects(rect.x-cam.getX(), rect.y-cam.getY(),rect.width,rect.height))){
 				System.err.println("intersectExit");
 				
 				

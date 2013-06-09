@@ -1,16 +1,8 @@
 package game.objects;
 
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 abstract class EnemyMove extends Initializer{
 
-	private Timer waitTimer;
 	
 	private boolean hostile = true;
 	
@@ -39,15 +31,7 @@ abstract class EnemyMove extends Initializer{
 		yLock = false;
 	}
 	
-	public void waitNow(int time){
-		System.out.println("startWaitTask");
-		stopNow();
-		setMoveable(false);
-		
-		waitTimer = new Timer();
-		waitTimer.schedule(new StopWaitTask(), 1000);
-	}
-	
+
 	public boolean rotateNow(int cycles, boolean clockwise, int cycleSpeed){
 		setMoveable(false);
 		move();
@@ -289,10 +273,5 @@ abstract class EnemyMove extends Initializer{
 		return false;
 	}
 	
-	private class StopWaitTask extends TimerTask{
-		public void run() {
-			System.out.println("stopWaitTask");
-			setMoveable(true);
-		}
-	}
+
 }

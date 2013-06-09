@@ -13,11 +13,13 @@ abstract class PlayerObjectManager extends Initializer{
 	private double armor = 0; //value between 0 and 1: 1 = invinciblemode
 	private double armorDurability = 0;
 	
-	private int healPotion = 0;
-	private int manaPotion = 0;
+	
 	private int magicSpell = 0;
 	private int magicSpellMax = 2;
 	private double manaRegen = 1;
+	
+	private int coin;
+	
 	
 	
 	protected PlayerObjectManager(){
@@ -86,13 +88,13 @@ abstract class PlayerObjectManager extends Initializer{
 		switch(magicSpell){
 		case(0):	if(manaPool >= 0.14){
 					//manaPool -= 0.14;
-					Magic.getInstance(magicSpell, this);
+					Magic.addInstance(magicSpell, this);
 					cast = true;
 					}break;
 					
 		case(1):	if(manaPool >= 0.28){
 					//manaPool -= 0.28;
-					Magic.getInstance(magicSpell, this);
+					Magic.addInstance(magicSpell, this);
 					cast = true;
 					}break;
 		}
@@ -106,6 +108,51 @@ abstract class PlayerObjectManager extends Initializer{
 		if(manaPool < 1)
 			manaPool += 0.0001;
 		
+	}
+	
+	public void addItem(int[] itemIDData){
+		System.out.println("getItem - ID:"+itemIDData[0]+", Type:"+itemIDData[1]+", Member:"+itemIDData[2]);
+		int ID = itemIDData[0];
+		int type = itemIDData[1];
+		int member = itemIDData[2];
+		if(ID == 0){
+			
+			if(type == 0){
+				switch(member){
+				case(0):	coin += 1; break;
+				case(1):	coin += 5; break;
+				case(3):	coin += 10; break;
+				}
+			}
+			
+			if(type == 1){
+				switch(member){
+				case(0):	setLife(getLife()+1); break;
+				case(1):	setLife(getLife()+2); break;
+				}
+			}
+			
+			if(type == 2){
+				switch(member){
+				case(0):	manaPool += 0.1; break;
+				case(1):	manaPool += 0.25; break;
+				}
+				
+				
+			}
+		}
+	}
+	
+	private class ItemInventory<I,T,M>{
+		final I ID;
+		final T type;
+		final M member;
+		
+		private ItemInventory(I ID, T type, M member){
+			this.ID = ID;
+			this.type = type;
+			this.member = member;
+		}
 	}
 	
 }

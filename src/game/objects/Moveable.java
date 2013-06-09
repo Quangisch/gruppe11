@@ -3,6 +3,9 @@ package game.objects;
 import java.awt.Rectangle;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import map.Camera;
 import map.DungeonNavigator;
@@ -21,19 +24,20 @@ public class Moveable extends Sprite{
 	private boolean moveable;
 	private int dx, dy;
 	private static boolean upLock, rightLock, downLock, leftLock;
+	private int moveModifier = 1;
 	
 	private boolean humanPlayer;
 	private int moveableType;
 	private int moveableID;
 	private boolean inputLock;
 	
-	private static volatile Timer flashTimer, fallBackTimer, invincibleTimer;
-	private static volatile TimerTask flashTask, fallBackTask, invincibleTask;
-	private static int flashCounter;
-	private static int fallBackCounter;
-	private static int cycleFlash, cycleBack;
+	private int flashCounter, cycleFlash;
 	
 	
+	private Thread flashThread, invincibleThread, waitThread;
+	private ScheduledExecutorService execFlash = Executors.newSingleThreadScheduledExecutor();
+	private ScheduledExecutorService execInvincible = Executors.newSingleThreadScheduledExecutor();
+	private ScheduledExecutorService execWait = Executors.newSingleThreadScheduledExecutor();
 	
 	protected Moveable(){
 		
@@ -45,28 +49,30 @@ public class Moveable extends Sprite{
 	
 		
 		if(moveUp)
-			dy = -1;
+			dy = -1*moveModifier;
 		if(moveRight)	
-			dx = 1;
+			dx = 1*moveModifier;
 		if(moveDown)	
-			dy = 1;
+			dy = 1*moveModifier;
 		if(moveLeft)	
-			dx = -1;
+			dx = -1*moveModifier;
 		
 		
 		
 		dx *= (int)(speed*speedUp);
 		dy *= (int)(speed*speedUp);
 		
+		/*
 		setX(getX()+dx);
 		setY(getY()+dy);
 		moveSubSprite(speed, moveable, moveUp, moveRight, moveDown, moveLeft);
-		/*
+		*/
+		
 		if(!getInteractionLock()){
 			setMovement(dx, dy);
 			moveSubSprite(speed, moveable, moveUp, moveRight, moveDown, moveLeft);
 		}
-		*/
+		
 		
 	
 	}
@@ -220,6 +226,14 @@ public class Moveable extends Sprite{
 		upLock = rightLock = downLock = leftLock = set;
 	}
 	
+	public boolean getDirectionLock(){
+		if(upLock || rightLock || downLock || leftLock)
+			return true;
+		else
+			return false;
+		
+	}
+	
 	public void resetMovementLock(){
 		inputLock = false;
 		moveable = true;
@@ -235,13 +249,19 @@ public class Moveable extends Sprite{
 		moveable = !moveable;
 	}
 	
-	public void setObjectBack(int distance, boolean referenceObject, Rectangle objectRect){
+	public void setObjectBack(int distance, int direction, boolean referenceObject, Rectangle objectRect){
 		//System.out.println("setBack");
+		int toDirection = 0;
 		
 		if(!referenceObject)
 			objectRect = new Rectangle(0,0,810,630);
 		
-		switch(getLastDirection()){
+		if(direction == 0)
+			toDirection = getLastDirection();
+		else
+			toDirection = direction;
+		
+		switch(toDirection){
 		
 		case(1):	if(objectRect.intersects(getBoundDirN()))
 					setMovement(0, distance);
@@ -305,7 +325,12 @@ public class Moveable extends Sprite{
 	public void setSpeed(int speed){this.speed = speed;}
 	public void setSpeedUp(double speedUp){this.speedUp = speedUp;}
 	public synchronized void setLife(double life){
+		setLostLifeX(getX());
+		setLostLifeY(getY());
+		
 		if(!invincible){
+			if(this.life > life)
+				startInvincibleTimer(10);
 			this.life = life; 
 			if(life <= 0){
 				setAlive(false);
@@ -321,6 +346,7 @@ public class Moveable extends Sprite{
 	public void setMoveRight(boolean moveRight){this.moveRight = moveRight;}
 	public void setMoveDown(boolean moveDown){this.moveDown = moveDown;}
 	public void setMoveLeft(boolean moveLeft){this.moveLeft = moveLeft;}
+	public void setMovementModifier(int moveModifier){this.moveModifier = moveModifier;}
 	
 	public void setHumanPlayer(boolean humanPlayer){this.humanPlayer = humanPlayer;}
 	public void setInputLock(boolean inputLock){this.inputLock = inputLock;}
@@ -355,19 +381,19 @@ public class Moveable extends Sprite{
 	
 	public Rectangle getBoundDirection(int direction){
 		
-		if(direction != 1 && direction != -1)
+		if(!(direction == 1 || direction == -1 || direction == 0))
 			System.out.println("Moveable.Error: Illegal directionModifier@getBoundDirection");
 		
-			if (getLastDirection() == 1 && direction == 0)
+			if (getLastDirection() == 1 && direction == 1)
 				return getBoundDirN();
 			
-			else if (getLastDirection() == 3 && direction == 0)
+			else if (getLastDirection() == 3 && direction == 1)
 				return getBoundDirE();
 			
-			else if (getLastDirection() == 5 && direction == 0)
+			else if (getLastDirection() == 5 && direction == 1)
 				return getBoundDirS();
 			
-			else if (getLastDirection() == 7 && direction == 0)
+			else if (getLastDirection() == 7 && direction == 1)
 				return getBoundDirW();
 
 			//revertLastDirBound.return
@@ -383,90 +409,95 @@ public class Moveable extends Sprite{
 			else if (getLastDirection() == 7 && direction == -1)
 				return getBoundDirE();
 			
+			//getOuterBounds
+			else if (getLastDirection() == 1 && direction == 0)
+				return getBoundN();
+			
+			else if (getLastDirection() == 3 && direction == 0)
+				return getBoundE();
+			
+			else if (getLastDirection() == 5 && direction == 0)
+				return getBoundS();
+			
+			else if (getLastDirection() == 7 && direction == 0)
+				return getBoundW();
+			
 		 else 
 			 return getBoundCore();
-			
-			
-		
-			
-		
+	
 	}
 
+	
 	public synchronized void startFlashTimer(int period, int duration){
-			flashTimer = new Timer();
-			flashTask = new TimerClass();
-			flashTimer.schedule(flashTask, 10, period);
-			cycleFlash = duration;
 
+		flashThread = new Thread(new FlashTimer());
+		execFlash.scheduleAtFixedRate(flashThread, 0, period, TimeUnit.MILLISECONDS);
+	
+		cycleFlash = duration/period;
 	}
 	
-	public synchronized void startFallBackTimer(int period, int duration){
-		fallBackTimer = new Timer();
-		fallBackTask = new TimerClass();
-		fallBackTimer.schedule(fallBackTask, 10, period);
-		cycleBack = duration;
+	
+	public synchronized void startInvincibleTimer(int delay){
 		
-	}
-	
-	public synchronized void startInvincibleTimer(int duration){
+		invincibleThread = new Thread(new InvincibleTimer());
+		execFlash.schedule(invincibleThread, delay, TimeUnit.MILLISECONDS);
+		
 		invincible = true;
-		invincibleTimer = new Timer();
-		invincibleTask = new InvincibleDelayClass();
-		startFallBackTimer(10,20);
-		invincibleTimer.schedule(invincibleTask, duration);
-		
-		
-	}
 
-	private synchronized void stopFlashTimer(){
-
-			flashTimer.cancel();
-			flashTimer.purge();
-			flashTimer = null;
-			flashTask = null;
-			flashCounter = cycleFlash = 0;
+		startFlashTimer(500, delay);
+		System.err.println("====>Invincible.start@WDH:"+(int)(delay / 200));
 			
-			System.out.println("stopFlash@"+flashCounter+"to"+cycleFlash);
-			setVisible(true);
-		
-		
-		
 	}
 	
-	private synchronized void stopBackTimer(){
+	public synchronized void startWaitTimer(int time){
+		waitThread = new Thread(new WaitTimer());
+		execWait.schedule(waitThread, time, TimeUnit.MILLISECONDS);
+		moveable = false;
+	}
 
-			fallBackTimer.cancel();
-			fallBackTimer.purge();
-			fallBackTimer = null;
-			fallBackTask = null;
-			fallBackCounter = cycleBack = 0;
+	private class FlashTimer implements Runnable{
 		
-	}
-	
-	private class TimerClass extends TimerTask{
-		
-		private TimerClass(){ }
+		private FlashTimer(){ }
 		
 		@Override
 		public void run() {
 			System.out.println(flashCounter+","+cycleFlash);
-			setVisible(!getVisible());
-			flashCounter++;
-			fallBackCounter++;
-			if(flashCounter >= cycleFlash || cycleFlash != -1)
-				stopFlashTimer();
 			
-			if(fallBackCounter >= cycleBack || cycleBack != -1)
-				stopBackTimer();
+			setVisibleDrawable(!getVisibleDrawable());
+			System.out.println(getVisibleDrawable());
+			flashCounter++;
+			
+			if(flashCounter > cycleFlash || flashCounter == 0){
+				flashCounter = cycleFlash = 0;
+				setVisibleDrawable(true);
+				
+				execFlash.shutdown();
+				execFlash = Executors.newSingleThreadScheduledExecutor();
+				flashThread = new Thread(new FlashTimer());
+			}
+				
+
 		}
 	}
 	
-	private class InvincibleDelayClass extends TimerTask{
-		private InvincibleDelayClass(){ }
+	private class InvincibleTimer implements Runnable{
+		private InvincibleTimer(){ }
 		
 		public void run () {
 			invincible = false;
-			setVisible(true);
+			System.err.println("====>Invincible.false");
+			
+			execInvincible.shutdown();
+			execInvincible = Executors.newSingleThreadScheduledExecutor();
+			invincibleThread = new Thread(new InvincibleTimer());
+		}
+	}
+	
+	private class WaitTimer implements Runnable{
+		private WaitTimer(){ }
+		
+		public void run(){
+			moveable = true;
 		}
 	}
 

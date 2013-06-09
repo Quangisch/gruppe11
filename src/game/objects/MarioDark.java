@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import core.GameManager;
+import core.ItemListManager;
+
 
 
 
@@ -39,8 +42,9 @@ public class MarioDark extends EnemyLogic{
 	}
 	
 
-	public void start(){
+	public void running(){
 
+		System.out.println("MarioDark@ "+getX()+"x"+getY());
 		if(getAlive()) {
 			
 			//patrolRectangle(-1,false,100,100,100,200);
@@ -53,6 +57,12 @@ public class MarioDark extends EnemyLogic{
 	}
 	
 
+	private void dropItem(){
+		System.out.println("==>MarioDark.drops Item@"+getX()+"x"+getY());
+		
+		//heart/health
+		ItemListManager.dropItem(getX(), getY(), 0, 1, 0);
+	}
 
 	public static int getMaxInstance(){
 		return MAXINSTANCE;
@@ -90,7 +100,7 @@ public class MarioDark extends EnemyLogic{
 		
 	}
 	
-	public static void deleteInstance(int IDNumber){
+	private void deleteInstance(int IDNumber){
 		marioDark[IDNumber].setVisible(false);
 		marioDark[IDNumber] = null;
 		runTimer[IDNumber].cancel();
@@ -123,8 +133,10 @@ public class MarioDark extends EnemyLogic{
 		public void run() {
 			//System.out.println("RunTask "+IDNumber+" running");
 			if(MarioDark.getInstance(false, IDNumber).getAlive())
-				MarioDark.getInstance(false, IDNumber).start();
+				MarioDark.getInstance(false, IDNumber).running();
 			else {
+				MarioDark.getInstance(false, IDNumber).dropItem();
+				GameManager.updateGameObject();
 				MarioDark.getInstance(false, IDNumber).deleteInstance(IDNumber);
 			}
 		}

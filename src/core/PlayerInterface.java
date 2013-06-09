@@ -124,14 +124,14 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.98f));
 		if(upperInterface != null){
 			
-			g2d.drawImage(upperInterface, 0, 0, this);
+			g2d.drawImage(upperInterface, 0, 0, Board.getInstance());
 			
 		}
 		
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 		if(lowerInterface != null && GameManager.showIngameText){
-			g2d.drawImage(borderBuff,0,315,this);
-			g2d.drawImage(lowerInterface, 0, 360, this);
+			g2d.drawImage(borderBuff,0,315,Board.getInstance());
+			g2d.drawImage(lowerInterface, 0, 360, Board.getInstance());
 		}
 		
 	

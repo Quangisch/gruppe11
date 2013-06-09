@@ -43,7 +43,7 @@ public class Camera implements Runnable{
 		
 		}
 		
-		moveCamera();
+		//moveCamera();
 		if(GameManager.overWorld){
 			OverWorldNavigator.getInstance().navigate();
 			
@@ -62,11 +62,12 @@ public class Camera implements Runnable{
 		public void moveCamera(){
 			
 			OverWorldNavigator map = OverWorldNavigator.getInstance();
+			Player player = Player.getInstance();
 			
-			if(GameManager.overWorld && !GameManager.cameraOn && GameManager.moveFocus) {
+			if(GameManager.overWorld && GameManager.cameraOn /*&& GameManager.moveFocus*/ && !player.getDirectionLock()) {
+			//if(GameManager.cameraOn){	
+			
 				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
-				
-				Player player = Player.getInstance();
 				
 				if(Player.getInstance().getX() > 400 && !(map.getXCoordinate() < -(map.getWidthMap()-810))) {
 					x += CAMERASPEED;
