@@ -476,14 +476,40 @@ abstract class DungeonCollision extends DungeonBuilder{
 	
 	protected void checkCollisionDoor(Moveable object){
 		
-		for(int orientation = 0; orientation < 13; orientation++){
+		CheckDoor:
+		for(int orientation = 0; orientation < 9; orientation++){
 			for(int yTile = 0; yTile < 7; yTile++){
 				for(int xTile = 0; xTile < 9; xTile++){
 					for(int element = 0; element < 3; element++){
 						
-						if(object.getBoundS().intersects(mapObjectBound[4][orientation][xTile][yTile][element])){
-							object.setY(object.getY()+10);
-							System.err.println("Door Locked!");
+						//if(object.getBoundDirection(0).intersects(mapObjectBound[4][orientation][xTile][yTile][element]) && !object.isHumanPlayer())
+						//	object.setY(Player.getInstance().getY()+10);
+						
+						if(Player.getInstance().getBoundCore().intersects(mapObjectBound[4][orientation][xTile][yTile][element])){
+							
+							boolean useKey = Player.getInstance().useKeyInventory();
+							
+							if(!useKey){
+								Player.getInstance().setY(Player.getInstance().getY()+10);
+								System.err.println("Door Locked!");
+							} else {
+								
+								//addObjectBound(int xMapTmp, int yMapTmp, int layer, int orientation, int xTile, int yTile, int dimension, Rectangle objectElement)
+								
+								writeTileData(getXMap(), getYMap(), 4, xTile, yTile, 18, 14);
+								clearBlockRect(getXMap(), getYMap(), 4, xTile, yTile);
+								
+								for(int e = 0; e < 3; e++){
+									for(int o = 0; o < 9; o++){
+										mapObjectBound[4][o][xTile][yTile][e] = new Rectangle(0,0,0,0);
+									}
+								}
+									
+							
+								System.err.println("Door Unlocked!");
+								break CheckDoor;
+							}
+							
 						}
 					}
 					
@@ -543,6 +569,13 @@ abstract class DungeonCollision extends DungeonBuilder{
 		}
 	}
 	
+	private void clearBlockRect(int xMap, int yMap, int layer, int xTile, int yTile){
+	
+		addObjectBound(xMap,yMap,layer,0,xTile,yTile,0,new Rectangle(xTile*90,yTile*90,90,90));
+		
+		 
+	}
+	
 	private void addBlockRect(int xMap, int yMap, int layer, int orientation, int xTile, int yTile){
 		
 		int x = xTile * 90;
@@ -554,8 +587,12 @@ abstract class DungeonCollision extends DungeonBuilder{
 			addObjectBound(xMap,yMap,layer,2,xTile,yTile,0,new Rectangle(x+45,y,45,45));
 		if(orientation == 3)
 			addObjectBound(xMap,yMap,layer,3,xTile,yTile,0,new Rectangle(x+45,y,45,90));
+		
+		
 		if(orientation == 4)
 			addObjectBound(xMap,yMap,layer,4,xTile,yTile,0,new Rectangle(x+45,y+45,45,45));
+		
+		
 		if(orientation == 5)
 			addObjectBound(xMap,yMap,layer,5,xTile,yTile,0,new Rectangle(x,y+45,90,45));
 		if(orientation == 6)

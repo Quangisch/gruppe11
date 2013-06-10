@@ -109,7 +109,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		if(GameManager.overWorld)
 			OverWorldNavigator.getInstance().initializeMap(0,0,1,500,500);
 		if(GameManager.dungeon)
-			DungeonNavigator.getInstance().initializeMap(0,2,0,100,100);
+			DungeonNavigator.getInstance().initializeMap(1,3,0,100,100);
 	}
 	
 	private void initializeThreads(){
@@ -147,7 +147,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		}
 			
 		
-		System.out.println("ThreadPoolManager.check");
+		//System.out.println("ThreadPoolManager.check");
 		
 		/*
 		if(!collisionThread.isAlive()){

@@ -42,7 +42,7 @@ public class Board extends JPanel implements Runnable{
 
 		setDoubleBuffered(true);
 		setFocusable(true);
-		setBackground(Color.DARK_GRAY);
+		setBackground(new Color(0, 0, 0, 0));
 		
 		
 		this.addKeyListener(new KAdapter());
@@ -55,6 +55,7 @@ public class Board extends JPanel implements Runnable{
 		this.g = g;
 		g2d = (Graphics2D) g;
 		
+		g2d.clearRect(0, 0, 810, 630);
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		
@@ -83,10 +84,11 @@ public class Board extends JPanel implements Runnable{
 				g2d.drawImage(topMap, OverWorldNavigator.getInstance().getXCoordinate(), OverWorldNavigator.getInstance().getYCoordinate(), this);
 			
 			if(PlayerInterface.getInstance().getIniStatus());
-			PlayerInterface.getInstance().paintComponents(g2d);
+			PlayerInterface.getInstance().draw(g2d);
 		}
 		
 		//g2d.draw(Player.getInstance().getBoundDirection(0));
+		
 		
 	}
 	

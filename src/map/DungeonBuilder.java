@@ -752,6 +752,11 @@ private int translateStringToInt(String numberString){
 	
 }
 
+protected void writeTileData(int xMap, int yMap, int layer, int xTile, int yTile, int xValue, int yValue){
+	yTileData[xMap][yMap][layer][xTile][yTile] = xValue; 
+	xTileData[xMap][yMap][layer][xTile][yTile] = yValue;
+}
+
 	//translation table, stores mapData in static Arrays
 private void writeTileData(int xMap, int yMap, int layer, int xTile, int yTile, String yString, String xString){
 	

@@ -19,6 +19,7 @@ abstract class PlayerObjectManager extends Initializer{
 	private double manaRegen = 1;
 	
 	private int coin;
+	private int keyInventory;
 	
 	
 	
@@ -144,16 +145,29 @@ abstract class PlayerObjectManager extends Initializer{
 				
 			}
 		}
+		
+		if(ID == 5){
+			keyInventory++;
+			System.out.println("=> added Key to Inventory@"+keyInventory);
+		}
+		
 	}
 	
-	public void addCoin(int num){
-		coin += num; 
-	}
+	public void addCoin(int num){coin += num;}
+	public int getCoin(){return coin;}
 	
-	public int getCoin(){
-		return coin;
-	}
+	public int getKeyInventory(){return keyInventory;}
 	
+	public boolean useKeyInventory(){
+		
+		boolean use = false;
+		if(keyInventory > 0){
+			keyInventory--;
+			use = true;
+		}
+		
+		return use;
+	}
 
 	
 	private class ItemInventory<I,T,M>{

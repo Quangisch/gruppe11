@@ -35,6 +35,8 @@ abstract class Map extends JComponent{
 	private ArrayList<Rectangle> wallBoundPaint = new ArrayList<Rectangle>();
 	private ArrayList<Rectangle> mapObjectBoundPaint = new ArrayList<Rectangle>();
 	
+	protected final static Rectangle NULLRECT = new Rectangle(0,0,0,0);
+	
 	protected Map(){
 		
 	}

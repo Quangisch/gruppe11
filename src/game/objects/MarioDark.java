@@ -9,6 +9,8 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import map.DungeonNavigator;
+
 import core.GameManager;
 import core.ItemListManager;
 
@@ -65,14 +67,21 @@ public class MarioDark extends EnemyLogic{
 	
 		int random1 = new Random().nextInt(101) + 0;
 		int random2 = new Random().nextInt(101) + 0;
+		boolean dropKey = false;
 		
-		//ItemListManager.dropItem(getX(), getY(), 0, 1, 0);
 		System.err.println("======>randomNum:"+random1+"x"+random2);
 		
-		if(random1 < 20)
-			ItemListManager.dropItem(getX(), getY(), 0, 1, 0);
-		else if(random2 < 20)
-			ItemListManager.dropItem(getX(), getY(), 0, 2, 0);
+		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 3){
+			dropKey = ItemListManager.dropKey(getX(), getY(), 5, 0, 0, 0);
+		}
+		
+		if(!dropKey){
+			if(random1 < 20)
+				ItemListManager.dropItem(getX(), getY(), 0, 1, 0);
+			else if(random2 < 20)
+				ItemListManager.dropItem(getX(), getY(), 0, 2, 0);
+		}
+		
 
 	}
 

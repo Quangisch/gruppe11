@@ -3,6 +3,7 @@ package core;
 import game.objects.Player;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -13,7 +14,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 
-public class PlayerInterface extends JComponent implements Runnable, FileLink{
+public class PlayerInterface implements Runnable, FileLink{
 	
 	private static PlayerInterface playerInterface;
 	
@@ -120,10 +121,14 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 		
 	}
 	
-	public void paintComponents(Graphics g){
-		g2d = (Graphics2D) g;
+	public void draw(Graphics2D g2d){
 		
+		buildInterface();
 		
+		//Graphics2D gfx = (Graphics2D) upperInterface.getGraphics();
+		//g2d.setBackground(new Color(0, 0, 0, 0));
+		
+
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.98f));
 		if(upperInterface != null){
 			
@@ -137,12 +142,12 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 			g2d.drawImage(lowerInterface, 0, 360, Board.getInstance());
 		}
 		
-	
+		//upperInterface.createGraphics().clearRect(0, 0, 810, 630);
 		
 	}
 	
 	public void run(){
-		buildInterface();
+		//buildInterface();
 	}
 	
 	public void initializeInterface(){
@@ -227,25 +232,36 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 	
 	public void buildInterface(){
 		//System.out.println("Life:"+Player.getInstance().getLife());
+		/*
+		if (null == upperInterface) {
 		upperInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
+		} else {
+			Graphics2D gfx = (Graphics2D) upperInterface.getGraphics();
+			gfx.setBackground(new Color(0, 0, 0, 0));
+			gfx.clearRect(0, 0, 810, 630);
+		}
+		*
+		*/
+		
+		upperInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
+		
 		double restLife = Player.getInstance().getLife() - Math.floor(Player.getInstance().getLife());
 		double life = Player.getInstance().getLife();
 		
 		//paint life
 		for(int i = 0; i < Math.floor(Player.getInstance().getLife()); i++)
-			upperInterface.createGraphics().drawImage(heart4_4Buff, 10+45*i, 10, this);
-		
+			upperInterface.getGraphics().drawImage(heart4_4Buff, 10+45*i, 10, Board.getInstance());
 
 		//if(life > restLife){
 			
 			if(restLife >= 0.75)
-				upperInterface.createGraphics().drawImage(heart3_4Buff, (int)(10+45*Math.floor(life)+1), 10, this);
+				upperInterface.createGraphics().drawImage(heart3_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());
 			
 			if(restLife < 0.75 && restLife >= 0.5)
-				upperInterface.createGraphics().drawImage(heart2_4Buff, (int)(10+45*Math.floor(life)+1), 10, this);
+				upperInterface.createGraphics().drawImage(heart2_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());
 			
 			if(restLife <= 0.25)
-				upperInterface.createGraphics().drawImage(heart1_4Buff, (int)(10+45*Math.floor(life)+1), 10, this);		
+				upperInterface.createGraphics().drawImage(heart1_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());		
 		//}
 		
 		//paint manaBar & manaPool
@@ -399,7 +415,7 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 						}
 					
 				
-						lowerInterface.createGraphics().drawImage(translateTextTile(singleChar),50+(16-lineLimit)*45,lineCounter*45, this);
+						lowerInterface.createGraphics().drawImage(translateTextTile(singleChar),50+(16-lineLimit)*45,lineCounter*45, Board.getInstance());
 						
 						lineLimit--;
 					}//for char
