@@ -300,7 +300,6 @@ g2d.fillRect(0, 0, 10, 10);
 	
 	protected void setEnemy(){
 		
-
 		System.err.println("Enemy number yolo?");
 		
 		//check and instantiate Enemy
@@ -313,18 +312,34 @@ g2d.fillRect(0, 0, 10, 10);
 			int[] enemyPosition = enemyDataMap.get(index).getPosition();
 			int[] enemyAttributes = enemyDataMap.get(index).getAttributes();
 			
-			int xCoordinateMap = enemyPosition[0] * -810;
-			int yCoordinateMap = enemyPosition[1] * -630;
+			
+			int xCoordinateMap = enemyPosition[2];
+			int yCoordinateMap = enemyPosition[3] ;
+			
+			
+			System.out.println("case.set Enemy1@Pos:"+xCoordinateMap+"x"+yCoordinateMap);
+			//int xCoordinateMap = 0;
+			//int yCoordinateMap = 0;
+			
+			switch(GameManager.scrollDirection){
+			case(1):	yCoordinateMap -= 630;
+						
+						break;
+			case(3):	xCoordinateMap += 810;
+						break;
+			case(5):	yCoordinateMap += 630;
+						break;
+			case(7):	xCoordinateMap -= 810;
+						break;
+			}
+			
+			
 		
 			EnemyManager.setNewEnemy(xCoordinateMap,yCoordinateMap,enemyType,enemyPosition,enemyAttributes);
 				
 			System.err.println("======>DungeonBuilder.setEnemy");
 			
-				
-				/*
-				 * 	setXCoordinate(-810*getXMap());
-		setYCoordinate(-630*getYMap());
-		*/
+
 		}
 		
 		
@@ -566,8 +581,8 @@ g2d.fillRect(0, 0, 10, 10);
 									dataLine = dataLine.replace("x", "");
 									enemyAttributes[0] = translateStringToInt(dataLine.substring(0, 4)); //enemySpeed
 									enemyAttributes[1] = translateStringToInt(dataLine.substring(4, 8)); //enemyLife
-									enemyAttributes[2] = translateStringToInt(dataLine.substring(8, 12)); //enemyPattern
-									enemyAttributes[4] = translateStringToInt(dataLine.substring(12, 16)); //enemyLastDirection
+									enemyAttributes[2] = translateStringToInt(dataLine.substring(8, 12)); //enemyLastDirection
+									enemyAttributes[3] = translateStringToInt(dataLine.substring(12, 16)); //enemyPattern
 									
 									
 									addEnemyData(enemyType, enemyPosition, enemyAttributes);

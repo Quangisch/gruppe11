@@ -20,20 +20,22 @@ public interface FileLink{
 	
 	
 	//interface
-	File heart4_4 = new File("resources/images/interface/heart4.png");
-	File heart3_4 = new File("resources/images/interface/heart3.png");
-	File heart2_4 = new File("resources/images/interface/heart2.png");
-	File heart1_4 = new File("resources/images/interface/heart1.png");
+	File itemBar = new File("resources/images/interface/itemInterface.png");
 	File manaPool = new File("resources/images/interface/manaPool.png");
 	File manaBar = new File("resources/images/interface/manaBar.png");
 	
 	File coin = new File("resources/images/interface/coin.png");
 	File text = new File("resources/images/interface/text.png");
+	File heart4_4 = new File("resources/images/interface/heart4.png");
+	File heart3_4 = new File("resources/images/interface/heart3.png");
+	File heart2_4 = new File("resources/images/interface/heart2.png");
+	File heart1_4 = new File("resources/images/interface/heart1.png");
 	
 	//mapImages
 	File overWorldMapID00 = new File ("resources/images/map/overWorldID00.png");
 	File overWorldTOPID00 = new File ("resources/images/map/overWorldID00TOP.png");
 	File overWorldMapID01 = new File ("resources/images/map/overWorldID01.png");
+	File overWorldTOPID01 = new File ("resources/images/map/overWorldID01TOP.png");
 	File tiles_Dungeon00 = new File ("resources/images/map/tiles_dungeon00.png");
 	
 	

@@ -325,12 +325,10 @@ public class Moveable extends Sprite{
 	public void setSpeed(int speed){this.speed = speed;}
 	public void setSpeedUp(double speedUp){this.speedUp = speedUp;}
 	public synchronized void setLife(double life){
-		setLostLifeX(getX());
-		setLostLifeY(getY());
-		
+
 		if(!invincible){
 			if(this.life > life)
-				startInvincibleTimer(10);
+				startInvincibleTimer(500);
 			this.life = life; 
 			if(life <= 0){
 				setAlive(false);
@@ -378,6 +376,11 @@ public class Moveable extends Sprite{
 	public boolean isHumanPlayer(){return humanPlayer;}
 	public int getMoveableType(){return moveableType;}
 	public int getMoveableID(){return moveableID;}
+	
+	public boolean getUpLock(){return upLock;}
+	public boolean getRightLock(){return rightLock;}
+	public boolean getDownLock(){return downLock;}
+	public boolean getLeftLock(){return leftLock;}
 	
 	public Rectangle getBoundDirection(int direction){
 		

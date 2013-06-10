@@ -122,8 +122,10 @@ public class Board extends JPanel implements Runnable{
 	public ArrayList<DrawableObject> sortDrawable(){
 
 		for(int i = 0; i < drawableList.size()-1; i++){
-			if(!drawableList.get(i).getAlive())
+			if(!drawableList.get(i).getAlive()){
 				drawableList.remove(i);
+				GameManager.updateGameObject();
+			}
 		}
 		
 		int size = drawableList.size();
@@ -149,8 +151,6 @@ public class Board extends JPanel implements Runnable{
 		return drawableList;
 	}
 	
-	
-	
 	public void run(){
 		long beforeTime, timeDiff, sleep;
 
@@ -160,7 +160,7 @@ public class Board extends JPanel implements Runnable{
 
             repaint();
             //sortDrawable();
-
+            
             timeDiff = System.currentTimeMillis() - beforeTime;
             sleep = DELAY - timeDiff;
 

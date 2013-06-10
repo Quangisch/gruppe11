@@ -184,13 +184,18 @@ abstract class Sprite extends DrawableObject{
 	
 	//item Sprites
 	protected void setStaticSubSprite(){
-		/*
-		if(staticInterStep > staticCycle)
-			staticInterStep = 0;
+		
+		
 			
 		if(staticCycle != 0)
 			staticInterStep += 0.1;
-		*/
+		
+		if(staticInterStep >= staticCycle)
+			staticInterStep = 0;
+		
+		System.out.println("StaticInterStep@"+staticInterStep+"to"+staticCycle);
+		
+		
 		int staticStep = (int)(staticInterStep);
 			
 		subSpriteBuff = spriteBuff.getSubimage(staticStep*subSpriteWidth+staticX, staticY*subSpriteHeight, subSpriteWidth, subSpriteHeight);

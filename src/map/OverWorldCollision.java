@@ -11,6 +11,7 @@ import game.objects.Player;
 abstract class OverWorldCollision extends OverWorldBuilder{
 
 	ArrayList<WallBound<Integer, Rectangle>> wallBoundList = new ArrayList<WallBound<Integer, Rectangle>>();
+	ArrayList<MapObjectBound<Integer, Rectangle>> mapObjectBoundList = new ArrayList<MapObjectBound<Integer, Rectangle>>();
 	private final int SETBACK = 4;
 	
 	protected OverWorldCollision(){
@@ -34,10 +35,9 @@ abstract class OverWorldCollision extends OverWorldBuilder{
 				int pushDirection = wallBoundList.get(indexWall).getPushDirection();
 				
 				
-				if(Player.getInstance().getBoundCore().intersects(wallRect.x-cam.getX(),wallRect.y-cam.getY(),wallRect.width,wallRect.height)){
+				if(object.getBoundCore().intersects(wallRect.x-cam.getX(),wallRect.y-cam.getY(),wallRect.width,wallRect.height)){
 					
-					//if(pushDirection != 0)
-						System.out.println("setBack@case:"+pushDirection);
+					//System.out.println("setBack@case:"+pushDirection);
 					
 					//boolean tmpStateCamera = GameManager.cameraOn;
 					//GameManager.cameraOn = false;
@@ -71,67 +71,38 @@ abstract class OverWorldCollision extends OverWorldBuilder{
 				//GameManager.cameraOn = tmpStateCamera;
 					
 				}//if object.intersect(wall)
-					
-						
-				
-				
-				
+
 			}//for indexWall
-			
+
 		}//for indexObject
+		
+		for(int indexMapObject = 0; indexMapObject < mapObjectBoundList.size(); indexMapObject++){
+			Rectangle rect = mapObjectBoundList.get(indexMapObject).getRectangle();
+			int type = mapObjectBoundList.get(indexMapObject).getType();
+			
+			if(player.getBoundCore().intersects(rect.x-cam.getX(),rect.y-cam.getY(),rect.width,rect.height)){
+				
+				player.setLife(player.getLife()-1);
+				player.setX(player.getOldX());
+				player.setY(player.getOldY());
+				cam.setX(player.getOldXCam());
+				cam.setY(player.getOldYCam());
+				setXCoordinate(-player.getOldXCam());
+				setYCoordinate(-player.getOldYCam());
+				break;
+			}
+			
+		}
 		
 		
 	}
 		
-		
-		
-		
-		
-		
-		/*
-	
-				switch(Player.getInstance().getLastDirection()){
-				
-				case(1):	if(objectRect.intersects(player.getBoundDirN()))
-							player.setMovement(0, SETBACK);
-							break;
-					
-				case(2):	if(objectRect.intersects(player.getBoundDirNE()))
-							player.setMovement(-SETBACK, SETBACK);
-							break;
-				
-				case(3):	if(objectRect.intersects(player.getBoundDirE()))
-							player.setMovement(-SETBACK, 0);
-							break;
-							
-				case(4):	if(objectRect.intersects(player.getBoundDirSE()))
-							player.setMovement(-SETBACK,-SETBACK);
-							break;
-							
-				case(5):	if(objectRect.intersects(player.getBoundDirS()))
-							player.setMovement(0, -SETBACK);
-							break;
-							
-				case(6):	if(objectRect.intersects(player.getBoundDirSW()))
-							player.setMovement(SETBACK, -SETBACK);
-							break;
-							
-				case(7):	if(objectRect.intersects(player.getBoundDirW()))
-							player.setMovement(SETBACK, 0);
-							break;
-							
-				case(8):	if(objectRect.intersects(player.getBoundDirNW()))
-							player.setMovement(SETBACK,SETBACK);
-							break;
-					
-
-		 */
-
-	
 	
 	public void initializeBounds(){
 		wallBoundList = null;
 		wallBoundList = getWallBoundList();
+		mapObjectBoundList = null;
+		mapObjectBoundList = getMapObjectBoundList();
 
 	}
 }

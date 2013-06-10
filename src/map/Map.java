@@ -33,6 +33,7 @@ abstract class Map extends JComponent{
 	private ArrayList<Rectangle> wallBoundNPaint = new ArrayList<Rectangle>();
 	private ArrayList<Rectangle> wallBoundSPaint = new ArrayList<Rectangle>();
 	private ArrayList<Rectangle> wallBoundPaint = new ArrayList<Rectangle>();
+	private ArrayList<Rectangle> mapObjectBoundPaint = new ArrayList<Rectangle>();
 	
 	protected Map(){
 		
@@ -75,6 +76,14 @@ abstract class Map extends JComponent{
 			}
 		}
 		
+		if(mapObjectBoundPaint.size() > 0 && GameManager.showBounds){
+			g2d.setColor(Color.ORANGE);
+			for(int index = 0; index < mapObjectBoundPaint.size(); index++){
+				Rectangle tmp = mapObjectBoundPaint.get(index);
+				g2d.drawRect(tmp.x-cam.getX(),tmp.y-cam.getY(),45,45);
+			}
+		}
+		
 		if(navigationBoundPaint.size() > 0 && GameManager.showBounds){
 			
 			
@@ -89,61 +98,6 @@ abstract class Map extends JComponent{
 			}
 		}
 		
-	
-		
-		
-		/*
-		else
-			System.err.println("MapImage not initialized");
-		
-		*/
-		
-		/*
-		//paint navigation & objectBounds
-		if(dungeon && GameManager.showBounds){
-			
-			for(int orientation = 0; orientation < 5; orientation++){
-				if(orientation == 0)
-					g2d.setColor(Color.CYAN);
-				else
-					g2d.setColor(Color.GREEN);
-				int navigationBoundSizeTmp = navigationBoundSize[xMap][yMap][orientation];
-				for(int dimension = 0; dimension < navigationBoundSizeTmp; dimension++){
-					g2d.draw(navigationBound[xMap][yMap][orientation][dimension]);
-				}
-			}
-			
-			
-			for(int layer = 0; layer < 7; layer++){
-				
-				if(layer == 2 || layer == 3)
-					g2d.setColor(Color.BLUE);
-				
-				if(layer == 4)
-					g2d.setColor(Color.RED);
-				
-				if(layer == 5)
-					g2d.setColor(Color.YELLOW);
-				
-				for(int orientation = 0; orientation < 13; orientation++){
-					
-					for(int yTile = 0; yTile < 7; yTile++){
-						for(int xTile = 0; xTile < 9; xTile++){
-							for(int element = 0; element < 3; element++){
-								//objectBound[mapRowX][mapRowY][7][13][9][7][3];
-								g2d.draw(objectBound[xMap][yMap][layer][orientation][xTile][yTile][element]);
-							}
-						}	
-					}	
-				}
-			}
-			
-		}//if dungeon
-		
-		
-		*/
-		
-		
 		
 	}
 	
@@ -153,10 +107,19 @@ abstract class Map extends JComponent{
 		wallBoundNPaint.clear();
 		wallBoundSPaint.clear();
 		wallBoundPaint.clear();
+		mapObjectBoundPaint.clear();
 		
 		x = y = width = height = 0;
 		mapImage = null;
 
+	}
+	
+	protected void clearPaintBounds(){
+		navigationBoundPaint.clear();
+		wallBoundNPaint.clear();
+		wallBoundSPaint.clear();
+		wallBoundPaint.clear();
+		mapObjectBoundPaint.clear();
 	}
 	
 	protected void addWallBoundNPaint(Rectangle element){
@@ -175,11 +138,10 @@ abstract class Map extends JComponent{
 		navigationBoundPaint.add(element);
 	}
 	
-	/*
-	protected ArrayList<Rectangle> getWallBoundPaint(){
-		return wallBoundPaint;
+	protected void addMapObjectBoundPaint(Rectangle rectangle){
+		mapObjectBoundPaint.add(rectangle);
 	}
-	*/
+	
 	protected void setMapImage(BufferedImage mapImage){
 		this.mapImage = mapImage;
 	}

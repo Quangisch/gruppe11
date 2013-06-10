@@ -2,7 +2,7 @@ package game.objects;
 
 import java.awt.Rectangle;
 
-abstract class Item extends Sprite{
+abstract class Item extends Moveable{
 	
 	protected Item(){
 		setWidth(25);
@@ -10,7 +10,6 @@ abstract class Item extends Sprite{
 		setSubSpriteHeight(25);
 		setSubSpriteWidth(25);
 		
-		//public Rectangle getBoundCore(){return new Rectangle(getX()+coreXOffset+cornerXOffset, getY()+coreYOffset+cornerYOffset, coreWidth, coreHeight);}
 		setCoreX(10);
 		setCoreY(15);
 		setCoreWidth(40);

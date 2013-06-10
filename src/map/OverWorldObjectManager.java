@@ -4,6 +4,8 @@ import java.util.List;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
+import map.DungeonObjectManager.EnemyData;
+
 abstract class OverWorldObjectManager extends Map{
 
 	private final Rectangle[] navigationBound = {new Rectangle(0,-10,810,20),
@@ -14,7 +16,12 @@ abstract class OverWorldObjectManager extends Map{
 	
 	private ArrayList<Rectangle> toExitBound = new ArrayList<Rectangle>();
 	private ArrayList<int[]> toExitBoundData = new ArrayList<int[]>();
-	private ArrayList<WallBound<Integer, Rectangle>> wallBoundList = new ArrayList<WallBound<Integer, Rectangle>>(); 
+	private ArrayList<WallBound<Integer, Rectangle>> wallBoundList = new ArrayList<WallBound<Integer, Rectangle>>();
+	private ArrayList<MapObjectBound<Integer, Rectangle>> mapObjectBoundList = new ArrayList<MapObjectBound<Integer, Rectangle>>();
+	private ArrayList<MoveableData> moveableDataList = new ArrayList<MoveableData>();
+	
+	private ArrayList<EnemyData<Integer, int[], int[]>> enemyData = new ArrayList<EnemyData<Integer, int[], int[]>>();
+	
 	
 	protected OverWorldObjectManager(){
 		
@@ -70,11 +77,50 @@ abstract class OverWorldObjectManager extends Map{
 		wallBoundList.clear();
 		toExitBound.clear();
 		toExitBoundData.clear();
+		mapObjectBoundList.clear();
+		moveableDataList.clear();
 	}
 	
 	protected ArrayList<int[]> getNavigationToExitData(){
 		return toExitBoundData;
 	}
+	
+	protected void addMapObjectBound(int type, Rectangle rectangle){
+		mapObjectBoundList.add(new MapObjectBound<Integer, Rectangle>(type, rectangle));
+		addMapObjectBoundPaint(rectangle);
+	}
+	
+	protected ArrayList<MapObjectBound<Integer, Rectangle>> getMapObjectBoundList(){
+		return mapObjectBoundList;
+	}
+	
+	protected void addEnemyData(int type, int[] position, int[] attributes){
+		
+		Integer typeInteger = (Integer) type;
+		EnemyData<Integer, int[], int[]> element = new EnemyData<Integer, int[], int[]>(typeInteger, position, attributes);
+		
+		
+		enemyData.add(element);
+		
+		int[] pos = enemyData.get(0).getPosition();
+		System.out.println("EnemyData@Map_"+pos[0]+"x"+pos[1]+", Pos_"+pos[2]+"x"+pos[3]);
+		
+	}
+	
+	protected ArrayList<EnemyData<Integer, int[], int[]>> getEnemyDataMap(){
+		
+		ArrayList<EnemyData<Integer, int[], int[]>> enemyDataMap = new ArrayList<EnemyData<Integer, int[], int[]>>();
+		
+		for(int index = 0; index < enemyData.size(); index++){
+	
+			enemyDataMap.add(enemyData.get(index));
+			
+		}
+		
+		return enemyDataMap;
+		
+	}
+	
 	
 	
 	public class WallBound<P, R>{
@@ -86,13 +132,68 @@ abstract class OverWorldObjectManager extends Map{
 			this.rectangle = rectangle;
 		}
 		
-		public P getPushDirection(){
-			return pushDirection;
+		public P getPushDirection(){return pushDirection;}
+		public R getRectangle(){return rectangle;}
+	}
+	
+	public class MapObjectBound<T, R>{
+		final T type;
+		final R rectangle;
+		
+		private MapObjectBound(T type, R rectangle){
+			this.type = type;
+			this.rectangle = rectangle;
 		}
 		
-		public R getRectangle(){
-			return rectangle;
+		public T getType(){return type;}
+		public R getRectangle(){return rectangle;}
+	}
+	
+	private class MoveableData<T, I, A, P>{
+		final T typeData;
+		final I imageData;
+		final A attributesData;
+		final P positionData;
+		
+		private MoveableData(T typeData, I imageData, A attributesData, P positionData){
+			this.typeData = typeData;
+			this.imageData = imageData;
+			this.attributesData = attributesData;
+			this.positionData = positionData;
 		}
+
+		public T getTypeData(){return typeData;}
+		public I getImageData(){return imageData;}
+		public A getAttributesData(){return attributesData;}
+		public P getPositionData(){return positionData;}
+		
+	}
+	
+	protected class EnemyData<T, P, A>{
+		public final T type;
+		public final P position;
+		public final A attributes;
+		
+		public EnemyData(T type, P position, A attributes){
+			this.type = type;
+			this.position = position;
+			this.attributes = attributes;
+			
+			System.err.println("====>New EnemyData=====>");
+		}
+		
+		public T getType(){
+			return type;
+		}
+		
+		public P getPosition(){
+			return position;
+		}
+		
+		public A getAttributes(){
+			return attributes;
+		}
+		
 	}
 
 }

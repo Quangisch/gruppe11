@@ -43,7 +43,7 @@ public class GameManager {
 	}
 	
 	public static synchronized void addGameObject(Moveable moveableElement){
-		for(int i = 0; i < moveableList.size()-1; i++){
+		for(int i = 0; i < moveableList.size(); i++){
 			if(moveableList.get(i) == null || !moveableList.get(i).getAlive())
 				moveableList.remove(i);
 		}
@@ -57,10 +57,14 @@ public class GameManager {
 	}
 	
 	public static synchronized void updateGameObject(){
-		for(int i = 0; i < moveableList.size()-1; i++){
+		for(int i = 0; i < moveableList.size(); i++){
 			if(moveableList.get(i) == null || !moveableList.get(i).getAlive())
 				moveableList.remove(i);
 		}
+	}
+	
+	public static synchronized void clearGameObjects(){
+		moveableList.clear();
 	}
 	
 	public static ArrayList<Moveable> getMoveableList(){

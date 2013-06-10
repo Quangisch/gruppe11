@@ -9,6 +9,7 @@ import map.DungeonNavigator;
 
 import core.Board;
 import core.GameManager;
+import core.ItemListManager;
 import core.PlayerInterface;
 
 public class Player extends PlayerObjectManager implements Runnable{
@@ -19,7 +20,6 @@ public class Player extends PlayerObjectManager implements Runnable{
 	private boolean horizontalLock;
 	private boolean verticalLock;
 	private boolean interactLock;
-	
 	
 	
 	private Player(){
@@ -38,10 +38,24 @@ public class Player extends PlayerObjectManager implements Runnable{
 			move();
 			automaticManaRegen();
 		}
+		
+		
+		if(GameManager.scrollDirection != 0 || !GameManager.mapLoaded){
+			setOldPosition();
+		}
 
 	}
 	
-
+	public void setOldPosition(){
+		
+		setOldX(getX());
+		setOldY(getY());
+		setOldXCam(Camera.getInstance().getX());
+		setOldYCam(Camera.getInstance().getY());
+		setOldLastDirection(getLastDirection());
+		//System.out.println(getX()+"to"+getOldX()+", "+getY()+"to"+getOldY());
+	}
+	
 	
 	public void keyPressed(KeyEvent e){
 		int key;
@@ -173,6 +187,22 @@ public class Player extends PlayerObjectManager implements Runnable{
 			GameManager.addGameObject(MarioDark.getInstance(false, num));
 			
 			
+			
+		}
+		
+		if(key == KeyEvent.VK_L){
+			ItemListManager.dropItem(getX(), getY(), 0, 1, 0);
+			
+		}
+		
+		if(key == KeyEvent.VK_M){
+			ItemListManager.dropItem(getX(), getY(), 0, 2, 0);
+			
+		}
+		
+		if(key == KeyEvent.VK_K){
+			ItemListManager.dropItem(getX(), getY(), 0, 0, 0);
+			
 		}
 		
 		if(key == KeyEvent.VK_0){
@@ -183,7 +213,7 @@ public class Player extends PlayerObjectManager implements Runnable{
 			GameManager.moveFocus = false;
 		}
 		
-		if(key == KeyEvent.VK_K){
+		if(key == KeyEvent.VK_BACK_SPACE){
 			for(int layer = 0; layer < 7; layer++)
 			DungeonNavigator.getInstance().clearTileImage(3, 5, 4);
 		}

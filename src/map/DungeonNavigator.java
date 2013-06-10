@@ -1,5 +1,6 @@
 package map;
 
+import game.objects.MarioDark;
 import game.objects.Player;
 
 import java.awt.Rectangle;
@@ -29,6 +30,7 @@ public class DungeonNavigator extends DungeonCollision{
 	public void initializeMap(int xMap, int yMap, int ID, int playerX, int playerY){
 		
 		GameManager.mapLoaded = false;
+		MarioDark.deleteAllInstances();
 		
 		setXMap(xMap);
 		setYMap(yMap);
@@ -44,6 +46,7 @@ public class DungeonNavigator extends DungeonCollision{
 		
 		buildCollisionObjects();
 		reloadMap();
+		Player.getInstance().setOldPosition();
 		GameManager.mapLoaded = true;
 	}
 	

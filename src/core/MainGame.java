@@ -80,14 +80,14 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		MarioDark.getInstance(false, 0).setBehaviour(3);
 		GameManager.addGameObject(MarioDark.getInstance(false, 0));
 		*/
-		
+		/*
 		MarioDark.getInstance(true, 0).initializeImage(enemyBright, 90, 120, 8);
 		MarioDark.getInstance(false, 0).initializeAttributes(2, 3, true, 0, 75, 45, 20);
 		MarioDark.getInstance(false, 0).initializePosition(200, 300, 5);
 		MarioDark.getInstance(false, 0).setBehaviour(2);
 		MarioDark.getInstance(false, 0).setMoveableType(2);
 		GameManager.addGameObject(MarioDark.getInstance(false, 0));
-		
+		*/
 		//System.out.println("=======>>>"+MarioDark.checkInstanceAlive(1));
 		
 		PlayerInterface.getInstance().initializeInterface();
@@ -109,7 +109,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		if(GameManager.overWorld)
 			OverWorldNavigator.getInstance().initializeMap(0,0,1,500,500);
 		if(GameManager.dungeon)
-			DungeonNavigator.getInstance().initializeMap(0,3,0,100,300);
+			DungeonNavigator.getInstance().initializeMap(0,2,0,100,100);
 	}
 	
 	private void initializeThreads(){

@@ -7,9 +7,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import map.DungeonObjectManager.EnemyData;
+
+import core.EnemyManager;
 import core.GameManager;
 
 abstract class OverWorldBuilder extends OverWorldObjectManager {
@@ -137,14 +141,74 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 				
 			} while(!dataLine.startsWith("#"));
 			
+			
+			
+			readDataBuff.mark(10);
 			searchLine = readDataBuff.readLine();
-			dataLine = readDataBuff.readLine();
-			//dataLine = readDataBuff.readLine();
 			
+		//EnemyData
+		EnemyData:
+			for(int infoID = 0; infoID < 1; infoID++){
+				System.out.println("EnemyData.for@"+infoID);
+				
+				if(searchLine.contentEquals("#Enemy#")){
+					
+					
+					do{
+						int enemyType;
+						int[] enemyPosition = new int[4];
+						int[] enemyAttributes = new int[5];
+						
+						dataLine = readDataBuff.readLine(); //EnemyType+X+Y
+						dataLine = dataLine.replace("x", "");
+						dataLine = dataLine.replace("@", "");
+						
+						
+						enemyType = translateStringToInt(dataLine.substring(0, 4));
+						
+						enemyPosition[0] = 1;
+						enemyPosition[1] = 1;
+						enemyPosition[2] = translateStringToInt(dataLine.substring(4, 8));//enemyX
+						enemyPosition[3] = translateStringToInt(dataLine.substring(8,12));//enemyY
+					
+						
+						dataLine = readDataBuff.readLine();
+						dataLine = dataLine.replace("x", "");
+						enemyAttributes[0] = translateStringToInt(dataLine.substring(0, 4)); //enemySpeed
+						enemyAttributes[1] = translateStringToInt(dataLine.substring(4, 8)); //enemyLife
+						enemyAttributes[2] = translateStringToInt(dataLine.substring(8, 12)); //enemyLastDirection
+						enemyAttributes[3] = translateStringToInt(dataLine.substring(12, 16)); //enemyPattern
+						
+						
+						addEnemyData(enemyType, enemyPosition, enemyAttributes);
+						
+					
+						
+						readDataBuff.mark(10);
+						searchLine = readDataBuff.readLine();
+						
+						if(searchLine.startsWith("#")){
+							readDataBuff.reset();
+							break;
+						}
+						
+					
+					
+					} while (searchLine.startsWith("#"));
+					
+				} else {
+					readDataBuff.reset();
+					break;
+				}
+				
+			}//for mapInfo: enemy
 			
+			searchLine = readDataBuff.readLine(); //wall
+			dataLine = readDataBuff.readLine(); //xLineCounter
 			
 			String upperLine = null;
 			String lowerLine = null;
+			
 			for(int yRow = 0; yRow < yRowSize; yRow++){
 		
 				//System.out.println("yRow@"+yRow+", to max@"+yRowSize);
@@ -262,9 +326,17 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 								addWallBound(pushDirection, new Rectangle(45*xRow,45*yRow,45,45));
 							
 							
+							
 						}// if data == x
 						else {
-							System.out.println("emptyBlock@ "+xRow+"x"+yRow);
+							//System.out.println("emptyBlock@ "+xRow+"x"+yRow);
+							String data = dataBlock.substring(1, 2);
+							
+							if(data.contentEquals("w"))
+								addMapObjectBound(0, new Rectangle(45*xRow,45*yRow,45,45));
+							
+							if(data.contentEquals("l"))
+								addMapObjectBound(1, new Rectangle(45*xRow,45*yRow,45,45));
 						}
 
 						readDataBuff.reset();
@@ -402,6 +474,60 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 		addToExitBoundData(mapType, mapID, xMap, yMap, xPlayer, yPlayer);
 
 	}
+	
+protected void setEnemy(){
+		
+		System.err.println("Enemy number yolo?");
+		
+		//check and instantiate Enemy
+		ArrayList<EnemyData<Integer, int[], int[]>> enemyDataMap = getEnemyDataMap();
+		
+		System.err.println("Enemy number@"+enemyDataMap.size());
+		
+		for(int index = 0; index < enemyDataMap.size(); index++){
+			int enemyType = enemyDataMap.get(index).getType();
+			int[] enemyPosition = enemyDataMap.get(index).getPosition();
+			int[] enemyAttributes = enemyDataMap.get(index).getAttributes();
+			
+			
+			int xCoordinateMap = enemyPosition[2] - Camera.getInstance().getX();
+			int yCoordinateMap = enemyPosition[3] - Camera.getInstance().getY();
+			
+			
+			System.out.println("case.set Enemy1@Pos:"+xCoordinateMap+"x"+yCoordinateMap);
+			//int xCoordinateMap = 0;
+			//int yCoordinateMap = 0;
+		
+			EnemyManager.setNewEnemy(xCoordinateMap,yCoordinateMap,enemyType,enemyPosition,enemyAttributes);
+				
+			System.err.println("======>DungeonBuilder.setEnemy");
+			
+
+		}
+		
+		
+	}
+	
+	private int translateStringToInt(String numberString){
+
+		//System.out.println("Check.translateStringToInt: Input@"+numberString+", lenght@"+numberString.length());
+		
+		for(int i = 0; i < numberString.length()+1; i++){
+			if(numberString.startsWith("0"))
+				numberString = numberString.substring(1);
+			if(numberString.startsWith("0") && numberString.length() == 1)
+				break;
+		}
+		
+		//System.out.println("Check.translateStringToInt: Output@"+numberString+", lenght@"+numberString.length());
+
+		
+		int number = Integer.parseInt(numberString.toString());
+		
+		return number;
+		
+	}
+	
 	
 	protected int getXRowSize(){
 		return xRowSize;

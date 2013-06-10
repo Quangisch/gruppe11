@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,6 +25,7 @@ public class MarioDark extends EnemyLogic{
 	private volatile static int instanceCounter;
 	private int IDNumber;
 	private boolean constructionLock = false;
+	private boolean spawnLock = true;
 	
 
 	
@@ -44,7 +46,6 @@ public class MarioDark extends EnemyLogic{
 
 	public void running(){
 
-		System.out.println("MarioDark@ "+getX()+"x"+getY());
 		if(getAlive()) {
 			
 			//patrolRectangle(-1,false,100,100,100,200);
@@ -60,8 +61,19 @@ public class MarioDark extends EnemyLogic{
 	private void dropItem(){
 		System.out.println("==>MarioDark.drops Item@"+getX()+"x"+getY());
 		
-		//heart/health
-		ItemListManager.dropItem(getX(), getY(), 0, 1, 0);
+		//heart/healthRandom rand;
+	
+		int random1 = new Random().nextInt(101) + 0;
+		int random2 = new Random().nextInt(101) + 0;
+		
+		//ItemListManager.dropItem(getX(), getY(), 0, 1, 0);
+		System.err.println("======>randomNum:"+random1+"x"+random2);
+		
+		if(random1 < 20)
+			ItemListManager.dropItem(getX(), getY(), 0, 1, 0);
+		else if(random2 < 20)
+			ItemListManager.dropItem(getX(), getY(), 0, 2, 0);
+
 	}
 
 	public static int getMaxInstance(){
@@ -131,11 +143,22 @@ public class MarioDark extends EnemyLogic{
 			this.IDNumber = IDNumber;
 		}
 		public void run() {
+			
+			if((!GameManager.mapLoaded && GameManager.dungeon) || (GameManager.scrollDirection != 0 && !spawnLock && GameManager.dungeon))
+				setAlive(false);
+			
+			if(GameManager.scrollDirection == 0)
+				spawnLock = false;
+			
+			
 			//System.out.println("RunTask "+IDNumber+" running");
 			if(MarioDark.getInstance(false, IDNumber).getAlive())
 				MarioDark.getInstance(false, IDNumber).running();
 			else {
-				MarioDark.getInstance(false, IDNumber).dropItem();
+				
+				if(GameManager.scrollDirection == 0 && GameManager.mapLoaded)
+					MarioDark.getInstance(false, IDNumber).dropItem();
+				
 				GameManager.updateGameObject();
 				MarioDark.getInstance(false, IDNumber).deleteInstance(IDNumber);
 			}

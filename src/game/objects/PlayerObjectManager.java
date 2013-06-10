@@ -87,13 +87,13 @@ abstract class PlayerObjectManager extends Initializer{
 		
 		switch(magicSpell){
 		case(0):	if(manaPool >= 0.14){
-					//manaPool -= 0.14;
+					manaPool -= 0.14;
 					Magic.addInstance(magicSpell, this);
 					cast = true;
 					}break;
 					
 		case(1):	if(manaPool >= 0.28){
-					//manaPool -= 0.28;
+					manaPool -= 0.28;
 					Magic.addInstance(magicSpell, this);
 					cast = true;
 					}break;
@@ -107,6 +107,9 @@ abstract class PlayerObjectManager extends Initializer{
 	public void automaticManaRegen(){
 		if(manaPool < 1)
 			manaPool += 0.0001;
+		
+		if(manaPool > 1)
+			manaPool = 1;
 		
 	}
 	
@@ -142,6 +145,16 @@ abstract class PlayerObjectManager extends Initializer{
 			}
 		}
 	}
+	
+	public void addCoin(int num){
+		coin += num; 
+	}
+	
+	public int getCoin(){
+		return coin;
+	}
+	
+
 	
 	private class ItemInventory<I,T,M>{
 		final I ID;

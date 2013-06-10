@@ -6,7 +6,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import map.Camera;
+
 import core.Board;
+import core.GameManager;
 
 public class ItemDrop extends Item{
 	
@@ -16,6 +19,8 @@ public class ItemDrop extends Item{
 	private int counter;
 	private int[] itemIDData = new int[3];
 	
+	private int offsetX, offsetY;
+	
 	Thread runThread = new Thread(new RunTimer());
 	ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
 	
@@ -23,13 +28,39 @@ public class ItemDrop extends Item{
 		System.out.println("--> construct new Item");
 		itemDrop = this;
 		
+		//x - cam = x
+		
 		setX(x);
 		setY(y);
+	
+		
 		this.duration = duration;
 		initializeItemDrop(data, file);
 	}
 	
 	public void running(){
+		
+		//System.out.println(getUpLock()+","+getDownLock()+"__"+getRightLock()+","+getLeftLock());
+		
+		if(GameManager.cameraOn){
+			if(!(getUpLock() || getDownLock()) && !(getLeftLock() || getRightLock())){
+				System.err.println("case.1");
+				setMovement(-Player.getInstance().getDX(), -Player.getInstance().getDY());
+			} else if((getUpLock() || getDownLock()) && !(getLeftLock() || getRightLock())){
+				System.err.println("case.2");
+				setMovement(-Player.getInstance().getDX(), 0);
+				
+			} else if(!(getUpLock() ||  getDownLock()) && (getLeftLock() || getRightLock())){
+				System.err.println("case.3");
+				setMovement(0, -Player.getInstance().getDY());
+				
+			} else if((getUpLock() || getDownLock()) && (getLeftLock() || getRightLock())){
+				System.err.println("case.4");
+				setMovement(0, 0);
+			}
+		}
+		
+			
 		
 		//System.out.println("Item alive@"+counter+", to "+duration);
 		//System.out.println("Item visible:"+getVisibleDrawable());

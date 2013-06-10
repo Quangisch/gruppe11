@@ -38,42 +38,41 @@ public enum EnemyManager implements FileLink {
 	
 	public static void setNewEnemy(int xCoordinateMap, int yCoordinateMap, int enemyType, int[] enemyPosition, int[]enemyAttributes){
 		
-		int x = enemyPosition[2];
-		int y = enemyPosition[3];
 		int speed = enemyAttributes[0];
 		int life = enemyAttributes[1];
-		int pattern = enemyAttributes[2];
-		int direction = enemyAttributes[3];
+		int direction = enemyAttributes[2];
+		int pattern = enemyAttributes[3];
 		
 		if(enemyType == 0)
-			MARIODARK.initializeInstance(xCoordinateMap, yCoordinateMap,x, y, direction, speed, life, true, pattern);
+			MARIODARK.initializeInstance(xCoordinateMap, yCoordinateMap, direction, speed, life, true, pattern);
 		
 		
 		if(enemyType == 1)
-			MARIOBRIGHT.initializeInstance(xCoordinateMap, yCoordinateMap,x, y, direction, speed, life, true, pattern);
+			MARIOBRIGHT.initializeInstance(xCoordinateMap, yCoordinateMap, direction, speed, life, true, pattern);
 		
 
 	}
 	
-	private synchronized void initializeInstance(int xCoordinateMap, int yCoordinateMap, int x, int y, int direction, int speed, int life, boolean visible, int pattern){
+	private synchronized void initializeInstance(int xCoordinateMap, int yCoordinateMap, int direction, int speed, int life, boolean visible, int pattern){
 		
 		int num = MarioDark.getInstanceCounter();
 		
 		MarioDark.getInstance(true, num).initializeImage(file, subSpriteWidth, subSpriteHeight, moveStepCycle);
 		MarioDark.getInstance(false, num).initializeAttributes(speed, life, visible, coreX, coreY, coreWidth, coreHeight);
-		MarioDark.getInstance(false, num).initializePosition(x, y, direction);
+		MarioDark.getInstance(false, num).initializePosition(xCoordinateMap, yCoordinateMap, direction);
 		MarioDark.getInstance(false, num).setBehaviour(pattern);
 		MarioDark.getInstance(false, num).setMoveableType(type);
+		
 		GameManager.addGameObject(MarioDark.getInstance(false, num));
 		
-		System.err.println("========>EnemyManager.initializeInstance: type@"+type+" ID@"+num);
+		System.err.println("========>EnemyManager.initializeInstance: type@"+type+" ID@"+num+" Behaviour@"+pattern);
 		
 		/*
-		MarioDark.getInstance(true, num).initializeImage(enemyBright, 90, 120, 8);
-		MarioDark.getInstance(false, num).initializeAttributes(2, 3, true, 0, 75, 45, 20);
-		MarioDark.getInstance(false, num).initializePosition(200, 300, 5);
-		MarioDark.getInstance(false, num).setBehaviour(2);
-		GameManager.addGameObject(MarioDark.getInstance(false, num));
+		MarioDark.getInstance(true, num+1).initializeImage(file, subSpriteWidth, subSpriteHeight, moveStepCycle);
+		MarioDark.getInstance(false, num+1).initializeAttributes(2, 3, true, 0, 75, 45, 20);
+		MarioDark.getInstance(false, num+1).initializePosition(xCoordinateMap, yCoordinateMap, direction);
+		MarioDark.getInstance(false, num+1).setBehaviour(2);
+		GameManager.addGameObject(MarioDark.getInstance(false, num+1));
 		*/
 	}
 

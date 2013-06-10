@@ -56,7 +56,7 @@ public enum ItemListManager implements FileLink{
 		for(ItemListManager item : values()){
 			if(item.getID() == itemID && item.getType() == itemType && item.getMember() == member){
 				//int x, int y, int[] data, File file,int duration
-				ItemDrop.addInstance(x, y, item.itemData, item.file, 5000);
+				ItemDrop.addInstance(x, y, item.itemData, item.file, 200);
 			}
 		}
 	

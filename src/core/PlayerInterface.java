@@ -5,6 +5,7 @@ import game.objects.Player;
 import java.awt.AlphaComposite;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -39,6 +40,8 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 	private BufferedImage coinBuff = new BufferedImage(42,39,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage manaBarBuff = new BufferedImage(249,47,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage manaPoolBuff = new BufferedImage(249,47, BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage itemBorderBuff = new BufferedImage(100,50,BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage itemListBuff = new BufferedImage(100,200, BufferedImage.TYPE_INT_ARGB);
 	
 	private BufferedImage a = new BufferedImage(45,45,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage b = new BufferedImage(45,45,BufferedImage.TYPE_INT_ARGB);
@@ -157,6 +160,8 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 				heart1_4Buff = ImageIO.read(heart1_4);
 				manaPoolBuff = ImageIO.read(manaPool);
 				manaBarBuff = ImageIO.read(manaBar);
+				itemBorderBuff = ImageIO.read(itemBar);
+				itemListBuff = ImageIO.read(itemListID00);
 				
 				coinBuff = ImageIO.read(coin);
 				imageBuff = ImageIO.read(text);
@@ -249,9 +254,38 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 		if(Player.getInstance().getManaPool() > 0){
 			upperInterface.createGraphics().drawImage(manaPoolBuff, 20-(int)(10*Player.getInstance().getManaPool()), 40, (int)(Player.getInstance().getManaPool()*248)-5, 47, null);
 		}
+		
+		upperInterface.createGraphics().drawImage(coinBuff, 770, 10, null);
+		Integer coins = Player.getInstance().getCoin();
+		String coinsString = coins.toString();
+		for(int i = 0; i < coinsString.length(); i++){
+			String digit = coinsString.substring(coinsString.length()-1-i, coinsString.length()-i);
+			BufferedImage digitBuff = translateTextTile(digit);
+			upperInterface.createGraphics().drawImage(digitBuff, 740-i*30, 8, null);
+		}
+		
+		//Player.getInstance().addCoin(1);
+		
+		int spellType = Player.getInstance().getMagicSpell();
+		BufferedImage spellBuff = new BufferedImage(50,50,BufferedImage.TYPE_INT_ARGB);
+		
+		
+		if(spellType == 0)
+			spellBuff.createGraphics().drawImage(itemListBuff.getSubimage(0, 175, 25, 25), 0,0,50,50,0,0,25,25,null);
+		if(spellType == 1)
+			spellBuff.createGraphics().drawImage(itemListBuff.getSubimage(25, 175, 25, 25), 0,0,50,50,0,0,25,25,null);
+		
+		upperInterface.createGraphics().drawImage(spellBuff,400,10,null);
+		
+		
+		
+		
+		upperInterface.createGraphics().drawImage(itemBorderBuff, 350, 10, null);
 		//System.out.println("ManaPool@"+(int)Player.getInstance().getManaPool());
-		upperInterface.createGraphics().drawImage(manaBarBuff, 10, 40, this);
+		upperInterface.createGraphics().drawImage(manaBarBuff, 10, 40, null);
 
+		
+		
 	}
 	
 	public void setText(String textString){

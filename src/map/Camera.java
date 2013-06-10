@@ -254,6 +254,9 @@ public class Camera implements Runnable{
 	public void setX(int x){this.x = x;}
 	public void setY(int y){this.y = y;}
 	
+	public int getScrollX(){return scrollX;}
+	public int getScrollY(){return scrollY;}
+	
 	public static Camera getInstance(){
 		if(camera == null)
 			camera = new Camera();

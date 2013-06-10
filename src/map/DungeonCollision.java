@@ -422,7 +422,7 @@ abstract class DungeonCollision extends DungeonBuilder{
 						//Shake Tile
 						//TODO
 					}
-					if((mapObjectBound[1][0][xTile][yTile][element].contains(object.getBoundS())||mapObjectBound[0][0][xTile][yTile][element].contains(object.getBoundS()))
+					if(mapObjectBound[0][0][xTile][yTile][element].contains(object.getBoundCore())
 							&& ((getYTileDataElement(xMap, yMap, 1, xTile, yTile) == 14 && (getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 7 || getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 9))
 									  ||(getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 14 && (getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 8 || getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 10)))){
 						
@@ -433,12 +433,18 @@ abstract class DungeonCollision extends DungeonBuilder{
 						object.setObjectBack(100,0,false,null);
 						object.setLife(object.getLife()-1);
 						
-				
+						if(object.isHumanPlayer()){
+							object.setX(object.getOldX());
+							object.setY(object.getOldY());
+							object.setLastDirection(object.getOldLastDirection());
+						}
+						
+						break;
 					}//Trap,Hole
 					
 					
 					for(int index = 0; index < GameManager.getMoveableList().size()-1; index ++){
-						
+						/*
 						if(((getYTileDataElement(xMap, yMap, 0, xTile, yTile) == 11 || getYTileDataElement(xMap, yMap, 0, xTile, yTile) == 12)
 								&& (getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 8
 								|| getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 9
@@ -446,7 +452,10 @@ abstract class DungeonCollision extends DungeonBuilder{
 									&& mapObjectBound[0][0][xTile][yTile][element].contains(object.getBoundCore()) 
 									&& !(mapObjectBound[1][0][xTile][yTile][element].intersects(object.getBoundCore())
 									|| mapObjectBound[1][0][xTile][yTile][element].intersects(object.getBoundCore()))){
-							
+						*/
+						if(mapObjectBound[0][0][xTile][yTile][element].contains(object.getBoundCore()) 
+								&& !(mapObjectBound[1][0][xTile][yTile][element].intersects(object.getBoundCore())
+								|| mapObjectBound[1][0][xTile][yTile][element].intersects(object.getBoundCore()))){
 							System.err.println("checkCollision");
 							object.setObjectBack(100,0,false, null);
 							

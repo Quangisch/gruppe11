@@ -19,7 +19,8 @@ import core.GameManager;
 	 
 	private Graphics2D g2d;
 	private volatile int x, y;
-	private int lostLifeX, lostLifeY;
+	private int oldX, oldY;
+	private int oldXCam, oldYCam, oldLastDirection;
 	
 	private int width;
 	private int height;
@@ -149,11 +150,18 @@ import core.GameManager;
 	@Override
 	public int getY(){return y;}
 	
-	public void setLostLifeX(int lostLifeX){this.lostLifeX = lostLifeX;}
-	public void setLostLifeY(int lostLifeY){this.lostLifeY = lostLifeY;}
+	public void setOldX(int oldX){this.oldX = oldX;}
+	public void setOldY(int oldY){this.oldY = oldY;}
+	public void setOldXCam(int oldXCam){this.oldXCam = oldXCam;}
+	public void setOldYCam(int oldYCam){this.oldYCam = oldYCam;}
+	public void setOldLastDirection(int oldLastDirection){this.oldLastDirection = oldLastDirection;}
 	
-	public int getLostLifeX(){return lostLifeX;}
-	public int getLostLifeY(){return lostLifeY;}
+	public int getOldX(){return oldX;}
+	public int getOldY(){return oldY;}
+	public int getOldXCam(){return oldXCam;}
+	public int getOldYCam(){return oldYCam;}
+	public int getOldLastDirection(){return oldLastDirection;}
+	
 	
 	public boolean getAlive(){return alive;}
 	

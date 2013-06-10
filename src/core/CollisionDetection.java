@@ -23,7 +23,7 @@ public class CollisionDetection implements Runnable{
 	
 	public void run(){
 	
-		
+		GameManager.updateGameObject();
 		moveableObject = GameManager.getMoveableList();
 	
 		//System.out.println("moveableListSize@"+moveableObject.size());
@@ -43,12 +43,12 @@ public class CollisionDetection implements Runnable{
 						moveableObject.get(index).startInvincibleTimer(1800);
 						*/
 						
-						System.out.println("loseLife");
+						System.out.println("==>loseLife");
 						
 						Player.getInstance().loseLife(EnemyManager.getAttackDamage(type));
 						Player.getInstance().startInvincibleTimer(1800);
 						Player.getInstance().setObjectBack(20,0,true,moveableObject.get(index).getBoundCore());
-		
+						
 						break;
 					}
 					
@@ -58,6 +58,8 @@ public class CollisionDetection implements Runnable{
 						
 		
 					}
+					
+					
 					
 				}
 				
