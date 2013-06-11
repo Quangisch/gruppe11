@@ -1,5 +1,6 @@
 package map;
 
+import game.objects.MapObject;
 import game.objects.MarioDark;
 import game.objects.Moveable;
 import game.objects.Player;
@@ -29,6 +30,7 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 		
 		GameManager.mapLoaded = false;
 		MarioDark.deleteAllInstances();
+		MapObject.deleteAllInstances();
 		Board.getInstance().setTopMap(false, null);
 		
 		switch(ID){

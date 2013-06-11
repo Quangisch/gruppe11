@@ -59,4 +59,9 @@ abstract class Initializer extends Moveable{
 			
 	}
 	
+	protected void byPassInitialCheck(){
+		iniAttributes = iniPosition = iniImage = true;
+		setLife(9999);
+	}
+	
 }

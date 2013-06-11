@@ -109,7 +109,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		if(GameManager.overWorld)
 			OverWorldNavigator.getInstance().initializeMap(0,0,1,500,500);
 		if(GameManager.dungeon)
-			DungeonNavigator.getInstance().initializeMap(1,3,0,100,100);
+			DungeonNavigator.getInstance().initializeMap(1,2,0,600,100);
 	}
 	
 	private void initializeThreads(){
@@ -117,8 +117,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		playerThread = new Thread(player);
 		cameraThread = new Thread(Camera.getInstance());
 		collisionThread = new Thread(CollisionDetection.getInstance());
-		interfaceThread = new Thread(PlayerInterface.getInstance());
-
+		
 		threadPool = new ScheduledThreadPoolExecutor(4);
 
 	}
@@ -128,7 +127,6 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		threadPool.scheduleWithFixedDelay(playerThread, 10, 10, TimeUnit.MILLISECONDS);
 		threadPool.scheduleWithFixedDelay(cameraThread, 20, 50, TimeUnit.MILLISECONDS);
 		threadPool.scheduleWithFixedDelay(collisionThread, 30, 10, TimeUnit.MILLISECONDS);
-		threadPool.scheduleWithFixedDelay(interfaceThread, 40, 20, TimeUnit.MILLISECONDS);
 		
 		//PlayerInterface.getInstance().buildText();
 	}

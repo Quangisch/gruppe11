@@ -6,6 +6,7 @@ import java.io.File;
 
 import map.Camera;
 import map.DungeonNavigator;
+import map.OverWorldNavigator;
 
 import core.Board;
 import core.GameManager;
@@ -164,6 +165,15 @@ public class Player extends PlayerObjectManager implements Runnable{
 		
 		if(key == KeyEvent.VK_P){
 			GameManager.printMsg = !GameManager.printMsg;
+		}
+		if(key == KeyEvent.VK_O){
+			System.out.println("Player@"+getX()+"x"+getY());
+			System.out.println("Camera@"+Camera.getInstance().getX()+"x"+Camera.getInstance().getY());
+			if(GameManager.dungeon)
+			System.out.println("Map...@"+DungeonNavigator.getInstance().getXCoordinate()+"x"+DungeonNavigator.getInstance().getYCoordinate());
+			if(GameManager.overWorld)
+			System.out.println("Map...@"+OverWorldNavigator.getInstance().getXCoordinate()+"x"+OverWorldNavigator.getInstance().getYCoordinate());
+			
 		}
 		
 		if(key == KeyEvent.VK_Y){

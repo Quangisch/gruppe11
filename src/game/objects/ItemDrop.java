@@ -27,13 +27,10 @@ public class ItemDrop extends Item{
 	private ItemDrop(int x, int y, int[] data, File file, int duration){
 		System.out.println("--> construct new Item");
 		itemDrop = this;
-		
-		//x - cam = x
-		
+
 		setX(x);
 		setY(y);
 	
-		
 		this.duration = duration;
 		initializeItemDrop(data, file);
 	}
@@ -59,13 +56,11 @@ public class ItemDrop extends Item{
 				setMovement(0, 0);
 			}
 		}
-		
-			
-		
+	
 		//System.out.println("Item alive@"+counter+", to "+duration);
 		//System.out.println("Item visible:"+getVisibleDrawable());
 		
-		setStaticSubSprite();
+		setStaticSubSprite(4);
 		
 		if(Player.getInstance().getBoundCore().intersects(this.getBoundCore())){
 			System.out.println("Player.intersectItem");
@@ -89,8 +84,8 @@ public class ItemDrop extends Item{
 		itemIDData[1] = data[1];
 		itemIDData[2] = data[2];
 		
-		setStaticX(data[3]);
-		setStaticY(data[4]);
+		setStaticX(data[3]*25);
+		setStaticY(data[4]*25);
 		setStaticCycle(data[5]);
 		setFile(file);
 		loadSprite();

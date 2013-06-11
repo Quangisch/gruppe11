@@ -183,26 +183,26 @@ abstract class Sprite extends DrawableObject{
 	}
 	
 	//item Sprites
-	protected void setStaticSubSprite(){
+	protected void setStaticSubSprite(int resizeFactor){
 		
-		
-			
 		if(staticCycle != 0)
 			staticInterStep += 0.1;
 		
 		if(staticInterStep >= staticCycle)
 			staticInterStep = 0;
 		
-		System.out.println("StaticInterStep@"+staticInterStep+"to"+staticCycle);
 		
 		
 		int staticStep = (int)(staticInterStep);
 			
-		subSpriteBuff = spriteBuff.getSubimage(staticStep*subSpriteWidth+staticX, staticY*subSpriteHeight, subSpriteWidth, subSpriteHeight);
+		System.out.println((staticStep*subSpriteWidth+staticX)+"x"+(staticY)+", "+subSpriteWidth+"x"+subSpriteHeight);
 		
-		BufferedImage resized = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+	
+		subSpriteBuff = spriteBuff.getSubimage(staticStep*subSpriteWidth+staticX, staticY, subSpriteWidth, subSpriteHeight);
+		
+		BufferedImage resized = new BufferedImage(spriteBuff.getWidth()*resizeFactor, spriteBuff.getHeight()*resizeFactor, BufferedImage.TYPE_INT_ARGB);
 	    resized.createGraphics().setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-	    resized.createGraphics().drawImage(subSpriteBuff, 0, 0, 100, 100, 0, 0, 25, 25, null);
+	    resized.createGraphics().drawImage(subSpriteBuff, 0, 0, spriteBuff.getWidth()*resizeFactor, spriteBuff.getHeight()*resizeFactor, 0, 0, spriteBuff.getWidth(), spriteBuff.getHeight(), null);
 		
 		setImage(resized);
 	}

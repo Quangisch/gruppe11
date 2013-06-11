@@ -1,7 +1,11 @@
 package map;
 
+import game.objects.MapObject;
+
 import java.awt.Rectangle;
 import java.util.ArrayList;
+
+import core.GameObjectManager;
 
 abstract class DungeonObjectManager extends Map{
 	
@@ -13,10 +17,13 @@ abstract class DungeonObjectManager extends Map{
 	
 	private ArrayList<NavigationData<int[], Rectangle, int[]>> navigationData = new ArrayList<NavigationData<int[], Rectangle, int[]>>();
 	private ArrayList<EnemyData<Integer, int[], int[]>> enemyData = new ArrayList<EnemyData<Integer, int[], int[]>>();
+	private ArrayList<MapObjectData<Integer, Integer, Integer, Integer, Integer, Integer,Integer>> mapObjectData = new ArrayList<MapObjectData<Integer, Integer, Integer, Integer, Integer,Integer, Integer>>();
 	
 	private int[] tmpNavCoordinates = new int[3]; //0 = xMap, 1 = yMap, 2 = Orientation
 	private Rectangle tmpNavRect = new Rectangle();
 	private int[] tmpNavData = new int[6]; //dataType
+	
+	//doorIDCounter [xMap][yMap][element] = x (x = 1: open, x = 0: locked)
 	
 	
 	/*
@@ -53,6 +60,8 @@ abstract class DungeonObjectManager extends Map{
 		tmpNavData = new int[6]; //comp. dataType
 		
 		objectBound = new Rectangle[mapRowX][mapRowY][7][13][9][7][3];
+		
+		
 		clearObjectBounds();
 	}
 	
@@ -96,7 +105,7 @@ abstract class DungeonObjectManager extends Map{
 								
 								mapObjectBound[layer][orientation][xTile][yTile][element] = objectBound[xMapTmp][yMapTmp][layer][orientation][xTile][yTile][element];
 								//mapObjectBound[layer][orientation][xTile][yTile][element] = objectBound[3][3][3][orientation][xTile][yTile][element];
-								addWallBoundNPaint(mapObjectBound[layer][orientation][xTile][yTile][element]);
+								//addWallBoundNPaint(mapObjectBound[layer][orientation][xTile][yTile][element]);
 								
 								////objectBound[xMap][yMap][layer][orientation][xTile][yTile][dimension]
 								
@@ -178,12 +187,14 @@ abstract class DungeonObjectManager extends Map{
 		protected int getMapRowX(){return mapRowX;}
 		protected int getMapRowY(){return mapRowY;}
 		protected int getMapID(){return mapID;}
+		
 		//
 		protected synchronized void setXMap(int xMap){this.xMap = xMap;}
 		protected synchronized void setYMap(int yMap){this.yMap = yMap;}
 		protected void setMapRowX(int mapRowX){this.mapRowX = mapRowX;}
 		protected void setMapRowY(int mapRowY){this.mapRowY = mapRowY;}
 		protected void setMapID(int mapID){this.mapID = mapID;}
+		
 		
 		private void checkAndSetNavigationData(int mapIDX, int mapIDY){
 			
@@ -256,6 +267,27 @@ abstract class DungeonObjectManager extends Map{
 		}
 		return navigationRectMap;
 			
+		}
+		
+		protected void addMapObjectData(int type, int orientation, int xMapTmp, int yMapTmp, int xPosition, int yPosition){
+
+			int ID = Integer.parseInt(String.valueOf(xMapTmp+""+yMapTmp+""+orientation));
+			
+			if(!GameObjectManager.getDoorStatusOpen(ID)){
+				
+
+				MapObjectData<Integer, Integer, Integer, Integer, Integer,Integer, Integer> mapObject = new MapObjectData<Integer, Integer, Integer, Integer, Integer, Integer,Integer>(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
+				mapObjectData.add(mapObject);
+				MapObject.addInstance(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
+				GameObjectManager.getInstance().constructDoor(ID);
+			}
+	
+		}
+		
+
+		protected void deleteMapObjectData(){
+			mapObjectData.clear();
+			MapObject.deleteAllInstances();
 		}
 		
 		protected void addEnemyData(int type, int[] position, int[] attributes){
@@ -343,6 +375,33 @@ abstract class DungeonObjectManager extends Map{
 				return attributes;
 			}
 			
+		}
+		
+		protected class MapObjectData<I, T, O, XM, YM, XP, YP>{
+			public final I ID;
+			public final T type;
+			public final O orientation;
+			public final XM xMapPosition;
+			public final YM yMapPosition;
+			public final XP xPosition;
+			public final YP yPosition;
+			
+			private MapObjectData(I ID, T type, O orientation, XM xMapPos, YM yMapPos, XP xPosition, YP yPosition){
+				this.ID = ID;
+				this.type = type;
+				this.orientation = orientation;
+				this.xMapPosition = xMapPos;
+				this.yMapPosition = yMapPos;
+				this.xPosition = xPosition;
+				this.yPosition = yPosition;
+			}
+			public I getID(){return ID;}
+			public T getType(){return type;}
+			public O getOrientation(){return orientation;}
+			public XM getXMapPosition(){return xMapPosition;}
+			public YM getYMapPosition(){return yMapPosition;}
+			public XP getXPosition(){return xPosition;}
+			public YP getYPosition(){return yPosition;}
 		}
 
 }

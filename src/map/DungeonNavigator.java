@@ -1,5 +1,6 @@
 package map;
 
+import game.objects.MapObject;
 import game.objects.MarioDark;
 import game.objects.Player;
 
@@ -31,11 +32,14 @@ public class DungeonNavigator extends DungeonCollision{
 		
 		GameManager.mapLoaded = false;
 		MarioDark.deleteAllInstances();
+		MapObject.deleteAllInstances();
 		
 		setXMap(xMap);
 		setYMap(yMap);
 		Player.getInstance().setX(playerX);
 		Player.getInstance().setY(playerY);
+		Camera.getInstance().setX(-getXCoordinate());
+		Camera.getInstance().setY(-getYCoordinate());
 		
 		switch(ID){
 		case(0)	:	loadMapData(dungeonDataID00, tiles_Dungeon00);
@@ -43,10 +47,15 @@ public class DungeonNavigator extends DungeonCollision{
 		}
 
 		System.err.println("=>ini@Map:"+getXMap()+"x"+getYMap());
+		System.out.println("Player@"+getX()+"x"+getY());
+		System.out.println("Camera@"+Camera.getInstance().getX()+"x"+Camera.getInstance().getY());
+		System.out.println("Map...@"+DungeonNavigator.getInstance().getXCoordinate()+"x"+DungeonNavigator.getInstance().getYCoordinate());
+		
 		
 		buildCollisionObjects();
 		reloadMap();
 		Player.getInstance().setOldPosition();
+
 		GameManager.mapLoaded = true;
 	}
 	

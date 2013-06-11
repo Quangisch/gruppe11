@@ -74,8 +74,10 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 	private BufferedReader readDataBuff;
 	
 	private final String[] layerHeader = {"#floor2#","#floor1#","#wall2#","#wall1#","#door#","#objects#","#interaction#","###"};
+	//private final String[] layerHeader = {"#floor2#","#floor1#","#wall2#","#wall1#","###"};
 	private final String[] navigationHeader = {"#toExit#", "#toNorth#", "#toEast#", "#toSouth#", "#toWest#"};
 	private final String[] mapInformation = {"#enemy#"};
+	
 	
 	private String dungeonIDName, mapIDName;
 	private BufferedImage clearImage;
@@ -238,12 +240,13 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 
 		System.out.println("_buildingMap complete");
 		setMapImage(mapImage);
-		
+		/*
 		//setBounds for Paint
 		ArrayList<Rectangle> navRectMap = getNavigationRectMap(getXMap(), getYMap());
 		for(int index = 0; index < navRectMap.size(); index++){
 			addNavigationBoundPaint(navRectMap.get(index));
 		}
+		*/
 		
 	}
 	
@@ -300,12 +303,9 @@ g2d.fillRect(0, 0, 10, 10);
 	
 	protected void setEnemy(){
 		
-		System.err.println("Enemy number yolo?");
-		
 		//check and instantiate Enemy
 		ArrayList<EnemyData<Integer, int[], int[]>> enemyDataMap = getEnemyDataMap(getXMap(), getYMap());
 		
-		System.err.println("Enemy number@"+enemyDataMap.size());
 		
 		for(int index = 0; index < enemyDataMap.size(); index++){
 			int enemyType = enemyDataMap.get(index).getType();
@@ -493,9 +493,16 @@ g2d.fillRect(0, 0, 10, 10);
 									String widthData = dataLine.substring(8, 12);
 									String heightData = dataLine.substring(12, 16);
 									
+									readDataBuff.mark(10);
+									searchLine = readDataBuff.readLine();
 									
-									writeNavigationBoundData(mapIDX, mapIDY, navigationID, xData, yData, widthData, heightData);
-									
+									if(searchLine.contentEquals("Door"))
+										writeNavigationBoundData(true, mapIDX, mapIDY, navigationID, xData, yData, widthData, heightData);
+									else{
+										writeNavigationBoundData(false, mapIDX, mapIDY, navigationID, xData, yData, widthData, heightData);
+										readDataBuff.reset();
+									}
+										
 									
 									if(navigationID != 0){
 										addNavigationToExitData(mapIDX, mapIDY, -1, -1, -1, -1, -1, -1);	
@@ -538,7 +545,7 @@ g2d.fillRect(0, 0, 10, 10);
 									
 										System.out.println("_MAP@"+mapIDX+"x"+mapIDY+"====>mapType: "+mapType+"@ID:"+mapIDData+" to Map:"+xMapData+"x"+yMapData+", Player to:"+xPlayerData+"x"+yPlayerData);
 										writeNavigationToExitData(mapIDX, mapIDY,mapType,mapIDData,xMapData,yMapData,xPlayerData,yPlayerData);
-											
+										
 										
 									}
 									
@@ -671,7 +678,7 @@ g2d.fillRect(0, 0, 10, 10);
 
 	}
 	
-protected void writeNavigationBoundData(int xMap, int yMap, int orientation, String xData, String yData, String widthData, String heightData){
+protected void writeNavigationBoundData(boolean door, int xMap, int yMap, int orientation, String xData, String yData, String widthData, String heightData){
 
 	int x = translateStringToInt(xData);
 	int y = translateStringToInt(yData);
@@ -686,7 +693,10 @@ protected void writeNavigationBoundData(int xMap, int yMap, int orientation, Str
 	*/
 	System.out.println("Map_"+xMap+"x"+yMap+" @ "+navigationHeader[orientation]+":"+orientation+" Rectangle:"+x+"x"+y+","+width+"x"+height);
 	
-	addNavigationBound(xMap, yMap, orientation, new Rectangle(x,y,width,height));
+		addNavigationBound(xMap, yMap, orientation, new Rectangle(x,y,width,height));
+	if(door)
+		addMapObjectData(0, orientation, xMap, yMap, x, y);
+	
 	
 }
 

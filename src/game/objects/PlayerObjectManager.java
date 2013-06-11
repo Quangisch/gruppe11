@@ -19,7 +19,7 @@ abstract class PlayerObjectManager extends Initializer{
 	private double manaRegen = 1;
 	
 	private int coin;
-	private int keyInventory;
+	private int keyInventory = 0;
 	
 	
 	
@@ -160,10 +160,12 @@ abstract class PlayerObjectManager extends Initializer{
 	
 	public boolean useKeyInventory(){
 		
-		boolean use = false;
+		boolean use = true;
+		
 		if(keyInventory > 0){
 			keyInventory--;
-			use = true;
+			use = false;
+			System.out.println("used Key: KeyInventory@"+keyInventory);
 		}
 		
 		return use;

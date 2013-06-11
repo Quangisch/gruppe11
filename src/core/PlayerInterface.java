@@ -14,7 +14,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 
-public class PlayerInterface implements Runnable, FileLink{
+public class PlayerInterface implements FileLink{
 	
 	private static PlayerInterface playerInterface;
 	
@@ -22,7 +22,6 @@ public class PlayerInterface implements Runnable, FileLink{
 	private boolean visible;
 	private int width;
 	private int height;
-	private Graphics2D g2d;
 	
 	private String textBuff;
 	private int lineCounter = 0;
@@ -125,10 +124,6 @@ public class PlayerInterface implements Runnable, FileLink{
 		
 		buildInterface();
 		
-		//Graphics2D gfx = (Graphics2D) upperInterface.getGraphics();
-		//g2d.setBackground(new Color(0, 0, 0, 0));
-		
-
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.98f));
 		if(upperInterface != null){
 			
@@ -142,18 +137,10 @@ public class PlayerInterface implements Runnable, FileLink{
 			g2d.drawImage(lowerInterface, 0, 360, Board.getInstance());
 		}
 		
-		//upperInterface.createGraphics().clearRect(0, 0, 810, 630);
-		
-	}
-	
-	public void run(){
-		//buildInterface();
 	}
 	
 	public void initializeInterface(){
-		
-		
-		
+	
 		visible = true;
 		
 		try {
@@ -231,18 +218,6 @@ public class PlayerInterface implements Runnable, FileLink{
 	}
 	
 	public void buildInterface(){
-		//System.out.println("Life:"+Player.getInstance().getLife());
-		/*
-		if (null == upperInterface) {
-		upperInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
-		} else {
-			Graphics2D gfx = (Graphics2D) upperInterface.getGraphics();
-			gfx.setBackground(new Color(0, 0, 0, 0));
-			gfx.clearRect(0, 0, 810, 630);
-		}
-		*
-		*/
-		
 		upperInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 		
 		double restLife = Player.getInstance().getLife() - Math.floor(Player.getInstance().getLife());
@@ -293,11 +268,7 @@ public class PlayerInterface implements Runnable, FileLink{
 		
 		upperInterface.createGraphics().drawImage(spellBuff,400,10,null);
 		
-		
-		
-		
 		upperInterface.createGraphics().drawImage(itemBorderBuff, 350, 10, null);
-		//System.out.println("ManaPool@"+(int)Player.getInstance().getManaPool());
 		upperInterface.createGraphics().drawImage(manaBarBuff, 10, 40, null);
 
 		

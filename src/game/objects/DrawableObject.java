@@ -13,10 +13,8 @@ import core.FileLink;
 import core.GameManager;
 
 
- public class DrawableObject extends JComponent implements FileLink{
+public class DrawableObject extends JComponent implements FileLink{
 
-	
-	 
 	private Graphics2D g2d;
 	private volatile int x, y;
 	private int oldX, oldY;
@@ -97,6 +95,7 @@ import core.GameManager;
 	public void setCoreHeight(int coreHeight){this.coreHeight = coreHeight;}
 	
 	public Rectangle getBoundCore(){return new Rectangle(getX()+coreXOffset+cornerXOffset, getY()+coreYOffset+cornerYOffset, coreWidth, coreHeight);}
+	public Rectangle getBound(){return new Rectangle(getX(), getY(), width, height);}
 	
 	public Rectangle getBoundN(){return new Rectangle(getX()+cornerXOffset, getY()+cornerYOffset, width-cornerXOffset, 20-cornerYOffset);}
 	public Rectangle getBoundE(){return new Rectangle(getX()+width-20+cornerXOffset, getY()+cornerYOffset, 20-cornerXOffset, height-cornerYOffset);}
@@ -162,9 +161,6 @@ import core.GameManager;
 	public int getOldYCam(){return oldYCam;}
 	public int getOldLastDirection(){return oldLastDirection;}
 	
-	
 	public boolean getAlive(){return alive;}
-	
-	
 	
 }

@@ -38,6 +38,8 @@ public interface FileLink{
 	File overWorldTOPID01 = new File ("resources/images/map/overWorldID01TOP.png");
 	File tiles_Dungeon00 = new File ("resources/images/map/tiles_dungeon00.png");
 	
+	//mapObjects
+	File mapObjects00 = new File ("resources/images/mapObjects00.png");
 	
 	//mapData
 	File dungeonDataID00 = new File ("resources/data/dungeonDataID00.txt");
