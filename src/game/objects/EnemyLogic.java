@@ -24,6 +24,8 @@ abstract class EnemyLogic extends EnemyMove {
 			case 0: stopNow();
 					break;
 			case 1: followObject(Player.getInstance());
+					//punchObject(Player.getInstance());
+					castObject(Player.getInstance(),0);
 					break;
 			case 2: patrolRectangle(-1,false,100,100,100,200);
 					break;

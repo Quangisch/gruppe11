@@ -1,5 +1,7 @@
 package game.objects;
 
+import java.awt.Rectangle;
+
 
 abstract class EnemyMove extends Initializer{
 
@@ -273,5 +275,62 @@ abstract class EnemyMove extends Initializer{
 		return false;
 	}
 	
+	public void punchObject(Moveable object){
+		Rectangle bound = getBoundDirection(0);
+		Rectangle punchRadius = new Rectangle(bound.x, bound.y, bound.width, bound.height);
+		
+		if(punchRadius.intersects(object.getBound())){
+			this.startWaitTimer(1000);
+			
+			try {
+				setMoveUp(false); setMoveRight(false); setMoveDown(false); setMoveLeft(false);
+				Thread.sleep(800);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			setAttack();
+			
+			if(this.getBoundHitSpace().intersects(object.getBound())){
+				object.setLife(object.getLife()-1.5);
+				object.setObjectBack(10, 0, false, null);
+				this.startWaitTimer(2000);
+			}
+		}
+
+	}
+	
+	public void castObject(Moveable object, int spellType){
+		
+		Rectangle bound = getBoundDirection(0);
+		Rectangle sight = bound;
+		
+		switch(getLastDirection()){
+		case(1):	sight = new Rectangle(bound.x, bound.y-630, bound.width, bound.height+630);break;
+		case(3):	sight = new Rectangle(bound.x+810, bound.y, bound.width+810, bound.height);break;
+		case(5):	sight = new Rectangle(bound.x, bound.y+630, bound.width, bound.height+630);break;
+		case(7):	sight = new Rectangle(bound.x-810, bound.y, bound.width+810, bound.height);break;
+
+		}
+		if(sight.intersects(object.getBoundCore())){
+			
+			try {
+				Thread.sleep(300);
+			
+			Magic.addInstance(spellType, this);
+			
+				Thread.sleep(1000);
+				
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+	}
+	
+	
+
 
 }

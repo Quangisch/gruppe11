@@ -109,7 +109,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		if(GameManager.overWorld)
 			OverWorldNavigator.getInstance().initializeMap(0,0,1,500,500);
 		if(GameManager.dungeon)
-			DungeonNavigator.getInstance().initializeMap(0,2,0,600,500);
+			DungeonNavigator.getInstance().initializeMap(0,1,0,100,100);
 	}
 	
 	private void initializeThreads(){
