@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +28,9 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 	private int type;
 	private int orientation;
 	private int xMap, yMap, xPos, yPos;
+	private int counter;
+	private int x = 0;
+	private int y = 0;
 	
 	private Thread runThread;
 	ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
@@ -34,6 +38,7 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 	private MapObject(int IDNumber, int type, int orientation, int xMap, int yMap, int xPos, int yPos){
 		mapObject = this;
 		this.IDNumber = IDNumber;
+		this.type = type;
 		this.xMap = xMap;
 		this.yMap = yMap;
 		this.xPos = xPos;
@@ -48,8 +53,19 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		//System.out.println(Player.getInstance().getKeyInventory());
 		
 		
-		int x = xPos + xMap * 810;
-		int y = yPos + yMap * 630;
+		switch(type){
+		case(0): handleDoor(); break;
+		case(1): handleTrap(); break;
+		}
+		
+		//System.out.println("Type@"+type);
+
+	}
+	
+	private void handleDoor(){
+		
+		x = xPos + xMap * 810;
+		y = yPos + yMap * 630;
 		
 		switch(orientation){
 		case(1):	break;
@@ -58,10 +74,11 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		case(4):	x += 8; break;
 		}
 		
+		
 		setX((x-Camera.getInstance().getX()));
 		setY((y-Camera.getInstance().getY()));
 		
-		if(getBound().intersects(Player.getInstance().getBoundCore())){
+		if(getBoundCore().intersects(Player.getInstance().getBoundCore())){
 			if(Player.getInstance().useKeyInventory())
 				Player.getInstance().setObjectBack(10, 0, false, null);
 			else{
@@ -70,58 +87,74 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 			}
 			
 		}
+	}
+	
+	private void handleTrap(){
+		
+		int shake = new Random().nextInt(2 - -2 + 1) + -2;
+		
+
+		
+		setX((x-Camera.getInstance().getX()));
+		setY((y-Camera.getInstance().getY()));
+		
+		if(getBoundCore().intersects(Player.getInstance().getBoundCore())){
+			x = xPos + xMap * 810 + shake;
+			y = yPos + yMap * 630 + shake;
 			
+			
+			if(x > xPos + xMap * 810 + 10)
+				x = xPos + xMap * 810;
+					
+			if(y > yPos + yMap * 630 + 10)
+				y = yPos + yMap * 630;
+		} else {
+			x = xPos + xMap * 810;
+			y = yPos + yMap * 630;
+		}
+		
+		if(getBoundCore().contains(Player.getInstance().getBoundCore())){
+			/*
+			Player.getInstance().setX(Player.getInstance().getOldX());
+			Player.getInstance().setY(Player.getInstance().getOldY());
+			Player.getInstance().setLastDirection(Player.getInstance().getOldLastDirection());
+			Player.getInstance().setLife(Player.getInstance().getLife() - 1);
+			*/
+			stop();
+		}
 		
 	}
 	
+	
+	
 	private void stop(){
-		setAlive(false);
 		setVisible(false);
+		setAlive(false);
+		Board.updateMapObjectList();
 		execRun.shutdown();
 		mapObject = null;
 	}
 	
 	private void initializeMapObject(int type, int orientation){
-		int[] data = new int[7];
+		int[] data = new int[11];
 		data = MapObjectList.getObjectData(type, orientation);
-		/*
-			data[0] = type;
-			data[1] = orientation;
-			data[2] = xPosition;
-			data[3] = yPosition;
-			data[4] = width;
-			data[5] = height;
-			data[6] = cycle;
-		*/
-		
+
 	
 		System.err.println("==construct=>CameraPos@"+Camera.getInstance().getX()+"x"+Camera.getInstance().getY());
 		
 		
-		/*
-		 DOORNORTH(0,1,4,0,2,1,0),
-		DOOREAST  (0,2,2,0,1,2,0),
-		DOORSOUTH (0,3,0,1,2,1,0),
-		DOORWEST  (0,4,3,0,1,2,0);
-		 *//*
-		setStaticX(0*90);
-		setStaticY(1*90);
-		setSubSpriteWidth(2*90);
-		setSubSpriteHeight(1*90);
-		//setWidth(200);
-		//setHeight(200);
-		*/
-		
-		//subSpriteBuff = spriteBuff.getSubimage(staticStep*subSpriteWidth+staticX, staticY*subSpriteHeight, subSpriteWidth, subSpriteHeight);
-		
-			setStaticX(data[2]*90);
-			setStaticY(data[3]*90);
-			setSubSpriteWidth(data[4]*90);
-			setSubSpriteHeight(data[5]*90);
-		
 	
+		setStaticX(data[2]);
+		setStaticY(data[3]);
+		setSubSpriteWidth(data[4]);
+		setSubSpriteHeight(data[5]);
 		
-		setStaticCycle(0);
+		setCoreX(data[6]);
+		setCoreY(data[7]);
+		setCoreWidth(data[8]);
+		setCoreHeight(data[9]);
+		
+		setStaticCycle(data[10]);
 		setFile(mapObjects00);
 		loadSprite();
 		
@@ -130,7 +163,7 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		setMoveable(false);
 		setAlive(true);
 		
-		Board.getInstance().addDrawable(this);
+		Board.getInstance().addMapObject(this);
 		setStaticSubSprite(1);
 		runThread = new Thread(this);
 		execRun.scheduleWithFixedDelay(runThread, 10, 10, TimeUnit.MILLISECONDS);
@@ -176,45 +209,52 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 	
 	private enum MapObjectList{
 		
-		DOORNORTH(0,1,4,0,2,1,0),
-		DOOREAST(0,2,2,0,1,2,0),
-		DOORSOUTH(0,3,0,1,2,1,0),
-		DOORWEST(0,4,3,0,1,2,0),
+		DOORNORTH(0,1,360,0,180,90,0,0,150,80,0),
+		DOOREAST(0,2,180,0,90,180,30,0,90,180,0),
+		DOORSOUTH(0,3,0,90,180,90,0,30,150,90,0),
+		DOORWEST(0,4,270,0,90,160,-60,0,90,160,0),
 		
-		BROKENFLOOR1(1,0,0,2,1,1,0),
-		BROKENFLOOR2(1,1,1,2,1,1,0),
+		BROKENFLOOR1(1,0,0,180,90,90,-20,-10,100,100,0),
+		BROKENFLOOR2(1,1,90,180,90,90,0,0,90,90,0),
 		
-		TREASUREC(2,0,4,2,1,1,0),
-		TREASUREO(2,1,5,2,1,1,0),
+		TREASUREC(2,0,360,180,90,90,0,0,90,90,0),
+		TREASUREO(2,1,450,180,90,90,0,0,90,90,0),
 		
-		BLOCKSTONE(3,0,7,0,2,2,0),
+		BLOCKSTONE(3,0,630,0,180,180,0,0,180,180,0),
 		
-		WATER1(10,0,0,3,1,1,3),
-		WATER2(10,1,0,4,1,1,3),
+		WATER1(10,0,0,270,90,90,0,0,90,90,3),
+		WATER2(10,1,0,360,90,90,0,0,90,90,3),
 		
-		LAVA1(11,0,3,3,1,1,3),
-		LAVA2(11,1,3,4,1,1,3),
+		LAVA1(11,0,270,270,90,90,0,0,90,90,3),
+		LAVA2(11,1,270,360,90,90,0,0,90,90,3),
 		
-		GRASS1(12,0,0,5,1,1,3),
-		GRASS2(12,1,0,6,1,1,3),
-		GRASS3(12,2,3,5,1,1,3),
-		GRASS4(12,3,3,6,1,1,3);
+		GRASS1(12,0,0,450,90,90,0,0,90,90,3),
+		GRASS2(12,1,0,540,90,90,0,0,90,90,3),
+		GRASS3(12,2,270,450,90,90,0,0,90,90,3),
+		GRASS4(12,3,270,540,90,90,0,0,90,90,3);
 		
 		private final int type;
 		private final int orientation;
-		private final int[] data = new int[7];
+		private final int[] data = new int[11];
 		
-		private MapObjectList(int type, int orientation, int xPosition, int yPosition, int width, int height, int cycle){
+		private MapObjectList(int type, int orientation, int xPosition, int yPosition, int width, int height, int coreX, int coreY, int coreWidth, int coreHeight, int cycle){
 
 			this.type = type;
 			this.orientation = orientation;
 			data[0] = type;
 			data[1] = orientation;
+			
 			data[2] = xPosition;
 			data[3] = yPosition;
 			data[4] = width;
 			data[5] = height;
-			data[6] = cycle;
+			
+			data[6] = coreX;
+			data[7] = coreY;
+			data[8] = coreWidth;
+			data[9] = coreHeight;
+			
+			data[10] = cycle;
 		}
 		
 	

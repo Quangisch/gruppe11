@@ -47,7 +47,7 @@ public class DungeonNavigator extends DungeonCollision{
 		}
 
 		System.err.println("=>ini@Map:"+getXMap()+"x"+getYMap());
-		System.out.println("Player@"+getX()+"x"+getY());
+		System.out.println("Player@"+Player.getInstance().getX()+"x"+Player.getInstance().getY());
 		System.out.println("Camera@"+Camera.getInstance().getX()+"x"+Camera.getInstance().getY());
 		System.out.println("Map...@"+DungeonNavigator.getInstance().getXCoordinate()+"x"+DungeonNavigator.getInstance().getYCoordinate());
 		

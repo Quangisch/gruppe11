@@ -273,14 +273,22 @@ abstract class DungeonObjectManager extends Map{
 
 			int ID = Integer.parseInt(String.valueOf(xMapTmp+""+yMapTmp+""+orientation));
 			
-			if(!GameObjectManager.getDoorStatusOpen(ID)){
-				
-
-				MapObjectData<Integer, Integer, Integer, Integer, Integer,Integer, Integer> mapObject = new MapObjectData<Integer, Integer, Integer, Integer, Integer, Integer,Integer>(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
-				mapObjectData.add(mapObject);
-				MapObject.addInstance(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
-				GameObjectManager.getInstance().constructDoor(ID);
+			switch(type){
+			//Door
+			case(0): if(!GameObjectManager.getDoorStatusOpen(ID)){
+			
+						MapObjectData<Integer, Integer, Integer, Integer, Integer,Integer, Integer> mapObject = new MapObjectData<Integer, Integer, Integer, Integer, Integer, Integer,Integer>(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
+						mapObjectData.add(mapObject);
+						MapObject.addInstance(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
+						GameObjectManager.getInstance().constructDoor(ID);
+					} break;
+			//Trap		
+			case(1): 	MapObjectData<Integer, Integer, Integer, Integer, Integer,Integer, Integer> mapObject = new MapObjectData<Integer, Integer, Integer, Integer, Integer, Integer,Integer>(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
+						mapObjectData.add(mapObject);
+						MapObject.addInstance(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
+						break;
 			}
+			
 	
 		}
 		

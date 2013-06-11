@@ -33,7 +33,8 @@ public class Board extends JPanel implements Runnable{
 	private Graphics g;
 	
 	//add Values, sort Values, paint according Values
-	private volatile ArrayList<DrawableObject> drawableList = new ArrayList<DrawableObject>();
+	private static volatile ArrayList<DrawableObject> drawableList = new ArrayList<DrawableObject>();
+	private static volatile ArrayList<DrawableObject> mapObjectList = new ArrayList<DrawableObject>();
 	private volatile BufferedImage topMap;
 	
 	private Board(){
@@ -68,17 +69,27 @@ public class Board extends JPanel implements Runnable{
 			
 			//if(GameManager.mapLoaded){
 			if(GameManager.overWorld)
-				OverWorldNavigator.getInstance().paintComponents(g2d);
+				OverWorldNavigator.getInstance().draw(0, g2d);
 			
-			if(GameManager.dungeon)
-				DungeonNavigator.getInstance().paintComponents(g2d);
-			//}
+			if(GameManager.dungeon){
+				DungeonNavigator.getInstance().draw(0, g2d);
+			}
+			
+			for(int index = 0; index < mapObjectList.size(); index ++){
+				mapObjectList.get(index).paintComponents(g2d);
+			}
+			
+			if(GameManager.dungeon){
+				DungeonNavigator.getInstance().draw(1, g2d);
+			}
 		
 			//sort objects, specified in sortYOrder(), to draw them according to their Y-Value, respectivly in the proper Z-Order
 			ArrayList<DrawableObject> drawablePaint = sortDrawable();
 			for(int i = 0; i < drawableList.size(); i++){
 				drawablePaint.get(i).paintComponents(g2d);
 			}
+			
+			
 			
 			if(GameManager.overWorld && topMap != null)
 				g2d.drawImage(topMap, OverWorldNavigator.getInstance().getXCoordinate(), OverWorldNavigator.getInstance().getYCoordinate(), this);
@@ -92,7 +103,7 @@ public class Board extends JPanel implements Runnable{
 		
 	}
 	
-	public void addDrawable(DrawableObject drawableElement){
+	public synchronized void addDrawable(DrawableObject drawableElement){
 		
 		double size = drawableList.size();
 		int halfSize = (int)(size/2);
@@ -104,6 +115,24 @@ public class Board extends JPanel implements Runnable{
 			System.err.println("Board: Can't add NullElements.");
 		sortDrawable();
 	
+	}
+	
+	public synchronized void addMapObject(DrawableObject mapObject){
+		mapObjectList.add(mapObject);
+	}
+	
+	public static synchronized void updateMapObjectList(){
+		for(int index = 0; index < mapObjectList.size(); index++){
+			if(!mapObjectList.get(index).getAlive())
+				mapObjectList.remove(index);
+		}
+	}
+	
+	public static synchronized void updateDrawableList(){
+		for(int index = 0; index < drawableList.size(); index++){
+			if(!drawableList.get(index).getAlive())
+				drawableList.remove(index);
+		}
 	}
 	
 	public void setTopMap(boolean setImage,File topMapFile){
@@ -121,7 +150,7 @@ public class Board extends JPanel implements Runnable{
 		this.topMap = topMap;
 	}
 	
-	public ArrayList<DrawableObject> sortDrawable(){
+	private ArrayList<DrawableObject> sortDrawable(){
 
 		for(int i = 0; i < drawableList.size()-1; i++){
 			if(!drawableList.get(i).getAlive()){

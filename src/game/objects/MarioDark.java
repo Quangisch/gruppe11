@@ -65,7 +65,7 @@ public class MarioDark extends EnemyLogic{
 		
 		//heart/healthRandom rand;
 	
-		int random1 = new Random().nextInt(101) + 0;
+		int random1 = new Random().nextInt(100 - 0 + 1) + 0;
 		int random2 = new Random().nextInt(101) + 0;
 		boolean dropKey = false;
 		

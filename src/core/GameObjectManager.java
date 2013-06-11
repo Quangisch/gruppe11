@@ -10,6 +10,7 @@ public class GameObjectManager{
 	//private static int[][][] doorIDCounter = new int[4][4][10];
 	private static GameObjectManager gameObjectManager;
 	private static ArrayList<DoorIDStatus<Integer,Boolean>> doorIDList = new ArrayList<DoorIDStatus<Integer, Boolean>>();
+	private static ArrayList<BossIDStatus<Integer, Boolean>> bossIDList = new ArrayList<BossIDStatus<Integer, Boolean>>();
 	
 	private GameObjectManager(){
 		//gameObjectList.add(object);
@@ -37,6 +38,11 @@ public class GameObjectManager{
 	
 	//public static void openDoor(int xMap, int yMap, int ID){doorIDCounter[xMap][yMap][ID] = 1;}
 	
+	public void constructBoss(int ID){
+		BossIDStatus<Integer, Boolean> boss = new BossIDStatus<Integer, Boolean>(ID,false);
+		bossIDList.add(boss);
+	}
+	
 	public void constructDoor(int ID){
 		DoorIDStatus<Integer, Boolean> door = new DoorIDStatus<Integer, Boolean>(ID,false);
 		doorIDList.add(door);
@@ -56,6 +62,20 @@ public class GameObjectManager{
 		return lockOpen;
 	}
 	
+	public static boolean getBossStatusDefeated(int ID){
+		boolean defeated = false;
+		
+		for(int index = 0; index < bossIDList.size(); index++){
+			
+			if(bossIDList.get(index).getID() == ID && bossIDList.get(index).getDefeatedStatus()){
+				defeated = true;
+				break;
+			}
+		}
+
+		return defeated;
+	}
+	
 	public static void openDoor(int ID){
 		
 		for(int index = 0; index < doorIDList.size(); index++){
@@ -63,6 +83,18 @@ public class GameObjectManager{
 			if(doorIDList.get(index).getID() == ID){
 				doorIDList.get(index).setLockStatus(true);
 				System.err.println("open Door@ID:"+ID+"and lock:"+doorIDList.get(index).getLockStatus());
+				break;
+			}
+		}
+	}
+	
+	public static void defeatBoss(int ID){
+		
+		for(int index = 0; index < bossIDList.size(); index++){
+			
+			if(bossIDList.get(index).getID() == ID){
+				bossIDList.get(index).setDefeatedStatus(true);
+				System.err.println("defeated Boss@ID:"+ID+"and defeated:"+bossIDList.get(index).getDefeatedStatus());
 				break;
 			}
 		}
@@ -86,6 +118,22 @@ public class GameObjectManager{
 		public L getLockStatus(){return lockOpen;}
 		
 		public void setLockStatus(L open){this.lockOpen = open;}
+	}
+	
+	public class BossIDStatus<I, D>{
+		final I ID;
+		D defeated;
+		
+		public BossIDStatus(I ID, D defeated){
+			this.ID = ID;
+			this.defeated = defeated;
+			System.err.println("construct Boss@ID:"+ID+"and defeated:"+defeated);
+		}
+		
+		public I getID(){return ID;}
+		public D getDefeatedStatus(){return defeated;}
+		
+		public void setDefeatedStatus(D defeated){this.defeated = defeated;}
 	}
 
 }

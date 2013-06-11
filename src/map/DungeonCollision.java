@@ -25,7 +25,7 @@ abstract class DungeonCollision extends DungeonBuilder{
 	Rectangle[][][][][] mapObjectBound = new Rectangle[7][13][9][7][3];
 	
 	protected DungeonCollision(){
-		
+	
 	}
 	
 	public void checkCollision(Moveable object){
@@ -33,6 +33,9 @@ abstract class DungeonCollision extends DungeonBuilder{
 		//checkCollisionDoor(object);
 		
 		checkCollisionWall(object);
+		
+		//System.out.println(getXTileDataElement(getXMap(), getYMap(), 0, 5, 5));
+		//&& (getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 14 && (getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 8 || getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 10))){
 		
 	}
 	
@@ -415,19 +418,10 @@ abstract class DungeonCollision extends DungeonBuilder{
 			for(int xTile = 0; xTile < 9; xTile++){
 				for(int element = 0; element < 3; element++){
 
-					//Trap,Hole
-					if(getYTileDataElement(xMap, yMap, 0, xTile, yTile) == 14
-							&&(getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 7 || getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 9)
-								&& (mapObjectBound[1][0][xTile][yTile][element]).intersects(object.getBoundS())){
-						//Shake Tile
-						//TODO
-					}
-					if(mapObjectBound[0][0][xTile][yTile][element].contains(object.getBoundCore())
-							&& ((getYTileDataElement(xMap, yMap, 1, xTile, yTile) == 14 && (getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 7 || getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 9))
-									  ||(getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 14 && (getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 8 || getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 10)))){
-						
-						setXTileDataElement(18, xMap, yMap, 1, xTile, yTile);
-						setXTileDataElement(14, xMap, yMap, 1, xTile, yTile);
+					
+					if(mapObjectBound[0][0][xTile][yTile][element].contains(object.getBoundCore()) 
+							&& (getYTileDataElement(xMap, yMap, 0, xTile, yTile) == 14 && (getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 8 || getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 10))){
+				
 						System.err.println("Trap!");
 						
 						object.setObjectBack(100,0,false,null);
@@ -444,15 +438,7 @@ abstract class DungeonCollision extends DungeonBuilder{
 					
 					
 					for(int index = 0; index < GameManager.getMoveableList().size()-1; index ++){
-						/*
-						if(((getYTileDataElement(xMap, yMap, 0, xTile, yTile) == 11 || getYTileDataElement(xMap, yMap, 0, xTile, yTile) == 12)
-								&& (getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 8
-								|| getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 9
-								|| getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 10)) 
-									&& mapObjectBound[0][0][xTile][yTile][element].contains(object.getBoundCore()) 
-									&& !(mapObjectBound[1][0][xTile][yTile][element].intersects(object.getBoundCore())
-									|| mapObjectBound[1][0][xTile][yTile][element].intersects(object.getBoundCore()))){
-						*/
+					
 						if(mapObjectBound[0][0][xTile][yTile][element].contains(object.getBoundCore()) 
 								&& !(mapObjectBound[1][0][xTile][yTile][element].intersects(object.getBoundCore())
 								|| mapObjectBound[1][0][xTile][yTile][element].intersects(object.getBoundCore()))){
@@ -654,7 +640,7 @@ abstract class DungeonCollision extends DungeonBuilder{
 		int y = yTile * 90;
 		
 		addObjectBound(xMap,yMap,layer,0,xTile,yTile,0,new Rectangle(x,y,90,90));
-
+		//System.out.println("FullBlock@"+xMap+"x"+yMap+", Tile:"+xTile+"x"+yTile);
 	}
 }
 

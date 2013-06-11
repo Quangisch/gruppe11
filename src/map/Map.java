@@ -13,7 +13,7 @@ import javax.swing.JComponent;
 import core.Board;
 import core.GameManager;
 
-abstract class Map extends JComponent{
+abstract class Map{
 	
 	private Graphics2D g2d;
 	private volatile int x = 0;
@@ -22,7 +22,7 @@ abstract class Map extends JComponent{
 	private int height;
 	
 
-	private BufferedImage mapImage;
+	private BufferedImage mapImage, mapImageWall;
 	private volatile boolean visible = true;
 	private volatile boolean alive;
 	private boolean dungeon;
@@ -42,15 +42,16 @@ abstract class Map extends JComponent{
 	}
 	
 	
-	public void paintComponents(Graphics g){
-		g2d = (Graphics2D) g;
+	public void draw(int layer, Graphics2D g2d){
 		
 		Camera cam = Camera.getInstance();
 		//System.out.println("Camera_"+Camera.getInstance().getX()+"x"+Camera.getInstance().getY());
 	
-		if(mapImage != null && visible)
+		if(mapImage != null && visible && layer == 0)
 			g2d.drawImage(mapImage, x, y, Board.getInstance());
 		
+		if(mapImage != null && visible && layer == 1)
+			g2d.drawImage(mapImageWall, x, y, Board.getInstance());
 		
 		if(wallBoundNPaint.size() > 0 && GameManager.showBounds){
 			g2d.setColor(Color.BLUE);
@@ -68,7 +69,7 @@ abstract class Map extends JComponent{
 			}
 		}
 		
-		
+	
 		
 		if(wallBoundSPaint.size() > 0 && GameManager.showBounds){
 			g2d.setColor(Color.CYAN);
@@ -146,6 +147,10 @@ abstract class Map extends JComponent{
 	
 	protected void setMapImage(BufferedImage mapImage){
 		this.mapImage = mapImage;
+	}
+	
+	protected void setMapImageWall(BufferedImage mapImageWall){
+		this.mapImageWall = mapImageWall;
 	}
 	
 	

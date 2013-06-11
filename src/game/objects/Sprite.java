@@ -195,14 +195,13 @@ abstract class Sprite extends DrawableObject{
 		
 		int staticStep = (int)(staticInterStep);
 			
-		System.out.println((staticStep*subSpriteWidth+staticX)+"x"+(staticY)+", "+subSpriteWidth+"x"+subSpriteHeight);
-		
-	
+		//System.out.println((staticStep*subSpriteWidth+staticX)+"x"+(staticY)+", "+subSpriteWidth+"x"+subSpriteHeight);
+
 		subSpriteBuff = spriteBuff.getSubimage(staticStep*subSpriteWidth+staticX, staticY, subSpriteWidth, subSpriteHeight);
 		
-		BufferedImage resized = new BufferedImage(spriteBuff.getWidth()*resizeFactor, spriteBuff.getHeight()*resizeFactor, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage resized = new BufferedImage(subSpriteBuff.getWidth()*resizeFactor, subSpriteBuff.getHeight()*resizeFactor, BufferedImage.TYPE_INT_ARGB);
 	    resized.createGraphics().setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-	    resized.createGraphics().drawImage(subSpriteBuff, 0, 0, spriteBuff.getWidth()*resizeFactor, spriteBuff.getHeight()*resizeFactor, 0, 0, spriteBuff.getWidth(), spriteBuff.getHeight(), null);
+	    resized.createGraphics().drawImage(subSpriteBuff, 0, 0, subSpriteBuff.getWidth()*resizeFactor, subSpriteBuff.getHeight()*resizeFactor, 0, 0, subSpriteBuff.getWidth(), subSpriteBuff.getHeight(), null);
 		
 		setImage(resized);
 	}

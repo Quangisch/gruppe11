@@ -71,12 +71,13 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 	//layerBuff[0 = currentMap 1 = threadBuild restMap][layer = max8] layer7: combined layer
 	private BufferedImage[][] layerBuff = new BufferedImage[2][8];
 	private BufferedImage mapImage = new BufferedImage(810*4,630*4,BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage mapImageWall = new BufferedImage(810*4,630*4,BufferedImage.TYPE_INT_ARGB);
 	private BufferedReader readDataBuff;
 	
 	private final String[] layerHeader = {"#floor2#","#floor1#","#wall2#","#wall1#","#door#","#objects#","#interaction#","###"};
 	//private final String[] layerHeader = {"#floor2#","#floor1#","#wall2#","#wall1#","###"};
 	private final String[] navigationHeader = {"#toExit#", "#toNorth#", "#toEast#", "#toSouth#", "#toWest#"};
-	private final String[] mapInformation = {"#enemy#"};
+	private final String[] mapInformation = {"#enemy#","trap"};
 	
 	
 	private String dungeonIDName, mapIDName;
@@ -175,8 +176,7 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 					
 					//center: actual view
 					if(!(xTileData[getXMap()][getYMap()][layer][xTile][yTile] == 18 && yTileData[getXMap()][getYMap()][layer][xTile][yTile] == 14))
-					//layerBuff[0][layer].setRGB(90*xTile, 90*yTile, 90, 90, tileBuff[xTileData[getXMap()][getYMap()][layer][xTile][yTile]][yTileData[getXMap()][getYMap()][layer][xTile][yTile]].getRGB(0, 0, 90, 90, null, 0, 90), 0, 90);
-					layerBuff[0][layer].createGraphics().drawImage(tileBuff[xTileData[getXMap()][getYMap()][layer][xTile][yTile]][yTileData[getXMap()][getYMap()][layer][xTile][yTile]],90*xTile, 90*yTile,this);
+					layerBuff[0][layer].createGraphics().drawImage(tileBuff[xTileData[getXMap()][getYMap()][layer][xTile][yTile]][yTileData[getXMap()][getYMap()][layer][xTile][yTile]],90*xTile, 90*yTile,null);
 					//System.out.println("xTileData: "+xTileData[xMap][yMap][layer][xTile][yTile]);
 					//System.out.println("yTileData: "+yTileData[xMap][yMap][layer][xTile][yTile]);
 
@@ -186,9 +186,13 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 			mapImage.createGraphics().drawImage(layerBuff[0][layer], null, 810*getXMap(), 630*getYMap());
 
 		}//for layer
-			
-
+		
+		mapImageWall.createGraphics().drawImage(layerBuff[0][2], null, 810*getXMap(), 630*getYMap());
+		mapImageWall.createGraphics().drawImage(layerBuff[0][3], null, 810*getXMap(), 630*getYMap());
+		
 		setMapImage(mapImage);
+		setMapImageWall(mapImageWall);
+		
 		GameManager.mapLoaded = true;
 		
 		
@@ -224,12 +228,15 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 							
 							if(!(xTileData[xMap][yMap][layer][xTile][yTile] == 18 && yTileData[xMap][yMap][layer][xTile][yTile] == 14))
 							//layerBuff[1][layer].setRGB(90*xTile, 90*yTile, 90, 90, tileBuff[xTileData[xMap][yMap][layer][xTile][yTile]][yTileData[xMap][yMap][layer][xTile][yTile]].getRGB(0, 0, 90, 90, null, 0, 90), 0, 90);
-							layerBuff[1][layer].createGraphics().drawImage(tileBuff[xTileData[xMap][yMap][layer][xTile][yTile]][yTileData[xMap][yMap][layer][xTile][yTile]], 90*xTile, 90*yTile, this);
+							layerBuff[1][layer].createGraphics().drawImage(tileBuff[xTileData[xMap][yMap][layer][xTile][yTile]][yTileData[xMap][yMap][layer][xTile][yTile]], 90*xTile, 90*yTile, null);
 	
 						}
 					}
 					
 					mapImage.createGraphics().drawImage(layerBuff[1][layer], null, 810*xMap, 630*yMap);
+					
+					if(layer == 2 || layer == 3)
+						mapImageWall.createGraphics().drawImage(layerBuff[1][layer], null, 810*xMap, 630*yMap);
 				}
 			
 				
@@ -237,9 +244,11 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 		}//for yMap
 		
 		
+		setMapImage(mapImage);
+		setMapImageWall(mapImageWall);
 
 		System.out.println("_buildingMap complete");
-		setMapImage(mapImage);
+		
 		/*
 		//setBounds for Paint
 		ArrayList<Rectangle> navRectMap = getNavigationRectMap(getXMap(), getYMap());
@@ -333,13 +342,18 @@ g2d.fillRect(0, 0, 10, 10);
 						break;
 			}
 			
-			
-		
 			EnemyManager.setNewEnemy(xCoordinateMap,yCoordinateMap,enemyType,enemyPosition,enemyAttributes);
 				
 			System.err.println("======>DungeonBuilder.setEnemy");
-			
 
+		}
+		
+		
+		//setBoss 1
+		if(getXMap() == 2 && getYMap() == 2){
+			int xCoordinateMap = getXMap();
+			int yCoordinateMap = getYMap();
+			
 		}
 		
 		
@@ -556,12 +570,17 @@ g2d.fillRect(0, 0, 10, 10);
 						
 						//searchLine = readDataBuff.readLine();
 						//searchLine = readDataBuff.readLine();
-						readDataBuff.mark(10);
-						searchLine = readDataBuff.readLine();
+						
+						
 						
 					//EnemyData
 					EnemyData:
-						for(int infoID = 0; infoID < 1; infoID++){
+						for(int infoID = 0; infoID < 2; infoID++){
+							
+							readDataBuff.mark(10);
+							searchLine = readDataBuff.readLine();
+							
+							
 							System.out.println("EnemyData.for@"+infoID);
 							
 							if(searchLine.contentEquals("#Enemy#")){
@@ -607,6 +626,31 @@ g2d.fillRect(0, 0, 10, 10);
 								
 								
 								} while (searchLine.startsWith("#"));
+								
+							} else if(searchLine.contentEquals("#Trap#")){
+								
+								do{
+									readDataBuff.mark(10);
+									
+									dataLine = readDataBuff.readLine(); //Trap+X+Y
+									dataLine = dataLine.replace("x", "");
+									System.out.println("====>TRAP@"+mapIDX+"x"+mapIDY+"@data:"+dataLine);
+									String xPosition = dataLine.substring(0, 4);
+									String yPosition = dataLine.substring(4, 8);
+									writeMapObjectData(1, 0, mapIDX, mapIDY, xPosition, yPosition);
+									
+									readDataBuff.mark(10);
+									searchLine = readDataBuff.readLine();
+									
+									if(!searchLine.startsWith("#")){
+										readDataBuff.reset();
+									} else {
+										readDataBuff.reset();
+										break;
+									}
+									
+								} while (!searchLine.startsWith("#"));
+								
 								
 							} else {
 								readDataBuff.reset();
@@ -697,6 +741,15 @@ protected void writeNavigationBoundData(boolean door, int xMap, int yMap, int or
 	if(door)
 		addMapObjectData(0, orientation, xMap, yMap, x, y);
 	
+	
+}
+
+protected void writeMapObjectData(int type, int orientation, int xMap, int yMap, String xData, String yData){
+	
+	int x = translateStringToInt(xData);
+	int y = translateStringToInt(yData);
+	
+	addMapObjectData(type, orientation, xMap, yMap, x, y);
 	
 }
 
