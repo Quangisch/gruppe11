@@ -366,7 +366,7 @@ public class Moveable extends Sprite{
 	public int getDX(){return dx;}
 	public int getDY(){return dy;}
 	
-	
+	public double getSpeedUp(){return speedUp;}
 	public boolean getMoveable(){return moveable;}
 	public boolean getMoveUp(){return moveUp;}
 	public boolean getMoveRight(){return moveRight;}

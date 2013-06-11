@@ -6,6 +6,7 @@ import game.objects.Player;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -36,6 +37,13 @@ public class Board extends JPanel implements Runnable{
 	private static volatile ArrayList<DrawableObject> drawableList = new ArrayList<DrawableObject>();
 	private static volatile ArrayList<DrawableObject> mapObjectList = new ArrayList<DrawableObject>();
 	private volatile BufferedImage topMap;
+	
+	
+	public final static Rectangle screenN = new Rectangle(0,90,810,1);
+	public final static Rectangle screenE = new Rectangle(720,0,1,630);
+	public final static Rectangle screenS = new Rectangle(0,540,810,1);
+	public final static Rectangle screenW = new Rectangle(90,0,1,630);
+	
 	
 	private Board(){
 		System.err.println("construct Board");

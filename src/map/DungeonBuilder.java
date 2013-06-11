@@ -1,5 +1,7 @@
 package map;
 
+import game.objects.MarioBoss;
+import game.objects.MarioDark;
 import game.objects.Player;
 
 
@@ -27,6 +29,7 @@ import map.DungeonObjectManager.NavigationData;
 import core.EnemyManager;
 import core.FileLink;
 import core.GameManager;
+import core.GameObjectManager;
 
 
 abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, FileLink {
@@ -348,15 +351,78 @@ g2d.fillRect(0, 0, 10, 10);
 
 		}
 		
-		
+		if((getXMap() == 2 && getYMap() == 2) || (getXMap() == 2 && getYMap() == 1) || (getXMap() == 2 && getYMap() == 0))
+			setBossEnemy();
+	
+	}
+	
+	protected void setBossEnemy(){
 		//setBoss 1
-		if(getXMap() == 2 && getYMap() == 2){
-			int xCoordinateMap = getXMap();
-			int yCoordinateMap = getYMap();
-			
+				
+		int xCoordinateMap = 300;
+		int yCoordinateMap = 300;
+		
+		switch(GameManager.scrollDirection){
+		case(1):	yCoordinateMap -= 630;
+					
+					break;
+		case(3):	xCoordinateMap += 810;
+					break;
+		case(5):	yCoordinateMap += 630;
+					break;
+		case(7):	xCoordinateMap -= 810;
+					break;
 		}
 		
+		int[][] enemyPositionBoss = new int[3][4];
+		int[][] enemyAttributesBoss = new int[3][4];
 		
+		enemyPositionBoss[0][0] = 2; enemyPositionBoss[0][1] = 2; //mapXY
+		enemyPositionBoss[0][2] = xCoordinateMap; enemyPositionBoss[0][3] = yCoordinateMap; //posXY
+		
+		enemyAttributesBoss[0][0] = 2; //enemySpeed
+		enemyAttributesBoss[0][1] = 8; //enemyLife
+		enemyAttributesBoss[0][2] = 5; //enemyLastDirection
+		enemyAttributesBoss[0][3] = 11; //enemyPattern
+		
+		
+		enemyPositionBoss[1][0] = 2; enemyPositionBoss[1][1] = 1; //mapXY
+		enemyPositionBoss[1][2] = xCoordinateMap; enemyPositionBoss[1][3] = yCoordinateMap; //posXY
+		
+		enemyAttributesBoss[1][0] = 2; //enemySpeed
+		enemyAttributesBoss[1][1] = 13; //enemyLife
+		enemyAttributesBoss[1][2] = 5; //enemyLastDirection
+		enemyAttributesBoss[1][3] = 12; //enemyPattern
+		
+		
+		enemyPositionBoss[2][0] = 2; enemyPositionBoss[2][1] = 0; //mapXY
+		enemyPositionBoss[2][2] = xCoordinateMap; enemyPositionBoss[2][3] = yCoordinateMap; //posXY
+		
+		enemyAttributesBoss[2][0] = 2; //enemySpeed
+		enemyAttributesBoss[2][1] = 20; //enemyLife
+		enemyAttributesBoss[2][2] = 5; //enemyLastDirection
+		enemyAttributesBoss[2][3] = 13; //enemyPattern
+
+		
+		if(!GameObjectManager.getBossStatusDefeated(22) && getXMap() == 2 && getYMap() == 2){
+			GameObjectManager.getInstance().constructBoss(22);
+			EnemyManager.setNewEnemy(xCoordinateMap, yCoordinateMap, 22, enemyPositionBoss[0], enemyAttributesBoss[0]);
+			System.out.println("setEnemyBoss 1 @Pos"+xCoordinateMap+"x"+yCoordinateMap);
+		}
+		
+		if(!GameObjectManager.getBossStatusDefeated(21) && getXMap() == 2 && getYMap() == 1){
+			GameObjectManager.getInstance().constructBoss(21);
+			EnemyManager.setNewEnemy(xCoordinateMap, yCoordinateMap, 21, enemyPositionBoss[1], enemyAttributesBoss[1]);
+			System.out.println("setEnemyBoss 2 @Pos"+xCoordinateMap+"x"+yCoordinateMap);
+		}	
+		
+		if(!GameObjectManager.getBossStatusDefeated(20) && getXMap() == 2 && getYMap() == 0){
+			GameObjectManager.getInstance().constructBoss(20);
+			EnemyManager.setNewEnemy(xCoordinateMap, yCoordinateMap, 20, enemyPositionBoss[2], enemyAttributesBoss[2]);
+			System.out.println("setEnemyBoss 3 @Pos"+xCoordinateMap+"x"+yCoordinateMap);
+		}	
+					
+				
 	}
 	
 	protected void readMapTiles(File mapTilesFile){

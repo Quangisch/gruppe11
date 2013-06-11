@@ -12,6 +12,7 @@ import java.util.TimerTask;
 import map.DungeonNavigator;
 
 import core.GameManager;
+import core.GameObjectManager;
 import core.ItemListManager;
 
 
@@ -32,13 +33,14 @@ public class MarioBoss extends EnemyLogic{
 
 	
 	private MarioBoss(int IDNumber){
-		System.err.println("construct MarioDark: "+IDNumber);
+		System.err.println("construct MarioBoss: "+IDNumber);
 		this.IDNumber = IDNumber;
 		runTimer[IDNumber] = new Timer();
 		runTask[IDNumber] = new RunTask(IDNumber);
 		runTimer[IDNumber].schedule(runTask[IDNumber], 500, 10);
 		constructionLock = true;
 		setMoveableID(IDNumber);
+		
 	}
 	
 	private MarioBoss(){
@@ -94,6 +96,8 @@ public class MarioBoss extends EnemyLogic{
 	}
 	
 	public static synchronized MarioBoss getInstance(boolean newInstance, int IDNumber){
+		
+		
 		
 		if(newInstance){
 			marioDark[IDNumber] = new MarioBoss(IDNumber);

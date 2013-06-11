@@ -12,6 +12,7 @@ import java.util.TimerTask;
 import map.DungeonNavigator;
 
 import core.GameManager;
+import core.GameObjectManager;
 import core.ItemListManager;
 
 
@@ -82,6 +83,15 @@ public class MarioDark extends EnemyLogic{
 				ItemListManager.dropItem(getX(), getY(), 0, 2, 0);
 		}
 		
+		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 2){
+			GameObjectManager.defeatBoss(22);
+		}
+		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 1){
+			GameObjectManager.defeatBoss(21);
+		}
+		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 0){
+			GameObjectManager.defeatBoss(20);
+		}
 
 	}
 

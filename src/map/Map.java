@@ -37,6 +37,8 @@ abstract class Map{
 	
 	protected final static Rectangle NULLRECT = new Rectangle(0,0,0,0);
 	
+	
+	
 	protected Map(){
 		
 	}

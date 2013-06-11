@@ -1,6 +1,11 @@
 package game.objects;
 
 import java.awt.Rectangle;
+import java.util.Map;
+import java.util.Random;
+
+import core.Board;
+import core.ItemListManager;
 
 
 abstract class EnemyMove extends Initializer{
@@ -275,18 +280,19 @@ abstract class EnemyMove extends Initializer{
 		return false;
 	}
 	
-	public void punchObject(Moveable object){
+	public void punchObject(Moveable object, int wait){
 		Rectangle bound = getBoundDirection(0);
 		Rectangle punchRadius = new Rectangle(bound.x, bound.y, bound.width, bound.height);
 		
 		if(punchRadius.intersects(object.getBound())){
-			this.startWaitTimer(1000);
+			
+			startWaitTimer(1000);
 			
 			try {
-				setMoveUp(false); setMoveRight(false); setMoveDown(false); setMoveLeft(false);
-				Thread.sleep(800);
+				setMoveStep(0);
+				Thread.sleep(wait);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 			
@@ -303,19 +309,11 @@ abstract class EnemyMove extends Initializer{
 	
 	public void castObject(Moveable object, int spellType){
 		
-		Rectangle bound = getBoundDirection(0);
-		Rectangle sight = bound;
 		
-		switch(getLastDirection()){
-		case(1):	sight = new Rectangle(bound.x, bound.y-630, bound.width, bound.height+630);break;
-		case(3):	sight = new Rectangle(bound.x+810, bound.y, bound.width+810, bound.height);break;
-		case(5):	sight = new Rectangle(bound.x, bound.y+630, bound.width, bound.height+630);break;
-		case(7):	sight = new Rectangle(bound.x-810, bound.y, bound.width+810, bound.height);break;
-
-		}
-		if(sight.intersects(object.getBoundCore())){
+		if(getSightBound().intersects(object.getBoundCore())){
 			
 			try {
+				setMoveStep(0);
 				Thread.sleep(300);
 			
 			Magic.addInstance(spellType, this);
@@ -326,11 +324,76 @@ abstract class EnemyMove extends Initializer{
 				e.printStackTrace();
 			}
 		}
+
+	}
+	
+	public void sprintToObject(Moveable object, int radius){
 		
+		Rectangle sprintBound = new Rectangle(getX()-radius, getY()-radius, radius*3, radius *3);
+		
+		if(!sprintBound.intersects(object.getBound())){
+			//if(getSpeedUp() == 0.7)
+				setSpeedUp(getSpeedUp()+0.01);
+				
+			System.err.println("sprint@speed:"+getSpeedUp());
+		}
+			
+		else{
+			setSpeedUp(0.7);
+			System.out.println("slowDown");
+		}
+
+	}
+	
+	public void goBerserk(){
+	
+			
+			Magic.addInstance(0, this);
+			startWaitTimer(1000);
+			setAttack();
+			
+			if(this.getBoundHitSpace().intersects(Player.getInstance().getBound())){
+				Player.getInstance().setLife(Player.getInstance().getLife()-1.5);
+				Player.getInstance().setObjectBack(10, 0, false, null);
+				this.startWaitTimer(2000);
+			}
+		
+			int random = new Random().nextInt(100 - 0 + 1) + 0;
+			
+			if(random < 20){
+				
+				if(getSightBound().intersects(Board.screenN))
+					ItemListManager.dropItem(getX(), getY()-100, 0, 2, 0);
+				if(getSightBound().intersects(Board.screenE))
+					ItemListManager.dropItem(getX()+100, getY(), 0, 2, 0);
+				if(getSightBound().intersects(Board.screenS))
+					ItemListManager.dropItem(getX(), getY()+100, 0, 2, 0);
+				if(getSightBound().intersects(Board.screenW))
+					ItemListManager.dropItem(getX()-100, getY(), 0, 2, 0);
+				
+			}
+			
+			
+			
 		
 	}
 	
-	
+	public Rectangle getSightBound(){
+		
+		Rectangle bound = getBoundDirection(0);
+		Rectangle sight = bound;
+		
+		switch(getLastDirection()){
+		case(1):	sight = new Rectangle(bound.x, bound.y-630, bound.width, bound.height+630);break;
+		case(3):	sight = new Rectangle(bound.x, bound.y, bound.width+810, bound.height);break;
+		case(5):	sight = new Rectangle(bound.x, bound.y, bound.width, bound.height+630);break;
+		case(7):	sight = new Rectangle(bound.x-810, bound.y, bound.width+810, bound.height);break;
+
+		}
+		
+		return sight;
+		
+	}
 
 
 }

@@ -19,7 +19,7 @@ abstract class PlayerObjectManager extends Initializer{
 	private double manaRegen = 1;
 	
 	private int coin;
-	private int keyInventory = 0;
+	private int keyInventory = 10;
 	
 	
 	

@@ -119,15 +119,16 @@ public class DungeonNavigator extends DungeonCollision{
 							GameManager.dungeon = true;
 							GameManager.overWorld = false;
 							GameManager.mapLoaded = false;
-							if(mapID != getMapID())
+							
+							//if(mapID != getMapID())
 								this.initializeMap(xMap, yMap, mapID, xPlayer, yPlayer);
-							else{
+							//else{
 								setXMap(xMap);
 								setYMap(yMap);
 								Player.getInstance().setX(xPlayer);
 								Player.getInstance().setY(yPlayer);
 								
-							}
+							//}
 							System.out.println("dungeonMap_");
 						}
 							
