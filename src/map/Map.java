@@ -27,6 +27,7 @@ abstract class Map{
 	private volatile boolean alive;
 	private boolean dungeon;
 	private boolean overWorld;
+	private int ID;
 	
 	
 	private ArrayList<Rectangle> navigationBoundPaint = new ArrayList<Rectangle>();
@@ -171,6 +172,7 @@ abstract class Map{
 	public int getHeightMap(){return height;}
 	protected boolean getAlive(){return alive;}
 	protected boolean getVisible(){return visible;}
+	public int getID(){return ID;}
 	//
 	public synchronized void setXCoordinate(int x){this.x = x;}
 	public synchronized void setYCoordinate(int y){this.y = y;}
@@ -178,7 +180,7 @@ abstract class Map{
 	protected void setHeightMap(int height){this.height = height;System.out.println("Height:"+height);}
 	protected void setAlive(boolean alive){this.alive = alive;}
 	protected void setVisibleMap(boolean visible){this.visible = visible;}
-	
+	protected void setID(int ID){this.ID = ID;}
 	
 
 }

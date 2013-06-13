@@ -4,11 +4,13 @@ import java.awt.Rectangle;
 import java.util.Map;
 import java.util.Random;
 
+import map.Camera;
+
 import core.Board;
 import core.ItemListManager;
 
 
-abstract class EnemyMove extends Initializer{
+abstract class NPCMove extends Initializer{
 
 	
 	private boolean hostile = true;
@@ -22,7 +24,7 @@ abstract class EnemyMove extends Initializer{
 	
 	
 	
-	protected EnemyMove(){
+	protected NPCMove(){
 		setHumanPlayer(false);
 	}
 	
@@ -137,6 +139,45 @@ abstract class EnemyMove extends Initializer{
 			return false;
 	}
 	
+	public boolean moveToPoint(int xDestination, int yDestination){
+		
+		boolean reachPoint = false;
+		
+		int xDest = xDestination - Camera.getInstance().getX();
+		int yDest = yDestination - Camera.getInstance().getY();
+		int xPos = getX();
+		int yPos = getY();
+		
+		Rectangle destRect = new Rectangle(xDest-5, yDest-5, 10,10);
+		Rectangle posRect = new Rectangle(xPos-5, yPos-5, 10,10);
+		
+		if(xDest >= xPos){
+			setMoveRight(true); setMoveLeft(false);
+		} else {
+			setMoveRight(false); setMoveLeft(true);
+		}
+			
+		if(yDest >= yPos){
+			setMoveUp(false); setMoveDown(true);
+		} else {
+			setMoveUp(true); setMoveDown(false);
+		}
+		
+		move();
+		
+		System.err.println("Guide@Pos:"+getX()+"x"+getY()+", to:"+xDestination+"x"+yDestination);
+		System.out.println("Guide@Pos:"+xPos+"x"+yPos+", to:"+xDest+"x"+yDest);
+		
+		if(destRect.intersects(posRect)){
+			reachPoint = true;
+			
+			System.out.println("reach===>Point<====");
+		}
+			
+		
+		return reachPoint;
+	}
+	
 	public boolean patrolLineX(int cycles, int point1x, int point2x){
 		switch(destinationCounter){
 		case 0: moveToX(point1x);
@@ -183,8 +224,24 @@ abstract class EnemyMove extends Initializer{
 	
 	public boolean patrolRectangle(int cycles, boolean clockwise, int pointX, int pointY, int width, int height){
 		if(clockwise){
+			
+			if(cycleCounter == 0){
+				
+				if(getX() == pointX+width)
+					destinationCounter = 2;
+				if(getX() == pointX)
+					destinationCounter = 4;
+				if(getY() == pointY+height)
+					destinationCounter = 5;
+				if(getY() == pointY)
+					destinationCounter = 3;
+			}
+			
 	
 			switch(destinationCounter){
+			
+			
+			
 			case 0: moveToX(pointX);
 					break;
 			case 1: moveToY(pointY);
@@ -211,6 +268,8 @@ abstract class EnemyMove extends Initializer{
 		}
 		
 		if(!clockwise){
+			
+
 			switch(destinationCounter){
 			case 0: moveToY(pointY);
 					break;
@@ -324,6 +383,7 @@ abstract class EnemyMove extends Initializer{
 				e.printStackTrace();
 			}
 		}
+		move();
 
 	}
 	
@@ -342,6 +402,7 @@ abstract class EnemyMove extends Initializer{
 			setSpeedUp(0.7);
 			System.out.println("slowDown");
 		}
+		move();
 
 	}
 	
@@ -373,7 +434,7 @@ abstract class EnemyMove extends Initializer{
 				
 			}
 			
-			
+			move();
 			
 		
 	}

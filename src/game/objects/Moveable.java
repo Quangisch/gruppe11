@@ -1,6 +1,7 @@
 package game.objects;
 
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -81,157 +82,162 @@ public class Moveable extends Sprite{
 		OverWorldNavigator map = OverWorldNavigator.getInstance();
 		Camera camera = Camera.getInstance();
 		
-		if(GameManager.dungeon || (GameManager.overWorld && !GameManager.cameraOn)){
+		if(!isHumanPlayer()){
+			//if(!GameManager.cameraOn){
+				setX(getX()+dx);
+				setY(getY()+dy);
+			//} 
+
 			
-			setX(getX()+dx);
-			setY(getY()+dy);
+		}
+		
+		if(isHumanPlayer()){
 			
-		} 
-		
-		if (GameManager.overWorld && GameManager.cameraOn){
-		
-			if (!leftLock && !rightLock){
-				if(humanPlayer){
+			if(GameManager.dungeon || (GameManager.overWorld && !GameManager.cameraOn)){
+				setX(getX()+dx);
+				setY(getY()+dy);
+			} 
+			
+			if (GameManager.overWorld && GameManager.cameraOn){
+			
+				ArrayList<Moveable> object = GameManager.getMoveableList();
+				
+				for(int index = 0; index < object.size(); index++){
+					if (!leftLock && !rightLock)
+						object.get(index).setX(object.get(index).getX()-dx);
+					if(!upLock && !downLock)
+						object.get(index).setY(object.get(index).getY()-dy);
+				}
+				
+				if (!leftLock && !rightLock){
 					map.setXCoordinate(map.getXCoordinate()-dx);
 					camera.setX(camera.getX()+dx);
 					setX(400);
 				}
 				
-				else
-					setX(getX()+dx-Player.getInstance().getDX());
-				
-				
-			}
-			
-			if(!upLock && !downLock){
-				if(humanPlayer){
+				if(!upLock && !downLock){
 					map.setYCoordinate(map.getYCoordinate()-dy);
 					camera.setY(camera.getY()+dy);
 					setY(300);
-				}
-				
-				else
-					setY(getY()+dy-Player.getInstance().getDY());
-			}
-			
-			if(leftLock){
-				setX(getX()+dx);
-				if(getX() > 410 && humanPlayer)
-					leftLock = false;
-			}
-			
-			if(rightLock){
-				setX(getX()+dx);
-				if(getX() < 390 && humanPlayer)
-					rightLock = false;
-			}
-
-			if(upLock){
-				setY(getY()+dy);
-				if(getY() > 310 && humanPlayer)
-					upLock = false;
-			}
-			
-			if(downLock){
-				setY(getY()+dy);
-				if(getY() < 290 && humanPlayer)
-					downLock = false;
-			}
-			
-			
-			//set Locks to align Camera at mapBorders
-			if(humanPlayer){
-			
-				if(map.getXCoordinate() > 0){
-					if(getX() <= 400){
-						setX(getX()+dx);
-						map.setXCoordinate(0);
-						System.err.println("<=======align Left @ 0");
-						leftLock = true;
-					}
 					
-					if(getX() > 400){
-						map.setXCoordinate(map.getXCoordinate()-dx);
-						camera.setX(camera.getX()+dx);
-						setX(400);
-					}
 				}
 				
-				else if(map.getXCoordinate() < -(map.getWidthMap()-810)){
-					if(getX() < 400){
-						map.setXCoordinate(map.getXCoordinate()-dx);
-						camera.setX(camera.getX()+dx);
-						setX(400);
+				if(leftLock){
+					setX(getX()+dx);
+					if(getX() > 410) leftLock = false;
+				}
+				
+				if(rightLock){
+					setX(getX()+dx);
+					if(getX() < 390) rightLock = false;
+				}
+
+				if(upLock){
+					setY(getY()+dy);
+					if(getY() > 310) upLock = false;
+				}
+				
+				if(downLock){
+					setY(getY()+dy);
+					if(getY() < 290) downLock = false;
+				}
+				
+				
+				//set Locks to align Camera at mapBorders
+
+					if(map.getXCoordinate() > 0){
 						
-					}
-					
-					if(getX() >= 400){
-						setX(getX()+dx);
-						map.setXCoordinate(-(map.getWidthMap()-810));
-						System.err.println("align Right========>@ "+(-(map.getWidthMap()-810)));
-						rightLock = true;
-					}
-					
-				} 
-
-				//X Axis
-				
-				
-				//Y Axis
-
-				if(map.getYCoordinate() > 0){
-					
-					if(getY() >= 300){
-						System.err.println("^^^^^^^^align Top@ 0");
-						setY(getY()+dy);
-						map.setYCoordinate(0);
-						upLock = true;
-					}
-					
-					if(getX() < 300){
-						map.setYCoordinate(map.getYCoordinate()-dy);
-						camera.setY(camera.getY()+dy);
-						setY(300);
-					}
-				}
-				
-				else if(map.getYCoordinate() < -(map.getHeightMap()-630)){
-					if(getY() < 300){
-						map.setYCoordinate(map.getYCoordinate()-dy);
-						camera.setY(camera.getY()+dy);
-						setY(300);
+						if(getX() <= 400){
+							setX(getX()+dx);
+							map.setXCoordinate(0);
+							System.err.println("<=======align Left @ 0");
+							leftLock = true;
+						}
 						
+						if(getX() > 400){
+							map.setXCoordinate(map.getXCoordinate()-dx);
+							camera.setX(camera.getX()+dx);
+							setX(400);
+						}
 					}
 					
-					if(getY() >= 300){
-						System.err.println("______align Bot @"+-((map.getHeightMap()-630)));
-						setY(getY()+dy);
-						map.setYCoordinate(-(map.getHeightMap()-630));
-						downLock = true;
-					}
-					
-				} 
+					else if(map.getXCoordinate() < -(map.getWidthMap()-810)){
+						if(getX() < 400){
+							map.setXCoordinate(map.getXCoordinate()-dx);
+							camera.setX(camera.getX()+dx);
+							setX(400);
+						}
+						
+						if(getX() >= 400){
+							setX(getX()+dx);
+							map.setXCoordinate(-(map.getWidthMap()-810));
+							System.err.println("align Right========>@ "+(-(map.getWidthMap()-810)));
+							rightLock = true;
+						}
+						
+					} 
 
-				//yAxis
-				
-			} //if humanPlayer
-				
-				
-			}
+					//X Axis
+					
+					
+					//Y Axis
+
+					if(map.getYCoordinate() > 0){
+						
+						if(getY() >= 300){
+							setY(getY()+dy);
+							map.setYCoordinate(0);
+							upLock = true;
+							System.err.println("^^^^^^^^align Top@ 0");
+						}
+						
+						if(getX() < 300){
+							map.setYCoordinate(map.getYCoordinate()-dy);
+							camera.setY(camera.getY()+dy);
+							setY(300);
+						}
+					}
+					
+					else if(map.getYCoordinate() < -(map.getHeightMap()-630)){
+						if(getY() < 300){
+							map.setYCoordinate(map.getYCoordinate()-dy);
+							camera.setY(camera.getY()+dy);
+							setY(300);
+						}
+						
+						if(getY() >= 300){
+							setY(getY()+dy);
+							System.err.println("______align Bot @"+-((map.getHeightMap()-630)));
+							map.setYCoordinate(-(map.getHeightMap()-630));
+							downLock = true;
+						}
+						
+					} 
+
+					//yAxis
+			
+			} //if GameManager.overWorld && GameManager.cameraOn
+		
+		}//if humanPlayer
 
 
 	}
 	
-	public void setLocks(boolean set){
-		upLock = rightLock = downLock = leftLock = set;
+	public void setDirectionLock(int lock){
+		switch(lock){
+		case 0: upLock = rightLock = downLock = leftLock = true; break;			
+		case 1:	upLock = true; break;		
+		case 2: rightLock = true; break;		
+		case 3: downLock = true; break;		
+		case 4:	leftLock = true; break;		
+		}
 	}
 	
 	public boolean getDirectionLock(){
 		if(upLock || rightLock || downLock || leftLock)
 			return true;
 		else
-			return false;
-		
+			return false;	
 	}
 	
 	public void resetMovementLock(){
@@ -382,6 +388,7 @@ public class Moveable extends Sprite{
 	public boolean getDownLock(){return downLock;}
 	public boolean getLeftLock(){return leftLock;}
 	
+	
 	public Rectangle getBoundDirection(int direction){
 		
 		if(!(direction == 1 || direction == -1 || direction == 0))
@@ -447,7 +454,7 @@ public class Moveable extends Sprite{
 		
 		invincible = true;
 
-		startFlashTimer(500, delay);
+		//startFlashTimer(500, delay);
 		System.err.println("====>Invincible.start@WDH:"+(int)(delay / 200));
 			
 	}

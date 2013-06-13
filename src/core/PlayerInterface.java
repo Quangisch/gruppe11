@@ -235,7 +235,7 @@ public class PlayerInterface implements FileLink{
 			if(restLife < 0.75 && restLife >= 0.5)
 				upperInterface.createGraphics().drawImage(heart2_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());
 			
-			if(restLife <= 0.25)
+			if(restLife <= 0.25 && restLife > 0.001)
 				upperInterface.createGraphics().drawImage(heart1_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());		
 		//}
 		
@@ -259,19 +259,21 @@ public class PlayerInterface implements FileLink{
 		
 		int spellType = Player.getInstance().getMagicSpell();
 		BufferedImage spellBuff = new BufferedImage(50,50,BufferedImage.TYPE_INT_ARGB);
-		
+		BufferedImage weaponBuff = new BufferedImage(50,50,BufferedImage.TYPE_INT_ARGB);
 		
 		if(spellType == 0)
 			spellBuff.createGraphics().drawImage(itemListBuff.getSubimage(0, 175, 25, 25), 0,0,50,50,0,0,25,25,null);
 		if(spellType == 1)
 			spellBuff.createGraphics().drawImage(itemListBuff.getSubimage(25, 175, 25, 25), 0,0,50,50,0,0,25,25,null);
 		
+		if(Player.getInstance().getAttackDamage() == 1)
+			weaponBuff.createGraphics().drawImage(itemListBuff.getSubimage(0, 125, 25, 25), 0,0,50,50,0,0,25,25,null);
+			
+		upperInterface.createGraphics().drawImage(weaponBuff,350,10,null);
 		upperInterface.createGraphics().drawImage(spellBuff,400,10,null);
-		
 		upperInterface.createGraphics().drawImage(itemBorderBuff, 350, 10, null);
 		upperInterface.createGraphics().drawImage(manaBarBuff, 10, 40, null);
 
-		
 		
 	}
 	
@@ -284,137 +286,117 @@ public class PlayerInterface implements FileLink{
 		
 	}
 	
-	public void buildText(){
-		
-		
-		//bli bla blub/nHRRRR/nwhut up?/n/Yoloooo/nyawn.../n...+_+/nstop it!
-		
-		
-		String[] singleLines = textBuff.split("/n");
-		String[] singleWord;
-		String word;
-		String singleChar;
-		
-		int lineCounterMax = singleLines.length;
-		int wordCounterMax;
-		int charCounterMax;
 	
-		int lineLimit = 16;
+	public boolean buildText(){
 		
+		boolean finishText = false;
 		
-		
-		
-		
-		PendingPrompt:
-		for(; lineID < lineCounterMax; lineID++){
-			
-			if(lineID == 0){
-				GameManager.showIngameText = true;
-			}
-			/*
-			if(lineID == lineCounter){
-				lineID = -10;
-				
-			}
-			*/
-			
-			if(lineID == -10){
-				lowerInterface = new BufferedImage(810, 360,BufferedImage.TYPE_INT_ARGB);
-				lineID = 0;
-				lineCounter = 0;
-				lineLimit = 16;
-				lowerInterface = null;
-			}
-				
-			if(lineID >= 0){
-				singleWord = singleLines[lineID].split(" ");
-				wordCounterMax = singleWord.length;
-				
-				System.out.println(singleLines[lineID]);
-				//System.out.println("__singleWords: ");
-				
-				/*TODO
-				if(scrollText){
-					//lowerInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
-					BufferedImage oldText = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
-					oldText = lowerInterface;
-					lowerInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
-					lowerInterface.createGraphics().drawImage(oldText, 0, 0, 810, 225, 0, 45, 810, 270, this);
-					//lineCounter--;
-					
-					scrollText = false;
-				}
-				*/
-					
-
-				for(int wordID = 0; wordID < singleWord.length; wordID++){
-					
-					singleChar = singleWord[wordID];
-					charCounterMax = singleChar.length();
-					
-					if(charCounterMax > lineLimit){
-						lineCounter++;
-						lineLimit = 16;
-						
-					}
-					
-					if(lineID > 4){
-						System.out.println("pendingPromot_LineID > 4");
-						scrollText = true;
-					}
-					
-					System.out.println("__"+singleWord[wordID]);
-					word = singleWord[wordID];
-					
-					
-					for(int charID = 0; charID < charCounterMax; charID++){
-						
-						
-						singleChar = word.substring(0,1);
-						word = word.substring(1);
-						System.out.println("_"+singleChar);
-						
-						
-						if(singleChar.contentEquals("Ú")){
-							word = word.substring(1);
-							System.out.println("pendingPrompt@"+lineID);
-							//signals pending prompt
-							lineLimit = -1;
-							lineID++;
-							break PendingPrompt;
-							
-						}
-					
-				
-						lowerInterface.createGraphics().drawImage(translateTextTile(singleChar),50+(16-lineLimit)*45,lineCounter*45, Board.getInstance());
-						
-						lineLimit--;
-					}//for char
-					
-					lineLimit--;
-			
-				}//for Word
-				
-			if(lineLimit != -1){
-				lineCounter++;
-				lineLimit = 16;
-			}
-			
-			}//for Line
-			}
-			
-		if(lineID == lineCounter){
-			lineID = -10;
+		if(textBuff == null){
+			GameManager.showIngameText = false;
+			GameManager.promptText = false;
 			
 		}
 		
-		System.out.println("lineCounter:"+lineCounter);
-		System.out.println("lineID     :"+lineID);
-		System.out.println("lineCMax   :"+lineCounterMax);
+		//bli bla blub/nHRRRR/nwhut up?/n/Yoloooo/nyawn.../n...+_+/nstop it!
+		if(GameManager.promptText){
+
+			GameManager.promptText = false;
+			
+			lowerInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
+			
+			
+				
+			
+			System.out.println("currentText:"+textBuff);
+			
+			
+			String[] singleLines = textBuff.split("/n");
+			String[] singleWord;
+			String word;
+			String singleChar;
+			
+			int lineCounterMax = singleLines.length;
+			int wordCounterMax;
+			int charCounterMax;
 		
+			int lineLimit = 16;
+		
+			
+			for(; lineID < lineCounterMax; lineID++){
+				
+				/*
+				if(lineID == lineCounterMax){
+					lowerInterface = new BufferedImage(810, 360,BufferedImage.TYPE_INT_ARGB);
+					lineID = 0;
+					lineCounter = 0;
+					lineLimit = 16;
+					lowerInterface = null;
+					finishText = true;
+					break;
+				}
+				*/
+					
+				if(lineID >= 0){
+					singleWord = singleLines[lineID].split(" ");
+					wordCounterMax = singleWord.length;
+					
+					System.out.println(singleLines[lineID]);
+					//System.out.println("__singleWords: ");
+				
+
+					for(int wordID = 0; wordID < singleWord.length; wordID++){
+						
+						singleChar = singleWord[wordID];
+						charCounterMax = singleChar.length();
+						
+						if(charCounterMax > lineLimit){
+							lineCounter++;
+							lineLimit = 16;
+							
+						}
+						
+						
+						System.out.println("__"+singleWord[wordID]);
+						word = singleWord[wordID];
+						
+						
+						for(int charID = 0; charID < charCounterMax; charID++){
+							
+							
+							singleChar = word.substring(0,1);
+							word = word.substring(1);
+							System.out.println("_"+singleChar);
+							
+							lowerInterface.createGraphics().drawImage(translateTextTile(singleChar),50+(16-lineLimit)*45,lineCounter*45, Board.getInstance());
+							
+							lineLimit--;
+						}//for char
+						
+						lineLimit--;
+				
+					}//for Word
+					
+				if(lineLimit != -1){
+					lineCounter++;
+					lineLimit = 16;
+				}
+				
+				}//for Line
+				}
+				
+			
+			System.out.println("lineCounter:"+lineCounter);
+			System.out.println("lineID     :"+lineID);
+			System.out.println("lineCMax   :"+lineCounterMax);
 	
+		}
+		
+		textBuff = null;
+		
+		return finishText;
 		
 	}
+	
 	
 	public BufferedImage translateTextTile(String textChar){
 		if(textChar.contentEquals("a"))return a;

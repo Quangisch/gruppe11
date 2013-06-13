@@ -37,13 +37,12 @@ public class Magic extends Initializer implements FileLink{
 	
 
 	private Magic(int type, Moveable caster){
-		
+		setMoveableType(-10);
 		this.type = type;
 		this.caster = caster;
 		System.out.println("new MagicCast @type "+type);
 		
 		initializeMagic();
-	
 	}
 	
 	public void initializeMagic(){
@@ -91,8 +90,8 @@ public class Magic extends Initializer implements FileLink{
 		execRun = Executors.newSingleThreadScheduledExecutor();
 		execRun.scheduleWithFixedDelay(runThread, 10, 20, TimeUnit.MILLISECONDS);
 		
-		Board.getInstance().addDrawable(this);
-	
+		GameManager.addGameObject(this);
+		
 	}
 	
 	private void running(){
@@ -106,10 +105,10 @@ public class Magic extends Initializer implements FileLink{
 			
 			for(int index = 0; index < moveableList.size(); index++){
 
-				if(getBoundCore().intersects(moveableList.get(index).getBoundCore()) && !moveableList.get(index).equals(caster)){
+				if(getBoundCore().intersects(moveableList.get(index).getBoundCore()) && !moveableList.get(index).equals(caster) && !moveableList.get(index).equals(this) && moveableList.get(index).getMoveableType() != -10){
+					setAlive(false);
 					moveableList.get(index).setLife(moveableList.get(index).getLife()-damage[type]);
 					moveableList.get(index).setObjectBack(20,0,true,this.getBoundCore());
-					setAlive(false);
 					System.out.println("magicHit");
 					break;
 				}

@@ -6,6 +6,7 @@ public interface FileLink{
 	File player1Sprite = new File("resources/images/mario_sprite_move2_3x.png");
 	File enemyDark = new File("resources/images/marioDark_sprite_move2_3x.png");
 	File enemyBright = new File("resources/images/marioBright_sprite_move2_3x.png");
+	File neutralNPC = new File("resources/images/marioNeutral_sprite_move2_3x.png");
 	
 	File menuFile = new File("resources/images/menu.png");
 	File buttonFile = new File("resources/images/interface/button.png");

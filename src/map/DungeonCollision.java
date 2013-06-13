@@ -29,9 +29,8 @@ abstract class DungeonCollision extends DungeonBuilder{
 	}
 	
 	public void checkCollision(Moveable object){
+	
 		checkCollisionFloor(object);
-		//checkCollisionDoor(object);
-		
 		checkCollisionWall(object);
 		
 		//System.out.println(getXTileDataElement(getXMap(), getYMap(), 0, 5, 5));

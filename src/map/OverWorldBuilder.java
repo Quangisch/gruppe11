@@ -1,5 +1,8 @@
 package map;
 
+import game.objects.Guide;
+import game.objects.Merchant;
+
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -45,7 +48,7 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 		} 
 
 		
-		
+
 		if(GameManager.mapLoaded)
 			return true;
 		else
@@ -157,7 +160,7 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 					do{
 						int enemyType;
 						int[] enemyPosition = new int[4];
-						int[] enemyAttributes = new int[5];
+						int[] enemyAttributes = new int[4];
 						
 						dataLine = readDataBuff.readLine(); //EnemyType+X+Y
 						dataLine = dataLine.replace("x", "");
@@ -178,8 +181,8 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 						enemyAttributes[1] = translateStringToInt(dataLine.substring(4, 8)); //enemyLife
 						enemyAttributes[2] = translateStringToInt(dataLine.substring(8, 12)); //enemyLastDirection
 						enemyAttributes[3] = translateStringToInt(dataLine.substring(12, 16)); //enemyPattern
-						
-						
+						System.out.println(dataLine);
+						System.err.println("==>ENEMYPATTERN: "+enemyAttributes[3]+" String:"+dataLine.substring(12, 16));
 						addEnemyData(enemyType, enemyPosition, enemyAttributes);
 						
 					
@@ -187,14 +190,16 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 						readDataBuff.mark(10);
 						searchLine = readDataBuff.readLine();
 						
-						if(searchLine.startsWith("#")){
+						if(!searchLine.startsWith("#")){
+							readDataBuff.reset();
+						} else {
 							readDataBuff.reset();
 							break;
 						}
 						
 					
 					
-					} while (searchLine.startsWith("#"));
+					} while (!searchLine.startsWith("#"));
 					
 				} else {
 					readDataBuff.reset();

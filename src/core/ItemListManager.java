@@ -27,7 +27,7 @@ public enum ItemListManager implements FileLink{
 	SPELL2(4, 0, 1, itemListID00, 1, 7, 0),
 	
 	KEY1(5, 0, 0, itemListID00, 0, 8, 0);
-	
+
 	
 	private final int ID;
 	private final int type;
@@ -37,7 +37,10 @@ public enum ItemListManager implements FileLink{
 	private final int yRow;
 	private final int cycle;
 	
-	public static int[] keyIDCounter = {1,1,1,1,1}; 
+	public static int[] keyIDCounter = {1,1,1,1,1};
+	public static int[] weaponIDCounter = {1};
+	public static int[] armorIDCounter = {1};
+	public static int[] spellIDCounter = {0,1};
 	
 	private int[] itemData = new int[6];
 		
@@ -65,7 +68,10 @@ public enum ItemListManager implements FileLink{
 		for(ItemListManager item : values()){
 			if(item.getID() == itemID && item.getType() == itemType && item.getMember() == member){
 				//int x, int y, int[] data, File file,int duration
-				ItemDrop.addInstance(x, y, item.itemData, item.file, 200);
+				if(itemID == 0 || itemID == 1)
+					ItemDrop.addInstance(x, y, item.itemData, item.file, 500);
+				else 
+					ItemDrop.addInstance(x, y, item.itemData, item.file, 2000);
 			}
 		}
 	
@@ -80,7 +86,7 @@ public enum ItemListManager implements FileLink{
 				
 				if(keyIDCounter[keyID] == 1){
 					
-					ItemDrop.addInstance(x, y, item.itemData, item.file, 200);
+					ItemDrop.addInstance(x, y, item.itemData, item.file, 1500);
 					keyIDCounter[keyID] = 0;
 					drop = true;
 					break;

@@ -31,9 +31,11 @@ public class DungeonNavigator extends DungeonCollision{
 	public void initializeMap(int xMap, int yMap, int ID, int playerX, int playerY){
 		
 		GameManager.mapLoaded = false;
+		OverWorldNavigator.deleteInstance();
 		MarioDark.deleteAllInstances();
 		MapObject.deleteAllInstances();
 		
+		setID(ID);
 		setXMap(xMap);
 		setYMap(yMap);
 		Player.getInstance().setX(playerX);
@@ -207,6 +209,9 @@ public class DungeonNavigator extends DungeonCollision{
 	//
 	public void setAreaID(int areaID){this.areaID = areaID;}
 	
+	public static void deleteInstance(){
+		dungeonNavigator = null;
+	}
 	
 	public static DungeonNavigator getInstance(){
 		if(dungeonNavigator == null){

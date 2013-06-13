@@ -1,7 +1,8 @@
 package map;
 
-import game.objects.MarioBoss;
+import game.objects.MapObject;
 import game.objects.MarioDark;
+import game.objects.Merchant;
 import game.objects.Player;
 
 
@@ -345,14 +346,50 @@ g2d.fillRect(0, 0, 10, 10);
 						break;
 			}
 			
-			EnemyManager.setNewEnemy(xCoordinateMap,yCoordinateMap,enemyType,enemyPosition,enemyAttributes);
+			
+			
+			//setBoss 2-1
+			if(getXMap() == 2 && getYMap() == 1){
 				
+				if(!GameObjectManager.getBossStatusDefeated(21)){
+					GameObjectManager.getInstance().constructBoss(21);
+					EnemyManager.setNewEnemy(xCoordinateMap,yCoordinateMap,enemyType,enemyPosition,enemyAttributes);
+					addMapObjectData(3, 2, 2, 1, 0, 370);
+					System.out.println("setEnemyBoss 2");
+				}	
+			} else //setEnemy
+				EnemyManager.setNewEnemy(xCoordinateMap,yCoordinateMap,enemyType,enemyPosition,enemyAttributes);
+			
+
 			System.err.println("======>DungeonBuilder.setEnemy");
 
 		}
 		
+
+		//setMerchant
+		if(getXMap() == 1 && getYMap() == 0){
+			int xCoordinateMap = 180;
+			int yCoordinateMap = 400;
+			
+			switch(GameManager.scrollDirection){
+			case(1):	yCoordinateMap -= 630;
+						
+						break;
+			case(3):	xCoordinateMap += 810;
+						break;
+			case(5):	yCoordinateMap += 630;
+						break;
+			case(7):	xCoordinateMap -= 810;
+						break;
+			}
+			
+			Merchant.getInstance(xCoordinateMap, yCoordinateMap);
+		}
+		
+		//setBoss
 		if((getXMap() == 2 && getYMap() == 2) || (getXMap() == 2 && getYMap() == 1) || (getXMap() == 2 && getYMap() == 0))
 			setBossEnemy();
+		
 	
 	}
 	
@@ -381,7 +418,7 @@ g2d.fillRect(0, 0, 10, 10);
 		enemyPositionBoss[0][2] = xCoordinateMap; enemyPositionBoss[0][3] = yCoordinateMap; //posXY
 		
 		enemyAttributesBoss[0][0] = 2; //enemySpeed
-		enemyAttributesBoss[0][1] = 8; //enemyLife
+		enemyAttributesBoss[0][1] = 7; //enemyLife
 		enemyAttributesBoss[0][2] = 5; //enemyLastDirection
 		enemyAttributesBoss[0][3] = 11; //enemyPattern
 		
@@ -390,7 +427,7 @@ g2d.fillRect(0, 0, 10, 10);
 		enemyPositionBoss[1][2] = xCoordinateMap; enemyPositionBoss[1][3] = yCoordinateMap; //posXY
 		
 		enemyAttributesBoss[1][0] = 2; //enemySpeed
-		enemyAttributesBoss[1][1] = 13; //enemyLife
+		enemyAttributesBoss[1][1] = 6; //enemyLife
 		enemyAttributesBoss[1][2] = 5; //enemyLastDirection
 		enemyAttributesBoss[1][3] = 12; //enemyPattern
 		
@@ -399,7 +436,7 @@ g2d.fillRect(0, 0, 10, 10);
 		enemyPositionBoss[2][2] = xCoordinateMap; enemyPositionBoss[2][3] = yCoordinateMap; //posXY
 		
 		enemyAttributesBoss[2][0] = 2; //enemySpeed
-		enemyAttributesBoss[2][1] = 20; //enemyLife
+		enemyAttributesBoss[2][1] = 15; //enemyLife
 		enemyAttributesBoss[2][2] = 5; //enemyLastDirection
 		enemyAttributesBoss[2][3] = 13; //enemyPattern
 
@@ -409,13 +446,13 @@ g2d.fillRect(0, 0, 10, 10);
 			EnemyManager.setNewEnemy(xCoordinateMap, yCoordinateMap, 22, enemyPositionBoss[0], enemyAttributesBoss[0]);
 			System.out.println("setEnemyBoss 1 @Pos"+xCoordinateMap+"x"+yCoordinateMap);
 		}
-		
+		/*
 		if(!GameObjectManager.getBossStatusDefeated(21) && getXMap() == 2 && getYMap() == 1){
 			GameObjectManager.getInstance().constructBoss(21);
 			EnemyManager.setNewEnemy(xCoordinateMap, yCoordinateMap, 21, enemyPositionBoss[1], enemyAttributesBoss[1]);
 			System.out.println("setEnemyBoss 2 @Pos"+xCoordinateMap+"x"+yCoordinateMap);
 		}	
-		
+		*/
 		if(!GameObjectManager.getBossStatusDefeated(20) && getXMap() == 2 && getYMap() == 0){
 			GameObjectManager.getInstance().constructBoss(20);
 			EnemyManager.setNewEnemy(xCoordinateMap, yCoordinateMap, 20, enemyPositionBoss[2], enemyAttributesBoss[2]);
@@ -655,7 +692,7 @@ g2d.fillRect(0, 0, 10, 10);
 								do{
 									int enemyType;
 									int[] enemyPosition = new int[4];
-									int[] enemyAttributes = new int[5];
+									int[] enemyAttributes = new int[4];
 									
 									dataLine = readDataBuff.readLine(); //EnemyType+X+Y
 									dataLine = dataLine.replace("x", "");
@@ -680,30 +717,43 @@ g2d.fillRect(0, 0, 10, 10);
 									addEnemyData(enemyType, enemyPosition, enemyAttributes);
 									
 								
-									
+									/*
 									readDataBuff.mark(10);
 									searchLine = readDataBuff.readLine();
 									
 									if(searchLine.startsWith("#")){
 										readDataBuff.reset();
 										break;
+									}*/
+									
+									readDataBuff.mark(10);
+									searchLine = readDataBuff.readLine();
+									
+									if(!searchLine.startsWith("#")){
+										readDataBuff.reset();
+									} else {
+										readDataBuff.reset();
+										break;
 									}
 									
 								
 								
-								} while (searchLine.startsWith("#"));
+								} while (!searchLine.startsWith("#"));
 								
-							} else if(searchLine.contentEquals("#Trap#")){
+							} else if(searchLine.contentEquals("#MapObject#")){
 								
 								do{
 									readDataBuff.mark(10);
 									
 									dataLine = readDataBuff.readLine(); //Trap+X+Y
 									dataLine = dataLine.replace("x", "");
+									dataLine = dataLine.replace("@", "");
 									System.out.println("====>TRAP@"+mapIDX+"x"+mapIDY+"@data:"+dataLine);
 									String xPosition = dataLine.substring(0, 4);
 									String yPosition = dataLine.substring(4, 8);
-									writeMapObjectData(1, 0, mapIDX, mapIDY, xPosition, yPosition);
+									String type = dataLine.substring(8, 9);
+									String orientation = dataLine.substring(9, 10);
+									writeMapObjectData(type, orientation, mapIDX, mapIDY, xPosition, yPosition);
 									
 									readDataBuff.mark(10);
 									searchLine = readDataBuff.readLine();
@@ -810,8 +860,9 @@ protected void writeNavigationBoundData(boolean door, int xMap, int yMap, int or
 	
 }
 
-protected void writeMapObjectData(int type, int orientation, int xMap, int yMap, String xData, String yData){
-	
+protected void writeMapObjectData(String typeData, String orientationData, int xMap, int yMap, String xData, String yData){
+	int type = translateStringToInt(typeData);
+	int orientation = translateStringToInt(orientationData);
 	int x = translateStringToInt(xData);
 	int y = translateStringToInt(yData);
 	
@@ -863,21 +914,33 @@ private void writeNavigationToExitData(int mapIDX, int mapIDY, int mapType,Strin
 
 private int translateStringToInt(String numberString){
 
+	int number = -1;
 	//System.out.println("Check.translateStringToInt: Input@"+numberString+", lenght@"+numberString.length());
 	
-	for(int i = 0; i < numberString.length()+1; i++){
-		if(numberString.startsWith("0"))
-			numberString = numberString.substring(1);
-		if(numberString.startsWith("0") && numberString.length() == 1)
-			break;
+	if(numberString.length() > 1){
+		for(int i = 0; i < numberString.length()+1; i++){
+			if(numberString.startsWith("0"))
+				numberString = numberString.substring(1);
+			if(numberString.startsWith("0") && numberString.length() == 1)
+				break;
+		}
 	}
+	
 	
 	//System.out.println("Check.translateStringToInt: Output@"+numberString+", lenght@"+numberString.length());
 
+	try{
+		number = Integer.parseInt(numberString.toString());
+		return number; 
+	} catch(NumberFormatException e){
+		System.err.println("DungeonBuilder.Error: translateStringToInt "+e);
+	}
 	
-	int number = Integer.parseInt(numberString.toString());
-	
+	if(number == -1)
+		System.exit(0);
+
 	return number;
+	
 	
 }
 

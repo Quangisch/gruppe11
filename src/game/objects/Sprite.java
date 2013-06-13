@@ -170,7 +170,7 @@ abstract class Sprite extends DrawableObject{
 			
 			subSpriteBuff = spriteBuff.getSubimage((10+attackStep)*subSpriteWidth, (lastDirection-1)*subSpriteHeight, subSpriteWidth, subSpriteHeight);
 			
-			
+		
 			if(interInteraction >= 2.5) {
 				interInteraction = 0;
 				interactType = 0;
@@ -203,6 +203,9 @@ abstract class Sprite extends DrawableObject{
 	    resized.createGraphics().setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 	    resized.createGraphics().drawImage(subSpriteBuff, 0, 0, subSpriteBuff.getWidth()*resizeFactor, subSpriteBuff.getHeight()*resizeFactor, 0, 0, subSpriteBuff.getWidth(), subSpriteBuff.getHeight(), null);
 		
+		//resized.createGraphics().drawImage(subSpriteBuff.getSubimage(staticStep*subSpriteWidth+staticX, staticY, subSpriteWidth, subSpriteHeight), 0,0,subSpriteBuff.getWidth()*resizeFactor, subSpriteBuff.getHeight()*resizeFactor,0,0,subSpriteBuff.getWidth(), subSpriteBuff.getHeight(),null);
+		
+	    
 		setImage(resized);
 	}
 	
@@ -215,11 +218,11 @@ abstract class Sprite extends DrawableObject{
 	protected void setMoveStepCycle(int moveStepCycle){this.moveStepCycle = moveStepCycle;}
 	public void setLastDirection(int lastDirection){
 		if(lastDirection > 0) this.lastDirection = lastDirection;
-		if(lastDirection < 0) this.lastDirection = ((-lastDirection - 8) % 8);
+		if(lastDirection < 0) this.lastDirection = ((-(lastDirection-1) - 4) % 9)+1;
 		if(lastDirection == 0 || (lastDirection > 8 && lastDirection < -8))
 			System.err.println("Sprite.Error: Invalid lastDirection Value@setLastDirection");
 		
-		System.err.println("Sprite:LastDirection@"+lastDirection);
+		System.err.println("Sprite:LastDirection@"+this.lastDirection);
 	}
 	
 	protected void setStaticX(int x){this.staticX = x;}

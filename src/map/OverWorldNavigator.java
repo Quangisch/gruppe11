@@ -1,5 +1,6 @@
 package map;
 
+import game.objects.Guide;
 import game.objects.MapObject;
 import game.objects.MarioDark;
 import game.objects.Moveable;
@@ -18,7 +19,7 @@ import core.GameManager;
 
 public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 	
-	private static OverWorldNavigator overWorldMap;
+	private static OverWorldNavigator overWorldNavigator;
 	
 	
 	private OverWorldNavigator(){
@@ -29,16 +30,18 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 	public void initializeMap(int x, int y, int ID, int playerX, int playerY){
 		
 		GameManager.mapLoaded = false;
+		DungeonNavigator.deleteInstance();
 		MarioDark.deleteAllInstances();
 		MapObject.deleteAllInstances();
 		Board.getInstance().setTopMap(false, null);
+		setID(ID);
 		
 		switch(ID){
 		case(0):	loadMap(overWorldMapID00,overWorldDataID00);
 					Board.getInstance().setTopMap(true, overWorldTOPID00);
 					setWidthMap(2700);
 					setHeightMap(2700);
-					Player.getInstance().setLocks(true);
+					Player.getInstance().setDirectionLock(0);
 					GameManager.cameraOn = true;
 					break;
 					
@@ -46,7 +49,7 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 					Board.getInstance().setTopMap(true, overWorldTOPID01);
 					setWidthMap(1620);
 					setHeightMap(1260);
-					Player.getInstance().setLocks(true);
+					Player.getInstance().setDirectionLock(0);
 					GameManager.cameraOn = true;
 					break;
 		
@@ -63,6 +66,11 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 		
 
 		setEnemy();
+		if(this.getID() == 0){
+			System.out.println("=====>GUIDE@Cam:"+x+"x"+y);
+			Guide.getInstance(1930-x, 530-y);
+		}
+		
 		
 		System.out.println("xy@"+x+"x"+y);
 		System.out.println("Player@"+playerX+"x"+playerY);
@@ -185,11 +193,14 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 			
 	}
 	
+	public static void deleteInstance(){
+		overWorldNavigator = null;
+	}
 	
 	public static OverWorldNavigator getInstance(){
-		if(overWorldMap == null)
-			overWorldMap = new OverWorldNavigator();
-		return overWorldMap;
+		if(overWorldNavigator == null)
+			overWorldNavigator = new OverWorldNavigator();
+		return overWorldNavigator;
 	}
 
 }

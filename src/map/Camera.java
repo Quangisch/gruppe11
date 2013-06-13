@@ -128,12 +128,20 @@ public class Camera implements Runnable{
 			
 			if(GameManager.cameraOn){
 				
-	
+				
 				setX(400);
 				setY(300);
 				
 				OverWorldNavigator.getInstance().setXCoordinate(OverWorldNavigator.getInstance().getXCoordinate()-scrollX);
 				OverWorldNavigator.getInstance().setYCoordinate(OverWorldNavigator.getInstance().getYCoordinate()-scrollY);
+				
+				ArrayList<Moveable> object = GameManager.getMoveableList();
+				for(int index = 0; index < object.size(); index++){
+					object.get(index).setX(object.get(index).getX()-scrollX);
+					object.get(index).setY(object.get(index).getY()-scrollY);
+					
+				}
+				
 
 			}
 			
@@ -251,8 +259,12 @@ public class Camera implements Runnable{
 	public int getX(){return x;}
 	public int getY(){return y;}
 	
-	public void setX(int x){this.x = x;}
-	public void setY(int y){this.y = y;}
+	public void setX(int x){
+		this.x = x;
+	}
+	public void setY(int y){
+		this.y = y;
+	}
 	
 	public int getScrollX(){return scrollX;}
 	public int getScrollY(){return scrollY;}

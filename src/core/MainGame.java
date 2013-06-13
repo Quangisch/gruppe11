@@ -106,10 +106,46 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		GameManager.overWorld = false;
 		GameManager.dungeon = true;
 		
-		if(GameManager.overWorld)
-			OverWorldNavigator.getInstance().initializeMap(0,0,1,500,500);
+		if(GameManager.overWorld){
+			int xStart = 1890;
+			int yStart = 406;
+			OverWorldNavigator.getInstance().initializeMap(xStart,yStart,0,300,300);
+		}
+			
 		if(GameManager.dungeon)
-			DungeonNavigator.getInstance().initializeMap(1,1,0,700,300);
+			DungeonNavigator.getInstance().initializeMap(0,3,0,500,400);
+		
+		
+		
+		if(!GameManager.dungeon)
+			GameManager.cameraOn = !GameManager.cameraOn;
+		else
+			System.err.println("Can't switch CameraMode in Dungeons.");
+
+		/*
+		if(GameManager.cameraOn && GameManager.overWorld){
+
+				if(OverWorldNavigator.getInstance().getXCoordinate() > 0 && getX() <= 400){
+					OverWorldNavigator.getInstance().setXCoordinate(0);
+					Player.getInstance().setDirectionLock(2);
+				}
+
+				if(OverWorldNavigator.getInstance().getXCoordinate() < -(OverWorldNavigator.getInstance().getWidthMap()-810) && getX() >= 400){
+					OverWorldNavigator.getInstance().setXCoordinate(-(OverWorldNavigator.getInstance().getWidthMap()-810));
+					Player.getInstance().setDirectionLock(4);
+				}
+	
+				if(OverWorldNavigator.getInstance().getYCoordinate() > 0 && getY() >= 300){
+					OverWorldNavigator.getInstance().setYCoordinate(0);
+					Player.getInstance().setDirectionLock(1);
+				}
+	
+				if(OverWorldNavigator.getInstance().getYCoordinate() < -(OverWorldNavigator.getInstance().getHeightMap()-630) && getY() >= 300){
+					OverWorldNavigator.getInstance().setYCoordinate(-(OverWorldNavigator.getInstance().getHeightMap()-630));
+					Player.getInstance().setDirectionLock(3);
+				}	
+		}
+		*/
 	}
 	
 	private void initializeThreads(){

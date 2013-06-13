@@ -1,5 +1,5 @@
 package game.objects;
-import game.objects.EnemyMove;
+import game.objects.NPCMove;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import map.DungeonNavigator;
+import map.OverWorldNavigator;
 
 import core.GameManager;
 import core.GameObjectManager;
@@ -18,7 +19,7 @@ import core.ItemListManager;
 
 
 
-public class MarioDark extends EnemyLogic{
+public class MarioDark extends NPCLogic{
 
 	private final static int MAXINSTANCE = 10;
 	private static MarioDark[] marioDark = new MarioDark[MAXINSTANCE];
@@ -29,15 +30,17 @@ public class MarioDark extends EnemyLogic{
 	private int IDNumber;
 	private boolean constructionLock = false;
 	private boolean spawnLock = true;
+	private boolean boss;
 	
 
 	
-	private MarioDark(int IDNumber){
+	private MarioDark(int IDNumber, boolean boss){
 		System.err.println("construct MarioDark: "+IDNumber);
 		this.IDNumber = IDNumber;
+		this.boss = boss;
 		runTimer[IDNumber] = new Timer();
 		runTask[IDNumber] = new RunTask(IDNumber);
-		runTimer[IDNumber].schedule(runTask[IDNumber], 500, 10);
+		runTimer[IDNumber].scheduleAtFixedRate(runTask[IDNumber], 500, 10);
 		constructionLock = true;
 		setMoveableID(IDNumber);
 	}
@@ -51,9 +54,10 @@ public class MarioDark extends EnemyLogic{
 
 		if(getAlive()) {
 			
+			//System.out.println("@Pos:"+getX()+"x"+getY());
 			//patrolRectangle(-1,false,100,100,100,200);
 			//System.out.println("Life: "+getLife());
-			//System.out.println("isAlive: "+getAlive());
+			//System.out.println("isVisible: "+getVisibleDrawable());
 			executePattern();
 		
 		} else
@@ -62,39 +66,58 @@ public class MarioDark extends EnemyLogic{
 	
 
 	private void dropItem(){
-		System.out.println("==>MarioDark.drops Item@"+getX()+"x"+getY());
+		
+		if(!boss)
+			Player.getInstance().addExperience(1);
+		else
+			Player.getInstance().addExperience(3);
+		
 		
 		//heart/healthRandom rand;
 	
 		int random1 = new Random().nextInt(100 - 0 + 1) + 0;
-		int random2 = new Random().nextInt(101) + 0;
 		boolean dropKey = false;
 		
-		System.err.println("======>randomNum:"+random1+"x"+random2);
+		System.out.println("==>MarioDark.drops Item@"+getX()+"x"+getY());
 		
 		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 3){
 			dropKey = ItemListManager.dropKey(getX(), getY(), 5, 0, 0, 0);
 		}
 		
-		if(!dropKey){
-			if(random1 < 20)
-				ItemListManager.dropItem(getX(), getY(), 0, 1, 0);
-			else if(random2 < 20)
-				ItemListManager.dropItem(getX(), getY(), 0, 2, 0);
+		if(OverWorldNavigator.getInstance().getID() == 1 && GameManager.overWorld){
+			ItemListManager.dropItem(getX(), getY(), 1, 1, 0);
 		}
 		
+		
+		if(!dropKey){
+			if(random1 < 65){
+				if(random1 > 40)
+					ItemListManager.dropItem(getX(), getY(), 0, 1, 0);
+				else if(random1 > 15)
+					ItemListManager.dropItem(getX(), getY(), 0, 2, 0);
+				else
+					ItemListManager.dropItem(getX(), getY(), 0, 0, 0);
+			}
+				
+				
+		}
+		
+		setBossDefeatedFlag();
+	}
+
+	private void setBossDefeatedFlag(){
 		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 2){
 			GameObjectManager.defeatBoss(22);
+			ItemListManager.dropItem(getX(), getY(), 3, 0, 0);
 		}
-		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 1){
+		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 1 && instanceCounter == 1){
 			GameObjectManager.defeatBoss(21);
 		}
 		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 0){
 			GameObjectManager.defeatBoss(20);
 		}
-
 	}
-
+	
 	public static int getMaxInstance(){
 		return MAXINSTANCE;
 	}
@@ -103,10 +126,10 @@ public class MarioDark extends EnemyLogic{
 		return instanceCounter;
 	}
 	
-	public static synchronized MarioDark getInstance(boolean newInstance, int IDNumber){
+	public static synchronized MarioDark getInstance(boolean newInstance, int IDNumber, boolean boss){
 		
 		if(newInstance){
-			marioDark[IDNumber] = new MarioDark(IDNumber);
+			marioDark[IDNumber] = new MarioDark(IDNumber, boss);
 			instanceCounter++;
 			System.out.println("MarioDark.NEWInstance:"+IDNumber);
 			return marioDark[IDNumber];
@@ -171,15 +194,15 @@ public class MarioDark extends EnemyLogic{
 			
 			
 			//System.out.println("RunTask "+IDNumber+" running");
-			if(MarioDark.getInstance(false, IDNumber).getAlive())
-				MarioDark.getInstance(false, IDNumber).running();
+			if(MarioDark.getInstance(false, IDNumber, boss).getAlive())
+				MarioDark.getInstance(false, IDNumber, boss).running();
 			else {
 				
 				if(GameManager.scrollDirection == 0 && GameManager.mapLoaded)
-					MarioDark.getInstance(false, IDNumber).dropItem();
+					MarioDark.getInstance(false, IDNumber, boss).dropItem();
 				
 				GameManager.updateGameObject();
-				MarioDark.getInstance(false, IDNumber).deleteInstance(IDNumber);
+				MarioDark.getInstance(false, IDNumber, boss).deleteInstance(IDNumber);
 			}
 		}
 	}

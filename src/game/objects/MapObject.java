@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 
 import map.Camera;
+import map.DungeonNavigator;
 
 import core.Board;
 import core.FileLink;
@@ -52,10 +53,13 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 	public void run(){
 		//System.out.println(Player.getInstance().getKeyInventory());
 		
+		setX((x-Camera.getInstance().getX()));
+		setY((y-Camera.getInstance().getY()));
 		
 		switch(type){
 		case(0): handleDoor(); break;
 		case(1): handleTrap(); break;
+		case(3):	handleBlock21(); break;
 		}
 		
 		//System.out.println("Type@"+type);
@@ -74,10 +78,6 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		case(4):	x += 8; break;
 		}
 		
-		
-		setX((x-Camera.getInstance().getX()));
-		setY((y-Camera.getInstance().getY()));
-		
 		if(getBoundCore().intersects(Player.getInstance().getBoundCore())){
 			if(Player.getInstance().useKeyInventory())
 				Player.getInstance().setObjectBack(10, 0, false, null);
@@ -95,8 +95,7 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		
 
 		
-		setX((x-Camera.getInstance().getX()));
-		setY((y-Camera.getInstance().getY()));
+	
 		
 		if(getBoundCore().intersects(Player.getInstance().getBoundCore())){
 			x = xPos + xMap * 810 + shake;
@@ -114,18 +113,23 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		}
 		
 		if(getBoundCore().contains(Player.getInstance().getBoundCore())){
-			/*
-			Player.getInstance().setX(Player.getInstance().getOldX());
-			Player.getInstance().setY(Player.getInstance().getOldY());
-			Player.getInstance().setLastDirection(Player.getInstance().getOldLastDirection());
-			Player.getInstance().setLife(Player.getInstance().getLife() - 1);
-			*/
+
 			stop();
 		}
 		
 	}
 	
-	
+	private void handleBlock21(){
+		
+		
+		x = xPos + xMap * 810;
+		y = yPos + yMap * 630;
+		
+		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 1 && MarioDark.getInstanceCounter() == 0){
+			stop();
+		}
+			
+	}
 	
 	private void stop(){
 		setVisible(false);
@@ -220,7 +224,11 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		TREASUREC(2,0,360,180,90,90,0,0,90,90,0),
 		TREASUREO(2,1,450,180,90,90,0,0,90,90,0),
 		
-		BLOCKSTONE(3,0,630,0,180,180,0,0,180,180,0),
+		BLOCKSTONEFULL(3,0,630,0,180,180,0,0,180,180,0),
+		BLOCKSTONEN(3,1,630,0,180,90,0,0,180,90,0),
+		BLOCKSTONEE(3,2,720,0,90,180,0,0,90,180,0),
+		BLOCKSTONES(3,3,630,90,90,180,0,0,90,180,0),
+		BLOCKSTONEW(3,4,630,0,90,180,0,0,90,180,0),
 		
 		WATER1(10,0,0,270,90,90,0,0,90,90,3),
 		WATER2(10,1,0,360,90,90,0,0,90,90,3),

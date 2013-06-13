@@ -25,6 +25,7 @@ public class ItemDrop extends Item{
 	ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
 	
 	private ItemDrop(int x, int y, int[] data, File file, int duration){
+		setMoveableType(-10);
 		System.out.println("--> construct new Item");
 		itemDrop = this;
 
@@ -39,25 +40,9 @@ public class ItemDrop extends Item{
 		
 		//System.out.println(getUpLock()+","+getDownLock()+"__"+getRightLock()+","+getLeftLock());
 		
-		if(GameManager.cameraOn){
-			if(!(getUpLock() || getDownLock()) && !(getLeftLock() || getRightLock())){
-				System.err.println("case.1");
-				setMovement(-Player.getInstance().getDX(), -Player.getInstance().getDY());
-			} else if((getUpLock() || getDownLock()) && !(getLeftLock() || getRightLock())){
-				System.err.println("case.2");
-				setMovement(-Player.getInstance().getDX(), 0);
-				
-			} else if(!(getUpLock() ||  getDownLock()) && (getLeftLock() || getRightLock())){
-				System.err.println("case.3");
-				setMovement(0, -Player.getInstance().getDY());
-				
-			} else if((getUpLock() || getDownLock()) && (getLeftLock() || getRightLock())){
-				System.err.println("case.4");
-				setMovement(0, 0);
-			}
-		}
+		move();
 	
-		//System.out.println("Item alive@"+counter+", to "+duration);
+		System.out.println("Item alive@"+counter+", to "+duration);
 		//System.out.println("Item visible:"+getVisibleDrawable());
 		
 		setStaticSubSprite(4);
@@ -94,7 +79,7 @@ public class ItemDrop extends Item{
 		ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
 		execRun.scheduleWithFixedDelay(runThread, 10, 20, TimeUnit.MILLISECONDS);
 		
-		Board.getInstance().addDrawable(this);
+		GameManager.addGameObject(this);
 	}
 	
 	public static ItemDrop addInstance(int xPosition, int yPosition, int[] data, File file,int duration){
