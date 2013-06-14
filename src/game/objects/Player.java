@@ -219,6 +219,15 @@ public class Player extends PlayerObjectManager implements Runnable{
 			
 		}
 		
+		//ingameMenu
+		if(key == KeyEvent.VK_ESCAPE){
+			GameManager.ingameMenu = !GameManager.ingameMenu;
+			if(GameManager.ingameMenu)
+				this.setInteractionLock(true);
+			else
+				setInteractionLock(false);
+		}
+		
 		//debug
 		if(key == KeyEvent.VK_B){
 			GameManager.showBounds = !GameManager.showBounds;

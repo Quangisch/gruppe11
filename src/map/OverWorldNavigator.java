@@ -30,7 +30,6 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 	public void initializeMap(int x, int y, int ID, int playerX, int playerY){
 		
 		GameManager.mapLoaded = false;
-		DungeonNavigator.deleteInstance();
 		MarioDark.deleteAllInstances();
 		MapObject.deleteAllInstances();
 		Board.getInstance().setTopMap(false, null);

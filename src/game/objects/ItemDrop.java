@@ -42,12 +42,12 @@ public class ItemDrop extends Item{
 		
 		move();
 	
-		System.out.println("Item alive@"+counter+", to "+duration);
+		//System.out.println("Item alive@"+counter+", to "+duration);
 		//System.out.println("Item visible:"+getVisibleDrawable());
 		
 		setStaticSubSprite(4);
 		
-		if(Player.getInstance().getBoundCore().intersects(this.getBoundCore())){
+		if(Player.getInstance().getBoundCore().intersects(this.getBoundDirection(0))){
 			System.out.println("Player.intersectItem");
 			Player.getInstance().addItem(itemIDData);
 			setAlive(false);
@@ -74,7 +74,7 @@ public class ItemDrop extends Item{
 		setStaticCycle(data[5]);
 		setFile(file);
 		loadSprite();
-	
+		
 		Thread runThread = new Thread(new RunTimer());
 		ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
 		execRun.scheduleWithFixedDelay(runThread, 10, 20, TimeUnit.MILLISECONDS);

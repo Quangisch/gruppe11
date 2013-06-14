@@ -29,7 +29,7 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 	private int type;
 	private int orientation;
 	private int xMap, yMap, xPos, yPos;
-	private int counter;
+	private boolean interact;
 	private int x = 0;
 	private int y = 0;
 	
@@ -59,7 +59,9 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		switch(type){
 		case(0): handleDoor(); break;
 		case(1): handleTrap(); break;
-		case(3):	handleBlock21(); break;
+		case(2): handleTreasure(); break;
+		case(3):	handleBlockBoss(); break;
+		
 		}
 		
 		//System.out.println("Type@"+type);
@@ -119,16 +121,27 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		
 	}
 	
-	private void handleBlock21(){
-		
+	private void handleBlockBoss(){
 		
 		x = xPos + xMap * 810;
 		y = yPos + yMap * 630;
 		
+		if(this.getBoundCore().intersects(Player.getInstance().getBoundCore())&&GameManager.scrollDirection == 0)
+			Player.getInstance().setObjectBack(5, 0, false, null);
+		
 		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 1 && MarioDark.getInstanceCounter() == 0){
 			stop();
 		}
-			
+		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 2 && GameObjectManager.getBossStatusDefeated(22))
+			stop();
+		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 0 && GameObjectManager.getBossStatusDefeated(21))
+			stop();
+
+	}
+	
+	private void handleTreasure(){
+		x = xPos + xMap * 810;
+		y = yPos + yMap * 630;
 	}
 	
 	private void stop(){
@@ -226,8 +239,8 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		
 		BLOCKSTONEFULL(3,0,630,0,180,180,0,0,180,180,0),
 		BLOCKSTONEN(3,1,630,0,180,90,0,0,180,90,0),
-		BLOCKSTONEE(3,2,720,0,90,180,0,0,90,180,0),
-		BLOCKSTONES(3,3,630,90,90,180,0,0,90,180,0),
+		BLOCKSTONEE(3,2,720,0,90,180,0,0,50,170,0),
+		BLOCKSTONES(3,3,630,90,180,90,0,10,150,80,0),
 		BLOCKSTONEW(3,4,630,0,90,180,0,0,90,180,0),
 		
 		WATER1(10,0,0,270,90,90,0,0,90,90,3),

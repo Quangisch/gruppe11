@@ -25,7 +25,6 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 	private Thread playerThread;
 	private Thread cameraThread;
 	private Thread collisionThread;
-	private Thread interfaceThread;
 	private Thread managerThread;
 	private ScheduledThreadPoolExecutor threadPoolManager;
 	
@@ -113,7 +112,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		}
 			
 		if(GameManager.dungeon)
-			DungeonNavigator.getInstance().initializeMap(0,3,0,500,400);
+			DungeonNavigator.getInstance().initializeMap(1,1,0,600,200);
 		
 		
 		
@@ -164,7 +163,6 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		threadPool.scheduleWithFixedDelay(cameraThread, 20, 50, TimeUnit.MILLISECONDS);
 		threadPool.scheduleWithFixedDelay(collisionThread, 30, 10, TimeUnit.MILLISECONDS);
 		
-		//PlayerInterface.getInstance().buildText();
 	}
 	
 	public void run(){

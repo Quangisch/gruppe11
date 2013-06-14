@@ -149,7 +149,7 @@ abstract class Sprite extends DrawableObject{
 		this.interactType = interactType;
 		interInteraction += 0.1;
 		interactionTimer = new Timer();
-		interactionTask = new InteractionTask();
+		interactionTask = new InteractionTask(interactType);
 		interactionTimer.schedule(interactionTask, 0);
 	}
 	
@@ -176,6 +176,31 @@ abstract class Sprite extends DrawableObject{
 				interactType = 0;
 			}
 	
+		}
+		
+		if(interactType == 2 || interactType == 3){
+			int achieveStep = 0;
+			
+			if (interInteraction < 5.5)
+				interInteraction += 0.000005;
+			
+			if(interactType == 2){
+				if(interInteraction >= 1 && interInteraction < 5)
+					achieveStep = 1;
+				else 
+					achieveStep = 0;
+			} 
+			
+			if(interactType == 3)
+				achieveStep = ((int)(interInteraction)) % 2; 
+			
+			
+			subSpriteBuff = spriteBuff.getSubimage((14+achieveStep)*subSpriteWidth, 4*subSpriteHeight, subSpriteWidth, subSpriteHeight);
+
+			if(interInteraction >= 5.5) {
+				interInteraction = 0;
+				interactType = 0;
+			}
 		}
 		
 		setImage(subSpriteBuff);
@@ -243,16 +268,18 @@ abstract class Sprite extends DrawableObject{
 
 	private class InteractionTask extends TimerTask{
 		
+		private int interactType;
 		
-		private InteractionTask(){
-			
+		private InteractionTask(int interactType){
+			this.interactType = interactType;
 		}
 		public void run() {
 			int counter = 0;
 			
 			while(interInteraction != 0){
 				interactSubSprite();
-				setAttackBound(lastDirection, interInteraction, attackRangeX, attackRangeY);
+				if(interactType == 1)
+					setAttackBound(lastDirection, interInteraction, attackRangeX, attackRangeY);
 				//System.out.println("running@"+counter+" &interInteraction@"+interInteraction);
 			}
 			

@@ -19,6 +19,7 @@ public class GameManager {
 	public static volatile boolean lose;
 	public volatile boolean menu;
 	public volatile boolean ingame;
+	public static volatile boolean ingameMenu;
 	public static volatile boolean switchGameState;
 	
 	public static volatile boolean overWorld;

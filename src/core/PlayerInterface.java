@@ -1,5 +1,6 @@
 package core;
 
+import game.objects.Moveable;
 import game.objects.Player;
 
 import java.awt.AlphaComposite;
@@ -9,6 +10,9 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
@@ -30,6 +34,7 @@ public class PlayerInterface implements FileLink{
 	private boolean scrollText = false;
 
 	private BufferedImage imageBuff = new BufferedImage(810,630,BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage dynamicInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage upperInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 	private volatile BufferedImage lowerInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage borderBuff = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
@@ -112,29 +117,74 @@ public class PlayerInterface implements FileLink{
 	private BufferedImage symExclam = new BufferedImage(45,45,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage symPoint = new BufferedImage(45,45,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage symComa = new BufferedImage(45,45,BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage symPercent = new BufferedImage(45,45,BufferedImage.TYPE_INT_ARGB);
 	
 	private BufferedImage space = new BufferedImage(45,45,BufferedImage.TYPE_INT_ARGB);
+	
+	private boolean dynamicStatus;
+	private float dynamicOpacityCounter;
+	private double dynamicResizeCounter;
+	private Thread dynamicThread;
+	private ScheduledExecutorService execDynamic;
 	
 	private PlayerInterface(){
 		System.err.println("construct PlayerInterface");
 		
 	}
 	
-	public void draw(Graphics2D g2d){
+	public void setDynamicInterface(String dynamicString, Moveable object, boolean newLayer){
+		//String dynamicString = "1xp";
 		
-		buildInterface();
+		if(newLayer)
+			dynamicInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 		
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.98f));
-		if(upperInterface != null){
-			
-			g2d.drawImage(upperInterface, 0, 0, Board.getInstance());
-			
+		BufferedImage dynamicBuff = new BufferedImage(810,630,BufferedImage.TYPE_INT_ARGB);
+		
+		for(int index = 0; index < dynamicString.length()+2; index++){
+			String singleChar = dynamicString.substring(0,1);
+			dynamicString = dynamicString.substring(1);
+			System.out.println("singleChar@"+singleChar);
+			dynamicBuff.createGraphics().drawImage(translateTextTile(singleChar),(index*20),0, Board.getInstance());
 		}
 		
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-		if(lowerInterface != null && GameManager.showIngameText){
-			g2d.drawImage(borderBuff,0,315,Board.getInstance());
-			g2d.drawImage(lowerInterface, 0, 360, Board.getInstance());
+		dynamicInterface.createGraphics().drawImage(resizeImage(dynamicBuff,1),0,0, null);
+		/*
+		dynamicThread = new Thread(new DynamicTimer(dynamicString, object,dynamicBuff));
+		execDynamic = Executors.newSingleThreadScheduledExecutor();
+		execDynamic.scheduleWithFixedDelay(dynamicThread, 0, 10, TimeUnit.MILLISECONDS);
+		*/
+		dynamicResizeCounter = 1;
+		dynamicOpacityCounter = 0.6f;
+		dynamicStatus = true;
+	}
+	
+	public void draw(Graphics2D g2d){
+		if(!GameManager.ingameMenu){
+			buildInterface();
+			
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.98f));
+			if(upperInterface != null){
+				
+				g2d.drawImage(upperInterface, 0, 0, Board.getInstance());
+				
+			}
+			
+			if(dynamicInterface != null && dynamicStatus){
+				g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, dynamicOpacityCounter));
+				g2d.drawImage(dynamicInterface, 10+Player.getInstance().getX(),-30+Player.getInstance().getY(), Board.getInstance());
+				dynamicOpacityCounter -= 0.06;
+				dynamicResizeCounter += 0.5;
+				if(dynamicOpacityCounter <= 0){
+					dynamicStatus = false;
+				}
+			}
+			
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+			if(lowerInterface != null && GameManager.showIngameText){
+				g2d.drawImage(borderBuff,0,315,Board.getInstance());
+				g2d.drawImage(lowerInterface, 0, 360, Board.getInstance());
+			}
+			
 		}
 		
 	}
@@ -204,7 +254,7 @@ public class PlayerInterface implements FileLink{
 					symExclam.setRGB(0, 0, 45, 45, imageBuff.getRGB(1*45, 4*45, 45, 45, null, 0, 45),0,45);
 					symPoint.setRGB(0, 0, 45, 45, imageBuff.getRGB(2*45, 4*45, 45, 45, null, 0, 45),0,45);
 					symComa.setRGB(0, 0, 45, 45, imageBuff.getRGB(3*45, 4*45, 45, 45, null, 0, 45),0,45);
-					
+					symPercent.setRGB(0, 0, 45, 45, imageBuff.getRGB(15*45, 4*45, 45, 45, null, 0, 45),0,45);
 					
 				System.err.println("Sprite: Width/Height not initialized");
 			
@@ -225,7 +275,9 @@ public class PlayerInterface implements FileLink{
 		
 		//paint life
 		for(int i = 0; i < Math.floor(Player.getInstance().getLife()); i++)
+			//upperInterface.getGraphics().drawImage(heart4_4Buff, 10+45*i, 10, Board.getInstance());
 			upperInterface.getGraphics().drawImage(heart4_4Buff, 10+45*i, 10, Board.getInstance());
+			
 
 		//if(life > restLife){
 			
@@ -243,7 +295,7 @@ public class PlayerInterface implements FileLink{
 		
 		
 		if(Player.getInstance().getManaPool() > 0){
-			upperInterface.createGraphics().drawImage(manaPoolBuff, 20-(int)(10*Player.getInstance().getManaPool()), 40, (int)(Player.getInstance().getManaPool()*248)-5, 47, null);
+			upperInterface.createGraphics().drawImage(manaPoolBuff, 20-(int)(10*(Player.getInstance().getManaPool()/Player.getInstance().getMaxMana())), 40, (int)(Player.getInstance().getManaPool()*248)-5, 47, null);
 		}
 		
 		upperInterface.createGraphics().drawImage(coinBuff, 770, 10, null);
@@ -397,6 +449,17 @@ public class PlayerInterface implements FileLink{
 		
 	}
 	
+	public BufferedImage resizeImage(BufferedImage original, double factor){
+		
+		double size = factor;
+		
+		BufferedImage resized = new BufferedImage((int)(original.getHeight()*size), (int)(original.getWidth()*size),original.getType());
+		
+		resized.createGraphics().drawImage(original, 0, 0, resized.getWidth(), resized.getHeight(), 0, 0, original.getWidth(), original.getHeight(), null);
+		
+		return resized;
+	}
+	
 	
 	public BufferedImage translateTextTile(String textChar){
 		if(textChar.contentEquals("a"))return a;
@@ -468,6 +531,7 @@ public class PlayerInterface implements FileLink{
 		else if(textChar.contentEquals("!"))return symExclam;
 		else if(textChar.contentEquals("."))return symPoint;
 		else if(textChar.contentEquals(","))return symComa;
+		else if(textChar.contentEquals("%"))return symPercent;
 		
 		else if(textChar.contentEquals(" "))return space;
 		else {
@@ -486,5 +550,35 @@ public class PlayerInterface implements FileLink{
 		if(playerInterface == null)
 			playerInterface = new PlayerInterface();
 		return playerInterface;
+	}
+	
+	private class DynamicTimer implements Runnable{
+		
+		private Moveable object;
+		private String dynamicString;
+		private BufferedImage dynamicBuff;
+		private double resize = 1;
+		
+		private DynamicTimer(String dynamicString, Moveable object, BufferedImage dynamicBuff){
+			this.object = object;
+			this.dynamicString = dynamicString;
+			this.dynamicBuff = dynamicBuff;
+		}
+		
+		public void run(){
+			System.err.println("=>Run@resize:"+resize);
+
+			//dynamicInterface.createGraphics().drawImage(resizeImage(dynamicBuff,resize),(int)(-20*resize),(int)(-20*resize), null);
+
+			if(!dynamicStatus){
+				execDynamic.shutdown();
+				execDynamic = Executors.newSingleThreadScheduledExecutor();
+				//dynamicBuff = null;
+				//dynamicInterface = null;
+				resize = 1;
+			}
+			
+			resize += 0.5;
+		}
 	}
 }

@@ -120,6 +120,6 @@ public enum EnemyManager implements FileLink {
 		return MarioDark.getInstance(false, IDNumber, boss);
 	}
 	
-	
+
 
 }

@@ -5,17 +5,19 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 import core.FileLink;
+import core.PlayerInterface;
 
 abstract class PlayerObjectManager extends Initializer{
 	
-	private double manaPool = 0.7; //value between 0 and 1: 1 = full Mana
+	private double maxMana = 1;
+	private double manaPool = 0.7; //value between 0 and maxMana (= full Mana)
 	private double armor = 0; //value between 0 and 1: 1 = invinciblemode
 	private double armorDurability = 0;
 	
 	private int maxLife = 3;
 	
 	private int magicSpell = 0;
-	private double manaRegen = 1;
+	private double manaRegen = 0.0001;
 	
 	private int coinInventory = 5;
 	private int keyInventory = 10;
@@ -24,25 +26,58 @@ abstract class PlayerObjectManager extends Initializer{
 	private int manaPotionInventory;
 	
 	private int experience;
-	private double weaponDamage = 1;
+	private double weaponDamage = 2;
 	private int magicLevel = 1;
 	private int level = 1;
 	
 	
 	protected PlayerObjectManager(){
-
+		
+	}
+	
+	public double[] getInventory(){
+		double[] inventoryList = new double[13];
+		
+		inventoryList[0] = coinInventory;
+		
+		inventoryList[1] = getLife();
+		inventoryList[2] = maxLife;
+		inventoryList[3] = manaPool;
+		inventoryList[4] = maxMana;
+		
+		inventoryList[5] = level;
+		inventoryList[6] = magicLevel;
+		inventoryList[7] = experience;
+		
+		inventoryList[8] = keyInventory;
+		inventoryList[9] = weaponDamage;
+		inventoryList[10] = armor;
+		
+		inventoryList[11] = healthPotionInventory;
+		inventoryList[12] = manaPotionInventory;
+		
+		
+		
+		
+		
+		
+		
+		
+		return inventoryList;
 	}
 	
 	public void addExperience(int xp){
 		
+		String xpString = ((new Integer(xp)).toString() + "xp");
+		PlayerInterface.getInstance().setDynamicInterface(xpString, this, false);
 		int oldLevel = level;
 		experience += xp;
 		System.out.println("+"+xp+" to "+experience);
 		switch(experience){
-			case 5:  level = 2; break;
-			case 12: level = 3; break;
-			case 20: level = 4; break;
-			case 35: level = 5; break;
+			case 5:  level = 2; manaRegen += 0.00005;break;
+			case 12: level = 3; manaRegen += 0.00005;break;
+			case 20: level = 4; manaRegen += 0.00005;break;
+			case 35: level = 5; manaRegen += 0.00005;break;
 		}
 		
 		if(oldLevel != level)
@@ -52,15 +87,17 @@ abstract class PlayerObjectManager extends Initializer{
 	private void levelUp(){
 		
 		switch(level){
-			case 1: maxLife = 4; break;
-			case 2: maxLife = 5; break;
-			case 3: maxLife = 6; break;
-			case 4: maxLife = 7; break;
-			case 5: maxLife = 8; break;
+			case 1: maxLife = 4; maxMana = 1.2; break;
+			case 2: maxLife = 5; maxMana = 1.4; break;
+			case 3: maxLife = 6; maxMana = 1.6; break;
+			case 4: maxLife = 7; maxMana = 1.8; break;
+			case 5: maxLife = 8; maxMana = 2.0; break;
 		}
 		System.out.println("Level Up! @Lvl:"+level);
 		setLife(maxLife);
-		this.startFlashTimer(500, 3000);
+		manaPool = maxMana;
+		setLevelUp();
+		startRotateTimer(1000,70,8);
 	}
 
 
@@ -71,6 +108,10 @@ abstract class PlayerObjectManager extends Initializer{
 	
 	public double getManaPool(){
 		return manaPool;
+	}
+	
+	public double getMaxMana(){
+		return maxMana;
 	}
 	
 	//attack
@@ -146,20 +187,20 @@ abstract class PlayerObjectManager extends Initializer{
 	
 	public void automaticManaRegen(){
 		if(manaPool < 1){
-			if(magicLevel == 1)
-				manaPool += 0.0001;
-			if(magicLevel == 2)
-				manaPool += 0.0005;
+			manaPool += manaRegen;
+			
 		}
 			
 		
-		if(manaPool > 1)
-			manaPool = 1;
+		if(manaPool > maxMana)
+			manaPool = maxMana;
 		
 	}
 	
 	public void addItem(int[] itemIDData){
 		System.out.println("getItem - ID:"+itemIDData[0]+", Type:"+itemIDData[1]+", Member:"+itemIDData[2]);
+		
+	
 		int ID = itemIDData[0];
 		int type = itemIDData[1];
 		int member = itemIDData[2];
@@ -228,8 +269,21 @@ abstract class PlayerObjectManager extends Initializer{
 			keyInventory++;
 			System.out.println("=> added Key to Inventory@"+keyInventory);
 		}
+		if(ID == 4){
+			if(type == 0){
+				switch(member){
+				case 0: magicLevel = 1; break;
+				case 1: magicLevel = 2; manaRegen += 0.0001;break;
+				}
+			}
+		}
 		
-		
+		if(ID > 0){
+			setAchieve();
+			ItemAchieve.addInstance(getX(),getY(),itemIDData);
+		}
+			
+			
 	}
 	
 	public void addCoin(int num){coinInventory += num;}
@@ -238,9 +292,7 @@ abstract class PlayerObjectManager extends Initializer{
 	public int getKeyInventory(){return keyInventory;}
 	
 	public boolean useKeyInventory(){
-		
 		boolean use = true;
-		
 		if(keyInventory > 0){
 			keyInventory--;
 			use = false;

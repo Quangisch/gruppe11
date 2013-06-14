@@ -1,8 +1,10 @@
 package core;
 
 import game.objects.ItemDrop;
+import game.objects.Player;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public enum ItemListManager implements FileLink{
 
@@ -41,7 +43,8 @@ public enum ItemListManager implements FileLink{
 	public static int[] weaponIDCounter = {1};
 	public static int[] armorIDCounter = {1};
 	public static int[] spellIDCounter = {0,1};
-	
+	public static ArrayList<Treasure<Integer[],Integer[],Boolean>> treasureIDCounter = new ArrayList<Treasure<Integer[],Integer[],Boolean>>();
+
 	private int[] itemData = new int[6];
 		
 		
@@ -60,6 +63,83 @@ public enum ItemListManager implements FileLink{
 			itemData[3] = xRow;
 			itemData[4] = yRow;
 			itemData[5] = cycle;
+	}
+	
+	public final boolean addTreasureBox(int xPos, int yPos, int[]data){
+		
+		boolean newTreasure = true;
+		
+		Integer[] positionID = {xPos, yPos};
+		Integer[] itemData = new Integer[data.length];
+		int i = 0;
+		for (int value : data) {
+		    itemData[i++] = Integer.valueOf(value);
+		}
+		Boolean open = new Boolean(false);
+		
+		
+		for(int index = 0; index < treasureIDCounter.size(); index++){
+			if(treasureIDCounter.get(index).getPositionID() == positionID){
+				System.out.println("-->treasure already exsists");
+				newTreasure = false;
+				break;
+			}	
+		}
+		
+		if(newTreasure){
+			System.out.println("-->register new Treasure");
+			Treasure<Integer[],Integer[],Boolean> treasure = new Treasure<Integer[],Integer[],Boolean>(positionID,itemData,open);
+			treasureIDCounter.add(treasure);
+		}
+	
+		return newTreasure;
+	}
+	
+	public final void openTreasureBox(int xPos, int yPos){
+		Integer[] positionID = {xPos, yPos};
+		
+		for(int index = 0; index < treasureIDCounter.size(); index++){
+			if(treasureIDCounter.get(index).getPositionID() == positionID && treasureIDCounter.get(index).getOpen() == false){
+				 treasureIDCounter.get(index).setOpen(true);
+				 
+				 int[] treasureItemData = new int[treasureIDCounter.get(index).getItemData().length];
+				 
+				 int i = 0;
+					for (int value : treasureIDCounter.get(index).getItemData()) {
+					    treasureItemData[i++] = Integer.valueOf(value);
+					}
+					
+				 Player.getInstance().addItem(treasureItemData);
+			}
+		}
+	}
+	
+	public final static int[] getItemData(int ID, int type, int member){
+		int[] itemDataElement = new int[6];
+		
+		for(ItemListManager element : values()){
+			
+			if(element.ID == ID && element.type == type && element.member == member){
+				itemDataElement = element.itemData;
+				break;
+			}		
+		}
+		
+		return itemDataElement;
+	}
+	
+	public final static File getItemFile(int ID, int type, int member){
+		File itemFile = null;
+		
+		for(ItemListManager element : values()){
+			
+			if(element.ID == ID && element.type == type && element.member == member){
+				itemFile = element.file;
+				break;
+			}		
+		}
+		
+		return itemFile;
 	}
 	
 	public final static void dropItem(int x, int y, int itemID, int itemType, int member){
@@ -102,5 +182,20 @@ public enum ItemListManager implements FileLink{
 	private int getType(){return type;}
 	private int getMember(){return member;}
 	
+	public class Treasure<P, I, O>{
+		final P positionID;
+		final I itemData;
+		O open;
+		private Treasure(P positionID, I itemData, O open){
+			this.positionID = positionID;
+			this.itemData = itemData;
+			this.open = open;
+		}
+		
+		public P getPositionID(){return positionID;}
+		public I getItemData(){return itemData;}
+		public O getOpen(){return open;}
+		public void setOpen(O open){this.open = open;}
+	}
 
 }

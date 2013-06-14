@@ -14,7 +14,7 @@ public class Merchant extends NPC implements Runnable, FileLink{
 
 	private static Merchant merchant;
 	private Thread runThread;
-	ScheduledExecutorService execRun;
+	private ScheduledExecutorService execRun;
 	
 	private String[] text = {"What do you want to buy?",
 			"1 HP-Potion   2G/n2 ManaPotion  2G/n3 Armor Lvl2 10G/n4 Magic Lvl2 15G", 
@@ -135,7 +135,7 @@ public class Merchant extends NPC implements Runnable, FileLink{
 			if(GameManager.interactKey == 4){
 				boolean buy = Player.getInstance().useMoney(15);
 				if(buy){
-					ItemListManager.dropItem(getX(),getY()+50,2,0,0);
+					ItemListManager.dropItem(getX(),getY()+50,4,0,1);
 					textCounter = 2;
 					setLastDirection(5);
 				}

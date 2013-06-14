@@ -34,6 +34,7 @@ public class CollisionDetection implements Runnable{
 				if(moveableObject.get(index).getMoveableType() != -10){
 					
 					if(!moveableObject.get(index).isHumanPlayer()){
+					
 						int type = moveableObject.get(index).getMoveableType();
 						int IDNumber = moveableObject.get(index).getMoveableID();
 						
@@ -57,7 +58,7 @@ public class CollisionDetection implements Runnable{
 							moveableObject.get(index).setObjectBack(50,0,true,Player.getInstance().getAttackBound());
 							moveableObject.get(index).setLife(moveableObject.get(index).getLife()-Player.getInstance().getAttackDamage());
 							
-			
+							//break;
 						}
 						
 						

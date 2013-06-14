@@ -35,10 +35,11 @@ public class Moveable extends Sprite{
 	private int flashCounter, cycleFlash;
 	
 	
-	private Thread flashThread, invincibleThread, waitThread;
+	private Thread flashThread, invincibleThread, waitThread, rotateThread;
 	private ScheduledExecutorService execFlash = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledExecutorService execInvincible = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledExecutorService execWait = Executors.newSingleThreadScheduledExecutor();
+	private ScheduledExecutorService execRotate = Executors.newSingleThreadScheduledExecutor();
 	
 	protected Moveable(){
 		
@@ -333,12 +334,15 @@ public class Moveable extends Sprite{
 	public synchronized void setLife(double life){
 
 		if(!invincible){
-			if(this.life > life)
+			if(this.life > life && life > 0)
 				startInvincibleTimer(500);
 			this.life = life; 
 			if(life <= 0){
+				setVisible(false);
 				setAlive(false);
 			}
+			
+
 		} else {
 			System.out.println("Invincible Mode");
 		}
@@ -359,10 +363,20 @@ public class Moveable extends Sprite{
 	
 	public void setAttack(){
 	
-		//interactType: 1 = attack, 2 = getHurt, 3 = getItem	
+		//interactType: 1 = attack, 2 = achieve, 3 = levelUp	
 		setInteraction(1);
 		setInteractionLock(true);
 		
+	}
+	
+	public void setAchieve(){
+		setInteraction(2);
+		setInteractionLock(true);
+	}
+	
+	public void setLevelUp(){
+		setInteraction(3);
+		setInteractionLock(true);
 	}
 
 	
@@ -464,6 +478,11 @@ public class Moveable extends Sprite{
 		execWait.schedule(waitThread, time, TimeUnit.MILLISECONDS);
 		moveable = false;
 	}
+	
+	public synchronized void startRotateTimer(int delay, int speed, int cycles){
+		rotateThread = new Thread(new RotateTimer(cycles));
+		execRotate.scheduleWithFixedDelay(rotateThread, delay, speed, TimeUnit.MILLISECONDS);
+	}
 
 	private class FlashTimer implements Runnable{
 		
@@ -508,6 +527,24 @@ public class Moveable extends Sprite{
 		
 		public void run(){
 			moveable = true;
+		}
+	}
+	
+	private class RotateTimer implements Runnable{
+		int cycleMax;
+		int cycle;
+		private RotateTimer(int cycleMax){
+			this.cycleMax = cycleMax;
+		}
+		public void run(){
+			System.out.println("Cycle@"+cycle+"to"+cycleMax);
+			cycle++;
+			setLastDirection(((getLastDirection()+1)%8)+1);
+			if(cycle == cycleMax){
+				execRotate.shutdown();
+				execRotate = Executors.newSingleThreadScheduledExecutor();
+				rotateThread = new Thread(new RotateTimer(0));
+			}
 		}
 	}
 

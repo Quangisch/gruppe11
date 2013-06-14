@@ -1,6 +1,8 @@
 package game.objects;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -36,6 +38,7 @@ public class DrawableObject extends JComponent implements FileLink{
 	private BufferedImage image;
 	private volatile boolean visible = true;
 	private volatile boolean alive;
+
 	
 	public DrawableObject(){
 		
@@ -44,6 +47,8 @@ public class DrawableObject extends JComponent implements FileLink{
 	public void paintComponents(Graphics g){
 		//System.out.println("draw Drawable");
 		g2d = (Graphics2D) g;
+		
+		
 		
 		
 		if(image != null && visible && GameManager.showBounds){
@@ -74,6 +79,7 @@ public class DrawableObject extends JComponent implements FileLink{
 		
 		if(image != null && visible)
 			g2d.drawImage(image, x, y, Board.getInstance());
+
 		
 	}
 	
@@ -163,4 +169,5 @@ public class DrawableObject extends JComponent implements FileLink{
 	
 	public boolean getAlive(){return alive;}
 	
+
 }

@@ -269,6 +269,11 @@ abstract class NPCMove extends Initializer{
 		
 		if(!clockwise){
 			
+			if(destinationCounter == 0){
+				if(getX() == pointX && getY() == pointY)
+					destinationCounter = 2;
+			}
+			
 
 			switch(destinationCounter){
 			case 0: moveToY(pointY);

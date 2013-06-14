@@ -11,7 +11,7 @@ public interface FileLink{
 	File menuFile = new File("resources/images/menu.png");
 	File buttonFile = new File("resources/images/interface/button.png");
 	
-	File ingameMenuFile = new File("resources/images/interface/ingameMenu.png");
+	File igmBorderFile = new File("resources/images/interface/ingameMenu.png");
 	
 	File magicID00 = new File("resources/images/magic/magicID00.png");
 	File magicID01 = new File("resources/images/magic/magicID01.png");

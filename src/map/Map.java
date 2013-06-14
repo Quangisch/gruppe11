@@ -165,7 +165,7 @@ abstract class Map{
 		this.overWorld = overWorld;
 	}
 	
-	
+	public BufferedImage getMapImage(){return mapImage;}
 	public synchronized int getXCoordinate(){return x;}
 	public synchronized int getYCoordinate(){return y;}
 	public int getWidthMap(){return width;}

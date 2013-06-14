@@ -103,10 +103,14 @@ public class Board extends JPanel implements Runnable{
 				g2d.drawImage(topMap, OverWorldNavigator.getInstance().getXCoordinate(), OverWorldNavigator.getInstance().getYCoordinate(), this);
 			
 			if(PlayerInterface.getInstance().getIniStatus());
-			PlayerInterface.getInstance().draw(g2d);
+				PlayerInterface.getInstance().draw(g2d);
+			
+			if(GameManager.ingameMenu)
+				IngameMenu.getInstance().draw(g2d);
+			
 		}
 		
-		//g2d.draw(Player.getInstance().getBoundDirection(0));
+		
 		
 		
 	}

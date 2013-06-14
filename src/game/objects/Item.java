@@ -10,10 +10,10 @@ abstract class Item extends Moveable{
 		setSubSpriteHeight(25);
 		setSubSpriteWidth(25);
 		
-		setCoreX(10);
-		setCoreY(15);
-		setCoreWidth(40);
-		setCoreHeight(40);
+		setCoreX(12);
+		setCoreY(20);
+		setCoreWidth(45);
+		setCoreHeight(45);
 		
 		setAlive(true);
 	}

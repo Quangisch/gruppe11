@@ -316,6 +316,7 @@ g2d.fillRect(0, 0, 10, 10);
 	
 	protected void setEnemy(){
 		
+		MarioDark.deleteAllInstances();
 		//check and instantiate Enemy
 		ArrayList<EnemyData<Integer, int[], int[]>> enemyDataMap = getEnemyDataMap(getXMap(), getYMap());
 		
