@@ -85,6 +85,7 @@ abstract class DungeonObjectManager extends Map{
 		protected void addObjectBound(int xMapTmp, int yMapTmp, int layer, int orientation, int xTile, int yTile, int dimension, Rectangle objectElement){
 			objectBound[xMapTmp][yMapTmp][layer][orientation][xTile][yTile][dimension] = objectElement;
 			
+			
 		}
 		
 		
@@ -105,7 +106,7 @@ abstract class DungeonObjectManager extends Map{
 								
 								mapObjectBound[layer][orientation][xTile][yTile][element] = objectBound[xMapTmp][yMapTmp][layer][orientation][xTile][yTile][element];
 								//mapObjectBound[layer][orientation][xTile][yTile][element] = objectBound[3][3][3][orientation][xTile][yTile][element];
-								//addWallBoundNPaint(mapObjectBound[layer][orientation][xTile][yTile][element]);
+								//addWallBoundPaint(mapObjectBound[layer][orientation][xTile][yTile][element]);
 								
 								////objectBound[xMap][yMap][layer][orientation][xTile][yTile][dimension]
 								

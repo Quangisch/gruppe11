@@ -78,7 +78,7 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 	private BufferedImage mapImageWall = new BufferedImage(810*4,630*4,BufferedImage.TYPE_INT_ARGB);
 	private BufferedReader readDataBuff;
 	
-	private final String[] layerHeader = {"#floor2#","#floor1#","#wall2#","#wall1#","#door#","#objects#","#interaction#","###"};
+	private final String[] layerHeader = {"#floor2#","#floor1#","#wall2#","#wall1#","###"};
 	//private final String[] layerHeader = {"#floor2#","#floor1#","#wall2#","#wall1#","###"};
 	private final String[] navigationHeader = {"#toExit#", "#toNorth#", "#toEast#", "#toSouth#", "#toWest#"};
 	private final String[] mapInformation = {"#enemy#","trap"};
@@ -782,7 +782,7 @@ g2d.fillRect(0, 0, 10, 10);
 				
 					LayerData:
 					//Layer
-						for(int layerID = 6; layerID >= 0; layerID--){
+						for(int layerID = 3; layerID >= 0; layerID--){
 							
 							readDataBuff.mark(10);
 							searchLine = readDataBuff.readLine(); //LayerName

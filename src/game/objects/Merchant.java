@@ -17,11 +17,12 @@ public class Merchant extends NPC implements Runnable, FileLink{
 	private ScheduledExecutorService execRun;
 	
 	private String[] text = {"What do you want to buy?",
-			"1 HP-Potion   2G/n2 ManaPotion  2G/n3 Armor Lvl2 10G/n4 Magic Lvl2 15G", 
+			"1 HP-Potion   2G/n2 ManaPotion  2G/n3 WeaponLvl2  8G/n4 Armor Lvl2 10G/n5 Magic Lvl2 12G", 
 			"Thank you!", 
-			"You don't have enough money...",
-			"You don't need anything?"};
+			"You dont have enough money...",
+			"You dont need anything?"};
 	private int textCounter = 0;
+	private int oldCounter = -1;
 	
 	private Merchant(int posX, int posY){
 		System.out.println("--> construct Merchant");
@@ -60,34 +61,30 @@ public class Merchant extends NPC implements Runnable, FileLink{
 	
 	private void interact(){
 		
-		boolean prompt = GameManager.promptText;
-		
 		if(GameManager.promptText){
 			System.out.println("promptText:true -> buildText");
-			PlayerInterface.getInstance().setText(text[textCounter]);
-			PlayerInterface.getInstance().buildText();
-			
-		}
-		
-		if(textCounter == 0 && prompt){
-			prompt = false;
-			textCounter = 1;
-		}
-		
-		
-		
-			
-		if(textCounter == 1){
-			/*
-			if(prompt){
-				prompt = false;
-				textCounter = 4;
+			if(oldCounter != textCounter)
 				PlayerInterface.getInstance().setText(text[textCounter]);
-				PlayerInterface.getInstance().buildText();
+			else{
 				
+				if(textCounter == 1){
+					textCounter = 4;
+					PlayerInterface.getInstance().setText(text[textCounter]);
+				} else
+					GameManager.interact = false;
 			}
-			*/
+				
+			
+
+			PlayerInterface.getInstance().buildText();
+			oldCounter = textCounter;
+		}
+		
+		if(textCounter == 0 && textCounter == oldCounter)
+			textCounter = 1;
 	
+		if(textCounter == 1){
+			
 			if(GameManager.interactKey == 1){
 				
 				boolean buy = Player.getInstance().useMoney(2);
@@ -106,6 +103,7 @@ public class Merchant extends NPC implements Runnable, FileLink{
 				GameManager.promptText = true;
 				System.out.println("Buy Potion@"+buy);
 			}
+			
 			if(GameManager.interactKey == 2){
 				boolean buy = Player.getInstance().useMoney(2);
 				if(buy){
@@ -119,10 +117,24 @@ public class Merchant extends NPC implements Runnable, FileLink{
 				GameManager.interactKey = 0;
 				GameManager.promptText = true;
 			}
+			
 			if(GameManager.interactKey == 3){
+				boolean buy = Player.getInstance().useMoney(8);
+				if(buy){
+					ItemListManager.dropItem(getX(),getY()+50,2,0,1);
+					textCounter = 2;
+					setLastDirection(5);
+				}
+					
+				else
+					textCounter = 3;
+				GameManager.interactKey = 0;
+				GameManager.promptText = true;
+			}
+			if(GameManager.interactKey == 4){
 				boolean buy = Player.getInstance().useMoney(10);
 				if(buy){
-					ItemListManager.dropItem(getX(),getY()+50,3,0,0);
+					ItemListManager.dropItem(getX(),getY()+50,3,0,1);
 					textCounter = 2;
 					setLastDirection(5);
 				}
@@ -132,8 +144,8 @@ public class Merchant extends NPC implements Runnable, FileLink{
 				GameManager.promptText = true;
 				GameManager.interactKey = 0;
 			}
-			if(GameManager.interactKey == 4){
-				boolean buy = Player.getInstance().useMoney(15);
+			if(GameManager.interactKey == 5){
+				boolean buy = Player.getInstance().useMoney(12);
 				if(buy){
 					ItemListManager.dropItem(getX(),getY()+50,4,0,1);
 					textCounter = 2;
@@ -145,13 +157,9 @@ public class Merchant extends NPC implements Runnable, FileLink{
 				GameManager.interactKey = 0;
 				GameManager.promptText = true;
 			}
-		}
 			
-		
-		if(textCounter == 4 && prompt)
-			GameManager.interact = false;
-		
-	
+		}
+
 	}
 	
 	

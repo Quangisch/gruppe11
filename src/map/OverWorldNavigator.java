@@ -172,6 +172,7 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 					GameManager.dungeon = true;
 					GameManager.overWorld = false;
 					GameManager.mapLoaded = false;
+					DungeonNavigator.resetInstance();
 					DungeonNavigator.getInstance().initializeMap(xMap, yMap, mapID, xPlayer, yPlayer);
 					System.out.println("dungeonMap_");
 				}
@@ -192,7 +193,7 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 			
 	}
 	
-	public static void deleteInstance(){
+	public static void resetInstance(){
 		overWorldNavigator = null;
 	}
 	

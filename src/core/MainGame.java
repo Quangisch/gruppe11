@@ -71,29 +71,8 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		player.initializeAttributes(2, 3.5, true, 0, 75, 45, 20);
 		player.initializePosition(600, 350, 5);
 		GameManager.addGameObject(player);
-		
-		/*
-		MarioDark.getInstance(true, 0).initializeImage(enemyDark, 90, 120, 8);
-		MarioDark.getInstance(false, 0).initializeAttributes(2, 3, true, 0, 75, 45, 20);
-		MarioDark.getInstance(false, 0).initializePosition(200, 100, 5);
-		MarioDark.getInstance(false, 0).setBehaviour(3);
-		GameManager.addGameObject(MarioDark.getInstance(false, 0));
-		*/
-		/*
-		MarioDark.getInstance(true, 0).initializeImage(enemyBright, 90, 120, 8);
-		MarioDark.getInstance(false, 0).initializeAttributes(2, 3, true, 0, 75, 45, 20);
-		MarioDark.getInstance(false, 0).initializePosition(200, 300, 5);
-		MarioDark.getInstance(false, 0).setBehaviour(2);
-		MarioDark.getInstance(false, 0).setMoveableType(2);
-		GameManager.addGameObject(MarioDark.getInstance(false, 0));
-		*/
-		//System.out.println("=======>>>"+MarioDark.checkInstanceAlive(1));
-		
-		PlayerInterface.getInstance().initializeInterface();
-		PlayerInterface.getInstance().buildInterface();
-		PlayerInterface.getInstance().setText("bli bla blub/nHRRRR/nwhut up?/n/Yoloooo/nyawn.../n...+_+/nstop it!");
-		
-		
+
+	
 		System.out.println("===>ini.Objects");
 
 	}
@@ -112,7 +91,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		}
 			
 		if(GameManager.dungeon)
-			DungeonNavigator.getInstance().initializeMap(1,1,0,600,200);
+			DungeonNavigator.getInstance().initializeMap(1,0,0,100,500);
 		
 		
 		

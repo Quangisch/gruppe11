@@ -39,7 +39,7 @@ public class IngameMenu implements FileLink{
 		g2d.drawImage(igmBorderBuff, 0, 0, null);
 		
 		double[] inventoryList = Player.getInstance().getInventory();
-		
+		int length;
 		
 		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
 		for(int i = 0; i < (new Double(inventoryList[2]).intValue()); i++)
@@ -51,12 +51,13 @@ public class IngameMenu implements FileLink{
 		
 		
 		if(Player.getInstance().getManaPool() > 0){
-			g2d.drawImage(manaPoolBuff, 510-(int)(10*inventoryList[3]), 365, (int)(inventoryList[3]*100*inventoryList[4])-5, 25, null);
+			g2d.drawImage(manaPoolBuff, 510-(int)(10*inventoryList[3]), 365, (int)(inventoryList[3]*100)-5, 25, null);
 		}
 		g2d.drawImage(manaBarBuff, 500, 365, (int)(100*inventoryList[4]),25,null);
 		
 		String lvl = ("Lvl "+(new Double(inventoryList[5]).intValue()));
-		for(int i = 0; i < 5; i++){
+		length = lvl.length();
+		for(int i = 0; i < length; i++){
 			String singleChar = lvl.substring(0, 1);
 			lvl = lvl.substring(1);
 			g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),500+i*10,395,30,30,null);
@@ -64,7 +65,8 @@ public class IngameMenu implements FileLink{
 		
 		g2d.drawImage(itemListBuff.getSubimage(0, 200, 25, 25),650,385,50,50,null);
 		String key = ("x"+(new Double(inventoryList[8]).intValue()));
-		for(int i = 0; i < key.length()+2; i++){
+		length = key.length();
+		for(int i = 0; i < length; i++){
 			String singleChar = key.substring(0, 1);
 			key = key.substring(1);
 			g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),660+i*10,395,30,30,null);
@@ -72,44 +74,103 @@ public class IngameMenu implements FileLink{
 		
 		g2d.drawImage(itemListBuff.getSubimage(0, 0, 25, 25),700,380,60,60,null);
 		String coin = ("x"+(new Double(inventoryList[0]).intValue()));
-		for(int i = 0; i < coin.length()+1; i++){
+		length = coin.length();
+		for(int i = 0; i < length; i++){
 			String singleChar = coin.substring(0, 1);
 			coin = coin.substring(1);
 			g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),720+i*10,395,30,30,null);
 		}
 		
-		if(inventoryList[9]>0)
-			g2d.drawImage(itemListBuff.getSubimage(0, 125, 25, 25),500,440,60,60,null);
+		/*
+		 * case 0: setArmor(0.8, 25); break;
+		case 1: setArmor(1.0, 50); break;
+		case 0:	weaponDamage = 1; break;
+		case 1: weaponDamage = 1.7; break;
+		 */
 		
+		//weapon
+		if(inventoryList[9] >= 0.5){
+			g2d.drawImage(itemListBuff.getSubimage(0, 125, 25, 25),500,440,60,60,null);
+			
+			String weaponLevel = "";
+			if(inventoryList[9] >= 0.5 && inventoryList[9] < 1.5)
+				weaponLevel = "Lvl 1";
+			if(inventoryList[9] >= 1.5 && inventoryList[10] < 2.5)
+				weaponLevel = "Lvl 2";
+			
+			length =  weaponLevel.length();
+			for(int i = 0; i < length; i++){
+				String singleChar = weaponLevel.substring(0, 1);
+				weaponLevel = weaponLevel.substring(1);
+				g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),500+i*10,500,30,30,null);
+			}
+			
+		}
+			
+		
+		//armor
 		if(inventoryList[10]>0){
 			g2d.drawImage(itemListBuff.getSubimage(0, 150, 25, 25),580,440,60,60,null);
 			String armor = ((new Double(inventoryList[10]*100).intValue())+"%");
-			for(int i = 0; i < armor.length()+2; i++){
+			length =  armor.length();
+			for(int i = 0; i < length; i++){
 				String singleChar = armor.substring(0, 1);
 				armor = armor.substring(1);
 				g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),600+i*10,470,30,30,null);
 			}
+			
+			String armorLevel = "";
+			if(Player.getInstance().getArmorDurability() >= 0 && Player.getInstance().getArmorDurability() < 50)
+				armorLevel = "Lvl 1";
+			if(Player.getInstance().getArmorDurability() >= 50 && Player.getInstance().getArmorDurability() < 100)
+				armorLevel = "Lvl 2";
+			
+			length =  armorLevel.length();
+			for(int i = 0; i < length; i++){
+				String singleChar = armorLevel.substring(0, 1);
+				armorLevel = armorLevel.substring(1);
+				g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),580+i*10,500,30,30,null);
+			}
+		}
+		
+		//MagicLevel
+		if(inventoryList[6] > 0){
+			for(int i = 0; i < inventoryList[6]; i++)
+				g2d.drawImage(itemListBuff.getSubimage(0+i*25, 175, 25, 25),650+i*50,440,60,60,null);
+			
+			String magicLevel = "";
+			if(inventoryList[6]  == 1)
+				magicLevel = "Lvl 1";
+			if(inventoryList[6] == 2)
+				magicLevel = "Lvl 2";
+			
+			length =  magicLevel.length();
+			for(int i = 0; i < length; i++){
+				String singleChar = magicLevel.substring(0, 1);
+				magicLevel = magicLevel.substring(1);
+				g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),660+i*10,500,30,30,null);
+			}
 		}
 		
 		
-		for(int i = 0; i < inventoryList[6]; i++)
-			g2d.drawImage(itemListBuff.getSubimage(0+i*25, 175, 25, 25),650+i*50,440,60,60,null);
-		
-	
-		if(inventoryList[11]>0){
+		//HealthPotion
+		if(inventoryList[11] > 0){
 			g2d.drawImage(itemListBuff.getSubimage(0, 75, 25, 25),105,105,60,60,null);
 			String hpPotion = ("x"+(new Double(inventoryList[11]).intValue()));
-			for(int i = 0; i < hpPotion.length()+2; i++){
+			length = hpPotion.length();
+			for(int i = 0; i < length; i++){
 				String singleChar = hpPotion.substring(0, 1);
 				hpPotion = hpPotion.substring(1);
 				g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),110+i*10,110,30,30,null);
 			}
 		}
 		
+		//ManaPotion
 		if(inventoryList[12]>0){
 			g2d.drawImage(itemListBuff.getSubimage(0, 100, 25, 25),105,150,60,60,null);
 			String manaPotion = ("x"+(new Double(inventoryList[12]).intValue()));
-			for(int i = 0; i < manaPotion.length()+2; i++){
+			length = manaPotion.length();
+			for(int i = 0; i < length; i++){
 				String singleChar = manaPotion.substring(0, 1);
 				manaPotion = manaPotion.substring(1);
 				g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),110+i*10,155,30,30,null);

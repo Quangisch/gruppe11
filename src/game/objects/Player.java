@@ -21,6 +21,7 @@ public class Player extends PlayerObjectManager implements Runnable{
 	private boolean horizontalLock;
 	private boolean verticalLock;
 	private boolean interactLock;
+	private boolean godlikeModus;
 	
 	
 	private Player(){
@@ -39,6 +40,13 @@ public class Player extends PlayerObjectManager implements Runnable{
 			move();
 			automaticManaRegen();
 			setMaxLife();
+			
+			if(godlikeModus){
+				if(getLife() +0.25 <= getMaxLife())
+				setLife(getLife()+0.25);
+				if(getManaPool() +0.1 <= getMaxMana())
+				setManaPool(getManaPool()+0.1);
+			}
 		}
 		
 		
@@ -113,6 +121,9 @@ public class Player extends PlayerObjectManager implements Runnable{
 		}
 		if(key == KeyEvent.VK_4){
 			GameManager.interactKey = 4;
+		}
+		if(key == KeyEvent.VK_5){
+			GameManager.interactKey = 5;
 		}
 		
 		//extended Camera
@@ -291,6 +302,10 @@ public class Player extends PlayerObjectManager implements Runnable{
 		if(key == KeyEvent.VK_K){
 			ItemListManager.dropItem(getX(), getY(), 0, 0, 0);
 			
+		}
+		
+		if(key == KeyEvent.VK_G){
+			godlikeModus = !godlikeModus;
 		}
 		
 		if(key == KeyEvent.VK_0){

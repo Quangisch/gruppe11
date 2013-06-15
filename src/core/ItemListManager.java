@@ -21,9 +21,11 @@ public enum ItemListManager implements FileLink{
 	HEALTHPOTION(1, 0, 0, itemListID00, 0, 3, 2),
 	MANAPOTION(1, 1, 0, itemListID00, 0, 4, 2),
 	
-	WEAPON(2, 0, 0, itemListID00, 0, 5, 0),
+	WEAPON1(2, 0, 0, itemListID00, 0, 5, 0),
+	WEAPON2(2, 0, 1, itemListID00, 0, 5, 0),
 	
-	ARMOR(3, 0, 0, itemListID00, 0, 6, 0),
+	ARMOR1(3, 0, 0, itemListID00, 0, 6, 0),
+	ARMOR2(3, 0, 1, itemListID00, 0, 6, 0),
 	
 	SPELL1(4, 0, 0, itemListID00, 0, 7, 0),
 	SPELL2(4, 0, 1, itemListID00, 1, 7, 0),

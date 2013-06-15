@@ -23,6 +23,14 @@ public class CollisionDetection implements Runnable{
 	
 	public void run(){
 	
+		while(!GameManager.mapLoaded){
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		GameManager.updateGameObject();
 		moveableObject = GameManager.getMoveableList();
 	
@@ -91,7 +99,7 @@ public class CollisionDetection implements Runnable{
 			dungeonNavigator = DungeonNavigator.getInstance();
 			overWorldNavigator = OverWorldNavigator.getInstance();
 		}
-			
+		
 		return collisionDetection;
 	}
 	

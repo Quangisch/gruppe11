@@ -515,21 +515,21 @@ abstract class DungeonCollision extends DungeonBuilder{
 					for(int element = 0; element < 3; element++){
 						
 				
-						if(object.getBoundS().intersects(mapObjectBound[layer][1][xTile][yTile][element]))
-							object.setObjectBack(10,0,true,(mapObjectBound[layer][1][xTile][yTile][element]));
-						if(object.getBoundS().intersects(mapObjectBound[layer][3][xTile][yTile][element]))
-							object.setObjectBack(10,0,true,(mapObjectBound[layer][3][xTile][yTile][element]));
-						if(object.getBoundS().intersects(mapObjectBound[layer][5][xTile][yTile][element]))
-							object.setObjectBack(10,0,true,(mapObjectBound[layer][5][xTile][yTile][element]));
-						if(object.getBoundS().intersects(mapObjectBound[layer][7][xTile][yTile][element]))
-							object.setObjectBack(10,0,true,(mapObjectBound[layer][7][xTile][yTile][element]));
-						if(object.getBoundS().intersects(mapObjectBound[layer][2][xTile][yTile][element]))
+						if(object.getBoundCore().intersects(mapObjectBound[layer][1][xTile][yTile][element]))
+							object.setObjectBack(10,1,true,(mapObjectBound[layer][1][xTile][yTile][element]));
+						if(object.getBoundCore().intersects(mapObjectBound[layer][3][xTile][yTile][element]))
+							object.setObjectBack(10,3,true,(mapObjectBound[layer][3][xTile][yTile][element]));
+						if(object.getBoundCore().intersects(mapObjectBound[layer][5][xTile][yTile][element]))
+							object.setObjectBack(10,5,true,(mapObjectBound[layer][5][xTile][yTile][element]));
+						if(object.getBoundCore().intersects(mapObjectBound[layer][7][xTile][yTile][element]))
+							object.setObjectBack(10,7,true,(mapObjectBound[layer][7][xTile][yTile][element]));
+						if(object.getBoundCore().intersects(mapObjectBound[layer][2][xTile][yTile][element]))
 							object.setObjectBack(10,0,true,(mapObjectBound[layer][2][xTile][yTile][element]));
-						if(object.getBoundS().intersects(mapObjectBound[layer][4][xTile][yTile][element]))
+						if(object.getBoundCore().intersects(mapObjectBound[layer][4][xTile][yTile][element]))
 							object.setObjectBack(10,0,true,(mapObjectBound[layer][4][xTile][yTile][element]));
-						if(object.getBoundS().intersects(mapObjectBound[layer][6][xTile][yTile][element]))
+						if(object.getBoundCore().intersects(mapObjectBound[layer][6][xTile][yTile][element]))
 							object.setObjectBack(10,0,true,(mapObjectBound[layer][6][xTile][yTile][element]));
-						if(object.getBoundS().intersects(mapObjectBound[layer][8][xTile][yTile][element]))
+						if(object.getBoundCore().intersects(mapObjectBound[layer][8][xTile][yTile][element]))
 							object.setObjectBack(10,0,true,(mapObjectBound[layer][8][xTile][yTile][element]));
 							
 						
@@ -605,27 +605,27 @@ abstract class DungeonCollision extends DungeonBuilder{
 		int y = yTile * 90;
 		
 		if(orientation == 2){
-			addObjectBound(xMap,yMap,layer,3,xTile,yTile,0,new Rectangle(x,y,45,45));
-			addObjectBound(xMap,yMap,layer,3,xTile,yTile,1,new Rectangle(x+45,y+45,45,45));
+			addObjectBound(xMap,yMap,layer,1,xTile,yTile,0,new Rectangle(x,y,45,45));
+			addObjectBound(xMap,yMap,layer,2,xTile,yTile,1,new Rectangle(x+45,y+45,45,45));
 			addObjectBound(xMap,yMap,layer,3,xTile,yTile,2,new Rectangle(x+45,y,45,45));
 		}
 	
 		if(orientation == 4){
 			addObjectBound(xMap,yMap,layer,3,xTile,yTile,0,new Rectangle(x+45,y,45,45));
-			addObjectBound(xMap,yMap,layer,3,xTile,yTile,1,new Rectangle(x,y+45,45,45));
-			addObjectBound(xMap,yMap,layer,3,xTile,yTile,2,new Rectangle(x+45,y+45,45,45));
+			addObjectBound(xMap,yMap,layer,4,xTile,yTile,1,new Rectangle(x,y+45,45,45));
+			addObjectBound(xMap,yMap,layer,5,xTile,yTile,2,new Rectangle(x+45,y+45,45,45));
 		}
 		
 		if(orientation == 6){
-			addObjectBound(xMap,yMap,layer,3,xTile,yTile,0,new Rectangle(x,y,45,45));
-			addObjectBound(xMap,yMap,layer,3,xTile,yTile,1,new Rectangle(x+45,y+45,45,45));
-			addObjectBound(xMap,yMap,layer,3,xTile,yTile,2,new Rectangle(x,y+45,45,45));
+			addObjectBound(xMap,yMap,layer,4,xTile,yTile,0,new Rectangle(x,y,45,45));
+			addObjectBound(xMap,yMap,layer,5,xTile,yTile,1,new Rectangle(x+45,y+45,45,45));
+			addObjectBound(xMap,yMap,layer,6,xTile,yTile,2,new Rectangle(x,y+45,45,45));
 		}
 		
 		if(orientation == 8){
-			addObjectBound(xMap,yMap,layer,3,xTile,yTile,0,new Rectangle(x+45,y,45,45));
-			addObjectBound(xMap,yMap,layer,3,xTile,yTile,1,new Rectangle(x,y+45,45,45));
-			addObjectBound(xMap,yMap,layer,3,xTile,yTile,2,new Rectangle(x,y,45,45));
+			addObjectBound(xMap,yMap,layer,6,xTile,yTile,0,new Rectangle(x+45,y,45,45));
+			addObjectBound(xMap,yMap,layer,7,xTile,yTile,1,new Rectangle(x,y+45,45,45));
+			addObjectBound(xMap,yMap,layer,8,xTile,yTile,2,new Rectangle(x,y,45,45));
 		}
 		
 		if(orientation != 2 && orientation != 4 && orientation != 6 && orientation != 8)

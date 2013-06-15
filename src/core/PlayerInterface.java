@@ -129,18 +129,20 @@ public class PlayerInterface implements FileLink{
 	
 	private PlayerInterface(){
 		System.err.println("construct PlayerInterface");
+		initializeInstance();
 		
 	}
 	
 	public void setDynamicInterface(String dynamicString, Moveable object, boolean newLayer){
 		//String dynamicString = "1xp";
+		System.out.println(dynamicString + "@lenght:"+dynamicString.length());
 		
 		if(newLayer)
 			dynamicInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 		
 		BufferedImage dynamicBuff = new BufferedImage(810,630,BufferedImage.TYPE_INT_ARGB);
-		
-		for(int index = 0; index < dynamicString.length()+2; index++){
+		int length = dynamicString.length();
+		for(int index = 0; index < length; index++){
 			String singleChar = dynamicString.substring(0,1);
 			dynamicString = dynamicString.substring(1);
 			System.out.println("singleChar@"+singleChar);
@@ -172,7 +174,7 @@ public class PlayerInterface implements FileLink{
 			if(dynamicInterface != null && dynamicStatus){
 				g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, dynamicOpacityCounter));
 				g2d.drawImage(dynamicInterface, 10+Player.getInstance().getX(),-30+Player.getInstance().getY(), Board.getInstance());
-				dynamicOpacityCounter -= 0.06;
+				dynamicOpacityCounter -= 0.04;
 				dynamicResizeCounter += 0.5;
 				if(dynamicOpacityCounter <= 0){
 					dynamicStatus = false;
@@ -189,7 +191,7 @@ public class PlayerInterface implements FileLink{
 		
 	}
 	
-	public void initializeInterface(){
+	public void initializeInstance(){
 	
 		visible = true;
 		
@@ -295,8 +297,9 @@ public class PlayerInterface implements FileLink{
 		
 		
 		if(Player.getInstance().getManaPool() > 0){
-			upperInterface.createGraphics().drawImage(manaPoolBuff, 20-(int)(10*(Player.getInstance().getManaPool()/Player.getInstance().getMaxMana())), 40, (int)(Player.getInstance().getManaPool()*248)-5, 47, null);
+			upperInterface.createGraphics().drawImage(manaPoolBuff, 20-(int)((10*Player.getInstance().getManaPool()/Player.getInstance().getMaxMana())), 40, (int)(Player.getInstance().getManaPool()/Player.getInstance().getMaxMana()*248)-5, 47, null);
 		}
+		//System.out.println("Mana@"+(Player.getInstance().getManaPool()/Player.getInstance().getMaxMana()*100)+"%");
 		
 		upperInterface.createGraphics().drawImage(coinBuff, 770, 10, null);
 		Integer coins = Player.getInstance().getCoin();
@@ -318,7 +321,7 @@ public class PlayerInterface implements FileLink{
 		if(spellType == 1)
 			spellBuff.createGraphics().drawImage(itemListBuff.getSubimage(25, 175, 25, 25), 0,0,50,50,0,0,25,25,null);
 		
-		if(Player.getInstance().getAttackDamage() == 1)
+		if(Player.getInstance().getAttackDamage() >= 0.5)
 			weaponBuff.createGraphics().drawImage(itemListBuff.getSubimage(0, 125, 25, 25), 0,0,50,50,0,0,25,25,null);
 			
 		upperInterface.createGraphics().drawImage(weaponBuff,350,10,null);

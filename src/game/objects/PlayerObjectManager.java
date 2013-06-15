@@ -13,9 +13,12 @@ abstract class PlayerObjectManager extends Initializer{
 	private double manaPool = 0.7; //value between 0 and maxMana (= full Mana)
 	private double armor = 0; //value between 0 and 1: 1 = invinciblemode
 	private double armorDurability = 0;
+	private double weaponDamage = 0.2;
 	
+	private int level = 1;
 	private int maxLife = 3;
 	
+	private int magicLevel = 1;
 	private int magicSpell = 0;
 	private double manaRegen = 0.0001;
 	
@@ -26,9 +29,9 @@ abstract class PlayerObjectManager extends Initializer{
 	private int manaPotionInventory;
 	
 	private int experience;
-	private double weaponDamage = 2;
-	private int magicLevel = 1;
-	private int level = 1;
+	
+	
+	
 	
 	
 	protected PlayerObjectManager(){
@@ -55,20 +58,13 @@ abstract class PlayerObjectManager extends Initializer{
 		
 		inventoryList[11] = healthPotionInventory;
 		inventoryList[12] = manaPotionInventory;
-		
-		
-		
-		
-		
-		
-		
-		
+
 		return inventoryList;
 	}
 	
 	public void addExperience(int xp){
 		
-		String xpString = ((new Integer(xp)).toString() + "xp");
+		String xpString = (new Integer(xp)).toString() + "xp";
 		PlayerInterface.getInstance().setDynamicInterface(xpString, this, false);
 		int oldLevel = level;
 		experience += xp;
@@ -87,11 +83,11 @@ abstract class PlayerObjectManager extends Initializer{
 	private void levelUp(){
 		
 		switch(level){
-			case 1: maxLife = 4; maxMana = 1.2; break;
-			case 2: maxLife = 5; maxMana = 1.4; break;
-			case 3: maxLife = 6; maxMana = 1.6; break;
-			case 4: maxLife = 7; maxMana = 1.8; break;
-			case 5: maxLife = 8; maxMana = 2.0; break;
+			case 1: maxLife = 3; maxMana = 1.0; break;
+			case 2: maxLife = 4; maxMana = 1.2; break;
+			case 3: maxLife = 5; maxMana = 1.4; break;
+			case 4: maxLife = 6; maxMana = 1.6; break;
+			case 5: maxLife = 7; maxMana = 2.8; break;
 		}
 		System.out.println("Level Up! @Lvl:"+level);
 		setLife(maxLife);
@@ -112,6 +108,10 @@ abstract class PlayerObjectManager extends Initializer{
 	
 	public double getMaxMana(){
 		return maxMana;
+	}
+	
+	public double getMaxLife(){
+		return maxLife;
 	}
 	
 	//attack
@@ -135,6 +135,7 @@ abstract class PlayerObjectManager extends Initializer{
 	}
 	
 	public double getArmor(){return armor;}
+	public double getArmorDurability(){return armorDurability;}
 	
 	public void loseLife(int damage){
 		
@@ -191,7 +192,6 @@ abstract class PlayerObjectManager extends Initializer{
 			
 		}
 			
-		
 		if(manaPool > maxMana)
 			manaPool = maxMana;
 		
@@ -244,7 +244,8 @@ abstract class PlayerObjectManager extends Initializer{
 		if(ID == 3){
 			if(type == 0){
 				switch(member){
-				case 0: setArmor(0.8, 30); break;
+				case 0: setArmor(0.8, 25); break;
+				case 1: setArmor(1.0, 50); break;
 				}
 			}
 		}
@@ -334,7 +335,7 @@ abstract class PlayerObjectManager extends Initializer{
 		return use;
 	}
 	
-
+	
 	
 	private class ItemInventory<I,T,M>{
 		final I ID;

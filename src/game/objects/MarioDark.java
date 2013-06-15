@@ -135,10 +135,10 @@ public class MarioDark extends NPCLogic implements Runnable{
 		
 		
 		if(!dropKey){
-			if(random1 < 65){
-				if(random1 > 40)
+			if(random1 < 75){
+				if(random1 > 55)
 					ItemListManager.dropItem(getX(), getY(), 0, 1, 0);
-				else if(random1 > 15)
+				else if(random1 > 35)
 					ItemListManager.dropItem(getX(), getY(), 0, 2, 0);
 				else
 					ItemListManager.dropItem(getX(), getY(), 0, 0, 0);
@@ -203,7 +203,7 @@ public class MarioDark extends NPCLogic implements Runnable{
 		for(int i = 0; i < MAXINSTANCE; i++){
 			if(marioDark[i] != null){
 				marioDark[i].setAlive(false);
-				//marioDark[i].deleteInstance();
+				marioDark[i].spawnLock = false;
 			}
 		}
 		//instanceCounter = 0;	

@@ -32,52 +32,60 @@ public class Guide extends NPC implements Runnable{
 
 	public void run(){
 		
-		System.out.println(getReachDestination());
-		
-		if(this.getBound().intersects(Player.getInstance().getBoundCore()) && GameManager.interact){
-			GameManager.showIngameText = true;
-			interact();
-			System.out.println("TxtCounter@"+textCounter+"interact");
+		if(GameManager.overWorld){
+			if(this.getBound().intersects(Player.getInstance().getBoundCore()) && GameManager.interact){
+				GameManager.showIngameText = true;
+				interact();
+				//System.out.println("TxtCounter@"+textCounter+"interact");
+					
+				if(getReachDestination() && ItemListManager.weaponIDCounter[0] == 1){
+					ItemListManager.weaponIDCounter[0] = 0;
+					ItemListManager.dropItem(getX(),getY()-50,2,0,0);
+				}
 				
-			if(getReachDestination() && ItemListManager.weaponIDCounter[0] == 1){
-				ItemListManager.weaponIDCounter[0] = 0;
-				ItemListManager.dropItem(getX(),getY()-50,2,0,0);
-			}
+			} else {
+				//System.out.println("TxtCounter@"+textCounter+"else");
+				GameManager.interact = false;
+				GameManager.showIngameText = false;
+			} 
 			
-		} else {
-			System.out.println("TxtCounter@"+textCounter+"else");
-			GameManager.interact = false;
-			GameManager.showIngameText = false;
-		} 
-		
-		
-		if(!getReachDestination()){
 			
-			if(textCounter == 0){
+			if(!getReachDestination()){
+				
+				if(textCounter == 0){
+					setSpeed(1);
+					followObject(Player.getInstance());
+				}
+				
+				//System.out.println("Guide@Pos"+getX()+"x"+getY());
+
+				if(textCounter == 1 && !GameManager.interact)
+					executePattern();
+				
+			} else {
+				textCounter = 2;
 				setSpeed(1);
 				followObject(Player.getInstance());
 			}
-			
-			System.out.println("Guide@Pos"+getX()+"x"+getY());
-
-			if(textCounter == 1 && !GameManager.interact)
-				executePattern();
-			
-		} else {
-			textCounter = 2;
-			setSpeed(1);
-			followObject(Player.getInstance());
+				
 		}
-			
+		
+		
 	}
 	
 	private void interact(){
 		
 		if(GameManager.promptText){
 			
-			System.out.println("promptText:true -> buildText");
-			if(oldCounter != textCounter)
+			
+			if(oldCounter != textCounter){
 				PlayerInterface.getInstance().setText(text[textCounter]);
+				System.out.println("promptText:true -> buildText");
+			}
+			else {
+				GameManager.interact = false;
+			}
+				
 			
 			PlayerInterface.getInstance().buildText();
 			oldCounter = textCounter;

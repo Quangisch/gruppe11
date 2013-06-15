@@ -126,8 +126,16 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		x = xPos + xMap * 810;
 		y = yPos + yMap * 630;
 		
-		if(this.getBoundCore().intersects(Player.getInstance().getBoundCore())&&GameManager.scrollDirection == 0)
-			Player.getInstance().setObjectBack(5, 0, false, null);
+		if(this.getBoundCore().intersects(Player.getInstance().getBoundCore())&&GameManager.scrollDirection == 0){
+			switch(orientation){
+			case 0: Player.getInstance().setObjectBack(5, 0, false, null);break;
+			case 1: Player.getInstance().setObjectBack(5, 5, false, null);break;
+			case 2: Player.getInstance().setObjectBack(5, 7, false, null);break;
+			case 3: Player.getInstance().setObjectBack(5, 1, false, null);break;
+			case 4: Player.getInstance().setObjectBack(5, 3, false, null);break;
+			}
+		}
+			
 		
 		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 1 && MarioDark.getInstanceCounter() == 0){
 			stop();

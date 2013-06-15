@@ -73,7 +73,7 @@ abstract class NPCLogic extends NPCMove {
 			boolean reachPoint = false;
 			
 			if(Math.abs(getX() - Player.getInstance().getX()) < 150 || Math.abs(getY() - Player.getInstance().getY()) < 150)
-				setSpeed(8);
+				setSpeed(5);
 			else
 				setSpeed(3);
 			

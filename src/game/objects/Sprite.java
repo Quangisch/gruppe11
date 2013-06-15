@@ -247,7 +247,7 @@ abstract class Sprite extends DrawableObject{
 		if(lastDirection == 0 || (lastDirection > 8 && lastDirection < -8))
 			System.err.println("Sprite.Error: Invalid lastDirection Value@setLastDirection");
 		
-		System.err.println("Sprite:LastDirection@"+this.lastDirection);
+		//System.err.println("Sprite:LastDirection@"+this.lastDirection);
 	}
 	
 	protected void setStaticX(int x){this.staticX = x;}
