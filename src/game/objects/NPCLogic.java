@@ -158,7 +158,7 @@ abstract class NPCLogic extends NPCMove {
 	private void checkLife(){
 		if(getLife() <= 0){
 			setAlive(false);
-			setVisibleDrawable(false);
+			setVisible(false);
 			System.out.println("Enemy.Death");
 		}
 	}

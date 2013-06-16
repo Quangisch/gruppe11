@@ -1,15 +1,10 @@
 package game.objects;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import javax.imageio.ImageIO;
 
 import map.Camera;
 import map.DungeonNavigator;
@@ -25,7 +20,7 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 	public static int listCounter;
 	
 	private MapObject mapObject;
-	private int IDNumber;
+	private int ID;
 	private int type;
 	private int orientation;
 	private int xMap, yMap, xPos, yPos;
@@ -36,16 +31,17 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 	private Thread runThread;
 	ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
 	
-	private MapObject(int IDNumber, int type, int orientation, int xMap, int yMap, int xPos, int yPos){
+	private MapObject(int ID, int type, int orientation, int xMap, int yMap, int xPos, int yPos){
+		setMoveableType(-10);
 		mapObject = this;
-		this.IDNumber = IDNumber;
+		this.ID = ID;
 		this.type = type;
 		this.xMap = xMap;
 		this.yMap = yMap;
 		this.xPos = xPos;
 		this.yPos = yPos;
 		this.orientation = orientation;
-		System.err.println("=====> construct MapObject@ID "+IDNumber+", type:"+type+", orientation:"+orientation+", @Pos:"+xPos+"x"+yPos);
+		System.err.println("=====> construct MapObject@ID "+ID+", type:"+type+", orientation:"+orientation+", @Pos:"+xPos+"x"+yPos);
 		initializeMapObject(type, orientation);
 		
 	}
@@ -60,10 +56,9 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		case(0): handleDoor(); break;
 		case(1): handleTrap(); break;
 		case(2): handleTreasure(); break;
-		case(3):	handleBlockBoss(); break;
+		case(3): handleBlockBoss(); break;
 		
 		}
-		
 		//System.out.println("Type@"+type);
 
 	}
@@ -84,7 +79,7 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 			if(Player.getInstance().useKeyInventory())
 				Player.getInstance().setObjectBack(10, 0, false, null);
 			else{
-				GameObjectManager.openDoor(IDNumber);
+				GameObjectManager.openDoor(ID);
 				stop();
 			}
 			
@@ -150,6 +145,30 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 	private void handleTreasure(){
 		x = xPos + xMap * 810;
 		y = yPos + yMap * 630;
+		
+		if((GameManager.dungeon && DungeonNavigator.getInstance().getXMap() == xMap && DungeonNavigator.getInstance().getYMap() == yMap) || GameManager.overWorld){
+			if(this.getBoundCore().intersects(Player.getInstance().getBoundCore()))
+				Player.getInstance().setObjectBack(10, 0, false, null);
+			
+			if(GameObjectManager.openTreasureBox(false, this)){
+				if(!interact){
+					setStaticX(450);
+					setStaticSubSprite(1);
+					interact = true;
+				}	
+			}
+				
+			
+			else if(this.getBoundCore().intersects(Player.getInstance().getBound()) && GameManager.interact){
+				GameObjectManager.openTreasureBox(true, this);
+				//System.out.println("Treasure:open@"+GameObjectManager.openTreasureBox(false, this));
+				
+			}
+				
+			
+			
+		}
+
 	}
 	
 	private void stop(){
@@ -188,7 +207,10 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		setMoveable(false);
 		setAlive(true);
 		
-		Board.getInstance().addMapObject(this);
+		if(type == 1)
+			Board.getInstance().addMapObject(this);
+		else
+			GameManager.addGameObject(this);
 		setStaticSubSprite(1);
 		runThread = new Thread(this);
 		execRun.scheduleWithFixedDelay(runThread, 10, 10, TimeUnit.MILLISECONDS);
@@ -197,7 +219,11 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		
 	}
 	
-	private int getIDNumber(){return IDNumber;}
+	public Integer[] getPositionID(){
+		Integer[] positionID = {xMap, yMap, xPos,yPos};
+		return positionID;
+	}
+	private int getID(){return ID;}
 	
 	public static void deleteAllInstances(){
 		
@@ -208,11 +234,11 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		mapObjectList.clear();
 	}
 	
-	public static void deleteInstance(int IDNumber){
+	public static void deleteInstance(int ID){
 		
 		for(int index = 0; index < mapObjectList.size(); index ++){
 			
-			if(mapObjectList.get(index).getIDNumber() == IDNumber){
+			if(mapObjectList.get(index).getID() == ID){
 				mapObjectList.remove(index);
 				break;
 			}
@@ -220,9 +246,9 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		}
 	}
 	
-	public static void addInstance(int IDNumber, int type, int orientation, int xMap, int yMap, int xPosition, int yPosition){
+	public static void addInstance(int ID, int type, int orientation, int xMap, int yMap, int xPosition, int yPosition){
 	
-		mapObjectList.add(new MapObject(IDNumber, type, orientation, xMap, yMap, xPosition, yPosition));
+		mapObjectList.add(new MapObject(ID, type, orientation, xMap, yMap, xPosition, yPosition));
 		listCounter++;
 
 	}
@@ -242,8 +268,7 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		BROKENFLOOR1(1,0,0,180,90,90,-20,-10,100,100,0),
 		BROKENFLOOR2(1,1,90,180,90,90,0,0,90,90,0),
 		
-		TREASUREC(2,0,360,180,90,90,0,0,90,90,0),
-		TREASUREO(2,1,450,180,90,90,0,0,90,90,0),
+		TREASURE(2,0,360,180,90,90,-15,20,75,55,0),
 		
 		BLOCKSTONEFULL(3,0,630,0,180,180,0,0,180,180,0),
 		BLOCKSTONEN(3,1,630,0,180,90,0,0,180,90,0),

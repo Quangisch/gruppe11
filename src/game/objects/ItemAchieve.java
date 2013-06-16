@@ -18,7 +18,7 @@ public class ItemAchieve extends Item implements Runnable{
 	private ItemAchieve(int xPos, int yPos, int[]itemIDData){
 		System.err.println("construct ItemAchieve");
 		setX(xPos+12);
-		setY(yPos);
+		setY(yPos+1);
 		setMoveableType(-10);
 		initializeInstance(itemIDData);
 	}

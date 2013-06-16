@@ -716,17 +716,7 @@ g2d.fillRect(0, 0, 10, 10);
 									
 									
 									addEnemyData(enemyType, enemyPosition, enemyAttributes);
-									
 								
-									/*
-									readDataBuff.mark(10);
-									searchLine = readDataBuff.readLine();
-									
-									if(searchLine.startsWith("#")){
-										readDataBuff.reset();
-										break;
-									}*/
-									
 									readDataBuff.mark(10);
 									searchLine = readDataBuff.readLine();
 									
@@ -755,6 +745,17 @@ g2d.fillRect(0, 0, 10, 10);
 									String type = dataLine.substring(8, 9);
 									String orientation = dataLine.substring(9, 10);
 									writeMapObjectData(type, orientation, mapIDX, mapIDY, xPosition, yPosition);
+									
+									if(type.contentEquals("2")){
+										dataLine = readDataBuff.readLine();
+										dataLine = dataLine.replace("Item@", "");
+										dataLine = dataLine.replace("x", "");
+										int treasureID  = translateStringToInt(dataLine.substring(0, 1));
+										int treasureType = translateStringToInt(dataLine.substring(1, 2));
+										int treasureMember = translateStringToInt(dataLine.substring(2, 3));
+										int[] treasureData = {treasureID, treasureType, treasureMember};
+										GameObjectManager.getInstance().constructTreasure(mapIDX, mapIDY, translateStringToInt(xPosition), translateStringToInt(yPosition), treasureData);
+									}
 									
 									readDataBuff.mark(10);
 									searchLine = readDataBuff.readLine();

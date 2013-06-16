@@ -349,6 +349,8 @@ overworld
 0809x0120,0050x0100
 #MapObject#
 0270x0180@1x0
+0225x0140@2x0
+Item@1x0x0
 #wall1#
 a01 a02 a03 a04 a02 a03 a04 a05 a09
 b01 x0x x0x e02 g06 b08 x0x x0x b09

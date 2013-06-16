@@ -492,13 +492,13 @@ public class Moveable extends Sprite{
 		public void run() {
 			System.out.println(flashCounter+","+cycleFlash);
 			
-			setVisibleDrawable(!getVisibleDrawable());
-			System.out.println(getVisibleDrawable());
+			setVisible(!getVisible());
+			System.out.println(getVisible());
 			flashCounter++;
 			
 			if(flashCounter > cycleFlash || flashCounter == 0){
 				flashCounter = cycleFlash = 0;
-				setVisibleDrawable(true);
+				setVisible(true);
 				
 				execFlash.shutdown();
 				execFlash = Executors.newSingleThreadScheduledExecutor();

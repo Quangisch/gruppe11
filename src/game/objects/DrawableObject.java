@@ -15,7 +15,7 @@ import core.FileLink;
 import core.GameManager;
 
 
-public class DrawableObject extends JComponent implements FileLink{
+public class DrawableObject implements FileLink{
 
 	private Graphics2D g2d;
 	private volatile int x, y;
@@ -44,13 +44,9 @@ public class DrawableObject extends JComponent implements FileLink{
 		
 	}
 	
-	public void paintComponents(Graphics g){
+	public void draw(Graphics2D g2d){
 		//System.out.println("draw Drawable");
-		g2d = (Graphics2D) g;
-		
-		
-		
-		
+
 		if(image != null && visible && GameManager.showBounds){
 			//BoundDirRect
 			g2d.setColor(Color.DARK_GRAY);
@@ -85,7 +81,7 @@ public class DrawableObject extends JComponent implements FileLink{
 	
 	//set
 	public void setImage(BufferedImage image){this.image = image;}
-	public void setVisibleDrawable(boolean visible){this.visible = visible;}
+	public void setVisible(boolean visible){this.visible = visible;}
 	
 	public synchronized void setX(int x){this.x = x;}
 	public synchronized void setY(int y){this.y = y;}
@@ -148,11 +144,10 @@ public class DrawableObject extends JComponent implements FileLink{
 	
 	//get
 	public BufferedImage getImage(){return image;}
-	public boolean getVisibleDrawable(){return visible;}
+	public boolean getVisible(){return visible;}
 	
-	@Override
+	
 	public int getX(){return x;}
-	@Override
 	public int getY(){return y;}
 	
 	public void setOldX(int oldX){this.oldX = oldX;}

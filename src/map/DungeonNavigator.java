@@ -31,9 +31,12 @@ public class DungeonNavigator extends DungeonCollision{
 	public void initializeMap(int xMap, int yMap, int ID, int playerX, int playerY){
 		
 		GameManager.mapLoaded = false;
-		OverWorldNavigator.resetInstance();
+		
+		DungeonNavigator.getInstance().resetObjectManager();
+		OverWorldNavigator.getInstance().resetObjectManager();
 		MarioDark.deleteAllInstances();
 		MapObject.deleteAllInstances();
+		OverWorldNavigator.resetInstance();
 		
 		setID(ID);
 		setXMap(xMap);
@@ -138,7 +141,6 @@ public class DungeonNavigator extends DungeonCollision{
 							GameManager.dungeon = false;
 							GameManager.overWorld = true;
 							GameManager.mapLoaded = false;
-							OverWorldNavigator.resetInstance();
 							OverWorldNavigator.getInstance().initializeMap(xMap, yMap, mapID, xPlayer, yPlayer);
 							//OverWorldNavigator.getInstance().initializeMap(xMap-810, yMap-630, mapID, 400, 300);
 							System.out.println("overworldMap_"+xMap+"x"+yMap);

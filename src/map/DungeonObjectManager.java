@@ -291,10 +291,7 @@ abstract class DungeonObjectManager extends Map{
 				mapObjectData.add(mapObject);
 				MapObject.addInstance(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
 			}
-	
-			
-			
-	
+
 		}
 		
 
@@ -333,6 +330,16 @@ abstract class DungeonObjectManager extends Map{
 			
 		}
 		
+		public void resetObjectManager(){
+			navigationData = new ArrayList<NavigationData<int[], Rectangle, int[]>>();
+			enemyData = new ArrayList<EnemyData<Integer, int[], int[]>>();
+			mapObjectData = new ArrayList<MapObjectData<Integer, Integer, Integer, Integer, Integer,Integer, Integer>>();
+			
+			tmpNavCoordinates = new int[3]; //0 = xMap, 1 = yMap, 2 = Orientation
+			tmpNavRect = new Rectangle();
+			tmpNavData = new int[6]; //dataType
+			
+		}
 		
 		
 		

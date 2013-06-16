@@ -107,7 +107,7 @@ public class ItemDrop extends Item{
 				running();
 			
 			else {
-				setVisibleDrawable(false);
+				setVisible(false);
 				itemDrop = null;
 				execRun.shutdown();
 				execRun = null;

@@ -84,7 +84,7 @@ public class Board extends JPanel implements Runnable{
 			}
 			
 			for(int index = 0; index < mapObjectList.size(); index ++){
-				mapObjectList.get(index).paintComponents(g2d);
+				mapObjectList.get(index).draw(g2d);
 			}
 			
 			if(GameManager.dungeon){
@@ -94,7 +94,7 @@ public class Board extends JPanel implements Runnable{
 			//sort objects, specified in sortYOrder(), to draw them according to their Y-Value, respectivly in the proper Z-Order
 			ArrayList<DrawableObject> drawablePaint = sortDrawable();
 			for(int i = 0; i < drawableList.size(); i++){
-				drawablePaint.get(i).paintComponents(g2d);
+				drawablePaint.get(i).draw(g2d);
 			}
 			
 			

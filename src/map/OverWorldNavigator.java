@@ -32,6 +32,9 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 		GameManager.mapLoaded = false;
 		MarioDark.deleteAllInstances();
 		MapObject.deleteAllInstances();
+		OverWorldNavigator.getInstance().resetObjectManager();
+		DungeonNavigator.getInstance().resetObjectManager();
+		
 		Board.getInstance().setTopMap(false, null);
 		setID(ID);
 		
@@ -172,7 +175,6 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 					GameManager.dungeon = true;
 					GameManager.overWorld = false;
 					GameManager.mapLoaded = false;
-					DungeonNavigator.resetInstance();
 					DungeonNavigator.getInstance().initializeMap(xMap, yMap, mapID, xPlayer, yPlayer);
 					System.out.println("dungeonMap_");
 				}
@@ -196,7 +198,7 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 	public static void resetInstance(){
 		overWorldNavigator = null;
 	}
-	
+
 	public static OverWorldNavigator getInstance(){
 		if(overWorldNavigator == null)
 			overWorldNavigator = new OverWorldNavigator();

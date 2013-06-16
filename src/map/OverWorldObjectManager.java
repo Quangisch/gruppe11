@@ -121,6 +121,17 @@ abstract class OverWorldObjectManager extends Map{
 		
 	}
 	
+	public void resetObjectManager(){
+		toExitBound = new ArrayList<Rectangle>();
+		toExitBoundData = new ArrayList<int[]>();
+		wallBoundList = new ArrayList<WallBound<Integer, Rectangle>>();
+		mapObjectBoundList = new ArrayList<MapObjectBound<Integer, Rectangle>>();
+		moveableDataList = new ArrayList<MoveableData>();
+		
+		enemyData = new ArrayList<EnemyData<Integer, int[], int[]>>();
+		
+	}
+	
 	
 	
 	public class WallBound<P, R>{

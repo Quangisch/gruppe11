@@ -91,7 +91,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		}
 			
 		if(GameManager.dungeon)
-			DungeonNavigator.getInstance().initializeMap(1,0,0,100,500);
+			DungeonNavigator.getInstance().initializeMap(0,3,0,100,500);
 		
 		
 		

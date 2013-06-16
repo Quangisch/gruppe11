@@ -36,11 +36,13 @@ public class MarioDark extends NPCLogic implements Runnable{
 	private boolean constructionLock = false;
 	private boolean spawnLock = true;
 	private boolean boss;
+	private boolean overWorldSpawn;
 	
 
 	
 	private MarioDark(int IDNumber, boolean boss){
 		System.err.println("construct MarioDark: "+IDNumber);
+		overWorldSpawn = GameManager.overWorld;
 		this.IDNumber = IDNumber;
 		this.boss = boss;
 		
@@ -67,9 +69,13 @@ public class MarioDark extends NPCLogic implements Runnable{
 		if((!GameManager.mapLoaded && GameManager.dungeon) || (GameManager.scrollDirection != 0 && !spawnLock && GameManager.dungeon))
 			setAlive(false);
 		
-		if(GameManager.scrollDirection == 0 && getInitialized())
+		if((GameManager.scrollDirection == 0 && getInitialized()))
 			spawnLock = false;
 
+		if(overWorldSpawn != GameManager.overWorld){
+			setAlive(false);
+			spawnLock = false;
+		}
 		
 		if(GameManager.scrollDirection == 0 && getAlive()) {
 			

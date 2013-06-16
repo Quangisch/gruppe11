@@ -1,6 +1,7 @@
 package map;
 
 import game.objects.Guide;
+import game.objects.MapObject;
 import game.objects.Merchant;
 
 import java.awt.Rectangle;
@@ -15,9 +16,11 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import map.DungeonObjectManager.EnemyData;
+import map.DungeonObjectManager.MapObjectData;
 
 import core.EnemyManager;
 import core.GameManager;
+import core.GameObjectManager;
 
 abstract class OverWorldBuilder extends OverWorldObjectManager {
 
@@ -200,6 +203,38 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 					
 					
 					} while (!searchLine.startsWith("#"));
+					
+				}else if(searchLine.contentEquals("#MapObject#")){
+						
+						do{
+							
+							int mapIDX = -1; 		//marks overWorld
+							int mapIDY = getID();	//marks overWorld mapID
+							
+							readDataBuff.mark(10);
+							
+							dataLine = readDataBuff.readLine(); //Trap+X+Y
+							dataLine = dataLine.replace("x", "");
+							dataLine = dataLine.replace("@", "");
+							System.out.println("====>TRAP@"+mapIDX+"x"+mapIDY+"@data:"+dataLine);
+							String xPosition = dataLine.substring(0, 4);
+							String yPosition = dataLine.substring(4, 8);
+							String type = dataLine.substring(8, 9);
+							String orientation = dataLine.substring(9, 10);
+							writeMapObjectData(type, orientation, mapIDX, mapIDY, xPosition, yPosition);
+							
+							readDataBuff.mark(10);
+							searchLine = readDataBuff.readLine();
+							
+							if(!searchLine.startsWith("#")){
+								readDataBuff.reset();
+							} else {
+								readDataBuff.reset();
+								break;
+							}
+							
+						} while (!searchLine.startsWith("#"));
+						
 					
 				} else {
 					readDataBuff.reset();
@@ -480,7 +515,37 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 
 	}
 	
-protected void setEnemy(){
+	protected void writeMapObjectData(String typeData, String orientationData, int xMap, int yMap, String xData, String yData){
+		int type = translateStringToInt(typeData);
+		int orientation = translateStringToInt(orientationData);
+		int x = translateStringToInt(xData);
+		int y = translateStringToInt(yData);
+		
+		addMapObjectData(type, orientation, xMap, yMap, x, y);
+		
+	}
+	
+	protected void addMapObjectData(int type, int orientation, int xMapTmp, int yMapTmp, int xPosition, int yPosition){
+
+		int ID = Integer.parseInt(String.valueOf(xMapTmp+""+yMapTmp+""+orientation));
+		
+	
+		//Door
+		if(type == 0){
+			
+			if(!GameObjectManager.getDoorStatusOpen(ID)){
+				MapObject.addInstance(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
+				GameObjectManager.getInstance().constructDoor(ID);
+	
+			}
+			
+		} else {
+			MapObject.addInstance(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
+		}
+
+	}
+	
+	protected void setEnemy(){
 		
 		System.err.println("Enemy number yolo?");
 		
