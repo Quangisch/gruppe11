@@ -25,7 +25,6 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 	private Thread playerThread;
 	private Thread cameraThread;
 	private Thread collisionThread;
-	private Thread interfaceThread;
 	private Thread managerThread;
 	private ScheduledThreadPoolExecutor threadPoolManager;
 	
@@ -72,29 +71,8 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		player.initializeAttributes(2, 3.5, true, 0, 75, 45, 20);
 		player.initializePosition(600, 350, 5);
 		GameManager.addGameObject(player);
-		
-		/*
-		MarioDark.getInstance(true, 0).initializeImage(enemyDark, 90, 120, 8);
-		MarioDark.getInstance(false, 0).initializeAttributes(2, 3, true, 0, 75, 45, 20);
-		MarioDark.getInstance(false, 0).initializePosition(200, 100, 5);
-		MarioDark.getInstance(false, 0).setBehaviour(3);
-		GameManager.addGameObject(MarioDark.getInstance(false, 0));
-		*/
-		/*
-		MarioDark.getInstance(true, 0).initializeImage(enemyBright, 90, 120, 8);
-		MarioDark.getInstance(false, 0).initializeAttributes(2, 3, true, 0, 75, 45, 20);
-		MarioDark.getInstance(false, 0).initializePosition(200, 300, 5);
-		MarioDark.getInstance(false, 0).setBehaviour(2);
-		MarioDark.getInstance(false, 0).setMoveableType(2);
-		GameManager.addGameObject(MarioDark.getInstance(false, 0));
-		*/
-		//System.out.println("=======>>>"+MarioDark.checkInstanceAlive(1));
-		
-		PlayerInterface.getInstance().initializeInterface();
-		PlayerInterface.getInstance().buildInterface();
-		PlayerInterface.getInstance().setText("bli bla blub/nHRRRR/nwhut up?/n/Yoloooo/nyawn.../n...+_+/nstop it!");
-		
-		
+
+	
 		System.out.println("===>ini.Objects");
 
 	}
@@ -106,10 +84,50 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		GameManager.overWorld = false;
 		GameManager.dungeon = true;
 		
-		if(GameManager.overWorld)
-			OverWorldNavigator.getInstance().initializeMap(0,0,1,500,500);
+		if(GameManager.overWorld){
+			int xStart = 1890;
+			int yStart = 406;
+			OverWorldNavigator.getInstance().initializeMap(xStart,yStart,0,300,300);
+		}
+			
 		if(GameManager.dungeon)
+<<<<<<< HEAD
 			DungeonNavigator.getInstance().initializeMap(0,3,0,100,100);
+=======
+			DungeonNavigator.getInstance().initializeMap(0,3,0,100,500);
+		
+		
+		
+		if(!GameManager.dungeon)
+			GameManager.cameraOn = !GameManager.cameraOn;
+		else
+			System.err.println("Can't switch CameraMode in Dungeons.");
+
+		/*
+		if(GameManager.cameraOn && GameManager.overWorld){
+
+				if(OverWorldNavigator.getInstance().getXCoordinate() > 0 && getX() <= 400){
+					OverWorldNavigator.getInstance().setXCoordinate(0);
+					Player.getInstance().setDirectionLock(2);
+				}
+
+				if(OverWorldNavigator.getInstance().getXCoordinate() < -(OverWorldNavigator.getInstance().getWidthMap()-810) && getX() >= 400){
+					OverWorldNavigator.getInstance().setXCoordinate(-(OverWorldNavigator.getInstance().getWidthMap()-810));
+					Player.getInstance().setDirectionLock(4);
+				}
+	
+				if(OverWorldNavigator.getInstance().getYCoordinate() > 0 && getY() >= 300){
+					OverWorldNavigator.getInstance().setYCoordinate(0);
+					Player.getInstance().setDirectionLock(1);
+				}
+	
+				if(OverWorldNavigator.getInstance().getYCoordinate() < -(OverWorldNavigator.getInstance().getHeightMap()-630) && getY() >= 300){
+					OverWorldNavigator.getInstance().setYCoordinate(-(OverWorldNavigator.getInstance().getHeightMap()-630));
+					Player.getInstance().setDirectionLock(3);
+				}	
+		}
+		*/
+>>>>>>> a12b63ca0deeaa73ce242dfa23cffa7090899ac6
 	}
 	
 	private void initializeThreads(){
@@ -117,8 +135,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		playerThread = new Thread(player);
 		cameraThread = new Thread(Camera.getInstance());
 		collisionThread = new Thread(CollisionDetection.getInstance());
-		interfaceThread = new Thread(PlayerInterface.getInstance());
-
+		
 		threadPool = new ScheduledThreadPoolExecutor(4);
 
 	}
@@ -128,9 +145,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		threadPool.scheduleWithFixedDelay(playerThread, 10, 10, TimeUnit.MILLISECONDS);
 		threadPool.scheduleWithFixedDelay(cameraThread, 20, 50, TimeUnit.MILLISECONDS);
 		threadPool.scheduleWithFixedDelay(collisionThread, 30, 10, TimeUnit.MILLISECONDS);
-		threadPool.scheduleWithFixedDelay(interfaceThread, 40, 20, TimeUnit.MILLISECONDS);
 		
-		//PlayerInterface.getInstance().buildText();
 	}
 	
 	public void run(){
@@ -147,7 +162,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		}
 			
 		
-		System.out.println("ThreadPoolManager.check");
+		//System.out.println("ThreadPoolManager.check");
 		
 		/*
 		if(!collisionThread.isAlive()){

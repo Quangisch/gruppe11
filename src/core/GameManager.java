@@ -19,6 +19,7 @@ public class GameManager {
 	public static volatile boolean lose;
 	public volatile boolean menu;
 	public volatile boolean ingame;
+	public static volatile boolean ingameMenu;
 	public static volatile boolean switchGameState;
 	
 	public static volatile boolean overWorld;
@@ -32,7 +33,10 @@ public class GameManager {
 	public static volatile boolean scrollLock = false;
 	public static volatile boolean videoSequence = false;
 	
+	public static volatile int interactKey;
+	public static volatile boolean interact;
 	public static volatile boolean showIngameText;
+	public static volatile boolean promptText;
 	public static volatile boolean printMsg;
 	public static volatile boolean showBounds;
 	
@@ -43,18 +47,20 @@ public class GameManager {
 	}
 	
 	public static synchronized void addGameObject(Moveable moveableElement){
-		for(int i = 0; i < moveableList.size(); i++){
-			if(moveableList.get(i) == null || !moveableList.get(i).getAlive())
-				moveableList.remove(i);
-		}
-		
-		if(moveableElement != null){
-			moveableList.add(moveableElement);
-			Board.getInstance().addDrawable(moveableElement);
-		}
-		else
+
+		moveableList.add(moveableElement);
+		Board.getInstance().addDrawable(moveableElement);
+			
+		if(moveableElement == null)
 			System.err.println("Board: Can't add NullElements.");
+		
+		if(!moveableElement.getAlive())
+		System.exit(0);
+		
+		updateGameObject();
+		
 	}
+	
 	
 	public static synchronized void updateGameObject(){
 		for(int i = 0; i < moveableList.size(); i++){

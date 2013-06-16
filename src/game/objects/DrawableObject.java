@@ -1,6 +1,8 @@
 package game.objects;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -13,10 +15,8 @@ import core.FileLink;
 import core.GameManager;
 
 
- public class DrawableObject extends JComponent implements FileLink{
+public class DrawableObject implements FileLink{
 
-	
-	 
 	private Graphics2D g2d;
 	private volatile int x, y;
 	private int oldX, oldY;
@@ -38,16 +38,15 @@ import core.GameManager;
 	private BufferedImage image;
 	private volatile boolean visible = true;
 	private volatile boolean alive;
+
 	
 	public DrawableObject(){
 		
 	}
 	
-	public void paintComponents(Graphics g){
+	public void draw(Graphics2D g2d){
 		//System.out.println("draw Drawable");
-		g2d = (Graphics2D) g;
-		
-		
+
 		if(image != null && visible && GameManager.showBounds){
 			//BoundDirRect
 			g2d.setColor(Color.DARK_GRAY);
@@ -76,12 +75,13 @@ import core.GameManager;
 		
 		if(image != null && visible)
 			g2d.drawImage(image, x, y, Board.getInstance());
+
 		
 	}
 	
 	//set
 	public void setImage(BufferedImage image){this.image = image;}
-	public void setVisibleDrawable(boolean visible){this.visible = visible;}
+	public void setVisible(boolean visible){this.visible = visible;}
 	
 	public synchronized void setX(int x){this.x = x;}
 	public synchronized void setY(int y){this.y = y;}
@@ -97,6 +97,7 @@ import core.GameManager;
 	public void setCoreHeight(int coreHeight){this.coreHeight = coreHeight;}
 	
 	public Rectangle getBoundCore(){return new Rectangle(getX()+coreXOffset+cornerXOffset, getY()+coreYOffset+cornerYOffset, coreWidth, coreHeight);}
+	public Rectangle getBound(){return new Rectangle(getX(), getY(), width, height);}
 	
 	public Rectangle getBoundN(){return new Rectangle(getX()+cornerXOffset, getY()+cornerYOffset, width-cornerXOffset, 20-cornerYOffset);}
 	public Rectangle getBoundE(){return new Rectangle(getX()+width-20+cornerXOffset, getY()+cornerYOffset, 20-cornerXOffset, height-cornerYOffset);}
@@ -143,11 +144,10 @@ import core.GameManager;
 	
 	//get
 	public BufferedImage getImage(){return image;}
-	public boolean getVisibleDrawable(){return visible;}
+	public boolean getVisible(){return visible;}
 	
-	@Override
+	
 	public int getX(){return x;}
-	@Override
 	public int getY(){return y;}
 	
 	public void setOldX(int oldX){this.oldX = oldX;}
@@ -162,9 +162,7 @@ import core.GameManager;
 	public int getOldYCam(){return oldYCam;}
 	public int getOldLastDirection(){return oldLastDirection;}
 	
-	
 	public boolean getAlive(){return alive;}
 	
-	
-	
+
 }

@@ -1,5 +1,8 @@
 package map;
 
+import game.objects.MapObject;
+import game.objects.MarioDark;
+import game.objects.Merchant;
 import game.objects.Player;
 
 
@@ -27,6 +30,7 @@ import map.DungeonObjectManager.NavigationData;
 import core.EnemyManager;
 import core.FileLink;
 import core.GameManager;
+import core.GameObjectManager;
 
 
 abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, FileLink {
@@ -71,11 +75,14 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 	//layerBuff[0 = currentMap 1 = threadBuild restMap][layer = max8] layer7: combined layer
 	private BufferedImage[][] layerBuff = new BufferedImage[2][8];
 	private BufferedImage mapImage = new BufferedImage(810*4,630*4,BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage mapImageWall = new BufferedImage(810*4,630*4,BufferedImage.TYPE_INT_ARGB);
 	private BufferedReader readDataBuff;
 	
-	private final String[] layerHeader = {"#floor2#","#floor1#","#wall2#","#wall1#","#door#","#objects#","#interaction#","###"};
+	private final String[] layerHeader = {"#floor2#","#floor1#","#wall2#","#wall1#","###"};
+	//private final String[] layerHeader = {"#floor2#","#floor1#","#wall2#","#wall1#","###"};
 	private final String[] navigationHeader = {"#toExit#", "#toNorth#", "#toEast#", "#toSouth#", "#toWest#"};
-	private final String[] mapInformation = {"#enemy#"};
+	private final String[] mapInformation = {"#enemy#","trap"};
+	
 	
 	private String dungeonIDName, mapIDName;
 	private BufferedImage clearImage;
@@ -173,8 +180,7 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 					
 					//center: actual view
 					if(!(xTileData[getXMap()][getYMap()][layer][xTile][yTile] == 18 && yTileData[getXMap()][getYMap()][layer][xTile][yTile] == 14))
-					//layerBuff[0][layer].setRGB(90*xTile, 90*yTile, 90, 90, tileBuff[xTileData[getXMap()][getYMap()][layer][xTile][yTile]][yTileData[getXMap()][getYMap()][layer][xTile][yTile]].getRGB(0, 0, 90, 90, null, 0, 90), 0, 90);
-					layerBuff[0][layer].createGraphics().drawImage(tileBuff[xTileData[getXMap()][getYMap()][layer][xTile][yTile]][yTileData[getXMap()][getYMap()][layer][xTile][yTile]],90*xTile, 90*yTile,this);
+					layerBuff[0][layer].createGraphics().drawImage(tileBuff[xTileData[getXMap()][getYMap()][layer][xTile][yTile]][yTileData[getXMap()][getYMap()][layer][xTile][yTile]],90*xTile, 90*yTile,null);
 					//System.out.println("xTileData: "+xTileData[xMap][yMap][layer][xTile][yTile]);
 					//System.out.println("yTileData: "+yTileData[xMap][yMap][layer][xTile][yTile]);
 
@@ -184,9 +190,13 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 			mapImage.createGraphics().drawImage(layerBuff[0][layer], null, 810*getXMap(), 630*getYMap());
 
 		}//for layer
-			
-
+		
+		mapImageWall.createGraphics().drawImage(layerBuff[0][2], null, 810*getXMap(), 630*getYMap());
+		mapImageWall.createGraphics().drawImage(layerBuff[0][3], null, 810*getXMap(), 630*getYMap());
+		
 		setMapImage(mapImage);
+		setMapImageWall(mapImageWall);
+		
 		GameManager.mapLoaded = true;
 		
 		
@@ -222,12 +232,15 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 							
 							if(!(xTileData[xMap][yMap][layer][xTile][yTile] == 18 && yTileData[xMap][yMap][layer][xTile][yTile] == 14))
 							//layerBuff[1][layer].setRGB(90*xTile, 90*yTile, 90, 90, tileBuff[xTileData[xMap][yMap][layer][xTile][yTile]][yTileData[xMap][yMap][layer][xTile][yTile]].getRGB(0, 0, 90, 90, null, 0, 90), 0, 90);
-							layerBuff[1][layer].createGraphics().drawImage(tileBuff[xTileData[xMap][yMap][layer][xTile][yTile]][yTileData[xMap][yMap][layer][xTile][yTile]], 90*xTile, 90*yTile, this);
+							layerBuff[1][layer].createGraphics().drawImage(tileBuff[xTileData[xMap][yMap][layer][xTile][yTile]][yTileData[xMap][yMap][layer][xTile][yTile]], 90*xTile, 90*yTile, null);
 	
 						}
 					}
 					
 					mapImage.createGraphics().drawImage(layerBuff[1][layer], null, 810*xMap, 630*yMap);
+					
+					if(layer == 2 || layer == 3)
+						mapImageWall.createGraphics().drawImage(layerBuff[1][layer], null, 810*xMap, 630*yMap);
 				}
 			
 				
@@ -235,15 +248,18 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 		}//for yMap
 		
 		
+		setMapImage(mapImage);
+		setMapImageWall(mapImageWall);
 
 		System.out.println("_buildingMap complete");
-		setMapImage(mapImage);
 		
+		/*
 		//setBounds for Paint
 		ArrayList<Rectangle> navRectMap = getNavigationRectMap(getXMap(), getYMap());
 		for(int index = 0; index < navRectMap.size(); index++){
 			addNavigationBoundPaint(navRectMap.get(index));
 		}
+		*/
 		
 	}
 	
@@ -300,12 +316,10 @@ g2d.fillRect(0, 0, 10, 10);
 	
 	protected void setEnemy(){
 		
-		System.err.println("Enemy number yolo?");
-		
+		MarioDark.deleteAllInstances();
 		//check and instantiate Enemy
 		ArrayList<EnemyData<Integer, int[], int[]>> enemyDataMap = getEnemyDataMap(getXMap(), getYMap());
 		
-		System.err.println("Enemy number@"+enemyDataMap.size());
 		
 		for(int index = 0; index < enemyDataMap.size(); index++){
 			int enemyType = enemyDataMap.get(index).getType();
@@ -334,15 +348,119 @@ g2d.fillRect(0, 0, 10, 10);
 			}
 			
 			
-		
-			EnemyManager.setNewEnemy(xCoordinateMap,yCoordinateMap,enemyType,enemyPosition,enemyAttributes);
-				
-			System.err.println("======>DungeonBuilder.setEnemy");
 			
+			//setBoss 2-1
+			if(getXMap() == 2 && getYMap() == 1){
+				
+				if(!GameObjectManager.getBossStatusDefeated(21)){
+					GameObjectManager.getInstance().constructBoss(21);
+					EnemyManager.setNewEnemy(xCoordinateMap,yCoordinateMap,enemyType,enemyPosition,enemyAttributes);
+					addMapObjectData(3, 2, 2, 1, 0, 370);
+					System.out.println("setEnemyBoss 2");
+				}	
+			} else //setEnemy
+				EnemyManager.setNewEnemy(xCoordinateMap,yCoordinateMap,enemyType,enemyPosition,enemyAttributes);
+			
+
+			System.err.println("======>DungeonBuilder.setEnemy");
 
 		}
 		
+
+		//setMerchant
+		if(getXMap() == 1 && getYMap() == 0){
+			int xCoordinateMap = 180;
+			int yCoordinateMap = 400;
+			
+			switch(GameManager.scrollDirection){
+			case(1):	yCoordinateMap -= 630;
+						
+						break;
+			case(3):	xCoordinateMap += 810;
+						break;
+			case(5):	yCoordinateMap += 630;
+						break;
+			case(7):	xCoordinateMap -= 810;
+						break;
+			}
+			
+			Merchant.getInstance(xCoordinateMap, yCoordinateMap);
+		}
 		
+		//setBoss
+		if((getXMap() == 2 && getYMap() == 2) || (getXMap() == 2 && getYMap() == 1) || (getXMap() == 2 && getYMap() == 0))
+			setBossEnemy();
+		
+	
+	}
+	
+	protected void setBossEnemy(){
+		//setBoss 1
+				
+		int xCoordinateMap = 300;
+		int yCoordinateMap = 300;
+		
+		switch(GameManager.scrollDirection){
+		case(1):	yCoordinateMap -= 630;
+					
+					break;
+		case(3):	xCoordinateMap += 810;
+					break;
+		case(5):	yCoordinateMap += 630;
+					break;
+		case(7):	xCoordinateMap -= 810;
+					break;
+		}
+		
+		int[][] enemyPositionBoss = new int[3][4];
+		int[][] enemyAttributesBoss = new int[3][4];
+		
+		enemyPositionBoss[0][0] = 2; enemyPositionBoss[0][1] = 2; //mapXY
+		enemyPositionBoss[0][2] = xCoordinateMap; enemyPositionBoss[0][3] = yCoordinateMap; //posXY
+		
+		enemyAttributesBoss[0][0] = 2; //enemySpeed
+		enemyAttributesBoss[0][1] = 7; //enemyLife
+		enemyAttributesBoss[0][2] = 5; //enemyLastDirection
+		enemyAttributesBoss[0][3] = 11; //enemyPattern
+		
+		
+		enemyPositionBoss[1][0] = 2; enemyPositionBoss[1][1] = 1; //mapXY
+		enemyPositionBoss[1][2] = xCoordinateMap; enemyPositionBoss[1][3] = yCoordinateMap; //posXY
+		
+		enemyAttributesBoss[1][0] = 2; //enemySpeed
+		enemyAttributesBoss[1][1] = 6; //enemyLife
+		enemyAttributesBoss[1][2] = 5; //enemyLastDirection
+		enemyAttributesBoss[1][3] = 12; //enemyPattern
+		
+		
+		enemyPositionBoss[2][0] = 2; enemyPositionBoss[2][1] = 0; //mapXY
+		enemyPositionBoss[2][2] = xCoordinateMap; enemyPositionBoss[2][3] = yCoordinateMap; //posXY
+		
+		enemyAttributesBoss[2][0] = 2; //enemySpeed
+		enemyAttributesBoss[2][1] = 15; //enemyLife
+		enemyAttributesBoss[2][2] = 5; //enemyLastDirection
+		enemyAttributesBoss[2][3] = 13; //enemyPattern
+
+		
+		if(!GameObjectManager.getBossStatusDefeated(22) && getXMap() == 2 && getYMap() == 2){
+			GameObjectManager.getInstance().constructBoss(22);
+			EnemyManager.setNewEnemy(xCoordinateMap, yCoordinateMap, 22, enemyPositionBoss[0], enemyAttributesBoss[0]);
+			System.out.println("setEnemyBoss 1 @Pos"+xCoordinateMap+"x"+yCoordinateMap);
+		}
+		/*
+		if(!GameObjectManager.getBossStatusDefeated(21) && getXMap() == 2 && getYMap() == 1){
+			GameObjectManager.getInstance().constructBoss(21);
+			EnemyManager.setNewEnemy(xCoordinateMap, yCoordinateMap, 21, enemyPositionBoss[1], enemyAttributesBoss[1]);
+			System.out.println("setEnemyBoss 2 @Pos"+xCoordinateMap+"x"+yCoordinateMap);
+		}	
+		*/
+		if(!GameObjectManager.getBossStatusDefeated(20) && getXMap() == 2 && getYMap() == 0){
+			GameObjectManager.getInstance().constructBoss(20);
+			EnemyManager.setNewEnemy(xCoordinateMap, yCoordinateMap, 20, enemyPositionBoss[2], enemyAttributesBoss[2]);
+			System.out.println("setEnemyBoss 3 @Pos"+xCoordinateMap+"x"+yCoordinateMap);
+		}	
+					
+				
 	}
 	
 	protected void readMapTiles(File mapTilesFile){
@@ -493,9 +611,16 @@ g2d.fillRect(0, 0, 10, 10);
 									String widthData = dataLine.substring(8, 12);
 									String heightData = dataLine.substring(12, 16);
 									
+									readDataBuff.mark(10);
+									searchLine = readDataBuff.readLine();
 									
-									writeNavigationBoundData(mapIDX, mapIDY, navigationID, xData, yData, widthData, heightData);
-									
+									if(searchLine.contentEquals("Door"))
+										writeNavigationBoundData(true, mapIDX, mapIDY, navigationID, xData, yData, widthData, heightData);
+									else{
+										writeNavigationBoundData(false, mapIDX, mapIDY, navigationID, xData, yData, widthData, heightData);
+										readDataBuff.reset();
+									}
+										
 									
 									if(navigationID != 0){
 										addNavigationToExitData(mapIDX, mapIDY, -1, -1, -1, -1, -1, -1);	
@@ -538,7 +663,7 @@ g2d.fillRect(0, 0, 10, 10);
 									
 										System.out.println("_MAP@"+mapIDX+"x"+mapIDY+"====>mapType: "+mapType+"@ID:"+mapIDData+" to Map:"+xMapData+"x"+yMapData+", Player to:"+xPlayerData+"x"+yPlayerData);
 										writeNavigationToExitData(mapIDX, mapIDY,mapType,mapIDData,xMapData,yMapData,xPlayerData,yPlayerData);
-											
+										
 										
 									}
 									
@@ -549,12 +674,17 @@ g2d.fillRect(0, 0, 10, 10);
 						
 						//searchLine = readDataBuff.readLine();
 						//searchLine = readDataBuff.readLine();
-						readDataBuff.mark(10);
-						searchLine = readDataBuff.readLine();
+						
+						
 						
 					//EnemyData
 					EnemyData:
-						for(int infoID = 0; infoID < 1; infoID++){
+						for(int infoID = 0; infoID < 2; infoID++){
+							
+							readDataBuff.mark(10);
+							searchLine = readDataBuff.readLine();
+							
+							
 							System.out.println("EnemyData.for@"+infoID);
 							
 							if(searchLine.contentEquals("#Enemy#")){
@@ -563,7 +693,7 @@ g2d.fillRect(0, 0, 10, 10);
 								do{
 									int enemyType;
 									int[] enemyPosition = new int[4];
-									int[] enemyAttributes = new int[5];
+									int[] enemyAttributes = new int[4];
 									
 									dataLine = readDataBuff.readLine(); //EnemyType+X+Y
 									dataLine = dataLine.replace("x", "");
@@ -586,20 +716,59 @@ g2d.fillRect(0, 0, 10, 10);
 									
 									
 									addEnemyData(enemyType, enemyPosition, enemyAttributes);
-									
 								
-									
 									readDataBuff.mark(10);
 									searchLine = readDataBuff.readLine();
 									
-									if(searchLine.startsWith("#")){
+									if(!searchLine.startsWith("#")){
+										readDataBuff.reset();
+									} else {
 										readDataBuff.reset();
 										break;
 									}
 									
 								
 								
-								} while (searchLine.startsWith("#"));
+								} while (!searchLine.startsWith("#"));
+								
+							} else if(searchLine.contentEquals("#MapObject#")){
+								
+								do{
+									readDataBuff.mark(10);
+									
+									dataLine = readDataBuff.readLine(); //Trap+X+Y
+									dataLine = dataLine.replace("x", "");
+									dataLine = dataLine.replace("@", "");
+									System.out.println("====>TRAP@"+mapIDX+"x"+mapIDY+"@data:"+dataLine);
+									String xPosition = dataLine.substring(0, 4);
+									String yPosition = dataLine.substring(4, 8);
+									String type = dataLine.substring(8, 9);
+									String orientation = dataLine.substring(9, 10);
+									writeMapObjectData(type, orientation, mapIDX, mapIDY, xPosition, yPosition);
+									
+									if(type.contentEquals("2")){
+										dataLine = readDataBuff.readLine();
+										dataLine = dataLine.replace("Item@", "");
+										dataLine = dataLine.replace("x", "");
+										int treasureID  = translateStringToInt(dataLine.substring(0, 1));
+										int treasureType = translateStringToInt(dataLine.substring(1, 2));
+										int treasureMember = translateStringToInt(dataLine.substring(2, 3));
+										int[] treasureData = {treasureID, treasureType, treasureMember};
+										GameObjectManager.getInstance().constructTreasure(mapIDX, mapIDY, translateStringToInt(xPosition), translateStringToInt(yPosition), treasureData);
+									}
+									
+									readDataBuff.mark(10);
+									searchLine = readDataBuff.readLine();
+									
+									if(!searchLine.startsWith("#")){
+										readDataBuff.reset();
+									} else {
+										readDataBuff.reset();
+										break;
+									}
+									
+								} while (!searchLine.startsWith("#"));
+								
 								
 							} else {
 								readDataBuff.reset();
@@ -614,7 +783,7 @@ g2d.fillRect(0, 0, 10, 10);
 				
 					LayerData:
 					//Layer
-						for(int layerID = 6; layerID >= 0; layerID--){
+						for(int layerID = 3; layerID >= 0; layerID--){
 							
 							readDataBuff.mark(10);
 							searchLine = readDataBuff.readLine(); //LayerName
@@ -671,7 +840,7 @@ g2d.fillRect(0, 0, 10, 10);
 
 	}
 	
-protected void writeNavigationBoundData(int xMap, int yMap, int orientation, String xData, String yData, String widthData, String heightData){
+protected void writeNavigationBoundData(boolean door, int xMap, int yMap, int orientation, String xData, String yData, String widthData, String heightData){
 
 	int x = translateStringToInt(xData);
 	int y = translateStringToInt(yData);
@@ -686,7 +855,20 @@ protected void writeNavigationBoundData(int xMap, int yMap, int orientation, Str
 	*/
 	System.out.println("Map_"+xMap+"x"+yMap+" @ "+navigationHeader[orientation]+":"+orientation+" Rectangle:"+x+"x"+y+","+width+"x"+height);
 	
-	addNavigationBound(xMap, yMap, orientation, new Rectangle(x,y,width,height));
+		addNavigationBound(xMap, yMap, orientation, new Rectangle(x,y,width,height));
+	if(door)
+		addMapObjectData(0, orientation, xMap, yMap, x, y);
+	
+	
+}
+
+protected void writeMapObjectData(String typeData, String orientationData, int xMap, int yMap, String xData, String yData){
+	int type = translateStringToInt(typeData);
+	int orientation = translateStringToInt(orientationData);
+	int x = translateStringToInt(xData);
+	int y = translateStringToInt(yData);
+	
+	addMapObjectData(type, orientation, xMap, yMap, x, y);
 	
 }
 
@@ -734,22 +916,39 @@ private void writeNavigationToExitData(int mapIDX, int mapIDY, int mapType,Strin
 
 private int translateStringToInt(String numberString){
 
+	int number = -1;
 	//System.out.println("Check.translateStringToInt: Input@"+numberString+", lenght@"+numberString.length());
 	
-	for(int i = 0; i < numberString.length()+1; i++){
-		if(numberString.startsWith("0"))
-			numberString = numberString.substring(1);
-		if(numberString.startsWith("0") && numberString.length() == 1)
-			break;
+	if(numberString.length() > 1){
+		for(int i = 0; i < numberString.length()+1; i++){
+			if(numberString.startsWith("0"))
+				numberString = numberString.substring(1);
+			if(numberString.startsWith("0") && numberString.length() == 1)
+				break;
+		}
 	}
+	
 	
 	//System.out.println("Check.translateStringToInt: Output@"+numberString+", lenght@"+numberString.length());
 
+	try{
+		number = Integer.parseInt(numberString.toString());
+		return number; 
+	} catch(NumberFormatException e){
+		System.err.println("DungeonBuilder.Error: translateStringToInt "+e);
+	}
 	
-	int number = Integer.parseInt(numberString.toString());
-	
+	if(number == -1)
+		System.exit(0);
+
 	return number;
 	
+	
+}
+
+protected void writeTileData(int xMap, int yMap, int layer, int xTile, int yTile, int xValue, int yValue){
+	yTileData[xMap][yMap][layer][xTile][yTile] = xValue; 
+	xTileData[xMap][yMap][layer][xTile][yTile] = yValue;
 }
 
 	//translation table, stores mapData in static Arrays

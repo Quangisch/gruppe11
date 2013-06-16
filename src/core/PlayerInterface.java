@@ -1,19 +1,24 @@
 package core;
 
+import game.objects.Moveable;
 import game.objects.Player;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 
-public class PlayerInterface extends JComponent implements Runnable, FileLink{
+public class PlayerInterface implements FileLink{
 	
 	private static PlayerInterface playerInterface;
 	
@@ -21,7 +26,6 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 	private boolean visible;
 	private int width;
 	private int height;
-	private Graphics2D g2d;
 	
 	private String textBuff;
 	private int lineCounter = 0;
@@ -30,6 +34,7 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 	private boolean scrollText = false;
 
 	private BufferedImage imageBuff = new BufferedImage(810,630,BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage dynamicInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage upperInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 	private volatile BufferedImage lowerInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage borderBuff = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
@@ -112,43 +117,82 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 	private BufferedImage symExclam = new BufferedImage(45,45,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage symPoint = new BufferedImage(45,45,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage symComa = new BufferedImage(45,45,BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage symPercent = new BufferedImage(45,45,BufferedImage.TYPE_INT_ARGB);
 	
 	private BufferedImage space = new BufferedImage(45,45,BufferedImage.TYPE_INT_ARGB);
 	
+	private boolean dynamicStatus;
+	private float dynamicOpacityCounter;
+	private double dynamicResizeCounter;
+	private Thread dynamicThread;
+	private ScheduledExecutorService execDynamic;
+	
 	private PlayerInterface(){
 		System.err.println("construct PlayerInterface");
+		initializeInstance();
 		
 	}
 	
-	public void paintComponents(Graphics g){
-		g2d = (Graphics2D) g;
+	public void setDynamicInterface(String dynamicString, Moveable object, boolean newLayer){
+		//String dynamicString = "1xp";
+		System.out.println(dynamicString + "@lenght:"+dynamicString.length());
 		
+		if(newLayer)
+			dynamicInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 		
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.98f));
-		if(upperInterface != null){
+		BufferedImage dynamicBuff = new BufferedImage(810,630,BufferedImage.TYPE_INT_ARGB);
+		int length = dynamicString.length();
+		for(int index = 0; index < length; index++){
+			String singleChar = dynamicString.substring(0,1);
+			dynamicString = dynamicString.substring(1);
+			System.out.println("singleChar@"+singleChar);
+			dynamicBuff.createGraphics().drawImage(translateTextTile(singleChar),(index*20),0, Board.getInstance());
+		}
+		
+		dynamicInterface.createGraphics().drawImage(resizeImage(dynamicBuff,1),0,0, null);
+		/*
+		dynamicThread = new Thread(new DynamicTimer(dynamicString, object,dynamicBuff));
+		execDynamic = Executors.newSingleThreadScheduledExecutor();
+		execDynamic.scheduleWithFixedDelay(dynamicThread, 0, 10, TimeUnit.MILLISECONDS);
+		*/
+		dynamicResizeCounter = 1;
+		dynamicOpacityCounter = 0.6f;
+		dynamicStatus = true;
+	}
+	
+	public void draw(Graphics2D g2d){
+		if(!GameManager.ingameMenu){
+			buildInterface();
 			
-			g2d.drawImage(upperInterface, 0, 0, Board.getInstance());
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.98f));
+			if(upperInterface != null){
+				
+				g2d.drawImage(upperInterface, 0, 0, Board.getInstance());
+				
+			}
+			
+			if(dynamicInterface != null && dynamicStatus){
+				g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, dynamicOpacityCounter));
+				g2d.drawImage(dynamicInterface, 10+Player.getInstance().getX(),-30+Player.getInstance().getY(), Board.getInstance());
+				dynamicOpacityCounter -= 0.04;
+				dynamicResizeCounter += 0.5;
+				if(dynamicOpacityCounter <= 0){
+					dynamicStatus = false;
+				}
+			}
+			
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+			if(lowerInterface != null && GameManager.showIngameText){
+				g2d.drawImage(borderBuff,0,315,Board.getInstance());
+				g2d.drawImage(lowerInterface, 0, 360, Board.getInstance());
+			}
 			
 		}
 		
-		g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-		if(lowerInterface != null && GameManager.showIngameText){
-			g2d.drawImage(borderBuff,0,315,Board.getInstance());
-			g2d.drawImage(lowerInterface, 0, 360, Board.getInstance());
-		}
-		
-	
-		
 	}
 	
-	public void run(){
-		buildInterface();
-	}
+	public void initializeInstance(){
 	
-	public void initializeInterface(){
-		
-		
-		
 		visible = true;
 		
 		try {
@@ -212,7 +256,7 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 					symExclam.setRGB(0, 0, 45, 45, imageBuff.getRGB(1*45, 4*45, 45, 45, null, 0, 45),0,45);
 					symPoint.setRGB(0, 0, 45, 45, imageBuff.getRGB(2*45, 4*45, 45, 45, null, 0, 45),0,45);
 					symComa.setRGB(0, 0, 45, 45, imageBuff.getRGB(3*45, 4*45, 45, 45, null, 0, 45),0,45);
-					
+					symPercent.setRGB(0, 0, 45, 45, imageBuff.getRGB(15*45, 4*45, 45, 45, null, 0, 45),0,45);
 					
 				System.err.println("Sprite: Width/Height not initialized");
 			
@@ -226,34 +270,36 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 	}
 	
 	public void buildInterface(){
-		//System.out.println("Life:"+Player.getInstance().getLife());
 		upperInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
+		
 		double restLife = Player.getInstance().getLife() - Math.floor(Player.getInstance().getLife());
 		double life = Player.getInstance().getLife();
 		
 		//paint life
 		for(int i = 0; i < Math.floor(Player.getInstance().getLife()); i++)
-			upperInterface.createGraphics().drawImage(heart4_4Buff, 10+45*i, 10, this);
-		
+			//upperInterface.getGraphics().drawImage(heart4_4Buff, 10+45*i, 10, Board.getInstance());
+			upperInterface.getGraphics().drawImage(heart4_4Buff, 10+45*i, 10, Board.getInstance());
+			
 
 		//if(life > restLife){
 			
 			if(restLife >= 0.75)
-				upperInterface.createGraphics().drawImage(heart3_4Buff, (int)(10+45*Math.floor(life)+1), 10, this);
+				upperInterface.createGraphics().drawImage(heart3_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());
 			
 			if(restLife < 0.75 && restLife >= 0.5)
-				upperInterface.createGraphics().drawImage(heart2_4Buff, (int)(10+45*Math.floor(life)+1), 10, this);
+				upperInterface.createGraphics().drawImage(heart2_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());
 			
-			if(restLife <= 0.25)
-				upperInterface.createGraphics().drawImage(heart1_4Buff, (int)(10+45*Math.floor(life)+1), 10, this);		
+			if(restLife <= 0.25 && restLife > 0.001)
+				upperInterface.createGraphics().drawImage(heart1_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());		
 		//}
 		
 		//paint manaBar & manaPool
 		
 		
 		if(Player.getInstance().getManaPool() > 0){
-			upperInterface.createGraphics().drawImage(manaPoolBuff, 20-(int)(10*Player.getInstance().getManaPool()), 40, (int)(Player.getInstance().getManaPool()*248)-5, 47, null);
+			upperInterface.createGraphics().drawImage(manaPoolBuff, 20-(int)((10*Player.getInstance().getManaPool()/Player.getInstance().getMaxMana())), 40, (int)(Player.getInstance().getManaPool()/Player.getInstance().getMaxMana()*248)-5, 47, null);
 		}
+		//System.out.println("Mana@"+(Player.getInstance().getManaPool()/Player.getInstance().getMaxMana()*100)+"%");
 		
 		upperInterface.createGraphics().drawImage(coinBuff, 770, 10, null);
 		Integer coins = Player.getInstance().getCoin();
@@ -268,23 +314,21 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 		
 		int spellType = Player.getInstance().getMagicSpell();
 		BufferedImage spellBuff = new BufferedImage(50,50,BufferedImage.TYPE_INT_ARGB);
-		
+		BufferedImage weaponBuff = new BufferedImage(50,50,BufferedImage.TYPE_INT_ARGB);
 		
 		if(spellType == 0)
 			spellBuff.createGraphics().drawImage(itemListBuff.getSubimage(0, 175, 25, 25), 0,0,50,50,0,0,25,25,null);
 		if(spellType == 1)
 			spellBuff.createGraphics().drawImage(itemListBuff.getSubimage(25, 175, 25, 25), 0,0,50,50,0,0,25,25,null);
 		
+		if(Player.getInstance().getAttackDamage() >= 0.5)
+			weaponBuff.createGraphics().drawImage(itemListBuff.getSubimage(0, 125, 25, 25), 0,0,50,50,0,0,25,25,null);
+			
+		upperInterface.createGraphics().drawImage(weaponBuff,350,10,null);
 		upperInterface.createGraphics().drawImage(spellBuff,400,10,null);
-		
-		
-		
-		
 		upperInterface.createGraphics().drawImage(itemBorderBuff, 350, 10, null);
-		//System.out.println("ManaPool@"+(int)Player.getInstance().getManaPool());
 		upperInterface.createGraphics().drawImage(manaBarBuff, 10, 40, null);
 
-		
 		
 	}
 	
@@ -297,137 +341,128 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 		
 	}
 	
-	public void buildText(){
-		
-		
-		//bli bla blub/nHRRRR/nwhut up?/n/Yoloooo/nyawn.../n...+_+/nstop it!
-		
-		
-		String[] singleLines = textBuff.split("/n");
-		String[] singleWord;
-		String word;
-		String singleChar;
-		
-		int lineCounterMax = singleLines.length;
-		int wordCounterMax;
-		int charCounterMax;
 	
-		int lineLimit = 16;
+	public boolean buildText(){
 		
+		boolean finishText = false;
 		
-		
-		
-		
-		PendingPrompt:
-		for(; lineID < lineCounterMax; lineID++){
-			
-			if(lineID == 0){
-				GameManager.showIngameText = true;
-			}
-			/*
-			if(lineID == lineCounter){
-				lineID = -10;
-				
-			}
-			*/
-			
-			if(lineID == -10){
-				lowerInterface = new BufferedImage(810, 360,BufferedImage.TYPE_INT_ARGB);
-				lineID = 0;
-				lineCounter = 0;
-				lineLimit = 16;
-				lowerInterface = null;
-			}
-				
-			if(lineID >= 0){
-				singleWord = singleLines[lineID].split(" ");
-				wordCounterMax = singleWord.length;
-				
-				System.out.println(singleLines[lineID]);
-				//System.out.println("__singleWords: ");
-				
-				/*TODO
-				if(scrollText){
-					//lowerInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
-					BufferedImage oldText = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
-					oldText = lowerInterface;
-					lowerInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
-					lowerInterface.createGraphics().drawImage(oldText, 0, 0, 810, 225, 0, 45, 810, 270, this);
-					//lineCounter--;
-					
-					scrollText = false;
-				}
-				*/
-					
-
-				for(int wordID = 0; wordID < singleWord.length; wordID++){
-					
-					singleChar = singleWord[wordID];
-					charCounterMax = singleChar.length();
-					
-					if(charCounterMax > lineLimit){
-						lineCounter++;
-						lineLimit = 16;
-						
-					}
-					
-					if(lineID > 4){
-						System.out.println("pendingPromot_LineID > 4");
-						scrollText = true;
-					}
-					
-					System.out.println("__"+singleWord[wordID]);
-					word = singleWord[wordID];
-					
-					
-					for(int charID = 0; charID < charCounterMax; charID++){
-						
-						
-						singleChar = word.substring(0,1);
-						word = word.substring(1);
-						System.out.println("_"+singleChar);
-						
-						
-						if(singleChar.contentEquals("Ú")){
-							word = word.substring(1);
-							System.out.println("pendingPrompt@"+lineID);
-							//signals pending prompt
-							lineLimit = -1;
-							lineID++;
-							break PendingPrompt;
-							
-						}
-					
-				
-						lowerInterface.createGraphics().drawImage(translateTextTile(singleChar),50+(16-lineLimit)*45,lineCounter*45, this);
-						
-						lineLimit--;
-					}//for char
-					
-					lineLimit--;
-			
-				}//for Word
-				
-			if(lineLimit != -1){
-				lineCounter++;
-				lineLimit = 16;
-			}
-			
-			}//for Line
-			}
-			
-		if(lineID == lineCounter){
-			lineID = -10;
+		if(textBuff == null){
+			GameManager.showIngameText = false;
+			GameManager.promptText = false;
 			
 		}
 		
-		System.out.println("lineCounter:"+lineCounter);
-		System.out.println("lineID     :"+lineID);
-		System.out.println("lineCMax   :"+lineCounterMax);
+		//bli bla blub/nHRRRR/nwhut up?/n/Yoloooo/nyawn.../n...+_+/nstop it!
+		if(GameManager.promptText){
+
+			GameManager.promptText = false;
+			
+			lowerInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
+			
+			
+				
+			
+			System.out.println("currentText:"+textBuff);
+			
+			
+			String[] singleLines = textBuff.split("/n");
+			String[] singleWord;
+			String word;
+			String singleChar;
+			
+			int lineCounterMax = singleLines.length;
+			int wordCounterMax;
+			int charCounterMax;
 		
+			int lineLimit = 16;
+		
+			
+			for(; lineID < lineCounterMax; lineID++){
+				
+				/*
+				if(lineID == lineCounterMax){
+					lowerInterface = new BufferedImage(810, 360,BufferedImage.TYPE_INT_ARGB);
+					lineID = 0;
+					lineCounter = 0;
+					lineLimit = 16;
+					lowerInterface = null;
+					finishText = true;
+					break;
+				}
+				*/
+					
+				if(lineID >= 0){
+					singleWord = singleLines[lineID].split(" ");
+					wordCounterMax = singleWord.length;
+					
+					System.out.println(singleLines[lineID]);
+					//System.out.println("__singleWords: ");
+				
+
+					for(int wordID = 0; wordID < singleWord.length; wordID++){
+						
+						singleChar = singleWord[wordID];
+						charCounterMax = singleChar.length();
+						
+						if(charCounterMax > lineLimit){
+							lineCounter++;
+							lineLimit = 16;
+							
+						}
+						
+						
+						System.out.println("__"+singleWord[wordID]);
+						word = singleWord[wordID];
+						
+						
+						for(int charID = 0; charID < charCounterMax; charID++){
+							
+							
+							singleChar = word.substring(0,1);
+							word = word.substring(1);
+							System.out.println("_"+singleChar);
+							
+							lowerInterface.createGraphics().drawImage(translateTextTile(singleChar),50+(16-lineLimit)*45,lineCounter*45, Board.getInstance());
+							
+							lineLimit--;
+						}//for char
+						
+						lineLimit--;
+				
+					}//for Word
+					
+				if(lineLimit != -1){
+					lineCounter++;
+					lineLimit = 16;
+				}
+				
+				}//for Line
+				}
+				
+			
+			System.out.println("lineCounter:"+lineCounter);
+			System.out.println("lineID     :"+lineID);
+			System.out.println("lineCMax   :"+lineCounterMax);
 	
+		}
+		
+		textBuff = null;
+		
+		return finishText;
 		
 	}
+	
+	public BufferedImage resizeImage(BufferedImage original, double factor){
+		
+		double size = factor;
+		
+		BufferedImage resized = new BufferedImage((int)(original.getHeight()*size), (int)(original.getWidth()*size),original.getType());
+		
+		resized.createGraphics().drawImage(original, 0, 0, resized.getWidth(), resized.getHeight(), 0, 0, original.getWidth(), original.getHeight(), null);
+		
+		return resized;
+	}
+	
 	
 	public BufferedImage translateTextTile(String textChar){
 		if(textChar.contentEquals("a"))return a;
@@ -499,6 +534,7 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 		else if(textChar.contentEquals("!"))return symExclam;
 		else if(textChar.contentEquals("."))return symPoint;
 		else if(textChar.contentEquals(","))return symComa;
+		else if(textChar.contentEquals("%"))return symPercent;
 		
 		else if(textChar.contentEquals(" "))return space;
 		else {
@@ -517,5 +553,35 @@ public class PlayerInterface extends JComponent implements Runnable, FileLink{
 		if(playerInterface == null)
 			playerInterface = new PlayerInterface();
 		return playerInterface;
+	}
+	
+	private class DynamicTimer implements Runnable{
+		
+		private Moveable object;
+		private String dynamicString;
+		private BufferedImage dynamicBuff;
+		private double resize = 1;
+		
+		private DynamicTimer(String dynamicString, Moveable object, BufferedImage dynamicBuff){
+			this.object = object;
+			this.dynamicString = dynamicString;
+			this.dynamicBuff = dynamicBuff;
+		}
+		
+		public void run(){
+			System.err.println("=>Run@resize:"+resize);
+
+			//dynamicInterface.createGraphics().drawImage(resizeImage(dynamicBuff,resize),(int)(-20*resize),(int)(-20*resize), null);
+
+			if(!dynamicStatus){
+				execDynamic.shutdown();
+				execDynamic = Executors.newSingleThreadScheduledExecutor();
+				//dynamicBuff = null;
+				//dynamicInterface = null;
+				resize = 1;
+			}
+			
+			resize += 0.5;
+		}
 	}
 }

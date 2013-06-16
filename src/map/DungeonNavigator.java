@@ -1,5 +1,6 @@
 package map;
 
+import game.objects.MapObject;
 import game.objects.MarioDark;
 import game.objects.Player;
 
@@ -30,12 +31,20 @@ public class DungeonNavigator extends DungeonCollision{
 	public void initializeMap(int xMap, int yMap, int ID, int playerX, int playerY){
 		
 		GameManager.mapLoaded = false;
-		MarioDark.deleteAllInstances();
 		
+		DungeonNavigator.getInstance().resetObjectManager();
+		OverWorldNavigator.getInstance().resetObjectManager();
+		MarioDark.deleteAllInstances();
+		MapObject.deleteAllInstances();
+		OverWorldNavigator.resetInstance();
+		
+		setID(ID);
 		setXMap(xMap);
 		setYMap(yMap);
 		Player.getInstance().setX(playerX);
 		Player.getInstance().setY(playerY);
+		Camera.getInstance().setX(-getXCoordinate());
+		Camera.getInstance().setY(-getYCoordinate());
 		
 		switch(ID){
 		case(0)	:	loadMapData(dungeonDataID00, tiles_Dungeon00);
@@ -43,10 +52,15 @@ public class DungeonNavigator extends DungeonCollision{
 		}
 
 		System.err.println("=>ini@Map:"+getXMap()+"x"+getYMap());
+		System.out.println("Player@"+Player.getInstance().getX()+"x"+Player.getInstance().getY());
+		System.out.println("Camera@"+Camera.getInstance().getX()+"x"+Camera.getInstance().getY());
+		System.out.println("Map...@"+DungeonNavigator.getInstance().getXCoordinate()+"x"+DungeonNavigator.getInstance().getYCoordinate());
+		
 		
 		buildCollisionObjects();
 		reloadMap();
 		Player.getInstance().setOldPosition();
+
 		GameManager.mapLoaded = true;
 	}
 	
@@ -110,15 +124,16 @@ public class DungeonNavigator extends DungeonCollision{
 							GameManager.dungeon = true;
 							GameManager.overWorld = false;
 							GameManager.mapLoaded = false;
-							if(mapID != getMapID())
+							
+							//if(mapID != getMapID())
 								this.initializeMap(xMap, yMap, mapID, xPlayer, yPlayer);
-							else{
+							//else{
 								setXMap(xMap);
 								setYMap(yMap);
 								Player.getInstance().setX(xPlayer);
 								Player.getInstance().setY(yPlayer);
 								
-							}
+							//}
 							System.out.println("dungeonMap_");
 						}
 							
@@ -197,6 +212,9 @@ public class DungeonNavigator extends DungeonCollision{
 	//
 	public void setAreaID(int areaID){this.areaID = areaID;}
 	
+	public static void resetInstance(){
+		dungeonNavigator = null;
+	}
 	
 	public static DungeonNavigator getInstance(){
 		if(dungeonNavigator == null){

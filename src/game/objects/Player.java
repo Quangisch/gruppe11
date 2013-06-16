@@ -6,6 +6,7 @@ import java.io.File;
 
 import map.Camera;
 import map.DungeonNavigator;
+import map.OverWorldNavigator;
 
 import core.Board;
 import core.GameManager;
@@ -20,6 +21,7 @@ public class Player extends PlayerObjectManager implements Runnable{
 	private boolean horizontalLock;
 	private boolean verticalLock;
 	private boolean interactLock;
+	private boolean godlikeModus;
 	
 	
 	private Player(){
@@ -30,13 +32,21 @@ public class Player extends PlayerObjectManager implements Runnable{
 
 	
 	public void run(){
-
+		
 		if(!getInitialized())
 			System.err.println("Player not initialized");
 
 		if(getInitialized()){
 			move();
 			automaticManaRegen();
+			setMaxLife();
+			
+			if(godlikeModus){
+				if(getLife() +0.25 <= getMaxLife())
+				setLife(getLife()+0.25);
+				if(getManaPool() +0.1 <= getMaxMana())
+				setManaPool(getManaPool()+0.1);
+			}
 		}
 		
 		
@@ -88,7 +98,32 @@ public class Player extends PlayerObjectManager implements Runnable{
 		//attack
 		if(key == KeyEvent.VK_D && !interactLock){
 			interactLock = true;
-			setAttack();
+			if(getAttackDamage() > 0)
+				setAttack();
+		}
+		
+		if(key == KeyEvent.VK_SPACE){
+			System.out.println("HitSpace");
+			
+			GameManager.interact = true;
+			GameManager.promptText = true;
+		
+		}
+		
+		if(key == KeyEvent.VK_1){
+			GameManager.interactKey = 1;
+		}
+		if(key == KeyEvent.VK_2){
+			GameManager.interactKey = 2;
+		}
+		if(key == KeyEvent.VK_3){
+			GameManager.interactKey = 3;
+		}
+		if(key == KeyEvent.VK_4){
+			GameManager.interactKey = 4;
+		}
+		if(key == KeyEvent.VK_5){
+			GameManager.interactKey = 5;
 		}
 		
 		//extended Camera
@@ -126,13 +161,19 @@ public class Player extends PlayerObjectManager implements Runnable{
 			setSpeedUp(0.7);
 		}
 		
+		
 		//interact
 		if(key == KeyEvent.VK_D){
 			interactLock = false;
 		}
 		if(key == KeyEvent.VK_SPACE){
 			System.out.println("HitSpace");
-			PlayerInterface.getInstance().buildText();
+			
+			if(!GameManager.showIngameText){
+				GameManager.interact = false;
+				GameManager.promptText = false;
+			}
+			
 		}
 		
 		if(key == KeyEvent.VK_S){
@@ -142,6 +183,29 @@ public class Player extends PlayerObjectManager implements Runnable{
 			scrollUpMagicSpell();
 		}
 		
+		//useItem
+		if(key == KeyEvent.VK_1){
+			if(!GameManager.interact)
+				useHealthPotion();
+			else
+				GameManager.interactKey =  0;
+		}
+		
+		if(key == KeyEvent.VK_2){
+			if(!GameManager.interact)
+				useManaPotion();
+			else
+				GameManager.interactKey = 0;
+		}
+		
+		if(key == KeyEvent.VK_3){
+			GameManager.interactKey = 0;
+		}
+		
+		if(key == KeyEvent.VK_4){
+			GameManager.interactKey = 0;
+		}
+		
 		//camera
 		if(key == KeyEvent.VK_C){
 			if(!GameManager.dungeon)
@@ -149,12 +213,30 @@ public class Player extends PlayerObjectManager implements Runnable{
 			else
 				System.err.println("Can't switch CameraMode in Dungeons.");
 
-			if(GameManager.cameraOn){
-				int scrollX = getX()-400;
-				int scrollY = getY()-300;
+			
+			if(GameManager.cameraOn && !getDirectionLock()){
+				int scrollX = 0;
+				int scrollY = 0;
+				
+				if(!(getRightLock() || getLeftLock()))
+					scrollX = getX()-400;
+				
+				if(!(getUpLock() || getDownLock()))
+					scrollY = getY()-300;
+				
+				
 				Camera.getInstance().switchToCameraMode(scrollX, scrollY);
 			}
 			
+		}
+		
+		//ingameMenu
+		if(key == KeyEvent.VK_ESCAPE){
+			GameManager.ingameMenu = !GameManager.ingameMenu;
+			if(GameManager.ingameMenu)
+				this.setInteractionLock(true);
+			else
+				setInteractionLock(false);
 		}
 		
 		//debug
@@ -165,29 +247,46 @@ public class Player extends PlayerObjectManager implements Runnable{
 		if(key == KeyEvent.VK_P){
 			GameManager.printMsg = !GameManager.printMsg;
 		}
+		if(key == KeyEvent.VK_O){
+			System.out.println("Player@"+getX()+"x"+getY());
+			System.out.println("Camera@"+Camera.getInstance().getX()+"x"+Camera.getInstance().getY());
+			if(GameManager.dungeon)
+			System.out.println("Map...@"+DungeonNavigator.getInstance().getXCoordinate()+"x"+DungeonNavigator.getInstance().getYCoordinate());
+			if(GameManager.overWorld)
+			System.out.println("Map...@"+OverWorldNavigator.getInstance().getXCoordinate()+"x"+OverWorldNavigator.getInstance().getYCoordinate());
+			
+		}
 		
 		if(key == KeyEvent.VK_Y){
 			int num = MarioDark.getInstanceCounter();
-			MarioDark.getInstance(true, num).initializeImage(enemyDark, 90, 120, 8);
-			MarioDark.getInstance(false, num).initializeAttributes(2, 3, true, 0, 75, 45, 20);
-			MarioDark.getInstance(false, num).initializePosition(200, 100, 5);
-			MarioDark.getInstance(false, num).setBehaviour(3);
-			MarioDark.getInstance(false, num).setMoveableType(1);
-			GameManager.addGameObject(MarioDark.getInstance(false, num));
+			MarioDark.getInstance(true, num, false).initializeImage(enemyDark, 90, 120, 8);
+			MarioDark.getInstance(false, num, false).initializeAttributes(2, 3, true, 0, 75, 45, 20);
+			MarioDark.getInstance(false, num, false).initializePosition(200, 100, 5);
+			MarioDark.getInstance(false, num, false).setPattern(3);
+			MarioDark.getInstance(false, num, false).setMoveableType(1);
+			GameManager.addGameObject(MarioDark.getInstance(false, num, false));
 			
 		}
 		
 		if(key == KeyEvent.VK_X){
 			int num = MarioDark.getInstanceCounter();
-			MarioDark.getInstance(true, num).initializeImage(enemyBright, 90, 120, 8);
-			MarioDark.getInstance(false, num).initializeAttributes(2, 3, true, 0, 75, 45, 20);
-			MarioDark.getInstance(false, num).initializePosition(200, 100, 5);
-			MarioDark.getInstance(false, num).setBehaviour(1);
-			MarioDark.getInstance(false, num).setMoveableType(2);
-			GameManager.addGameObject(MarioDark.getInstance(false, num));
+			MarioDark.getInstance(true, num, false).initializeImage(enemyBright, 90, 120, 8);
+			MarioDark.getInstance(false, num, false).initializeAttributes(2, 3, true, 0, 75, 45, 20);
+			MarioDark.getInstance(false, num, false).initializePosition(200, 100, 5);
+			MarioDark.getInstance(false, num, false).setPattern(1);
+			MarioDark.getInstance(false, num, false).setMoveableType(2);
+			GameManager.addGameObject(MarioDark.getInstance(false, num, false));
 			
 			
 			
+		}
+		
+		if(key == KeyEvent.VK_T){
+			System.out.println("printText");
+			//PlayerInterface.getInstance().setText("test");
+			GameManager.promptText = true;
+			GameManager.showIngameText = true;
+			PlayerInterface.getInstance().buildText();
 		}
 		
 		if(key == KeyEvent.VK_L){
@@ -203,6 +302,10 @@ public class Player extends PlayerObjectManager implements Runnable{
 		if(key == KeyEvent.VK_K){
 			ItemListManager.dropItem(getX(), getY(), 0, 0, 0);
 			
+		}
+		
+		if(key == KeyEvent.VK_G){
+			godlikeModus = !godlikeModus;
 		}
 		
 		if(key == KeyEvent.VK_0){

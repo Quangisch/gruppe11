@@ -13,7 +13,7 @@ import javax.swing.JComponent;
 import core.Board;
 import core.GameManager;
 
-abstract class Map extends JComponent{
+abstract class Map{
 	
 	private Graphics2D g2d;
 	private volatile int x = 0;
@@ -22,11 +22,12 @@ abstract class Map extends JComponent{
 	private int height;
 	
 
-	private BufferedImage mapImage;
+	private BufferedImage mapImage, mapImageWall;
 	private volatile boolean visible = true;
 	private volatile boolean alive;
 	private boolean dungeon;
 	private boolean overWorld;
+	private int ID;
 	
 	
 	private ArrayList<Rectangle> navigationBoundPaint = new ArrayList<Rectangle>();
@@ -35,20 +36,25 @@ abstract class Map extends JComponent{
 	private ArrayList<Rectangle> wallBoundPaint = new ArrayList<Rectangle>();
 	private ArrayList<Rectangle> mapObjectBoundPaint = new ArrayList<Rectangle>();
 	
+	protected final static Rectangle NULLRECT = new Rectangle(0,0,0,0);
+	
+	
+	
 	protected Map(){
 		
 	}
 	
 	
-	public void paintComponents(Graphics g){
-		g2d = (Graphics2D) g;
+	public void draw(int layer, Graphics2D g2d){
 		
 		Camera cam = Camera.getInstance();
 		//System.out.println("Camera_"+Camera.getInstance().getX()+"x"+Camera.getInstance().getY());
 	
-		if(mapImage != null && visible)
+		if(mapImage != null && visible && layer == 0)
 			g2d.drawImage(mapImage, x, y, Board.getInstance());
 		
+		if(mapImage != null && visible && layer == 1)
+			g2d.drawImage(mapImageWall, x, y, Board.getInstance());
 		
 		if(wallBoundNPaint.size() > 0 && GameManager.showBounds){
 			g2d.setColor(Color.BLUE);
@@ -66,7 +72,7 @@ abstract class Map extends JComponent{
 			}
 		}
 		
-		
+	
 		
 		if(wallBoundSPaint.size() > 0 && GameManager.showBounds){
 			g2d.setColor(Color.CYAN);
@@ -146,6 +152,10 @@ abstract class Map extends JComponent{
 		this.mapImage = mapImage;
 	}
 	
+	protected void setMapImageWall(BufferedImage mapImageWall){
+		this.mapImageWall = mapImageWall;
+	}
+	
 	
 	protected void setDungeon(boolean dungeon){
 		this.dungeon = dungeon;
@@ -155,13 +165,14 @@ abstract class Map extends JComponent{
 		this.overWorld = overWorld;
 	}
 	
-	
+	public BufferedImage getMapImage(){return mapImage;}
 	public synchronized int getXCoordinate(){return x;}
 	public synchronized int getYCoordinate(){return y;}
 	public int getWidthMap(){return width;}
 	public int getHeightMap(){return height;}
 	protected boolean getAlive(){return alive;}
 	protected boolean getVisible(){return visible;}
+	public int getID(){return ID;}
 	//
 	public synchronized void setXCoordinate(int x){this.x = x;}
 	public synchronized void setYCoordinate(int y){this.y = y;}
@@ -169,7 +180,7 @@ abstract class Map extends JComponent{
 	protected void setHeightMap(int height){this.height = height;System.out.println("Height:"+height);}
 	protected void setAlive(boolean alive){this.alive = alive;}
 	protected void setVisibleMap(boolean visible){this.visible = visible;}
-	
+	protected void setID(int ID){this.ID = ID;}
 	
 
 }

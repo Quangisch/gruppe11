@@ -23,71 +23,67 @@ public class CollisionDetection implements Runnable{
 	
 	public void run(){
 	
+		while(!GameManager.mapLoaded){
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		GameManager.updateGameObject();
 		moveableObject = GameManager.getMoveableList();
 	
 		//System.out.println("moveableListSize@"+moveableObject.size());
-		if(moveableObject.size() > 1){
+		if(moveableObject.size() > 0){
 			
 			for(int index = 0; index < moveableObject.size();index++){
 				
-				
-				if(!moveableObject.get(index).isHumanPlayer()){
-					int type = moveableObject.get(index).getMoveableType();
-					int IDNumber = moveableObject.get(index).getMoveableID();
+				if(moveableObject.get(index).getMoveableType() != -10){
 					
-					if(Player.getInstance().getBoundCore().intersects(moveableObject.get(index).getBoundCore()) && type > 0){
-						/*
-						moveableObject.get(index).startWaitTimer(500);
-						moveableObject.get(index).setObjectBack(10,0,true,moveableObject.get(index).getBoundCore());
-						moveableObject.get(index).startInvincibleTimer(1800);
-						*/
+					if(!moveableObject.get(index).isHumanPlayer()){
+					
+						int type = moveableObject.get(index).getMoveableType();
+						int IDNumber = moveableObject.get(index).getMoveableID();
 						
-						System.out.println("==>loseLife");
+						if(Player.getInstance().getBoundCore().intersects(moveableObject.get(index).getBoundCore()) && type > 0){
+							
+							moveableObject.get(index).startWaitTimer(500);
+							moveableObject.get(index).setObjectBack(10,0,true,moveableObject.get(index).getBoundCore());
 						
-						Player.getInstance().loseLife(EnemyManager.getAttackDamage(type));
-						Player.getInstance().startInvincibleTimer(1800);
-						Player.getInstance().setObjectBack(20,0,true,moveableObject.get(index).getBoundCore());
+							
+							
+							System.out.println("==>loseLife");
+							
+							Player.getInstance().loseLife(EnemyManager.getAttackDamage(type));
+							Player.getInstance().startInvincibleTimer(1800);
+							Player.getInstance().setObjectBack(20,0,true,moveableObject.get(index).getBoundCore());
+							
+							break;
+						}
 						
-						break;
-					}
-					
-					if(Player.getInstance().getAttackBound().intersects(moveableObject.get(index).getBoundN().union(moveableObject.get(index).getBoundS()))){
-						moveableObject.get(index).setObjectBack(50,0,true,Player.getInstance().getAttackBound());
-						moveableObject.get(index).setLife(moveableObject.get(index).getLife()-Player.getInstance().getAttackDamage());
+						if(Player.getInstance().getAttackBound().intersects(moveableObject.get(index).getBoundN().union(moveableObject.get(index).getBoundS()))){
+							moveableObject.get(index).setObjectBack(50,0,true,Player.getInstance().getAttackBound());
+							moveableObject.get(index).setLife(moveableObject.get(index).getLife()-Player.getInstance().getAttackDamage());
+							
+							//break;
+						}
 						
-		
-					}
+						
+						
+					}//if human
+					
+					if(GameManager.dungeon && GameManager.mapLoaded && GameManager.scrollDirection == 0)
+						DungeonNavigator.getInstance().checkCollision(moveableObject.get(index));
+
+					if(GameManager.overWorld && GameManager.mapLoaded)
+						OverWorldNavigator.getInstance().checkCollision(moveableObject.get(index));	
 					
 					
-					
-				}
-				
-			}
-			
-		}
-		
-		
-		
-		
-		
-		//checkCollision
-		if(GameManager.dungeon && GameManager.mapLoaded && GameManager.scrollDirection == 0){
-			for(int index = 0; index < moveableObject.size(); index++){
-				DungeonNavigator.getInstance().checkCollision(moveableObject.get(index));
-			}
-		}
-		
-		if(GameManager.overWorld && GameManager.mapLoaded){
-			for(int index = 0; index < moveableObject.size(); index++){
-				//OverWorldNavigator.getInstance().checkCollision(moveableObject.get(index));
-				
-			}
-			
-			OverWorldNavigator.getInstance().checkCollision();
-			
-		}
-		
+				}// if moveableType != -10
+
+			}//for index < size
+		}//if moveable.size
 		
 		
 	}
@@ -103,7 +99,7 @@ public class CollisionDetection implements Runnable{
 			dungeonNavigator = DungeonNavigator.getInstance();
 			overWorldNavigator = OverWorldNavigator.getInstance();
 		}
-			
+		
 		return collisionDetection;
 	}
 	

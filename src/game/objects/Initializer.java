@@ -18,7 +18,7 @@ abstract class Initializer extends Moveable{
 		System.out.println("-->iniPosition");
 	
 	}
-	
+
 	public void initializeImage(File spriteFile, int subSpriteWidth, int subSpriteHeight, int moveStepCycle){
 		setFile(spriteFile);
 		setSubSpriteWidth(subSpriteWidth);
@@ -57,6 +57,11 @@ abstract class Initializer extends Moveable{
 			return false;
 		}
 			
+	}
+	
+	protected void byPassInitialCheck(){
+		iniAttributes = iniPosition = iniImage = true;
+		setLife(9999);
 	}
 	
 }

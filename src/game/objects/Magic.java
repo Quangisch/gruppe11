@@ -37,13 +37,12 @@ public class Magic extends Initializer implements FileLink{
 	
 
 	private Magic(int type, Moveable caster){
-		
+		setMoveableType(-10);
 		this.type = type;
 		this.caster = caster;
 		System.out.println("new MagicCast @type "+type);
 		
 		initializeMagic();
-	
 	}
 	
 	public void initializeMagic(){
@@ -91,41 +90,40 @@ public class Magic extends Initializer implements FileLink{
 		execRun = Executors.newSingleThreadScheduledExecutor();
 		execRun.scheduleWithFixedDelay(runThread, 10, 20, TimeUnit.MILLISECONDS);
 		
-		Board.getInstance().addDrawable(this);
-	
+		GameManager.addGameObject(this);
+		
 	}
 	
 	private void running(){
 		
 		move();
+		//System.out.println("Position@"+getX()+"x"+getY()+",visible:"+getVisibleDrawable());
+		//System.out.println(getLastDirection()+","+getMoveUp()+"x"+getMoveRight()+"x"+getMoveDown()+"x"+getMoveLeft());
 		
-		if(getAlive()){
-		
-			//System.out.println("Position@"+getX()+"x"+getY()+",visible:"+getVisibleDrawable());
-			//System.out.println(getLastDirection()+","+getMoveUp()+"x"+getMoveRight()+"x"+getMoveDown()+"x"+getMoveLeft());
-			
-			for(int index = 0; index < moveableList.size(); index++){
+		for(int index = 0; index < moveableList.size(); index++){
 
-				if(getBoundCore().intersects(moveableList.get(index).getBoundCore()) && !moveableList.get(index).equals(caster)){
-					moveableList.get(index).setLife(moveableList.get(index).getLife()-damage[type]);
-					moveableList.get(index).setObjectBack(20,0,true,this.getBoundCore());
-					setAlive(false);
-					System.out.println("magicHit");
-					break;
-				}
-			}
-			
-			
-			//
-			if((getX() > 1000 && (direction == 2 || direction == 3 || direction == 4))
-					|| (getX() < -200 && (direction == 6 || direction == 7 || direction == 8))
-					|| (getY() < -200 && (direction == 8 || direction == 1 || direction == 2))
-					|| (getY() > 800 && (direction == 4 || direction == 5 || direction == 6)))
+			if(getBoundCore().intersects(moveableList.get(index).getBoundCore()) && !moveableList.get(index).equals(caster) && !moveableList.get(index).equals(this) && moveableList.get(index).getMoveableType() != -10){
 				setAlive(false);
-		} else {
-			
+				moveableList.get(index).setLife(moveableList.get(index).getLife()-damage[type]);
+				moveableList.get(index).setObjectBack(20,0,true,this.getBoundCore());
+				System.out.println("magicHit");
+				break;
+			}
 		}
-
+		
+		
+		//
+		if((getX() > 1000 && (direction == 2 || direction == 3 || direction == 4))
+				|| (getX() < -200 && (direction == 6 || direction == 7 || direction == 8))
+				|| (getY() < -200 && (direction == 8 || direction == 1 || direction == 2))
+				|| (getY() > 800 && (direction == 4 || direction == 5 || direction == 6))
+				|| !GameManager.mapLoaded)
+			setAlive(false);
+		
+		
+		
+			
+	
 	}
 	
 
@@ -148,7 +146,7 @@ public class Magic extends Initializer implements FileLink{
 				running();
 			
 			else {
-				setVisibleDrawable(false);
+				setVisible(false);
 				magicInstance = null;
 				execRun.shutdown();
 				execRun = null;

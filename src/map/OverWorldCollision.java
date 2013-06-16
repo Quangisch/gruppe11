@@ -18,16 +18,12 @@ abstract class OverWorldCollision extends OverWorldBuilder{
 	
 	}
 	
-	public void checkCollision(){
+	public void checkCollision(Moveable object){
 		
 		Camera cam = Camera.getInstance();
 		Player player = Player.getInstance();
-		ArrayList<Moveable> objectList = GameManager.getMoveableList();
 		
-		
-		for(int indexObject = 0; indexObject < objectList.size(); indexObject++){
-			
-			Moveable object = objectList.get(indexObject);
+	
 			
 			for(int indexWall = 0; indexWall < wallBoundList.size(); indexWall++){
 				
@@ -74,7 +70,7 @@ abstract class OverWorldCollision extends OverWorldBuilder{
 
 			}//for indexWall
 
-		}//for indexObject
+		
 		
 		for(int indexMapObject = 0; indexMapObject < mapObjectBoundList.size(); indexMapObject++){
 			Rectangle rect = mapObjectBoundList.get(indexMapObject).getRectangle();
