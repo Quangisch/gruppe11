@@ -164,9 +164,7 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 				//System.out.println("Treasure:open@"+GameObjectManager.openTreasureBox(false, this));
 				
 			}
-				
-			
-			
+
 		}
 
 	}

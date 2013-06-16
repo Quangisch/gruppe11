@@ -71,27 +71,30 @@ abstract class NPCMove extends Initializer{
 	}
 	
 	public boolean moveToY(int yDestination){
+		
+		int yDest = yDestination - Camera.getInstance().getY();
+		
 		if(!yLock){
 			yLock = true;
-			if(getY() > yDestination && !getMoveDown())
+			if(getY() > yDest && !getMoveDown())
 				setMoveUp(true);
-			if(getY() < yDestination && !getMoveUp())
+			if(getY() < yDest && !getMoveUp())
 				setMoveDown(true);
 		}
 		if(yLock){
-			if(getMoveUp() && !getMoveDown() && (getY() <= yDestination)){
+			if(getMoveUp() && !getMoveDown() && (getY() <= yDest)){
 				setMoveUp(false);
 				yLock = false;
-				setY(yDestination); 
+				setY(yDest); 
 				//System.out.println("reach xDestination");
 				destinationCounter++;
 			}
 				
-			if(getMoveDown() && !getMoveUp() && (getY() >= yDestination)){
+			if(getMoveDown() && !getMoveUp() && (getY() >= yDest)){
 				setMoveDown(false);
 				yLock = false;
-				setY(yDestination); 
-				//System.out.println("reach yDestination");
+				setY(yDest); 
+				//System.out.println("reach yDest");
 				destinationCounter++;
 			}
 			
@@ -106,27 +109,30 @@ abstract class NPCMove extends Initializer{
 	}
 	
 	public boolean moveToX(int xDestination){
+		
+		int xDest = xDestination - Camera.getInstance().getX();
+		
 		if(!xLock){
 			xLock = true;
-			if(getX() < xDestination && !getMoveLeft())
+			if(getX() < xDest && !getMoveLeft())
 				setMoveRight(true);
-			if(getX() > xDestination && !getMoveRight())
+			if(getX() > xDest && !getMoveRight())
 				setMoveLeft(true);
 		}
 		if(xLock){
-			if(getMoveRight() && !getMoveLeft() && (getX() >= xDestination)){
+			if(getMoveRight() && !getMoveLeft() && (getX() >= xDest)){
 				setMoveRight(false);
 				xLock = false;
-				setX(xDestination); 
-				//System.out.println("reach xDestination");
+				setX(xDest); 
+				//System.out.println("reach xDest");
 				destinationCounter++;
 			}
 				
-			if(getMoveLeft() && !getMoveRight() && (getX() <= xDestination)){
+			if(getMoveLeft() && !getMoveRight() && (getX() <= xDest)){
 				setMoveLeft(false);
 				xLock = false;
-				setX(xDestination); 
-				//System.out.println("reach xDestination");
+				setX(xDest); 
+				//System.out.println("reach xDest");
 				destinationCounter++;
 			}
 		}

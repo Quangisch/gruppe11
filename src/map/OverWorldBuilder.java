@@ -213,15 +213,30 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 							
 							readDataBuff.mark(10);
 							
-							dataLine = readDataBuff.readLine(); //Trap+X+Y
+							dataLine = readDataBuff.readLine();
 							dataLine = dataLine.replace("x", "");
 							dataLine = dataLine.replace("@", "");
-							System.out.println("====>TRAP@"+mapIDX+"x"+mapIDY+"@data:"+dataLine);
+							
 							String xPosition = dataLine.substring(0, 4);
 							String yPosition = dataLine.substring(4, 8);
 							String type = dataLine.substring(8, 9);
 							String orientation = dataLine.substring(9, 10);
+							
 							writeMapObjectData(type, orientation, mapIDX, mapIDY, xPosition, yPosition);
+							
+							if(type.contentEquals("2")){
+								dataLine = readDataBuff.readLine();
+								dataLine = dataLine.replace("Item@", "");
+								dataLine = dataLine.replace("x", "");
+								
+								int treasureID  = translateStringToInt(dataLine.substring(0, 1));
+								int treasureType = translateStringToInt(dataLine.substring(1, 2));
+								int treasureMember = translateStringToInt(dataLine.substring(2, 3));
+								int[] treasureData = {treasureID, treasureType, treasureMember};
+								
+								GameObjectManager.getInstance().constructTreasure(mapIDX, mapIDY, translateStringToInt(xPosition), translateStringToInt(yPosition), treasureData);
+							}
+							
 							
 							readDataBuff.mark(10);
 							searchLine = readDataBuff.readLine();
