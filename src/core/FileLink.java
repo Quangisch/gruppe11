@@ -46,4 +46,10 @@ public interface FileLink{
 	
 	//enemySprite
 	File goomba = new File("resources/images/goomba_sprite_move.png");
+	
+	//sound
+	File menuSound = new File("resources/music/mainMenu.mp3");
+	File ingameSound = new File("");
+	File gameWinSound = new File("");
+	File gameOverSound = new File("");
 }

@@ -101,7 +101,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 	
 	private void initializeMap(){
 		
-		GameManager.getInstance().switchGameState(false, true);
+		GameManager.getInstance().switchGameState(true, false);
 		
 		GameManager.overWorld = false;
 		GameManager.dungeon = true;
@@ -109,7 +109,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		if(GameManager.overWorld)
 			OverWorldNavigator.getInstance().initializeMap(0,0,1,500,500);
 		if(GameManager.dungeon)
-			DungeonNavigator.getInstance().initializeMap(0,2,0,100,100);
+			DungeonNavigator.getInstance().initializeMap(0,3,0,100,100);
 	}
 	
 	private void initializeThreads(){
