@@ -8,42 +8,44 @@ public class GameManager {
 	
 	public static volatile GameManager gameManager;
 	
-	public static volatile boolean gameInitialized;
+	public volatile boolean gameInitialized;
 	
-	public static volatile int musicVolume;
-	public static volatile int soundVolume;
-	public static volatile int brightness;
-	public static volatile int contrast;
+	public volatile int musicVolume;
+	public volatile int soundVolume;
+	public volatile int brightness;
+	public volatile int contrast;
 	
-	public static volatile boolean win;
-	public static volatile boolean lose;
-	public volatile boolean menu;
+	public volatile boolean win;
+	public volatile boolean lose;
+	public volatile boolean menu = true;
 	public volatile boolean ingame;
-	public static volatile boolean ingameMenu;
-	public static volatile boolean switchGameState;
+	public volatile boolean ingameMenu;
+	public volatile boolean switchGameState;
 	
-	public static volatile boolean overWorld;
-	public static volatile boolean dungeon;
-	public static volatile boolean mapLoaded;
+	public volatile boolean overWorld;
+	public volatile boolean dungeon;
+	public volatile boolean mapLoaded;
 	
-	public static volatile boolean moveFocus = false;
-	public static volatile boolean cameraOn = false;
-	public static volatile boolean cameraLock = false;
-	public static volatile int scrollDirection = 0;
-	public static volatile boolean scrollLock = false;
-	public static volatile boolean videoSequence = false;
+	public volatile boolean moveFocus = false;
+	public volatile boolean cameraOn = false;
+	public volatile boolean cameraLock = false;
+	public volatile int scrollDirection = 0;
+	public volatile boolean scrollLock = false;
+	public volatile boolean videoSequence = false;
 	
-	public static volatile int interactKey;
-	public static volatile boolean interact;
-	public static volatile boolean showIngameText;
-	public static volatile boolean promptText;
-	public static volatile boolean printMsg;
-	public static volatile boolean showBounds;
+	public volatile int interactKey;
+	public volatile boolean interact;
+	public volatile boolean showIngameText;
+	public volatile boolean promptText;
+	public volatile boolean printMsg;
+	public volatile boolean showBounds;
 	
 	private static volatile ArrayList<Moveable> moveableList = new ArrayList<Moveable>();
 	
-	private GameManager(){
-		
+	private GameManager(boolean menu, boolean ingame, boolean switchGameState){
+		this.menu = menu;
+		this.ingame = ingame;
+		this.switchGameState = switchGameState;
 	}
 	
 	public static synchronized void addGameObject(Moveable moveableElement){
@@ -100,10 +102,10 @@ public class GameManager {
 	public void setWin(boolean win){this.win = win;}
 	public void setLose(boolean lose){this.lose = lose;}
 
-	public void switchGameState(boolean menu, boolean ingame){
-		this.menu = menu;
-		this.ingame = ingame;
-		GameManager.switchGameState = true;
+	public void switchGameState(boolean menuArg, boolean ingameArg){
+		this.menu = menuArg;
+		this.ingame = ingameArg;
+		switchGameState = true;
 	}
 	
 	public boolean getMapLoaded(){return mapLoaded;}
@@ -116,9 +118,20 @@ public class GameManager {
 	public void setDungeon(boolean dungeon){this.dungeon = dungeon;}
 	public void setScrollLock(boolean scrollLock){this.scrollLock = scrollLock;}
 	
+	
+	public static void resetInstance(){
+		boolean tmpMenu = GameManager.getInstance().menu;
+		boolean tmpIngame = GameManager.getInstance().ingame;
+		boolean tmpSwitchState = GameManager.getInstance().switchGameState;
+		if(gameManager != null)
+			gameManager = new GameManager(tmpMenu, tmpIngame, tmpSwitchState);
+
+		
+	}
+	
 	public static GameManager getInstance(){
 		if(gameManager == null)
-			gameManager = new GameManager();
+			gameManager = new GameManager(true, false, true);
 		
 		return gameManager;
 	}

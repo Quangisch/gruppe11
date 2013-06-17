@@ -49,12 +49,13 @@ public class IngameMenu implements FileLink{
 		for(int i = 0; i < (new Double(inventoryList[1]).intValue()); i++)
 			g2d.drawImage(itemListBuff.getSubimage(0, 25, 25, 25),480+i*33,305,75,75,null);
 		
-		
+		//Mana
 		if(Player.getInstance().getManaPool() > 0){
-			g2d.drawImage(manaPoolBuff, 510-(int)(10*inventoryList[3]), 365, (int)(inventoryList[3]*100)-5, 25, null);
+			g2d.drawImage(manaPoolBuff, 510-(int)(10*inventoryList[3]), 365, (int)(inventoryList[3]*100), 25, null);
 		}
 		g2d.drawImage(manaBarBuff, 500, 365, (int)(100*inventoryList[4]),25,null);
 		
+		//Level
 		String lvl = ("Lvl "+(new Double(inventoryList[5]).intValue()));
 		length = lvl.length();
 		for(int i = 0; i < length; i++){
@@ -63,6 +64,7 @@ public class IngameMenu implements FileLink{
 			g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),500+i*10,395,30,30,null);
 		}
 		
+		//Key
 		g2d.drawImage(itemListBuff.getSubimage(0, 200, 25, 25),650,385,50,50,null);
 		String key = ("x"+(new Double(inventoryList[8]).intValue()));
 		length = key.length();
@@ -72,6 +74,7 @@ public class IngameMenu implements FileLink{
 			g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),660+i*10,395,30,30,null);
 		}
 		
+		//Coins
 		g2d.drawImage(itemListBuff.getSubimage(0, 0, 25, 25),700,380,60,60,null);
 		String coin = ("x"+(new Double(inventoryList[0]).intValue()));
 		length = coin.length();
@@ -90,7 +93,7 @@ public class IngameMenu implements FileLink{
 		
 		//weapon
 		if(inventoryList[9] >= 0.5){
-			g2d.drawImage(itemListBuff.getSubimage(0, 125, 25, 25),500,440,60,60,null);
+			g2d.drawImage(itemListBuff.getSubimage(0, 125, 25, 25),500,490,60,60,null);
 			
 			String weaponLevel = "";
 			if(inventoryList[9] >= 0.5 && inventoryList[9] < 1.5)
@@ -102,7 +105,7 @@ public class IngameMenu implements FileLink{
 			for(int i = 0; i < length; i++){
 				String singleChar = weaponLevel.substring(0, 1);
 				weaponLevel = weaponLevel.substring(1);
-				g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),500+i*10,500,30,30,null);
+				g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),500+i*10, 530, 20, 20,null);
 			}
 			
 		}
@@ -110,7 +113,7 @@ public class IngameMenu implements FileLink{
 		
 		//armor
 		if(inventoryList[10]>0){
-			g2d.drawImage(itemListBuff.getSubimage(0, 150, 25, 25),580,440,60,60,null);
+			g2d.drawImage(itemListBuff.getSubimage(0, 150, 25, 25),580,490,60,60,null);
 			String armor = ((new Double(inventoryList[10]*100).intValue())+"%");
 			length =  armor.length();
 			for(int i = 0; i < length; i++){
@@ -129,14 +132,14 @@ public class IngameMenu implements FileLink{
 			for(int i = 0; i < length; i++){
 				String singleChar = armorLevel.substring(0, 1);
 				armorLevel = armorLevel.substring(1);
-				g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),580+i*10,500,30,30,null);
+				g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),580+i*10,530,20,20,null);
 			}
 		}
 		
 		//MagicLevel
 		if(inventoryList[6] > 0){
 			for(int i = 0; i < inventoryList[6]; i++)
-				g2d.drawImage(itemListBuff.getSubimage(0+i*25, 175, 25, 25),650+i*50,440,60,60,null);
+				g2d.drawImage(itemListBuff.getSubimage(0+i*25, 175, 25, 25),650+i*50,490,60,60,null);
 			
 			String magicLevel = "";
 			if(inventoryList[6]  == 1)
@@ -148,7 +151,7 @@ public class IngameMenu implements FileLink{
 			for(int i = 0; i < length; i++){
 				String singleChar = magicLevel.substring(0, 1);
 				magicLevel = magicLevel.substring(1);
-				g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),660+i*10,500,30,30,null);
+				g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar),660+i*10,530,20,20,null);
 			}
 		}
 		
@@ -177,7 +180,21 @@ public class IngameMenu implements FileLink{
 			}
 		}
 		
-
+		//NextLevel
+		g2d.setColor(Color.RED);
+		g2d.fillRect(500, 440, 250, 10);
+		g2d.setColor(Color.GREEN);
+		g2d.fillRect(500, 440, (int)(250*(inventoryList[7]/(10*inventoryList[5]))), 10);
+		String nextLevel = ((new Double(10*inventoryList[5]-inventoryList[7])).intValue()+"xp to next Level");
+		length = nextLevel.length();
+		
+		for(int i =0; i < length; i++){
+			String singleChar = nextLevel.substring(0, 1);
+			nextLevel = nextLevel.substring(1);
+			g2d.drawImage(PlayerInterface.getInstance().translateTextTile(singleChar), 500+i*12, 450, 20, 20, null);
+		}
+		g2d.drawImage(manaBarBuff, 495, 437, 265, 16,null);
+	
 	}
 	
 	/*
@@ -202,9 +219,9 @@ public class IngameMenu implements FileLink{
 	
 	private void drawMiniMap(Graphics2D g2d){
 		
-		if(GameManager.dungeon)
+		if(GameManager.getInstance().dungeon)
 			g2d.drawImage(DungeonNavigator.getInstance().getMapImage().getSubimage(Camera.getInstance().getX(), Camera.getInstance().getY(), 810, 630),500,120,248,190,null);
-		if(GameManager.overWorld)
+		if(GameManager.getInstance().overWorld)
 			g2d.drawImage(OverWorldNavigator.getInstance().getMapImage().getSubimage(Camera.getInstance().getX(), Camera.getInstance().getY(), 810, 630),500,120,248,190,null);
 		
 		
@@ -287,6 +304,11 @@ public class IngameMenu implements FileLink{
 				System.err.println("Sprite: File not found. "+e);
 				System.exit(0);
 			}
+	}
+	
+	public static void resetInstance(){
+		if(ingameMenu != null)
+			ingameMenu = new IngameMenu();
 	}
 	
 	public static IngameMenu getInstance(){

@@ -11,9 +11,9 @@ public class GameObjectManager{
 	//private ArrayList<O> gameObjectList = new ArrayList<O>();
 	//private static int[][][] doorIDCounter = new int[4][4][10];
 	private static GameObjectManager gameObjectManager;
-	private static ArrayList<DoorIDStatus<Integer,Boolean>> doorIDList = new ArrayList<DoorIDStatus<Integer, Boolean>>();
-	private static ArrayList<BossIDStatus<Integer, Boolean>> bossIDList = new ArrayList<BossIDStatus<Integer, Boolean>>();
-	public static ArrayList<Treasure<Integer[],Integer[],Boolean>> treasureIDCounter = new ArrayList<Treasure<Integer[],Integer[],Boolean>>();
+	private ArrayList<DoorIDStatus<Integer,Boolean>> doorIDList = new ArrayList<DoorIDStatus<Integer, Boolean>>();
+	private ArrayList<BossIDStatus<Integer, Boolean>> bossIDList = new ArrayList<BossIDStatus<Integer, Boolean>>();
+	public ArrayList<Treasure<Integer[],Integer[],Boolean>> treasureIDCounter = new ArrayList<Treasure<Integer[],Integer[],Boolean>>();
 
 	
 	private GameObjectManager(){
@@ -82,13 +82,13 @@ public final boolean constructTreasure(int xMap, int yMap, int xPos, int yPos, i
 		doorIDList.add(door);
 	}
 	
-	public static final boolean openTreasureBox(boolean openNow, MapObject treasureObject){
+	public final boolean openTreasureBox(boolean openNow, MapObject treasureObject){
 		boolean treasureOpen = false;
 		
 		
 		for(int index = 0; index < treasureIDCounter.size(); index++){
-			System.out.println("compTreasure@PositionID:"+treasureIDCounter.get(index).getPositionID()[0]+"x"+treasureIDCounter.get(index).getPositionID()[1]+","+treasureIDCounter.get(index).getPositionID()[2]+"x"+treasureIDCounter.get(index).getPositionID()[3]);
-			System.err.println("openTreasure@PositionID:"+treasureObject.getPositionID()[0]+"x"+treasureObject.getPositionID()[1]+","+treasureObject.getPositionID()[2]+"x"+treasureObject.getPositionID()[3]);
+			//System.out.println("compTreasure@PositionID:"+treasureIDCounter.get(index).getPositionID()[0]+"x"+treasureIDCounter.get(index).getPositionID()[1]+","+treasureIDCounter.get(index).getPositionID()[2]+"x"+treasureIDCounter.get(index).getPositionID()[3]);
+			//System.err.println("openTreasure@PositionID:"+treasureObject.getPositionID()[0]+"x"+treasureObject.getPositionID()[1]+","+treasureObject.getPositionID()[2]+"x"+treasureObject.getPositionID()[3]);
 			//System.out.println(treasureIDCounter.get(index).getPositionID()[2]+"compTo"+treasureObject.getPositionID()[2]+"equals:"+treasureIDCounter.get(index).getPositionID()[2].equals(treasureObject.getPositionID()[2]));
 			if(treasureIDCounter.get(index).getPositionID()[0].equals(treasureObject.getPositionID()[0])
 					&& treasureIDCounter.get(index).getPositionID()[1].equals(treasureObject.getPositionID()[1])
@@ -123,7 +123,7 @@ public final boolean constructTreasure(int xMap, int yMap, int xPos, int yPos, i
 		return treasureOpen;
 	}
 	
-	public static boolean getDoorStatusOpen(int ID){
+	public boolean getDoorStatusOpen(int ID){
 		boolean lockOpen = false;
 		
 		for(int index = 0; index < doorIDList.size(); index++){
@@ -137,7 +137,7 @@ public final boolean constructTreasure(int xMap, int yMap, int xPos, int yPos, i
 		return lockOpen;
 	}
 	
-	public static boolean getBossStatusDefeated(int ID){
+	public boolean getBossStatusDefeated(int ID){
 		boolean defeated = false;
 		
 		for(int index = 0; index < bossIDList.size(); index++){
@@ -151,7 +151,7 @@ public final boolean constructTreasure(int xMap, int yMap, int xPos, int yPos, i
 		return defeated;
 	}
 	
-	public static void openDoor(int ID){
+	public void openDoor(int ID){
 		
 		for(int index = 0; index < doorIDList.size(); index++){
 			
@@ -163,7 +163,7 @@ public final boolean constructTreasure(int xMap, int yMap, int xPos, int yPos, i
 		}
 	}
 	
-	public static void defeatBoss(int ID){
+	public void defeatBoss(int ID){
 		
 		for(int index = 0; index < bossIDList.size(); index++){
 			
@@ -173,6 +173,11 @@ public final boolean constructTreasure(int xMap, int yMap, int xPos, int yPos, i
 				break;
 			}
 		}
+	}
+	
+	public static void resetInstance(){
+		if(gameObjectManager != null)
+			gameObjectManager = new GameObjectManager();
 	}
 	
 	public static GameObjectManager getInstance(){

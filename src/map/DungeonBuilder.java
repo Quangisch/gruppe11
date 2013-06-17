@@ -100,7 +100,7 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 	}
 	
 	protected void loadMapData(File mapData, File tileDungeon){
-		if(!GameManager.mapLoaded){
+		if(!GameManager.getInstance().mapLoaded){
 			
 			initializeArrays(mapData);
 			readMapData(mapData);
@@ -158,7 +158,7 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 
 	protected boolean buildMap(int direction){
 		
-		GameManager.mapLoaded = false;
+		GameManager.getInstance().mapLoaded = false;
 		
 	
 		
@@ -197,14 +197,14 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 		setMapImage(mapImage);
 		setMapImageWall(mapImageWall);
 		
-		GameManager.mapLoaded = true;
+		GameManager.getInstance().mapLoaded = true;
 		
 		
 		
 		//addWallBoundPaint(Rectangle element)
 
 		
-		if(GameManager.mapLoaded)
+		if(GameManager.getInstance().mapLoaded)
 			return true;
 		else
 			return false;
@@ -335,7 +335,7 @@ g2d.fillRect(0, 0, 10, 10);
 			//int xCoordinateMap = 0;
 			//int yCoordinateMap = 0;
 			
-			switch(GameManager.scrollDirection){
+			switch(GameManager.getInstance().scrollDirection){
 			case(1):	yCoordinateMap -= 630;
 						
 						break;
@@ -352,7 +352,7 @@ g2d.fillRect(0, 0, 10, 10);
 			//setBoss 2-1
 			if(getXMap() == 2 && getYMap() == 1){
 				
-				if(!GameObjectManager.getBossStatusDefeated(21)){
+				if(!GameObjectManager.getInstance().getBossStatusDefeated(21)){
 					GameObjectManager.getInstance().constructBoss(21);
 					EnemyManager.setNewEnemy(xCoordinateMap,yCoordinateMap,enemyType,enemyPosition,enemyAttributes);
 					addMapObjectData(3, 2, 2, 1, 0, 370);
@@ -372,7 +372,7 @@ g2d.fillRect(0, 0, 10, 10);
 			int xCoordinateMap = 180;
 			int yCoordinateMap = 400;
 			
-			switch(GameManager.scrollDirection){
+			switch(GameManager.getInstance().scrollDirection){
 			case(1):	yCoordinateMap -= 630;
 						
 						break;
@@ -400,7 +400,7 @@ g2d.fillRect(0, 0, 10, 10);
 		int xCoordinateMap = 300;
 		int yCoordinateMap = 300;
 		
-		switch(GameManager.scrollDirection){
+		switch(GameManager.getInstance().scrollDirection){
 		case(1):	yCoordinateMap -= 630;
 					
 					break;
@@ -419,7 +419,7 @@ g2d.fillRect(0, 0, 10, 10);
 		enemyPositionBoss[0][2] = xCoordinateMap; enemyPositionBoss[0][3] = yCoordinateMap; //posXY
 		
 		enemyAttributesBoss[0][0] = 2; //enemySpeed
-		enemyAttributesBoss[0][1] = 7; //enemyLife
+		enemyAttributesBoss[0][1] = 8; //enemyLife
 		enemyAttributesBoss[0][2] = 5; //enemyLastDirection
 		enemyAttributesBoss[0][3] = 11; //enemyPattern
 		
@@ -428,7 +428,7 @@ g2d.fillRect(0, 0, 10, 10);
 		enemyPositionBoss[1][2] = xCoordinateMap; enemyPositionBoss[1][3] = yCoordinateMap; //posXY
 		
 		enemyAttributesBoss[1][0] = 2; //enemySpeed
-		enemyAttributesBoss[1][1] = 6; //enemyLife
+		enemyAttributesBoss[1][1] = 15; //enemyLife
 		enemyAttributesBoss[1][2] = 5; //enemyLastDirection
 		enemyAttributesBoss[1][3] = 12; //enemyPattern
 		
@@ -437,12 +437,12 @@ g2d.fillRect(0, 0, 10, 10);
 		enemyPositionBoss[2][2] = xCoordinateMap; enemyPositionBoss[2][3] = yCoordinateMap; //posXY
 		
 		enemyAttributesBoss[2][0] = 2; //enemySpeed
-		enemyAttributesBoss[2][1] = 15; //enemyLife
+		enemyAttributesBoss[2][1] = 25; //enemyLife
 		enemyAttributesBoss[2][2] = 5; //enemyLastDirection
 		enemyAttributesBoss[2][3] = 13; //enemyPattern
 
 		
-		if(!GameObjectManager.getBossStatusDefeated(22) && getXMap() == 2 && getYMap() == 2){
+		if(!GameObjectManager.getInstance().getBossStatusDefeated(22) && getXMap() == 2 && getYMap() == 2){
 			GameObjectManager.getInstance().constructBoss(22);
 			EnemyManager.setNewEnemy(xCoordinateMap, yCoordinateMap, 22, enemyPositionBoss[0], enemyAttributesBoss[0]);
 			System.out.println("setEnemyBoss 1 @Pos"+xCoordinateMap+"x"+yCoordinateMap);
@@ -454,7 +454,7 @@ g2d.fillRect(0, 0, 10, 10);
 			System.out.println("setEnemyBoss 2 @Pos"+xCoordinateMap+"x"+yCoordinateMap);
 		}	
 		*/
-		if(!GameObjectManager.getBossStatusDefeated(20) && getXMap() == 2 && getYMap() == 0){
+		if(!GameObjectManager.getInstance().getBossStatusDefeated(20) && getXMap() == 2 && getYMap() == 0){
 			GameObjectManager.getInstance().constructBoss(20);
 			EnemyManager.setNewEnemy(xCoordinateMap, yCoordinateMap, 20, enemyPositionBoss[2], enemyAttributesBoss[2]);
 			System.out.println("setEnemyBoss 3 @Pos"+xCoordinateMap+"x"+yCoordinateMap);

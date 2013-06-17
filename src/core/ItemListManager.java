@@ -14,7 +14,10 @@ public enum ItemListManager implements FileLink{
 	 * type 
 	 * member - smaller/bigger effects
 	 */
+	
 	COIN(0, 0, 0,itemListID00, 0, 0, 4),
+	COIN5(0, 0, 1,itemListID00, 0, 0, 4),
+	COIN10(0, 0, 2,itemListID00, 0, 0, 4),
 	HEALTH(0, 1, 0, itemListID00, 0, 1, 2),
 	MANA(0, 2, 0, itemListID00, 0, 2, 2),
 	
@@ -96,7 +99,7 @@ public enum ItemListManager implements FileLink{
 		return itemFile;
 	}
 	
-	public final static void dropItem(int x, int y, int itemID, int itemType, int member){
+	public final static boolean dropItem(int x, int y, int itemID, int itemType, int member){
 		
 		//for(ItemListManager item : (item.getID() == itemID && item.getType() == itemType && item.getMember() == member)){
 		for(ItemListManager item : values()){
@@ -106,8 +109,12 @@ public enum ItemListManager implements FileLink{
 					ItemDrop.addInstance(x, y, item.itemData, item.file, 500);
 				else 
 					ItemDrop.addInstance(x, y, item.itemData, item.file, 2000);
+				
+				return true;
 			}
 		}
+		
+		return false;
 	
 	}
 	
@@ -135,6 +142,18 @@ public enum ItemListManager implements FileLink{
 	private int getID(){return ID;}
 	private int getType(){return type;}
 	private int getMember(){return member;}
+	
+	public static void resetInstance(){
+		for(int i = 0; i < keyIDCounter.length; i++){
+			keyIDCounter[i] = 1;
+		}
+		
+		weaponIDCounter[0] = 1;
+		armorIDCounter[0] = 1;
+		spellIDCounter[0] = 0;
+		spellIDCounter[1] = 1;
+		
+	}
 	
 	
 }

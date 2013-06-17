@@ -32,9 +32,9 @@ public class Guide extends NPC implements Runnable{
 
 	public void run(){
 		
-		if(GameManager.overWorld){
-			if(this.getBound().intersects(Player.getInstance().getBoundCore()) && GameManager.interact){
-				GameManager.showIngameText = true;
+		if(GameManager.getInstance().overWorld){
+			if(this.getBound().intersects(Player.getInstance().getBoundCore()) && GameManager.getInstance().interact){
+				GameManager.getInstance().showIngameText = true;
 				interact();
 				//System.out.println("TxtCounter@"+textCounter+"interact");
 					
@@ -45,8 +45,8 @@ public class Guide extends NPC implements Runnable{
 				
 			} else {
 				//System.out.println("TxtCounter@"+textCounter+"else");
-				GameManager.interact = false;
-				GameManager.showIngameText = false;
+				GameManager.getInstance().interact = false;
+				GameManager.getInstance().showIngameText = false;
 			} 
 			
 			
@@ -59,7 +59,7 @@ public class Guide extends NPC implements Runnable{
 				
 				//System.out.println("Guide@Pos"+getX()+"x"+getY());
 
-				if(textCounter == 1 && !GameManager.interact)
+				if(textCounter == 1 && !GameManager.getInstance().interact)
 					executePattern();
 				
 			} else {
@@ -75,7 +75,7 @@ public class Guide extends NPC implements Runnable{
 	
 	private void interact(){
 		
-		if(GameManager.promptText){
+		if(GameManager.getInstance().promptText){
 			
 			
 			if(oldCounter != textCounter){
@@ -83,7 +83,7 @@ public class Guide extends NPC implements Runnable{
 				System.out.println("promptText:true -> buildText");
 			}
 			else {
-				GameManager.interact = false;
+				GameManager.getInstance().interact = false;
 			}
 				
 			
@@ -115,7 +115,11 @@ public class Guide extends NPC implements Runnable{
 		guide = null;
 	}
 	
-	
+	public static void resetInstance(){
+		if(guide != null)
+			guide.deleteInstance();
+		
+	}
 	
 	public static Guide getInstance(int xPos, int yPos){
 		if(guide == null)

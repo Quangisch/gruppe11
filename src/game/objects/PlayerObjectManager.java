@@ -6,11 +6,12 @@ import javax.imageio.ImageIO;
 
 import core.FileLink;
 import core.PlayerInterface;
+import core.Sound;
 
 abstract class PlayerObjectManager extends Initializer{
 	
 	private double maxMana = 1;
-	private double manaPool = 0.7; //value between 0 and maxMana (= full Mana)
+	private double manaPool = 1; //value between 0 and maxMana (= full Mana)
 	private double armor = 0; //value between 0 and 1: 1 = invinciblemode
 	private double armorDurability = 0;
 	private double weaponDamage = 0.2;
@@ -22,8 +23,8 @@ abstract class PlayerObjectManager extends Initializer{
 	private int magicSpell = 0;
 	private double manaRegen = 0.0001;
 	
-	private int coinInventory = 5;
-	private int keyInventory = 10;
+	private int coinInventory = 0;
+	private int keyInventory = 0;
 	
 	private int healthPotionInventory;
 	private int manaPotionInventory;
@@ -69,13 +70,13 @@ abstract class PlayerObjectManager extends Initializer{
 		int oldLevel = level;
 		experience += xp;
 		System.out.println("+"+xp+" to "+experience);
-		switch(experience){
-			case 5:  level = 2; manaRegen += 0.00005;break;
-			case 12: level = 3; manaRegen += 0.00005;break;
-			case 20: level = 4; manaRegen += 0.00005;break;
-			case 35: level = 5; manaRegen += 0.00005;break;
-		}
 		
+		if(experience >= 10*level){
+			level++;
+			manaRegen +=0.00005;
+			experience -= 10;
+		}
+
 		if(oldLevel != level)
 			levelUp();
 	}
@@ -210,8 +211,10 @@ abstract class PlayerObjectManager extends Initializer{
 				switch(member){
 				case(0):	coinInventory += 1; break;
 				case(1):	coinInventory += 5; break;
-				case(3):	coinInventory += 10; break;
+				case(2):	coinInventory += 10; break;
+				
 				}
+				Sound.getInstance().playSound(10);
 			}
 			
 			if(type == 1){

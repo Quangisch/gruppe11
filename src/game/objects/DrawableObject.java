@@ -47,7 +47,7 @@ public class DrawableObject implements FileLink{
 	public void draw(Graphics2D g2d){
 		//System.out.println("draw Drawable");
 
-		if(image != null && visible && GameManager.showBounds){
+		if(image != null && visible && GameManager.getInstance().showBounds){
 			//BoundDirRect
 			g2d.setColor(Color.DARK_GRAY);
 			g2d.draw(getBoundDirN());g2d.draw(getBoundDirE());

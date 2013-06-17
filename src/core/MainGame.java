@@ -1,5 +1,7 @@
 package core;
 
+import game.objects.Guide;
+import game.objects.MapObject;
 import game.objects.MarioDark;
 import game.objects.Player;
 
@@ -17,38 +19,39 @@ import map.DungeonNavigator;
 
 public class MainGame extends JFrame implements Runnable, FileLink{
 	
-	private static Board board;
-	private static Player player;
-	
+
 	private ScheduledThreadPoolExecutor threadPool;
 	private Thread paintBoardThread;
 	private Thread playerThread;
 	private Thread cameraThread;
 	private Thread collisionThread;
 	private Thread managerThread;
+	private Thread soundThread;
 	private ScheduledThreadPoolExecutor threadPoolManager;
 	
 	private MainGame(){
-		board = Board.getInstance();
-		add(board);
+		
+		add(Board.getInstance());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize (810, 653);
 		//setLocationRelativeTo(null);
 		setTitle("ProPraRPG-build02");
 		setResizable(false);
 		setVisible(true);
-		
-		initializeObjects();
-		initializeMap();
-		initializeThreads();
-		
-		
+
+
+		paintBoardThread = new Thread(Board.getInstance());
 		paintBoardThread.start();
+		soundThread = new Thread(Sound.getInstance());
+
 		managerThread = new Thread(this);
-		threadPoolManager = new ScheduledThreadPoolExecutor(1);
+		threadPoolManager = new ScheduledThreadPoolExecutor(3);
+		
 		threadPoolManager.scheduleWithFixedDelay(managerThread,100,1000, TimeUnit.MILLISECONDS);
+		threadPoolManager.scheduleWithFixedDelay(soundThread,100,100, TimeUnit.MILLISECONDS);
 		
 		GameManager.getInstance().setGameInitialized(true);
+		GameManager.getInstance().switchGameState(true, false);
 		
 	}
 
@@ -63,45 +66,34 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		
 	}
 	
-	private static void initializeObjects(){
+	private void initializePlayer(){
 		
-		
-		player = Player.getInstance();
-		player.initializeImage(player1Sprite, 90, 120, 8);
-		player.initializeAttributes(2, 3.5, true, 0, 75, 45, 20);
-		player.initializePosition(600, 350, 5);
-		GameManager.addGameObject(player);
-
+		Player.getInstance().initializeImage(player1Sprite, 90, 120, 8);
+		Player.getInstance().initializeAttributes(2, 3.5, true, 0, 75, 45, 20);
+		Player.getInstance().initializePosition(600, 350, 5);
+		GameManager.addGameObject(Player.getInstance());
 	
-		System.out.println("===>ini.Objects");
-
 	}
 	
 	private void initializeMap(){
+	
+		GameManager.getInstance().overWorld = true;
+		GameManager.getInstance().dungeon = false;
 		
-		GameManager.getInstance().switchGameState(false, true);
-		
-		GameManager.overWorld = false;
-		GameManager.dungeon = true;
-		
-		if(GameManager.overWorld){
+		if(GameManager.getInstance().overWorld){
 			int xStart = 1890;
-			int yStart = 406;
-			OverWorldNavigator.getInstance().initializeMap(xStart,yStart,0,300,300);
+			int yStart = 0;
+			//int xStart = 100;
+			//int yStart = 100;
+			GameManager.getInstance().cameraOn = true;
+			OverWorldNavigator.getInstance().initializeMap(xStart,yStart,0,500,200);
 		}
 			
-		if(GameManager.dungeon)
-			DungeonNavigator.getInstance().initializeMap(0,3,0,100,500);
+		if(GameManager.getInstance().dungeon)
+			DungeonNavigator.getInstance().initializeMap(1,2,0,500,300);
 		
-		
-		
-		if(!GameManager.dungeon)
-			GameManager.cameraOn = !GameManager.cameraOn;
-		else
-			System.err.println("Can't switch CameraMode in Dungeons.");
 
-		/*
-		if(GameManager.cameraOn && GameManager.overWorld){
+		if(GameManager.getInstance().cameraOn && GameManager.getInstance().overWorld){
 
 				if(OverWorldNavigator.getInstance().getXCoordinate() > 0 && getX() <= 400){
 					OverWorldNavigator.getInstance().setXCoordinate(0);
@@ -122,57 +114,88 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 					OverWorldNavigator.getInstance().setYCoordinate(-(OverWorldNavigator.getInstance().getHeightMap()-630));
 					Player.getInstance().setDirectionLock(3);
 				}	
+				
+				if(!Player.getInstance().getDirectionLock()){
+					int scrollX = 0;
+					int scrollY = 0;
+					
+					if(!(Player.getInstance().getRightLock() || Player.getInstance().getLeftLock()))
+						scrollX = getX()-400;
+					
+					if(!(Player.getInstance().getUpLock() || Player.getInstance().getDownLock()))
+						scrollY = getY()-300;
+					
+					
+					Camera.getInstance().switchToCameraMode(scrollX, scrollY);
+				}
 		}
-		*/
+		
 	}
 	
 	private void initializeThreads(){
-		paintBoardThread = new Thread(board);
-		playerThread = new Thread(player);
+		playerThread = new Thread(Player.getInstance());
 		cameraThread = new Thread(Camera.getInstance());
 		collisionThread = new Thread(CollisionDetection.getInstance());
 		
 		threadPool = new ScheduledThreadPoolExecutor(4);
 
-	}
-	
-	
-	private void startThreads(){
 		threadPool.scheduleWithFixedDelay(playerThread, 10, 10, TimeUnit.MILLISECONDS);
 		threadPool.scheduleWithFixedDelay(cameraThread, 20, 50, TimeUnit.MILLISECONDS);
 		threadPool.scheduleWithFixedDelay(collisionThread, 30, 10, TimeUnit.MILLISECONDS);
 		
 	}
 	
+
 	public void run(){
 		
-		if(GameManager.getInstance().getMenu() && GameManager.switchGameState){
-			GameManager.switchGameState = false;
-			threadPool.shutdown();
-		}
+		System.out.println("System.Check");
+		
+		if(GameManager.getInstance().getMenu() && GameManager.getInstance().switchGameState){
+			GameManager.getInstance().switchGameState = false;
 			
-		
-		if(GameManager.getInstance().getIngame() && GameManager.switchGameState){
-			GameManager.switchGameState = false;
-			startThreads();
-		}
+			if(threadPool != null){
+				threadPool.shutdown();
+				threadPool = new ScheduledThreadPoolExecutor(4);	
+			}
 			
-		
-		//System.out.println("ThreadPoolManager.check");
-		
-		/*
-		if(!collisionThread.isAlive()){
-			collisionThread = null;
-			collisionThread = new Thread(CollisionDetection.getInstance());
-			threadPool.scheduleWithFixedDelay(collisionThread, 30, 10, TimeUnit.MILLISECONDS);
-			System.err.println("==========> COLLISION THREAD DEAD>=====================");
+			
+			resetGame();
+			
+			System.out.println("==>Menu");
 		}
-		*/
 		
-
+		if(GameManager.getInstance().getIngame() && GameManager.getInstance().switchGameState){
+			GameManager.getInstance().switchGameState = false;
+			
+			initializeGame();
+			System.out.println("==>InGame");
+		}
+		
 		
 	}
 
-
+	private void initializeGame(){
+		initializePlayer();
+		initializeMap();
+		initializeThreads();
+	}
+	
+	private void resetGame(){
+		System.out.println("=====resetInstance=====");
+		
+		CollisionDetection.resetInstance();
+		GameObjectManager.resetInstance();
+		ItemListManager.resetInstance();
+		MarioDark.deleteAllInstances();
+		Guide.resetInstance();
+		Camera.resetInstance();
+		DungeonNavigator.resetInstance();
+		OverWorldNavigator.resetInstance();
+		GameManager.resetInstance();
+		MapObject.resetInstance();
+		Player.resetInstance();
+		
+	}
+	
 	
 }

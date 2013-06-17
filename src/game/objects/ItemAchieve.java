@@ -7,13 +7,14 @@ import java.util.concurrent.TimeUnit;
 
 import core.GameManager;
 import core.ItemListManager;
+import core.Sound;
 
 public class ItemAchieve extends Item implements Runnable{
 	
 
 	private Thread runThread;
 	private ScheduledExecutorService execRun;
-	private static ItemAchieve itemAchieve;
+	private ItemAchieve itemAchieve;
 	
 	private ItemAchieve(int xPos, int yPos, int[]itemIDData){
 		System.err.println("construct ItemAchieve");
@@ -64,8 +65,7 @@ public class ItemAchieve extends Item implements Runnable{
 	}
 
 	public static void addInstance(int xPos, int yPos, int[]itemIDData){
-		if(itemAchieve == null)
-			itemAchieve = new ItemAchieve(xPos, yPos, itemIDData);
+		new ItemAchieve(xPos, yPos, itemIDData);
 	}
 	
 }

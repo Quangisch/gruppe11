@@ -278,7 +278,7 @@ abstract class DungeonObjectManager extends Map{
 			//Door
 			if(type == 0){
 				
-				if(!GameObjectManager.getDoorStatusOpen(ID)){
+				if(!GameObjectManager.getInstance().getDoorStatusOpen(ID)){
 					MapObjectData<Integer, Integer, Integer, Integer, Integer,Integer, Integer> mapObject = new MapObjectData<Integer, Integer, Integer, Integer, Integer, Integer,Integer>(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
 					mapObjectData.add(mapObject);
 					MapObject.addInstance(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
@@ -380,7 +380,6 @@ abstract class DungeonObjectManager extends Map{
 				this.position = position;
 				this.attributes = attributes;
 				
-				System.err.println("====>New EnemyData=====>");
 			}
 			
 			public T getType(){

@@ -25,12 +25,11 @@ import map.DungeonNavigator;
 import map.OverWorldNavigator;
 
 
-public class Board extends JPanel implements Runnable{
+public class Board extends JPanel implements Runnable, FileLink{
 	private final int DELAY = 20;
 	
 	private static Board board = null;
 	private Graphics2D g2d;
-	private static Player player1;
 	private Graphics g;
 	
 	//add Values, sort Values, paint according Values
@@ -46,9 +45,7 @@ public class Board extends JPanel implements Runnable{
 	
 	
 	private Board(){
-		System.err.println("construct Board");
-		player1 = Player.getInstance();
-
+		
 		setDoubleBuffered(true);
 		setFocusable(true);
 		setBackground(new Color(0, 0, 0, 0));
@@ -70,16 +67,17 @@ public class Board extends JPanel implements Runnable{
 		
 		if(GameManager.getInstance().getMenu()){
 			Menu.getInstance().paintComponents(g2d);
+			
 		}
 		
 		
-		if(GameManager.getInstance().getIngame() && !GameManager.getInstance().getMenu() && GameManager.mapLoaded){
+		if(GameManager.getInstance().getIngame() && !GameManager.getInstance().getMenu() && GameManager.getInstance().mapLoaded){
 			
-			//if(GameManager.mapLoaded){
-			if(GameManager.overWorld)
+			//if(GameManager.getInstance()mapLoaded){
+			if(GameManager.getInstance().overWorld)
 				OverWorldNavigator.getInstance().draw(0, g2d);
 			
-			if(GameManager.dungeon){
+			if(GameManager.getInstance().dungeon){
 				DungeonNavigator.getInstance().draw(0, g2d);
 			}
 			
@@ -87,7 +85,7 @@ public class Board extends JPanel implements Runnable{
 				mapObjectList.get(index).draw(g2d);
 			}
 			
-			if(GameManager.dungeon){
+			if(GameManager.getInstance().dungeon){
 				DungeonNavigator.getInstance().draw(1, g2d);
 			}
 		
@@ -99,16 +97,21 @@ public class Board extends JPanel implements Runnable{
 			
 			
 			
-			if(GameManager.overWorld && topMap != null)
+			if(GameManager.getInstance().overWorld && topMap != null)
 				g2d.drawImage(topMap, OverWorldNavigator.getInstance().getXCoordinate(), OverWorldNavigator.getInstance().getYCoordinate(), this);
 			
-			if(PlayerInterface.getInstance().getIniStatus());
+			//Interface/Menu
+				
+			if(PlayerInterface.getInstance().getIniStatus())
 				PlayerInterface.getInstance().draw(g2d);
+		
+			if(GameManager.getInstance().ingameMenu)
+				IngameMenu.getInstance().draw(g2d);	
 			
-			if(GameManager.ingameMenu)
-				IngameMenu.getInstance().draw(g2d);
 			
+
 		}
+		
 		
 		
 		
@@ -167,7 +170,7 @@ public class Board extends JPanel implements Runnable{
 		for(int i = 0; i < drawableList.size()-1; i++){
 			if(!drawableList.get(i).getAlive()){
 				drawableList.remove(i);
-				GameManager.updateGameObject();
+				GameManager.getInstance().updateGameObject();
 			}
 		}
 		
@@ -239,16 +242,17 @@ public class Board extends JPanel implements Runnable{
 		public void keyPressed(KeyEvent kE){
 			
 			if(GameManager.getInstance().getIngame() && !GameManager.getInstance().getMenu())
-				player1.keyPressed(kE);
+				Player.getInstance().keyPressed(kE);
 			
 			if(!GameManager.getInstance().getIngame())
 				Menu.getInstance().keyPressed(kE);
+			
 			
 		}
 		public void keyReleased(KeyEvent kE){
 			
 			if(GameManager.getInstance().getIngame() && !GameManager.getInstance().getMenu())
-				player1.keyReleased(kE);
+				Player.getInstance().keyReleased(kE);
 			
 			if(!GameManager.getInstance().getIngame())
 				Menu.getInstance().keyReleased(kE);

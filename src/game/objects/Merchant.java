@@ -34,7 +34,7 @@ public class Merchant extends NPC implements Runnable, FileLink{
 	
 	public void run(){
 		
-		//System.out.println("Interact: "+GameManager.interact+", showText: "+GameManager.showIngameText+", prompt: "+GameManager.promptText);
+		//System.out.println("Interact: "+GameManager.getInstance().interact+", showText: "+GameManager.getInstance().showIngameText+", prompt: "+GameManager.getInstance().promptText);
 		
 		if(getAlive()){
 			move();
@@ -42,13 +42,13 @@ public class Merchant extends NPC implements Runnable, FileLink{
 			if(getBoundCore().intersects(Player.getInstance().getBoundCore()))
 				Player.getInstance().setObjectBack(10, 0, false, null);
 			
-			if(this.getBound().intersects(Player.getInstance().getBoundCore()) && GameManager.interact){
-				GameManager.showIngameText = true;
+			if(this.getBound().intersects(Player.getInstance().getBoundCore()) && GameManager.getInstance().interact){
+				GameManager.getInstance().showIngameText = true;
 				setLastDirection(7);
 				interact();
 			} else {
-				GameManager.interact = false;
-				GameManager.showIngameText = false;
+				GameManager.getInstance().interact = false;
+				GameManager.getInstance().showIngameText = false;
 				textCounter = 0;
 				setLastDirection(5);
 			}
@@ -61,7 +61,7 @@ public class Merchant extends NPC implements Runnable, FileLink{
 	
 	private void interact(){
 		
-		if(GameManager.promptText){
+		if(GameManager.getInstance().promptText){
 			System.out.println("promptText:true -> buildText");
 			if(oldCounter != textCounter)
 				PlayerInterface.getInstance().setText(text[textCounter]);
@@ -71,7 +71,7 @@ public class Merchant extends NPC implements Runnable, FileLink{
 					textCounter = 4;
 					PlayerInterface.getInstance().setText(text[textCounter]);
 				} else
-					GameManager.interact = false;
+					GameManager.getInstance().interact = false;
 			}
 				
 			
@@ -85,7 +85,7 @@ public class Merchant extends NPC implements Runnable, FileLink{
 	
 		if(textCounter == 1){
 			
-			if(GameManager.interactKey == 1){
+			if(GameManager.getInstance().interactKey == 1){
 				
 				boolean buy = Player.getInstance().useMoney(2);
 				
@@ -99,12 +99,12 @@ public class Merchant extends NPC implements Runnable, FileLink{
 				else
 					textCounter = 3;
 				
-				GameManager.interactKey = 0;
-				GameManager.promptText = true;
+				GameManager.getInstance().interactKey = 0;
+				GameManager.getInstance().promptText = true;
 				System.out.println("Buy Potion@"+buy);
 			}
 			
-			if(GameManager.interactKey == 2){
+			if(GameManager.getInstance().interactKey == 2){
 				boolean buy = Player.getInstance().useMoney(2);
 				if(buy){
 					ItemListManager.dropItem(getX(),getY()+50,1,1,0);
@@ -114,11 +114,11 @@ public class Merchant extends NPC implements Runnable, FileLink{
 					
 				else
 					textCounter = 3;
-				GameManager.interactKey = 0;
-				GameManager.promptText = true;
+				GameManager.getInstance().interactKey = 0;
+				GameManager.getInstance().promptText = true;
 			}
 			
-			if(GameManager.interactKey == 3){
+			if(GameManager.getInstance().interactKey == 3){
 				boolean buy = Player.getInstance().useMoney(8);
 				if(buy){
 					ItemListManager.dropItem(getX(),getY()+50,2,0,1);
@@ -128,10 +128,10 @@ public class Merchant extends NPC implements Runnable, FileLink{
 					
 				else
 					textCounter = 3;
-				GameManager.interactKey = 0;
-				GameManager.promptText = true;
+				GameManager.getInstance().interactKey = 0;
+				GameManager.getInstance().promptText = true;
 			}
-			if(GameManager.interactKey == 4){
+			if(GameManager.getInstance().interactKey == 4){
 				boolean buy = Player.getInstance().useMoney(10);
 				if(buy){
 					ItemListManager.dropItem(getX(),getY()+50,3,0,1);
@@ -141,10 +141,10 @@ public class Merchant extends NPC implements Runnable, FileLink{
 					
 				else
 					textCounter = 3;
-				GameManager.promptText = true;
-				GameManager.interactKey = 0;
+				GameManager.getInstance().promptText = true;
+				GameManager.getInstance().interactKey = 0;
 			}
-			if(GameManager.interactKey == 5){
+			if(GameManager.getInstance().interactKey == 5){
 				boolean buy = Player.getInstance().useMoney(12);
 				if(buy){
 					ItemListManager.dropItem(getX(),getY()+50,4,0,1);
@@ -154,8 +154,8 @@ public class Merchant extends NPC implements Runnable, FileLink{
 					
 				else
 					textCounter = 3;
-				GameManager.interactKey = 0;
-				GameManager.promptText = true;
+				GameManager.getInstance().interactKey = 0;
+				GameManager.getInstance().promptText = true;
 			}
 			
 		}
@@ -171,15 +171,19 @@ public class Merchant extends NPC implements Runnable, FileLink{
 		
 		execRun.scheduleWithFixedDelay(runThread, 10, 30, TimeUnit.MILLISECONDS);
 		
-		GameManager.addGameObject(this);
+		GameManager.getInstance().addGameObject(this);
 	}
 	
 	public void deleteInstance(){
 		setVisible(false);
 		setAlive(false);
-		GameManager.updateGameObject();
+		GameManager.getInstance().updateGameObject();
 		execRun.shutdown();
 		execRun = null;
+		merchant = null;
+	}
+	
+	public static void resetInstance(){
 		merchant = null;
 	}
 	

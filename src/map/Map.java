@@ -56,7 +56,7 @@ abstract class Map{
 		if(mapImage != null && visible && layer == 1)
 			g2d.drawImage(mapImageWall, x, y, Board.getInstance());
 		
-		if(wallBoundNPaint.size() > 0 && GameManager.showBounds){
+		if(wallBoundNPaint.size() > 0 && GameManager.getInstance().showBounds){
 			g2d.setColor(Color.BLUE);
 			for(int index = 0; index < wallBoundNPaint.size(); index++){
 				Rectangle tmp = wallBoundNPaint.get(index);
@@ -64,7 +64,7 @@ abstract class Map{
 			}
 		}
 		
-		if(wallBoundPaint.size() > 0 && GameManager.showBounds){
+		if(wallBoundPaint.size() > 0 && GameManager.getInstance().showBounds){
 			g2d.setColor(Color.RED);
 			for(int index = 0; index < wallBoundPaint.size(); index++){
 				Rectangle tmp = wallBoundPaint.get(index);
@@ -74,7 +74,7 @@ abstract class Map{
 		
 	
 		
-		if(wallBoundSPaint.size() > 0 && GameManager.showBounds){
+		if(wallBoundSPaint.size() > 0 && GameManager.getInstance().showBounds){
 			g2d.setColor(Color.CYAN);
 			for(int index = 0; index < wallBoundSPaint.size(); index++){
 				Rectangle tmp = wallBoundSPaint.get(index);
@@ -82,7 +82,7 @@ abstract class Map{
 			}
 		}
 		
-		if(mapObjectBoundPaint.size() > 0 && GameManager.showBounds){
+		if(mapObjectBoundPaint.size() > 0 && GameManager.getInstance().showBounds){
 			g2d.setColor(Color.ORANGE);
 			for(int index = 0; index < mapObjectBoundPaint.size(); index++){
 				Rectangle tmp = mapObjectBoundPaint.get(index);
@@ -90,7 +90,7 @@ abstract class Map{
 			}
 		}
 		
-		if(navigationBoundPaint.size() > 0 && GameManager.showBounds){
+		if(navigationBoundPaint.size() > 0 && GameManager.getInstance().showBounds){
 			
 			
 			g2d.setColor(Color.YELLOW);

@@ -14,7 +14,7 @@ import core.ItemListManager;
 import core.PlayerInterface;
 
 public class Player extends PlayerObjectManager implements Runnable{
-	private static Player player1 = null;
+	private static Player player1;
 	private int spawnX; 
 	private int spawnY;
 	private boolean spawnLock;
@@ -22,7 +22,7 @@ public class Player extends PlayerObjectManager implements Runnable{
 	private boolean verticalLock;
 	private boolean interactLock;
 	private boolean godlikeModus;
-	
+	private boolean switchGameState;
 	
 	private Player(){
 		System.err.println("construct Player");
@@ -32,7 +32,7 @@ public class Player extends PlayerObjectManager implements Runnable{
 
 	
 	public void run(){
-		
+		//System.out.println("GameManager.getInstance().CameraOn:"+GameManager.getInstance().cameraOn);
 		if(!getInitialized())
 			System.err.println("Player not initialized");
 
@@ -49,10 +49,21 @@ public class Player extends PlayerObjectManager implements Runnable{
 			}
 		}
 		
-		
-		if(GameManager.scrollDirection != 0 || !GameManager.mapLoaded){
+		if(GameManager.getInstance().scrollDirection != 0 || !GameManager.getInstance().mapLoaded){
 			setOldPosition();
 		}
+		
+		if(GameManager.getInstance().win){
+			switchGameState = true;
+			setAchieve();
+			startRotateTimer(1000,70,8);
+		}
+		
+		if(GameManager.getInstance().lose){
+			switchGameState = true;
+			setMoveable(false);
+		}
+			
 
 	}
 	
@@ -63,6 +74,7 @@ public class Player extends PlayerObjectManager implements Runnable{
 		setOldXCam(Camera.getInstance().getX());
 		setOldYCam(Camera.getInstance().getY());
 		setOldLastDirection(getLastDirection());
+		
 		//System.out.println(getX()+"to"+getOldX()+", "+getY()+"to"+getOldY());
 	}
 	
@@ -105,30 +117,30 @@ public class Player extends PlayerObjectManager implements Runnable{
 		if(key == KeyEvent.VK_SPACE){
 			System.out.println("HitSpace");
 			
-			GameManager.interact = true;
-			GameManager.promptText = true;
+			GameManager.getInstance().interact = true;
+			GameManager.getInstance().promptText = true;
 		
 		}
 		
 		if(key == KeyEvent.VK_1){
-			GameManager.interactKey = 1;
+			GameManager.getInstance().interactKey = 1;
 		}
 		if(key == KeyEvent.VK_2){
-			GameManager.interactKey = 2;
+			GameManager.getInstance().interactKey = 2;
 		}
 		if(key == KeyEvent.VK_3){
-			GameManager.interactKey = 3;
+			GameManager.getInstance().interactKey = 3;
 		}
 		if(key == KeyEvent.VK_4){
-			GameManager.interactKey = 4;
+			GameManager.getInstance().interactKey = 4;
 		}
 		if(key == KeyEvent.VK_5){
-			GameManager.interactKey = 5;
+			GameManager.getInstance().interactKey = 5;
 		}
 		
 		//extended Camera
 		if(key == KeyEvent.VK_V){
-			GameManager.moveFocus = true;
+			GameManager.getInstance().moveFocus = true;
 		}
 	}
 	
@@ -169,9 +181,13 @@ public class Player extends PlayerObjectManager implements Runnable{
 		if(key == KeyEvent.VK_SPACE){
 			System.out.println("HitSpace");
 			
-			if(!GameManager.showIngameText){
-				GameManager.interact = false;
-				GameManager.promptText = false;
+			if(!GameManager.getInstance().showIngameText){
+				GameManager.getInstance().interact = false;
+				GameManager.getInstance().promptText = false;
+			}
+			
+			if(switchGameState){
+				GameManager.getInstance().switchGameState(true, false);
 			}
 			
 		}
@@ -185,36 +201,36 @@ public class Player extends PlayerObjectManager implements Runnable{
 		
 		//useItem
 		if(key == KeyEvent.VK_1){
-			if(!GameManager.interact)
+			if(!GameManager.getInstance().interact)
 				useHealthPotion();
 			else
-				GameManager.interactKey =  0;
+				GameManager.getInstance().interactKey =  0;
 		}
 		
 		if(key == KeyEvent.VK_2){
-			if(!GameManager.interact)
+			if(!GameManager.getInstance().interact)
 				useManaPotion();
 			else
-				GameManager.interactKey = 0;
+				GameManager.getInstance().interactKey = 0;
 		}
 		
 		if(key == KeyEvent.VK_3){
-			GameManager.interactKey = 0;
+			GameManager.getInstance().interactKey = 0;
 		}
 		
 		if(key == KeyEvent.VK_4){
-			GameManager.interactKey = 0;
+			GameManager.getInstance().interactKey = 0;
 		}
 		
 		//camera
 		if(key == KeyEvent.VK_C){
-			if(!GameManager.dungeon)
-				GameManager.cameraOn = !GameManager.cameraOn;
+			if(!GameManager.getInstance().dungeon)
+				GameManager.getInstance().cameraOn = !GameManager.getInstance().cameraOn;
 			else
 				System.err.println("Can't switch CameraMode in Dungeons.");
 
 			
-			if(GameManager.cameraOn && !getDirectionLock()){
+			if(GameManager.getInstance().cameraOn && !getDirectionLock()){
 				int scrollX = 0;
 				int scrollY = 0;
 				
@@ -232,8 +248,8 @@ public class Player extends PlayerObjectManager implements Runnable{
 		
 		//ingameMenu
 		if(key == KeyEvent.VK_ESCAPE){
-			GameManager.ingameMenu = !GameManager.ingameMenu;
-			if(GameManager.ingameMenu)
+			GameManager.getInstance().ingameMenu = !GameManager.getInstance().ingameMenu;
+			if(GameManager.getInstance().ingameMenu)
 				this.setInteractionLock(true);
 			else
 				setInteractionLock(false);
@@ -241,18 +257,18 @@ public class Player extends PlayerObjectManager implements Runnable{
 		
 		//debug
 		if(key == KeyEvent.VK_B){
-			GameManager.showBounds = !GameManager.showBounds;
+			GameManager.getInstance().showBounds = !GameManager.getInstance().showBounds;
 		}
 		
 		if(key == KeyEvent.VK_P){
-			GameManager.printMsg = !GameManager.printMsg;
+			GameManager.getInstance().printMsg = !GameManager.getInstance().printMsg;
 		}
 		if(key == KeyEvent.VK_O){
 			System.out.println("Player@"+getX()+"x"+getY());
 			System.out.println("Camera@"+Camera.getInstance().getX()+"x"+Camera.getInstance().getY());
-			if(GameManager.dungeon)
+			if(GameManager.getInstance().dungeon)
 			System.out.println("Map...@"+DungeonNavigator.getInstance().getXCoordinate()+"x"+DungeonNavigator.getInstance().getYCoordinate());
-			if(GameManager.overWorld)
+			if(GameManager.getInstance().overWorld)
 			System.out.println("Map...@"+OverWorldNavigator.getInstance().getXCoordinate()+"x"+OverWorldNavigator.getInstance().getYCoordinate());
 			
 		}
@@ -284,8 +300,8 @@ public class Player extends PlayerObjectManager implements Runnable{
 		if(key == KeyEvent.VK_T){
 			System.out.println("printText");
 			//PlayerInterface.getInstance().setText("test");
-			GameManager.promptText = true;
-			GameManager.showIngameText = true;
+			GameManager.getInstance().promptText = true;
+			GameManager.getInstance().showIngameText = true;
 			PlayerInterface.getInstance().buildText();
 		}
 		
@@ -313,12 +329,16 @@ public class Player extends PlayerObjectManager implements Runnable{
 		}
 		
 		if(key == KeyEvent.VK_V){
-			GameManager.moveFocus = false;
+			GameManager.getInstance().moveFocus = false;
 		}
 		
 		if(key == KeyEvent.VK_BACK_SPACE){
 			for(int layer = 0; layer < 7; layer++)
 			DungeonNavigator.getInstance().clearTileImage(3, 5, 4);
+		}
+		
+		if(key == KeyEvent.VK_8){
+			GameManager.getInstance().switchGameState(true, false);
 		}
 		
 		
@@ -334,6 +354,15 @@ public class Player extends PlayerObjectManager implements Runnable{
 	public void setSpawnX(int spawnX){this.spawnX = spawnX;}
 	public void setSpawnY(int spawnY){this.spawnY = spawnY;}
 	public void setSpawnLock(boolean spawnLock){this.spawnLock = spawnLock;}
+	
+	public static void resetInstance(){
+		if(player1 != null){
+			player1.setAlive(false);
+			player1.setDirectionLock(10);
+			player1 = new Player();
+		}
+			
+	}
 	
 	public static Player getInstance(){
 		if(player1 == null)

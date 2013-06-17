@@ -45,13 +45,15 @@ abstract class NPCLogic extends NPCMove {
 						break;
 			case 7:		patrolRectangle(-1,false,430,120,140,140);
 						break;
-			case 8:		patrolRectangle(-1,false,430,300,140,140);
+			case 8:		patrolRectangle(-1,false,430, 300, 140, 140);
 						punchObject(Player.getInstance(),500);
+						break;
+			case 9:		patrolRectangle(-1,false,1150, 620, 315, 265); //owID00 startArea
 						break;
 			
 			case 10:	sittingCaster(1);
 						break;
-			case 11: 	followMelee(500);
+			case 11: 	followMelee(200);
 						break;
 			case 12:	sprintingCaster(50);
 						break;
@@ -73,7 +75,7 @@ abstract class NPCLogic extends NPCMove {
 			boolean reachPoint = false;
 			
 			if(Math.abs(getX() - Player.getInstance().getX()) < 150 || Math.abs(getY() - Player.getInstance().getY()) < 150)
-				setSpeed(5);
+				setSpeed(6);
 			else
 				setSpeed(3);
 			
@@ -88,7 +90,6 @@ abstract class NPCLogic extends NPCMove {
 			}
 			
 			if(reachPoint){
-				System.err.println("Counter++ ===>");
 				destinationCounter++;
 				
 			}
@@ -96,8 +97,6 @@ abstract class NPCLogic extends NPCMove {
 			
 			if(destinationCounter == 15)
 				reachDestination = true;
-			//System.err.println("8=======D");
-					
 		}
 			
 			
@@ -117,7 +116,7 @@ abstract class NPCLogic extends NPCMove {
 	public void sittingMelee(){
 		setSpeed(1);
 		followObject(Player.getInstance());
-		punchObject(Player.getInstance(),500);
+		punchObject(Player.getInstance(),300);
 	}
 	
 	public void followMelee(int wait){
@@ -155,13 +154,6 @@ abstract class NPCLogic extends NPCMove {
 		
 	}
 	
-	private void checkLife(){
-		if(getLife() <= 0){
-			setAlive(false);
-			setVisible(false);
-			System.out.println("Enemy.Death");
-		}
-	}
 	
 	public void setPattern(int pattern){
 		this.pattern = pattern;

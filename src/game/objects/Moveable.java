@@ -14,6 +14,7 @@ import map.OverWorldNavigator;
 
 import core.CollisionDetection;
 import core.GameManager;
+import core.Sound;
 
 
 public class Moveable extends Sprite{
@@ -84,7 +85,7 @@ public class Moveable extends Sprite{
 		Camera camera = Camera.getInstance();
 		
 		if(!isHumanPlayer()){
-			//if(!GameManager.cameraOn){
+			//if(!GameManager.getInstance().cameraOn){
 				setX(getX()+dx);
 				setY(getY()+dy);
 			//} 
@@ -94,14 +95,14 @@ public class Moveable extends Sprite{
 		
 		if(isHumanPlayer()){
 			
-			if(GameManager.dungeon || (GameManager.overWorld && !GameManager.cameraOn)){
+			if(GameManager.getInstance().dungeon || (GameManager.getInstance().overWorld && !GameManager.getInstance().cameraOn)){
 				setX(getX()+dx);
 				setY(getY()+dy);
 			} 
 			
-			if (GameManager.overWorld && GameManager.cameraOn){
+			if (GameManager.getInstance().overWorld && GameManager.getInstance().cameraOn){
 			
-				ArrayList<Moveable> object = GameManager.getMoveableList();
+				ArrayList<Moveable> object = GameManager.getInstance().getMoveableList();
 				
 				for(int index = 0; index < object.size(); index++){
 					if (!leftLock && !rightLock)
@@ -217,7 +218,7 @@ public class Moveable extends Sprite{
 
 					//yAxis
 			
-			} //if GameManager.overWorld && GameManager.cameraOn
+			} //if GameManager.getInstance().overWorld && GameManager.getInstance().cameraOn
 		
 		}//if humanPlayer
 
@@ -231,6 +232,7 @@ public class Moveable extends Sprite{
 		case 2: rightLock = true; break;		
 		case 3: downLock = true; break;		
 		case 4:	leftLock = true; break;		
+		case 10: leftLock = rightLock = downLock = leftLock = false; break;
 		}
 	}
 	
@@ -337,9 +339,12 @@ public class Moveable extends Sprite{
 			if(this.life > life && life > 0)
 				startInvincibleTimer(500);
 			this.life = life; 
-			if(life <= 0){
+			if(life <= 0 && !isHumanPlayer()){
 				setVisible(false);
-				setAlive(false);
+				setAlive(false);	
+			}
+			if(Player.getInstance().getLife() <= 0){
+				GameManager.getInstance().lose = true;
 			}
 			
 
@@ -366,17 +371,21 @@ public class Moveable extends Sprite{
 		//interactType: 1 = attack, 2 = achieve, 3 = levelUp	
 		setInteraction(1);
 		setInteractionLock(true);
+		Sound.getInstance().playSound(1);
 		
 	}
 	
 	public void setAchieve(){
 		setInteraction(2);
 		setInteractionLock(true);
+		Sound.getInstance().playSound(0);
 	}
 	
 	public void setLevelUp(){
 		setInteraction(3);
 		setInteractionLock(true);
+		Sound.getInstance().playSound(0);
+		Sound.getInstance().playSound(10);
 	}
 
 	
@@ -469,7 +478,7 @@ public class Moveable extends Sprite{
 		invincible = true;
 
 		//startFlashTimer(500, delay);
-		System.err.println("====>Invincible.start@WDH:"+(int)(delay / 200));
+		//System.err.println("====>Invincible.start@WDH:"+(int)(delay / 200));
 			
 	}
 	

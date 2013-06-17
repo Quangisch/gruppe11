@@ -1,5 +1,6 @@
 package game.objects;
 
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -79,7 +80,7 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 			if(Player.getInstance().useKeyInventory())
 				Player.getInstance().setObjectBack(10, 0, false, null);
 			else{
-				GameObjectManager.openDoor(ID);
+				GameObjectManager.getInstance().openDoor(ID);
 				stop();
 			}
 			
@@ -121,7 +122,7 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		x = xPos + xMap * 810;
 		y = yPos + yMap * 630;
 		
-		if(this.getBoundCore().intersects(Player.getInstance().getBoundCore())&&GameManager.scrollDirection == 0){
+		if(this.getBoundCore().intersects(Player.getInstance().getBoundCore())&&GameManager.getInstance().scrollDirection == 0){
 			switch(orientation){
 			case 0: Player.getInstance().setObjectBack(5, 0, false, null);break;
 			case 1: Player.getInstance().setObjectBack(5, 5, false, null);break;
@@ -135,9 +136,9 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 1 && MarioDark.getInstanceCounter() == 0){
 			stop();
 		}
-		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 2 && GameObjectManager.getBossStatusDefeated(22))
+		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 2 && GameManager.getInstance().scrollDirection == 0 && GameObjectManager.getInstance().getBossStatusDefeated(22))
 			stop();
-		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 0 && GameObjectManager.getBossStatusDefeated(21))
+		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 0 && GameManager.getInstance().scrollDirection == 0 && GameObjectManager.getInstance().getBossStatusDefeated(21))
 			stop();
 
 	}
@@ -146,11 +147,12 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		x = xPos + xMap * 810;
 		y = yPos + yMap * 630;
 		
-		if((GameManager.dungeon && DungeonNavigator.getInstance().getXMap() == xMap && DungeonNavigator.getInstance().getYMap() == yMap) || GameManager.overWorld){
+		if((new Rectangle(getX()-405,getY()-315,810,630)).intersects(Player.getInstance().getBound())){
+			//System.out.println("Pos@"+getX()+"x"+getY());
 			if(this.getBoundCore().intersects(Player.getInstance().getBoundCore()))
 				Player.getInstance().setObjectBack(10, 0, false, null);
 			
-			if(GameObjectManager.openTreasureBox(false, this)){
+			if(GameObjectManager.getInstance().openTreasureBox(false, this)){
 				if(!interact){
 					setStaticX(450);
 					setStaticSubSprite(1);
@@ -159,8 +161,8 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 			}
 				
 			
-			else if(this.getBoundCore().intersects(Player.getInstance().getBound()) && GameManager.interact){
-				GameObjectManager.openTreasureBox(true, this);
+			else if(this.getBoundCore().intersects(Player.getInstance().getBound()) && GameManager.getInstance().interact){
+				GameObjectManager.getInstance().openTreasureBox(true, this);
 				//System.out.println("Treasure:open@"+GameObjectManager.openTreasureBox(false, this));
 				
 			}
@@ -248,7 +250,14 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 	
 		mapObjectList.add(new MapObject(ID, type, orientation, xMap, yMap, xPosition, yPosition));
 		listCounter++;
-
+	}
+	
+	public static void resetInstance(){
+		for(int index = 0; index < mapObjectList.size(); index++){
+			mapObjectList.get(index).setAlive(false);
+		}
+		mapObjectList.clear();
+		listCounter = 0;
 	}
 	
 	public static ArrayList<MapObject> getMapObjectList(){

@@ -56,10 +56,8 @@ public class Menu extends JComponent implements FileLink, ChangeListener{
 	}
 
 	
-	public void paintComponents(Graphics g){
-		
-		System.out.println("options@"+options);
-		g2d = (Graphics2D) g;
+	public void paintComponents(Graphics2D g2d){
+	
 		
 		//g2d.drawImage(menuBuff, 0, 0, null);
 		
@@ -117,7 +115,7 @@ public class Menu extends JComponent implements FileLink, ChangeListener{
 		
 		
 		//mainMenu
-		if(!GameManager.getInstance().getIngame() && !options){
+		if(!options){
 			
 			g2d.drawImage(buttonBuff, xStart, yStart, null);
 			g2d.drawImage(buttonBuff, xStart, yStart+yRec, null);
@@ -132,10 +130,7 @@ public class Menu extends JComponent implements FileLink, ChangeListener{
 		}
 		
 		
-		//ingameMenu
-		if(GameManager.getInstance().getIngame() && !options){
-			
-		}
+
 		
 	}
 	
@@ -143,12 +138,12 @@ public class Menu extends JComponent implements FileLink, ChangeListener{
 		
 		try {
 
-			menuBuff = ImageIO.read(menuFile);
+			//menuBuff = ImageIO.read(menuFile);
 			buttonBuff = ImageIO.read(buttonFile);
 			
 		} catch (IOException e) {
-			System.err.println("Menu: menuFile not found");
-			System.exit(0);
+			System.err.println(e);
+			//System.exit(0);
 		} 
 	}
 	
@@ -224,6 +219,11 @@ public class Menu extends JComponent implements FileLink, ChangeListener{
 		}
 	
 		
+	}
+	
+	public static void resetInstance(){
+		if(menu != null)
+			menu = new Menu();
 	}
 
 	public static Menu getInstance(){

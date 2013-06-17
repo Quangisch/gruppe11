@@ -42,7 +42,7 @@ public class MarioDark extends NPCLogic implements Runnable{
 	
 	private MarioDark(int IDNumber, boolean boss){
 		System.err.println("construct MarioDark: "+IDNumber);
-		overWorldSpawn = GameManager.overWorld;
+		overWorldSpawn = GameManager.getInstance().overWorld;
 		this.IDNumber = IDNumber;
 		this.boss = boss;
 		
@@ -66,18 +66,18 @@ public class MarioDark extends NPCLogic implements Runnable{
 
 	public void run(){
 		
-		if((!GameManager.mapLoaded && GameManager.dungeon) || (GameManager.scrollDirection != 0 && !spawnLock && GameManager.dungeon))
+		if((!GameManager.getInstance().mapLoaded && GameManager.getInstance().dungeon) || (GameManager.getInstance().scrollDirection != 0 && !spawnLock && GameManager.getInstance().dungeon))
 			setAlive(false);
 		
-		if((GameManager.scrollDirection == 0 && getInitialized()))
+		if((GameManager.getInstance().scrollDirection == 0 && getInitialized()))
 			spawnLock = false;
 
-		if(overWorldSpawn != GameManager.overWorld){
+		if(overWorldSpawn != GameManager.getInstance().overWorld){
 			setAlive(false);
 			spawnLock = false;
 		}
 		
-		if(GameManager.scrollDirection == 0 && getAlive()) {
+		if(GameManager.getInstance().scrollDirection == 0 && getAlive()) {
 			
 			//System.out.println("@Pos:"+getX()+"x"+getY());
 			//patrolRectangle(-1,false,100,100,100,200);
@@ -100,7 +100,7 @@ public class MarioDark extends NPCLogic implements Runnable{
 		
 		System.out.print("delete MarioDark@ID: "+IDNumber);
 
-		if(GameManager.scrollDirection == 0 && GameManager.mapLoaded)
+		if(GameManager.getInstance().scrollDirection == 0 && GameManager.getInstance().mapLoaded)
 			MarioDark.getInstance(false, IDNumber, boss).dropItem();
 		
 		instanceCounter--;
@@ -123,24 +123,34 @@ public class MarioDark extends NPCLogic implements Runnable{
 		//heart/healthRandom rand;
 	
 		int random1 = new Random().nextInt(100 - 0 + 1) + 0;
-		boolean dropKey = false;
+		boolean drop = false;
 		
 		System.out.println("==>MarioDark.drops Item@"+getX()+"x"+getY());
 		
-		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 3){
-			dropKey = ItemListManager.dropKey(getX(), getY(), 5, 0, 0, 0);
+		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 3)
+			drop = ItemListManager.dropKey(getX(), getY(), 5, 0, 0, 0);
+	
+		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 1 && instanceCounter == 1)
+			drop = ItemListManager.dropKey(getX(), getY(), 5, 0, 0, 1);
+		
+		
+		if(OverWorldNavigator.getInstance().getID() == 1 && GameManager.getInstance().overWorld){
+			
+			if(random1 < 75){
+				if(random1 > 30)
+					ItemListManager.dropItem(getX(), getY(), 0, 0, 0);
+				else if(random1 > 15)
+					ItemListManager.dropItem(getX(), getY(), 1, 1, 0);
+				else
+					ItemListManager.dropItem(getX(), getY(), 1, 0, 0);
+			}
+	
+			drop = true;
 		}
 		
-		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 1 && instanceCounter == 1){
-			dropKey = ItemListManager.dropKey(getX(), getY(), 5, 0, 0, 1);
-		}
+		drop = setBossDefeatedFlag();
 		
-		if(OverWorldNavigator.getInstance().getID() == 1 && GameManager.overWorld){
-			ItemListManager.dropItem(getX(), getY(), 1, 1, 0);
-		}
-		
-		
-		if(!dropKey){
+		if(!drop){
 			if(random1 < 75){
 				if(random1 > 55)
 					ItemListManager.dropItem(getX(), getY(), 0, 1, 0);
@@ -153,20 +163,25 @@ public class MarioDark extends NPCLogic implements Runnable{
 				
 		}
 		
-		setBossDefeatedFlag();
+		
 	}
 
-	private void setBossDefeatedFlag(){
+	private boolean setBossDefeatedFlag(){
 		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 2){
-			GameObjectManager.defeatBoss(22);
+			GameObjectManager.getInstance().defeatBoss(22);
 			ItemListManager.dropItem(getX(), getY(), 3, 0, 0);
+			return true;
 		}
 		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 1 && instanceCounter == 1){
-			GameObjectManager.defeatBoss(21);
+			GameObjectManager.getInstance().defeatBoss(21);
+			return true;
 		}
 		if(DungeonNavigator.getInstance().getXMap() == 2 && DungeonNavigator.getInstance().getYMap() == 0){
-			GameObjectManager.defeatBoss(20);
+			GameObjectManager.getInstance().defeatBoss(20);
+			GameManager.getInstance().win = true;
+			return true;
 		}
+		return false;
 	}
 	
 	public static int getMaxInstance(){

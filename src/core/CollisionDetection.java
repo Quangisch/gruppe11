@@ -12,8 +12,6 @@ import map.OverWorldNavigator;
 public class CollisionDetection implements Runnable{
 	
 	private static CollisionDetection collisionDetection;
-	private static DungeonNavigator dungeonNavigator;
-	private static OverWorldNavigator overWorldNavigator;
 	
 	private ArrayList<Moveable> moveableObject = new ArrayList<Moveable>();
 	
@@ -23,7 +21,7 @@ public class CollisionDetection implements Runnable{
 	
 	public void run(){
 	
-		while(!GameManager.mapLoaded){
+		while(!GameManager.getInstance().mapLoaded){
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
@@ -31,59 +29,67 @@ public class CollisionDetection implements Runnable{
 			}
 		}
 		
-		GameManager.updateGameObject();
-		moveableObject = GameManager.getMoveableList();
-	
-		//System.out.println("moveableListSize@"+moveableObject.size());
-		if(moveableObject.size() > 0){
-			
-			for(int index = 0; index < moveableObject.size();index++){
+		try {
+			GameManager.updateGameObject();
+			moveableObject = GameManager.getMoveableList();
+		
+			//System.out.println("moveableListSize@"+moveableObject.size());
+			if(moveableObject.size() > 0){
 				
-				if(moveableObject.get(index).getMoveableType() != -10){
+				for(int index = 0; index < moveableObject.size();index++){
 					
-					if(!moveableObject.get(index).isHumanPlayer()){
-					
-						int type = moveableObject.get(index).getMoveableType();
-						int IDNumber = moveableObject.get(index).getMoveableID();
+					if(moveableObject.get(index).getMoveableType() != -10){
 						
-						if(Player.getInstance().getBoundCore().intersects(moveableObject.get(index).getBoundCore()) && type > 0){
-							
-							moveableObject.get(index).startWaitTimer(500);
-							moveableObject.get(index).setObjectBack(10,0,true,moveableObject.get(index).getBoundCore());
+						if(!moveableObject.get(index).isHumanPlayer()){
 						
+							int type = moveableObject.get(index).getMoveableType();
+							int IDNumber = moveableObject.get(index).getMoveableID();
+							
+							if(Player.getInstance().getBoundCore().intersects(moveableObject.get(index).getBoundCore()) && type > 0){
+								
+								moveableObject.get(index).startWaitTimer(500);
+								moveableObject.get(index).setObjectBack(10,0,true,moveableObject.get(index).getBoundCore());
+							
+								
+								
+								System.out.println("==>loseLife");
+								
+								Player.getInstance().loseLife(EnemyManager.getAttackDamage(type));
+								Player.getInstance().startInvincibleTimer(1800);
+								Player.getInstance().setObjectBack(20,0,true,moveableObject.get(index).getBoundCore());
+								
+								break;
+							}
+							
+							if(Player.getInstance().getAttackBound().intersects(moveableObject.get(index).getBoundN().union(moveableObject.get(index).getBoundS()))){
+								moveableObject.get(index).setObjectBack(50,0,true,Player.getInstance().getAttackBound());
+								moveableObject.get(index).setLife(moveableObject.get(index).getLife()-Player.getInstance().getAttackDamage());
+								
+								//break;
+							}
 							
 							
-							System.out.println("==>loseLife");
 							
-							Player.getInstance().loseLife(EnemyManager.getAttackDamage(type));
-							Player.getInstance().startInvincibleTimer(1800);
-							Player.getInstance().setObjectBack(20,0,true,moveableObject.get(index).getBoundCore());
-							
-							break;
-						}
+						}//if human
 						
-						if(Player.getInstance().getAttackBound().intersects(moveableObject.get(index).getBoundN().union(moveableObject.get(index).getBoundS()))){
-							moveableObject.get(index).setObjectBack(50,0,true,Player.getInstance().getAttackBound());
-							moveableObject.get(index).setLife(moveableObject.get(index).getLife()-Player.getInstance().getAttackDamage());
-							
-							//break;
-						}
-						
-						
-						
-					}//if human
-					
-					if(GameManager.dungeon && GameManager.mapLoaded && GameManager.scrollDirection == 0)
-						DungeonNavigator.getInstance().checkCollision(moveableObject.get(index));
+						if(GameManager.getInstance().dungeon && GameManager.getInstance().mapLoaded && GameManager.getInstance().scrollDirection == 0)
+							DungeonNavigator.getInstance().checkCollision(moveableObject.get(index));
 
-					if(GameManager.overWorld && GameManager.mapLoaded)
-						OverWorldNavigator.getInstance().checkCollision(moveableObject.get(index));	
-					
-					
-				}// if moveableType != -10
+						if(GameManager.getInstance().overWorld && GameManager.getInstance().mapLoaded)
+							OverWorldNavigator.getInstance().checkCollision(moveableObject.get(index));	
+						
+						
+					}// if moveableType != -10
 
-			}//for index < size
-		}//if moveable.size
+				}//for index < size
+			}//if moveable.size
+			
+		} catch(Exception e){
+			System.out.println("DungeonCollision.Exception@ "+e);
+			//System.exit(-1);
+		}
+		
+		
 		
 		
 	}
@@ -92,12 +98,14 @@ public class CollisionDetection implements Runnable{
 		moveableObject = GameManager.getMoveableList();
 	}
 	
+	public static void resetInstance(){
+		if(collisionDetection != null)
+			collisionDetection = new CollisionDetection();
+	}
 	
 	public static CollisionDetection getInstance(){
 		if(collisionDetection == null){
 			collisionDetection = new CollisionDetection();
-			dungeonNavigator = DungeonNavigator.getInstance();
-			overWorldNavigator = OverWorldNavigator.getInstance();
 		}
 		
 		return collisionDetection;

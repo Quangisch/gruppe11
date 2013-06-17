@@ -37,6 +37,9 @@ public class PlayerInterface implements FileLink{
 	private BufferedImage dynamicInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage upperInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 	private volatile BufferedImage lowerInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage winBuff = new BufferedImage(810,630,BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage loseBuff = new BufferedImage(810,630,BufferedImage.TYPE_INT_ARGB);
+	
 	private BufferedImage borderBuff = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage heart4_4Buff = new BufferedImage(55,47,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage heart3_4Buff = new BufferedImage(55,47,BufferedImage.TYPE_INT_ARGB);
@@ -161,7 +164,8 @@ public class PlayerInterface implements FileLink{
 	}
 	
 	public void draw(Graphics2D g2d){
-		if(!GameManager.ingameMenu){
+		
+		if(!GameManager.getInstance().ingameMenu && !GameManager.getInstance().lose && !GameManager.getInstance().win){
 			buildInterface();
 			
 			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.98f));
@@ -182,11 +186,19 @@ public class PlayerInterface implements FileLink{
 			}
 			
 			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
-			if(lowerInterface != null && GameManager.showIngameText){
+			if(lowerInterface != null && GameManager.getInstance().showIngameText){
 				g2d.drawImage(borderBuff,0,315,Board.getInstance());
 				g2d.drawImage(lowerInterface, 0, 360, Board.getInstance());
 			}
 			
+		}
+		
+		if(GameManager.getInstance().win){
+			g2d.drawImage(winBuff, 0, 0, Board.getInstance());
+		}
+		
+		if(GameManager.getInstance().lose){
+			g2d.drawImage(loseBuff, 0, 0, Board.getInstance());
 		}
 		
 	}
@@ -197,6 +209,8 @@ public class PlayerInterface implements FileLink{
 		
 		try {
 			
+				winBuff = ImageIO.read(winScreenFile);
+				loseBuff = ImageIO.read(loseScreenFile);
 				
 				heart4_4Buff = ImageIO.read(heart4_4);
 				heart3_4Buff = ImageIO.read(heart3_4);
@@ -328,8 +342,7 @@ public class PlayerInterface implements FileLink{
 		upperInterface.createGraphics().drawImage(spellBuff,400,10,null);
 		upperInterface.createGraphics().drawImage(itemBorderBuff, 350, 10, null);
 		upperInterface.createGraphics().drawImage(manaBarBuff, 10, 40, null);
-
-		
+	
 	}
 	
 	public void setText(String textString){
@@ -347,15 +360,15 @@ public class PlayerInterface implements FileLink{
 		boolean finishText = false;
 		
 		if(textBuff == null){
-			GameManager.showIngameText = false;
-			GameManager.promptText = false;
+			GameManager.getInstance().showIngameText = false;
+			GameManager.getInstance().promptText = false;
 			
 		}
 		
 		//bli bla blub/nHRRRR/nwhut up?/n/Yoloooo/nyawn.../n...+_+/nstop it!
-		if(GameManager.promptText){
+		if(GameManager.getInstance().promptText){
 
-			GameManager.promptText = false;
+			GameManager.getInstance().promptText = false;
 			
 			lowerInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 			

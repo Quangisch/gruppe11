@@ -33,10 +33,10 @@ public class Camera implements Runnable{
 		//System.out.println("OverWorldY:"+OverWorldMap.getInstance().getY());
 		//System.out.println("Camera_"+x+"x"+y);
 		
-		if(GameManager.printMsg){
-			if(GameManager.overWorld)
+		if(GameManager.getInstance().printMsg){
+			if(GameManager.getInstance().overWorld)
 			System.out.println("Map____"+OverWorldNavigator.getInstance().getXCoordinate()+"x"+OverWorldNavigator.getInstance().getYCoordinate());
-			if(GameManager.dungeon)
+			if(GameManager.getInstance().dungeon)
 			System.out.println("Map____"+DungeonNavigator.getInstance().getXCoordinate()+"x"+DungeonNavigator.getInstance().getYCoordinate()+"@"+DungeonNavigator.getInstance().getXMap()+"x"+DungeonNavigator.getInstance().getYMap());
 			
 			System.out.println("Camera_"+Camera.getInstance().getX()+"x"+Camera.getInstance().getY());
@@ -44,13 +44,13 @@ public class Camera implements Runnable{
 		}
 		
 		//moveCamera();
-		if(GameManager.overWorld){
+		if(GameManager.getInstance().overWorld){
 			OverWorldNavigator.getInstance().navigate();
 			
 		}
 			
 		
-		if(GameManager.dungeon){
+		if(GameManager.getInstance().dungeon){
 			DungeonNavigator.getInstance().navigate();
 			
 		}
@@ -64,10 +64,10 @@ public class Camera implements Runnable{
 			OverWorldNavigator map = OverWorldNavigator.getInstance();
 			Player player = Player.getInstance();
 			
-			if(GameManager.overWorld && GameManager.cameraOn /*&& GameManager.moveFocus*/ && !player.getDirectionLock()) {
-			//if(GameManager.cameraOn){	
+			if(GameManager.getInstance().overWorld && GameManager.getInstance().cameraOn /*&& GameManager.getInstance().moveFocus*/ && !player.getDirectionLock()) {
+			//if(GameManager.getInstance().cameraOn){	
 			
-				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
+				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
 				
 				if(Player.getInstance().getX() > 400 && !(map.getXCoordinate() < -(map.getWidthMap()-810))) {
 					x += CAMERASPEED;
@@ -126,7 +126,7 @@ public class Camera implements Runnable{
 		public void switchToCameraMode(int scrollX, int scrollY){
 			
 			
-			if(GameManager.cameraOn){
+			if(GameManager.getInstance().cameraOn){
 				
 				
 				setX(400);
@@ -135,7 +135,7 @@ public class Camera implements Runnable{
 				OverWorldNavigator.getInstance().setXCoordinate(OverWorldNavigator.getInstance().getXCoordinate()-scrollX);
 				OverWorldNavigator.getInstance().setYCoordinate(OverWorldNavigator.getInstance().getYCoordinate()-scrollY);
 				
-				ArrayList<Moveable> object = GameManager.getMoveableList();
+				ArrayList<Moveable> object = GameManager.getInstance().getMoveableList();
 				for(int index = 0; index < object.size(); index++){
 					object.get(index).setX(object.get(index).getX()-scrollX);
 					object.get(index).setY(object.get(index).getY()-scrollY);
@@ -153,7 +153,7 @@ public class Camera implements Runnable{
 		//scroll between map with fixed camera
 		public void scrollCamera(Map map){
 
-			if(GameManager.scrollDirection == 1){
+			if(GameManager.getInstance().scrollDirection == 1){
 				//System.out.println("North scrollY: " +scrollY);
 				
 				y -= SCROLLSPEEDY;
@@ -161,7 +161,7 @@ public class Camera implements Runnable{
 				//Player.getInstance().setY(Player.getInstance().getY()+SCROLLSPEEDY);
 				Player.getInstance().setMoveUp(true);
 				
-				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
+				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
 				for(int index = 0; index < moveableList.size(); index++){
 					moveableList.get(index).setY(moveableList.get(index).getY()+SCROLLSPEEDY);
 				}
@@ -169,7 +169,7 @@ public class Camera implements Runnable{
 				map.setYCoordinate(map.getYCoordinate()+SCROLLSPEEDY);
 				
 				if(scrollY <= -610 || y <= 0){
-					GameManager.scrollDirection = 0;
+					GameManager.getInstance().scrollDirection = 0;
 					scrollY = 0;
 					Player.getInstance().resetMovementLock();
 					if(y < 0)
@@ -178,7 +178,7 @@ public class Camera implements Runnable{
 				}
 			}
 			
-			if(GameManager.scrollDirection == 3){
+			if(GameManager.getInstance().scrollDirection == 3){
 				//System.out.println("East scrollX: " +scrollX);
 			
 				x += SCROLLSPEEDX;
@@ -186,14 +186,14 @@ public class Camera implements Runnable{
 				//Player.getInstance().setX(Player.getInstance().getX()-SCROLLSPEEDX);
 				Player.getInstance().setMoveRight(true);
 				
-				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
+				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
 				for(int index = 0; index < moveableList.size(); index++){
 					moveableList.get(index).setX(moveableList.get(index).getX()-SCROLLSPEEDX);
 				}
 				map.setXCoordinate(map.getXCoordinate()-SCROLLSPEEDX);
 				
 				if(scrollX >= 810 || x >= map.getWidthMap()){
-					GameManager.scrollDirection = 0;
+					GameManager.getInstance().scrollDirection = 0;
 					scrollX = 0;
 					Player.getInstance().resetMovementLock();
 					if(x > map.getWidthMap())
@@ -202,7 +202,7 @@ public class Camera implements Runnable{
 				}	
 			}
 			
-			if(GameManager.scrollDirection == 5){
+			if(GameManager.getInstance().scrollDirection == 5){
 				//System.out.println("South scrollY: " +scrollY);
 				
 				y += SCROLLSPEEDY;
@@ -210,7 +210,7 @@ public class Camera implements Runnable{
 				//Player.getInstance().setY(Player.getInstance().getY()-SCROLLSPEEDY);
 				Player.getInstance().setMoveDown(true);
 				
-				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
+				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
 				for(int index = 0; index < moveableList.size(); index++){
 					moveableList.get(index).setY(moveableList.get(index).getY()-SCROLLSPEEDY);
 				}
@@ -218,7 +218,7 @@ public class Camera implements Runnable{
 				map.setYCoordinate(map.getYCoordinate()-SCROLLSPEEDY);
 		
 				if(scrollY >= 630 || y >= map.getHeightMap()){
-					GameManager.scrollDirection = 0;
+					GameManager.getInstance().scrollDirection = 0;
 					scrollY = 0;
 					Player.getInstance().resetMovementLock();
 					if(y > map.getHeightMap())
@@ -227,7 +227,7 @@ public class Camera implements Runnable{
 				}	
 			}	
 			
-			if(GameManager.scrollDirection == 7){
+			if(GameManager.getInstance().scrollDirection == 7){
 				//System.out.println("West scrollX: " +scrollX);
 				
 				x -= SCROLLSPEEDX;
@@ -235,7 +235,7 @@ public class Camera implements Runnable{
 				//Player.getInstance().setX(Player.getInstance().getX()+SCROLLSPEEDX);
 				Player.getInstance().setMoveLeft(true);
 				
-				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
+				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
 				for(int index = 0; index < moveableList.size(); index++){
 					moveableList.get(index).setX(moveableList.get(index).getX()+SCROLLSPEEDX);
 				}
@@ -243,7 +243,7 @@ public class Camera implements Runnable{
 				map.setXCoordinate(map.getXCoordinate()+SCROLLSPEEDX);
 				
 				if(scrollX <= -810 || x <= 0){
-					GameManager.scrollDirection = 0;
+					GameManager.getInstance().scrollDirection = 0;
 					scrollX = 0;
 					Player.getInstance().resetMovementLock();
 					if(x < 0)
@@ -268,6 +268,11 @@ public class Camera implements Runnable{
 	
 	public int getScrollX(){return scrollX;}
 	public int getScrollY(){return scrollY;}
+	
+	public static void resetInstance(){
+		if(camera != null)
+			camera = new Camera();
+	}
 	
 	public static Camera getInstance(){
 		if(camera == null)

@@ -53,7 +53,7 @@ abstract class Initializer extends Moveable{
 			return true;
 		}
 		else{
-			System.out.println("--->faultyIni");
+			//System.out.println("--->faultyIni");
 			return false;
 		}
 			

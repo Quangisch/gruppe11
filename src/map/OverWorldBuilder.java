@@ -24,7 +24,7 @@ import core.GameObjectManager;
 
 abstract class OverWorldBuilder extends OverWorldObjectManager {
 
-	int xRowSize, yRowSize;
+	private int xRowSize, yRowSize;
 	
 	protected OverWorldBuilder(){
 		
@@ -52,7 +52,7 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 
 		
 
-		if(GameManager.mapLoaded)
+		if(GameManager.getInstance().mapLoaded)
 			return true;
 		else
 			return false;
@@ -139,7 +139,7 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 					yPlayerData = dataLine.substring(4, 8);
 					
 				
-					System.out.println("_MAPToExit ====>mapType: "+mapType+"@ID:"+mapIDData+" to Map:"+xMapData+"x"+yMapData+", Player to:"+xPlayerData+"x"+yPlayerData);
+					//System.out.println("_MAPToExit ====>mapType: "+mapType+"@ID:"+mapIDData+" to Map:"+xMapData+"x"+yMapData+", Player to:"+xPlayerData+"x"+yPlayerData);
 
 					//writeNavigationToExitData(xData, yData, widthData, heightData);
 					writeNavigationToExitData(mapType,mapIDData,xMapData,yMapData,xPlayerData,yPlayerData);
@@ -148,14 +148,13 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 			} while(!dataLine.startsWith("#"));
 			
 			
-			
-			readDataBuff.mark(10);
-			searchLine = readDataBuff.readLine();
-			
 		//EnemyData
 		EnemyData:
-			for(int infoID = 0; infoID < 1; infoID++){
+			for(int infoID = 0; infoID < 2; infoID++){
 				System.out.println("EnemyData.for@"+infoID);
+				
+				readDataBuff.mark(10);
+				searchLine = readDataBuff.readLine();
 				
 				if(searchLine.contentEquals("#Enemy#")){
 					
@@ -172,8 +171,8 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 						
 						enemyType = translateStringToInt(dataLine.substring(0, 4));
 						
-						enemyPosition[0] = 1;
-						enemyPosition[1] = 1;
+						enemyPosition[0] = 0;
+						enemyPosition[1] = 0;
 						enemyPosition[2] = translateStringToInt(dataLine.substring(4, 8));//enemyX
 						enemyPosition[3] = translateStringToInt(dataLine.substring(8,12));//enemyY
 					
@@ -185,7 +184,7 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 						enemyAttributes[2] = translateStringToInt(dataLine.substring(8, 12)); //enemyLastDirection
 						enemyAttributes[3] = translateStringToInt(dataLine.substring(12, 16)); //enemyPattern
 						System.out.println(dataLine);
-						System.err.println("==>ENEMYPATTERN: "+enemyAttributes[3]+" String:"+dataLine.substring(12, 16));
+						//System.err.println("==>ENEMYPATTERN: "+enemyAttributes[3]+" String:"+dataLine.substring(12, 16));
 						addEnemyData(enemyType, enemyPosition, enemyAttributes);
 						
 					
@@ -207,21 +206,23 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 				}else if(searchLine.contentEquals("#MapObject#")){
 						
 						do{
-							
-							int mapIDX = -1; 		//marks overWorld
-							int mapIDY = getID();	//marks overWorld mapID
+					
 							
 							readDataBuff.mark(10);
+							
+							int mapIDX = 0; //marks overWorld
+							int mapIDY = 0;	//marks overWorld mapID
 							
 							dataLine = readDataBuff.readLine();
 							dataLine = dataLine.replace("x", "");
 							dataLine = dataLine.replace("@", "");
-							
+
 							String xPosition = dataLine.substring(0, 4);
 							String yPosition = dataLine.substring(4, 8);
 							String type = dataLine.substring(8, 9);
 							String orientation = dataLine.substring(9, 10);
 							
+						
 							writeMapObjectData(type, orientation, mapIDX, mapIDY, xPosition, yPosition);
 							
 							if(type.contentEquals("2")){
@@ -531,11 +532,15 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 	}
 	
 	protected void writeMapObjectData(String typeData, String orientationData, int xMap, int yMap, String xData, String yData){
+		
+		
 		int type = translateStringToInt(typeData);
 		int orientation = translateStringToInt(orientationData);
 		int x = translateStringToInt(xData);
 		int y = translateStringToInt(yData);
 		
+		System.out.println("writeData@"+orientation);
+		//System.exit(0);
 		addMapObjectData(type, orientation, xMap, yMap, x, y);
 		
 	}
@@ -548,7 +553,7 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 		//Door
 		if(type == 0){
 			
-			if(!GameObjectManager.getDoorStatusOpen(ID)){
+			if(!GameObjectManager.getInstance().getDoorStatusOpen(ID)){
 				MapObject.addInstance(ID, type, orientation, xMapTmp, yMapTmp, xPosition, yPosition);
 				GameObjectManager.getInstance().constructDoor(ID);
 	
@@ -595,20 +600,31 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 	
 	private int translateStringToInt(String numberString){
 
+		int number = -1;
 		//System.out.println("Check.translateStringToInt: Input@"+numberString+", lenght@"+numberString.length());
 		
-		for(int i = 0; i < numberString.length()+1; i++){
-			if(numberString.startsWith("0"))
-				numberString = numberString.substring(1);
-			if(numberString.startsWith("0") && numberString.length() == 1)
-				break;
+		if(numberString.length() > 1){
+			for(int i = 0; i < numberString.length()+1; i++){
+				if(numberString.startsWith("0"))
+					numberString = numberString.substring(1);
+				if(numberString.startsWith("0") && numberString.length() == 1)
+					break;
+			}
 		}
+		
 		
 		//System.out.println("Check.translateStringToInt: Output@"+numberString+", lenght@"+numberString.length());
 
+		try{
+			number = Integer.parseInt(numberString.toString());
+			return number; 
+		} catch(NumberFormatException e){
+			System.err.println("DungeonBuilder.Error: translateStringToInt "+e);
+		}
 		
-		int number = Integer.parseInt(numberString.toString());
-		
+		if(number == -1)
+			System.exit(0);
+
 		return number;
 		
 	}

@@ -7,6 +7,7 @@ import java.util.Random;
 import map.Camera;
 
 import core.Board;
+import core.GameManager;
 import core.ItemListManager;
 
 
@@ -72,7 +73,11 @@ abstract class NPCMove extends Initializer{
 	
 	public boolean moveToY(int yDestination){
 		
-		int yDest = yDestination - Camera.getInstance().getY();
+		int yDest = 0;
+		if(GameManager.getInstance().overWorld)
+			yDest = yDestination - Camera.getInstance().getY();
+		else
+			yDest = yDestination;
 		
 		if(!yLock){
 			yLock = true;
@@ -110,7 +115,11 @@ abstract class NPCMove extends Initializer{
 	
 	public boolean moveToX(int xDestination){
 		
-		int xDest = xDestination - Camera.getInstance().getX();
+		int xDest = 0;
+		if(GameManager.getInstance().overWorld)
+			xDest = xDestination - Camera.getInstance().getX();
+		else
+			xDest = xDestination;
 		
 		if(!xLock){
 			xLock = true;
@@ -171,8 +180,8 @@ abstract class NPCMove extends Initializer{
 		
 		move();
 		
-		System.err.println("Guide@Pos:"+getX()+"x"+getY()+", to:"+xDestination+"x"+yDestination);
-		System.out.println("Guide@Pos:"+xPos+"x"+yPos+", to:"+xDest+"x"+yDest);
+		//System.err.println("Guide@Pos:"+getX()+"x"+getY()+", to:"+xDestination+"x"+yDestination);
+		//System.out.println("Guide@Pos:"+xPos+"x"+yPos+", to:"+xDest+"x"+yDest);
 		
 		if(destRect.intersects(posRect)){
 			reachPoint = true;
@@ -314,6 +323,7 @@ abstract class NPCMove extends Initializer{
 	}
 	
 	public boolean followObject(DrawableObject drawable){
+		
 		if(getY() > drawable.getY() && (Math.abs((getY() - drawable.getY())) >= Math.abs((getX() - drawable.getX())))){
 			setMoveUp(true);
 			setMoveRight(false);
@@ -401,17 +411,20 @@ abstract class NPCMove extends Initializer{
 	public void sprintToObject(Moveable object, int radius){
 		
 		Rectangle sprintBound = new Rectangle(getX()-radius, getY()-radius, radius*3, radius *3);
+		followObject(object);
 		
 		if(!sprintBound.intersects(object.getBound())){
 			//if(getSpeedUp() == 0.7)
-				setSpeedUp(getSpeedUp()+0.01);
+				setSpeedUp(getSpeedUp()+0.002);
 				
-			System.err.println("sprint@speed:"+getSpeedUp());
+			//System.err.println("sprint@speed:"+getSpeedUp());
+			if(getSpeedUp() >= 0.9)
+				setSpeedUp(0.6);
 		}
 			
 		else{
 			setSpeedUp(0.7);
-			System.out.println("slowDown");
+			//System.out.println("slowDown");
 		}
 		move();
 

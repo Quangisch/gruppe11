@@ -10,8 +10,8 @@ import game.objects.Player;
 
 abstract class OverWorldCollision extends OverWorldBuilder{
 
-	ArrayList<WallBound<Integer, Rectangle>> wallBoundList = new ArrayList<WallBound<Integer, Rectangle>>();
-	ArrayList<MapObjectBound<Integer, Rectangle>> mapObjectBoundList = new ArrayList<MapObjectBound<Integer, Rectangle>>();
+	private ArrayList<WallBound<Integer, Rectangle>> wallBoundList = new ArrayList<WallBound<Integer, Rectangle>>();
+	private ArrayList<MapObjectBound<Integer, Rectangle>> mapObjectBoundList = new ArrayList<MapObjectBound<Integer, Rectangle>>();
 	private final int SETBACK = 4;
 	
 	protected OverWorldCollision(){
@@ -77,7 +77,15 @@ abstract class OverWorldCollision extends OverWorldBuilder{
 			int type = mapObjectBoundList.get(indexMapObject).getType();
 			
 			if(player.getBoundCore().intersects(rect.x-cam.getX(),rect.y-cam.getY(),rect.width,rect.height)){
-				
+				/*TODO
+				for(int i = 0; i < GameManager.getMoveableList().size(); i++){
+					if(!GameManager.getMoveableList().get(i).isHumanPlayer()){
+
+						GameManager.getMoveableList().get(i).setX(GameManager.getMoveableList().get(i).getX()-player.getOldXCam());
+						GameManager.getMoveableList().get(i).setY(GameManager.getMoveableList().get(i).getX()-player.getOldYCam());
+					}
+				}
+				*/
 				player.setLife(player.getLife()-1);
 				player.setX(player.getOldX());
 				player.setY(player.getOldY());
@@ -85,6 +93,9 @@ abstract class OverWorldCollision extends OverWorldBuilder{
 				cam.setY(player.getOldYCam());
 				setXCoordinate(-player.getOldXCam());
 				setYCoordinate(-player.getOldYCam());
+				
+				
+				
 				break;
 			}
 			

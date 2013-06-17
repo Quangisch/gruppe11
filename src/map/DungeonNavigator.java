@@ -15,7 +15,7 @@ import core.GameManager;
 public class DungeonNavigator extends DungeonCollision{
 	
 	private static DungeonNavigator dungeonNavigator;
-	private static Player player;
+	
 	
 	
 	private volatile int areaID = 1;
@@ -30,7 +30,7 @@ public class DungeonNavigator extends DungeonCollision{
 	
 	public void initializeMap(int xMap, int yMap, int ID, int playerX, int playerY){
 		
-		GameManager.mapLoaded = false;
+		GameManager.getInstance().mapLoaded = false;
 		
 		DungeonNavigator.getInstance().resetObjectManager();
 		OverWorldNavigator.getInstance().resetObjectManager();
@@ -61,7 +61,7 @@ public class DungeonNavigator extends DungeonCollision{
 		reloadMap();
 		Player.getInstance().setOldPosition();
 
-		GameManager.mapLoaded = true;
+		GameManager.getInstance().mapLoaded = true;
 	}
 	
 	
@@ -85,7 +85,7 @@ public class DungeonNavigator extends DungeonCollision{
 		Camera.getInstance().setY(-getYCoordinate());
 		
 		
-		if(GameManager.scrollDirection == 0){
+		if(GameManager.getInstance().scrollDirection == 0){
 			setXCoordinate(-810*getXMap());
 			setYCoordinate(-630*getYMap());
 			//System.out.println("AbsolutMapCoordinates_"+getXCoordinate()+"x"+getYCoordinate());
@@ -93,23 +93,23 @@ public class DungeonNavigator extends DungeonCollision{
 		
 		//System.out.println("AbsolutMapCoordinates_"+getXCoordinate()+"x"+getYCoordinate());
 		
-		if(GameManager.scrollDirection != 0){
+		if(GameManager.getInstance().scrollDirection != 0){
 			navDataMap = getNavigationDataMap(getXMap(), getYMap());
 		}
 		
 		//System.out.println("Exit @Map_ "+getXMap()+"x"+getYMap()+" to "+mapTypeData+"@ID"+mapID+" to: Map_"+xMap+"x"+yMap+" and Player@"+xPlayer+"x"+yPlayer);
 		
-		if(GameManager.scrollLock)
-			System.out.println(GameManager.scrollLock);
+		if(GameManager.getInstance().scrollLock)
+			System.out.println(GameManager.getInstance().scrollLock);
 		
-		if(GameManager.scrollDirection == 0){
+		if(GameManager.getInstance().scrollDirection == 0){
 			for(int index = 0; index < navDataMap.size(); index++){
 				
 				int[] coordinates = navDataMap.get(index).getCoordinates();
 				
 				if(coordinates[2] == 0){
 					
-					if(player.getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
+					if(Player.getInstance().getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
 						int[] data = navDataMap.get(index).getData();
 						
 						int mapType = data[0];
@@ -121,9 +121,9 @@ public class DungeonNavigator extends DungeonCollision{
 						
 						
 						if(mapType == 0){
-							GameManager.dungeon = true;
-							GameManager.overWorld = false;
-							GameManager.mapLoaded = false;
+							GameManager.getInstance().dungeon = true;
+							GameManager.getInstance().overWorld = false;
+							GameManager.getInstance().mapLoaded = false;
 							
 							//if(mapID != getMapID())
 								this.initializeMap(xMap, yMap, mapID, xPlayer, yPlayer);
@@ -138,9 +138,9 @@ public class DungeonNavigator extends DungeonCollision{
 						}
 							
 						if(mapType == 1){
-							GameManager.dungeon = false;
-							GameManager.overWorld = true;
-							GameManager.mapLoaded = false;
+							GameManager.getInstance().dungeon = false;
+							GameManager.getInstance().overWorld = true;
+							GameManager.getInstance().mapLoaded = false;
 							OverWorldNavigator.getInstance().initializeMap(xMap, yMap, mapID, xPlayer, yPlayer);
 							//OverWorldNavigator.getInstance().initializeMap(xMap-810, yMap-630, mapID, 400, 300);
 							System.out.println("overworldMap_"+xMap+"x"+yMap);
@@ -150,8 +150,8 @@ public class DungeonNavigator extends DungeonCollision{
 				}//if coordinates[2] == 0
 				
 				if(coordinates[2] == 1){
-					if(player.getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
-						GameManager.scrollDirection = 1;
+					if(Player.getInstance().getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
+						GameManager.getInstance().scrollDirection = 1;
 						setYMap(getYMap()-1);
 						System.err.println("Y_"+getYMap()+" to: "+(getYMap()+1));
 						getMapObjectData();
@@ -161,8 +161,8 @@ public class DungeonNavigator extends DungeonCollision{
 				}
 				
 				if(coordinates[2] == 2){
-					if(player.getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
-						GameManager.scrollDirection = 3;
+					if(Player.getInstance().getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
+						GameManager.getInstance().scrollDirection = 3;
 						setXMap(getXMap()+1);
 						System.err.println("X_"+getXMap()+" to: " +(getXMap()+1));
 						getMapObjectData();
@@ -173,8 +173,8 @@ public class DungeonNavigator extends DungeonCollision{
 				}
 				
 				if(coordinates[2] == 3){
-					if(player.getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
-						GameManager.scrollDirection = 5;
+					if(Player.getInstance().getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
+						GameManager.getInstance().scrollDirection = 5;
 						setYMap(getYMap()+1);
 						System.err.println("Y_"+getYMap()+" to: "+(getYMap()+1));
 						getMapObjectData();
@@ -185,8 +185,8 @@ public class DungeonNavigator extends DungeonCollision{
 				}
 				
 				if(coordinates[2] == 4){
-					if(player.getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
-						GameManager.scrollDirection = 7;
+					if(Player.getInstance().getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
+						GameManager.getInstance().scrollDirection = 7;
 						setXMap(getXMap()-1);
 						System.err.println("X_"+getXMap()+" to: "+(getXMap()-1));
 						getMapObjectData();
@@ -213,13 +213,13 @@ public class DungeonNavigator extends DungeonCollision{
 	public void setAreaID(int areaID){this.areaID = areaID;}
 	
 	public static void resetInstance(){
-		dungeonNavigator = null;
+		if(dungeonNavigator != null)
+			dungeonNavigator = new DungeonNavigator();
 	}
 	
 	public static DungeonNavigator getInstance(){
 		if(dungeonNavigator == null){
 			dungeonNavigator = new DungeonNavigator();
-			player = Player.getInstance();
 		}
 			
 		return dungeonNavigator;
