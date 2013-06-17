@@ -1,4 +1,4 @@
-package game.objects;
+package objects;
 
 
 import java.io.File;
@@ -6,20 +6,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import map.Camera;
-
-import core.Board;
 import core.GameManager;
 
 public class ItemDrop extends Item{
 	
-	private ItemDrop itemDrop;
-	
 	private int duration;
 	private int counter;
 	private int[] itemIDData = new int[3];
-	
-	private int offsetX, offsetY;
 	
 	Thread runThread = new Thread(new RunTimer());
 	ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
@@ -27,7 +20,6 @@ public class ItemDrop extends Item{
 	private ItemDrop(int x, int y, int[] data, File file, int duration){
 		setMoveableType(-10);
 		System.out.println("--> construct new Item");
-		itemDrop = this;
 
 		setX(x);
 		setY(y);
@@ -108,7 +100,6 @@ public class ItemDrop extends Item{
 			
 			else {
 				setVisible(false);
-				itemDrop = null;
 				execRun.shutdown();
 				execRun = null;
 				

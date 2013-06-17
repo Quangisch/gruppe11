@@ -1,9 +1,9 @@
 #Fat Jar Configuration File
-#Mon Jun 17 04:53:55 CEST 2013
+#Mon Jun 17 19:45:45 CEST 2013
 onejar.license.required=false
 manifest.classpath=
 manifest.removesigners=true
-onejar.checkbox=false
+onejar.checkbox=true
 jarname=ProPraRPGver2_fat.jar
 manifest.mergeall=true
 manifest.mainclass=core.MainGame
@@ -11,4 +11,4 @@ manifest.file=<createnew>
 jarname.isextern=false
 onejar.expand=
 excludes=<po|ProPraRPGver2>~.DS_Store
-includes=<inc|ProPraRPGver2/resources>
+includes=<inc|ProPraRPGver2/resources>~data/;<inc|ProPraRPGver2/resources>~images/;<inc|ProPraRPGver2/resources>~sounds/

@@ -1,17 +1,13 @@
 package map;
 
-import game.objects.Guide;
-import game.objects.MapObject;
-import game.objects.MarioDark;
-import game.objects.Moveable;
-import game.objects.Player;
 
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
+import objects.Guide;
+import objects.MapObject;
+import objects.MarioDark;
+import objects.Player;
 
 import core.Board;
 import core.FileLink;

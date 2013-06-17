@@ -1,11 +1,11 @@
 package map;
 
-import game.objects.Moveable;
-import game.objects.Player;
 
 import java.awt.Rectangle;
 
-import core.Board;
+import objects.Moveable;
+import objects.Player;
+
 import core.GameManager;
 
 abstract class DungeonCollision extends DungeonBuilder{

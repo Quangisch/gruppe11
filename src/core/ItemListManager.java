@@ -1,10 +1,9 @@
 package core;
 
-import game.objects.ItemDrop;
-import game.objects.Player;
 
 import java.io.File;
-import java.util.ArrayList;
+
+import objects.ItemDrop;
 
 public enum ItemListManager implements FileLink{
 
@@ -40,9 +39,6 @@ public enum ItemListManager implements FileLink{
 	private final int type;
 	private final int member;
 	private final File file;
-	private final int xRow;
-	private final int yRow;
-	private final int cycle;
 	
 	public static int[] keyIDCounter = {1,1,1,1,1};
 	public static int[] weaponIDCounter = {1};
@@ -57,9 +53,6 @@ public enum ItemListManager implements FileLink{
 			this.type = type;
 			this.member = member;
 			this.file = file;
-			this.xRow = xRow;
-			this.yRow = yRow;
-			this.cycle = cycle;
 			
 			itemData[0] = ID;
 			itemData[1] = type;

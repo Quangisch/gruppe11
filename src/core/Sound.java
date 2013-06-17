@@ -1,3 +1,5 @@
+
+
 package core;
 
 import java.io.BufferedInputStream;
@@ -14,12 +16,10 @@ public class Sound implements Runnable, FileLink{
 	
 	private File musicFile;
 	private Player musicPlayer;
-	private boolean playMusic;
 	private int currentMusic = -1;
 	
 	private File atmoFile;
 	private Player atmoPlayer;
-	private boolean playAtmo;
 	private int currentAtmo = -1;
 	
 	private File soundFile, soundFile2;
@@ -55,7 +55,7 @@ public class Sound implements Runnable, FileLink{
 				atmoID = 2;
 			
 			
-			if(game.objects.Player.getInstance().getAlive() && !GameManager.getInstance().win && !GameManager.getInstance().lose){	
+			if(objects.Player.getInstance().getAlive() && !GameManager.getInstance().win && !GameManager.getInstance().lose){	
 				if(GameManager.getInstance().overWorld)
 					musicID = 1;
 				if(GameManager.getInstance().dungeon){
@@ -66,9 +66,11 @@ public class Sound implements Runnable, FileLink{
 				}	
 			} else if(GameManager.getInstance().lose)
 				musicID = 4;
-		} else if(GameManager.getInstance().getMenu())
+		} else if(GameManager.getInstance().getMenu()){
 			musicID = 0;
-		
+			atmoID = 0;
+		}
+			
 		if(musicID != currentMusic && musicPlayer != null){
 			musicPlayer.close();
 			musicPlayer = null;
@@ -87,7 +89,7 @@ public class Sound implements Runnable, FileLink{
 		
 		if(GameManager.getInstance().getIngame()){
 	
-			if(game.objects.Player.getInstance().getAlive() && !GameManager.getInstance().win && !GameManager.getInstance().lose){
+			if(objects.Player.getInstance().getAlive() && !GameManager.getInstance().win && !GameManager.getInstance().lose){
 			
 				if(GameManager.getInstance().overWorld){
 					musicFile = MFoverWorld;
@@ -154,6 +156,11 @@ public class Sound implements Runnable, FileLink{
 		if(GameManager.getInstance().dungeon){
 			atmoFile = SFAtmoDungeon;
 			currentAtmo = 2;
+		}
+		
+		if(GameManager.getInstance().getMenu()){
+			atmoFile = SFAtmoDungeon;
+			currentAtmo = 0;
 		}
 			
 		if(atmoFile != null){

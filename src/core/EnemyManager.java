@@ -1,8 +1,9 @@
 package core;
 
-import game.objects.MarioDark;
 
 import java.io.File;
+
+import objects.MarioDark;
 
 public enum EnemyManager implements FileLink {
 	

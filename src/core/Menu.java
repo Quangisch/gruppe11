@@ -2,36 +2,32 @@ package core;
 
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 
-import core.Board;
 import core.FileLink;
 import core.GameManager;
-import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class Menu extends JComponent implements FileLink, ChangeListener{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3104681029379346821L;
+
 	private static Menu menu;
-	private Graphics2D g2d;
 
 	private boolean options;
 	private boolean sound;
-	private JSlider slSouth;
-	private JSlider slNorth;
 	
 	BufferedImage menuBuff = new BufferedImage(810,630, BufferedImage.TYPE_INT_ARGB);
 	BufferedImage buttonBuff = new BufferedImage(322, 82, BufferedImage.TYPE_INT_ARGB);

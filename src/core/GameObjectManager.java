@@ -1,10 +1,11 @@
 package core;
 
-import game.objects.ItemAchieve;
-import game.objects.MapObject;
-import game.objects.Player;
 
 import java.util.ArrayList;
+
+import objects.ItemAchieve;
+import objects.MapObject;
+import objects.Player;
 
 public class GameObjectManager{
 	
@@ -22,8 +23,7 @@ public class GameObjectManager{
 	
 
 	public void getGameObject(int type, int ID){
-		
-		int index = 0;
+	
 		//Enemy
 		if(type > 0){
 			

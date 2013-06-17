@@ -1,15 +1,11 @@
-package game.objects;
+package objects;
 
-import java.awt.Rectangle;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import core.Board;
 import core.FileLink;
 import core.GameManager;
 import core.Sound;
@@ -18,7 +14,6 @@ public class Magic extends Initializer implements FileLink{
 	
 	private Thread runThread;
 	private ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
-	private Magic magicInstance;
 	
 	private int type;
 	private Moveable caster;
@@ -27,16 +22,12 @@ public class Magic extends Initializer implements FileLink{
 	private int direction;
 	private int[] speed = {10, 15};
 	
-	private int[] xOffset = {2, 2};
-	private int[] yOffset = {3, 3};
-	
 	private int[] width = {50, 50};
 	private int[] height = {50, 50};
 	
 	private double[] damage = {0.8, 1.4};
 	
-	private int soundCounter;
-	
+
 
 	private Magic(int type, Moveable caster){
 		setMoveableType(-10);
@@ -152,7 +143,6 @@ public class Magic extends Initializer implements FileLink{
 			
 			else {
 				setVisible(false);
-				magicInstance = null;
 				execRun.shutdown();
 				execRun = null;
 				

@@ -1,6 +1,4 @@
-package game.objects;
-
-import java.awt.Rectangle;
+package objects;
 
 abstract class Item extends Moveable{
 	

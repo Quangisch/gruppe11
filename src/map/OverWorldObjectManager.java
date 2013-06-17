@@ -1,10 +1,7 @@
 package map;
 
-import java.util.List;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-
-import map.DungeonObjectManager.EnemyData;
 
 abstract class OverWorldObjectManager extends Map{
 
@@ -12,13 +9,10 @@ abstract class OverWorldObjectManager extends Map{
 												new Rectangle(800,0,20,630),
 												new Rectangle(0,620,810,20),
 												new Rectangle(-10,0,20,630)};
-	private final Rectangle NULLRECT = new Rectangle(0,0,0,0);
-	
 	private ArrayList<Rectangle> toExitBound = new ArrayList<Rectangle>();
 	private ArrayList<int[]> toExitBoundData = new ArrayList<int[]>();
 	private ArrayList<WallBound<Integer, Rectangle>> wallBoundList = new ArrayList<WallBound<Integer, Rectangle>>();
 	private ArrayList<MapObjectBound<Integer, Rectangle>> mapObjectBoundList = new ArrayList<MapObjectBound<Integer, Rectangle>>();
-	private ArrayList<MoveableData> moveableDataList = new ArrayList<MoveableData>();
 	
 	private ArrayList<EnemyData<Integer, int[], int[]>> enemyData = new ArrayList<EnemyData<Integer, int[], int[]>>();
 	
@@ -78,7 +72,6 @@ abstract class OverWorldObjectManager extends Map{
 		toExitBound.clear();
 		toExitBoundData.clear();
 		mapObjectBoundList.clear();
-		moveableDataList.clear();
 	}
 	
 	protected ArrayList<int[]> getNavigationToExitData(){
@@ -126,7 +119,6 @@ abstract class OverWorldObjectManager extends Map{
 		toExitBoundData = new ArrayList<int[]>();
 		wallBoundList = new ArrayList<WallBound<Integer, Rectangle>>();
 		mapObjectBoundList = new ArrayList<MapObjectBound<Integer, Rectangle>>();
-		moveableDataList = new ArrayList<MoveableData>();
 		
 		enemyData = new ArrayList<EnemyData<Integer, int[], int[]>>();
 		
@@ -158,26 +150,6 @@ abstract class OverWorldObjectManager extends Map{
 		
 		public T getType(){return type;}
 		public R getRectangle(){return rectangle;}
-	}
-	
-	private class MoveableData<T, I, A, P>{
-		final T typeData;
-		final I imageData;
-		final A attributesData;
-		final P positionData;
-		
-		private MoveableData(T typeData, I imageData, A attributesData, P positionData){
-			this.typeData = typeData;
-			this.imageData = imageData;
-			this.attributesData = attributesData;
-			this.positionData = positionData;
-		}
-
-		public T getTypeData(){return typeData;}
-		public I getImageData(){return imageData;}
-		public A getAttributesData(){return attributesData;}
-		public P getPositionData(){return positionData;}
-		
 	}
 	
 	protected class EnemyData<T, P, A>{

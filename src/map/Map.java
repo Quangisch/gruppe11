@@ -1,21 +1,17 @@
 package map;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 
-import javax.swing.JComponent;
 
 import core.Board;
 import core.GameManager;
 
 abstract class Map{
 	
-	private Graphics2D g2d;
 	private volatile int x = 0;
 	private volatile int y = 0;
 	private int width;
@@ -157,13 +153,9 @@ abstract class Map{
 	}
 	
 	
-	protected void setDungeon(boolean dungeon){
-		this.dungeon = dungeon;
-	}
+	protected void setDungeon(boolean dungeon){this.dungeon = dungeon;}
+	protected void setOverWorld(boolean overWorld){this.overWorld = overWorld;}
 	
-	protected void setOverWorld(boolean overWorld){
-		this.overWorld = overWorld;
-	}
 	
 	public BufferedImage getMapImage(){return mapImage;}
 	public synchronized int getXCoordinate(){return x;}
@@ -176,11 +168,13 @@ abstract class Map{
 	//
 	public synchronized void setXCoordinate(int x){this.x = x;}
 	public synchronized void setYCoordinate(int y){this.y = y;}
-	protected void setWidthMap(int width){this.width = width; System.out.println("Width:"+width);}
-	protected void setHeightMap(int height){this.height = height;System.out.println("Height:"+height);}
+	protected void setWidthMap(int width){this.width = width;}
+	protected void setHeightMap(int height){this.height = height;}
 	protected void setAlive(boolean alive){this.alive = alive;}
 	protected void setVisibleMap(boolean visible){this.visible = visible;}
 	protected void setID(int ID){this.ID = ID;}
 	
-
+	protected boolean getDungeon(){return dungeon;}
+	protected boolean getoverWorld(){return overWorld;}
+	
 }

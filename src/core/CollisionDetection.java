@@ -1,10 +1,11 @@
 package core;
 
-import game.objects.MarioDark;
-import game.objects.Moveable;
-import game.objects.Player;
+
 
 import java.util.ArrayList;
+
+import objects.Moveable;
+import objects.Player;
 
 import map.DungeonNavigator;
 import map.OverWorldNavigator;
@@ -43,7 +44,7 @@ public class CollisionDetection implements Runnable{
 						if(!moveableObject.get(index).isHumanPlayer()){
 						
 							int type = moveableObject.get(index).getMoveableType();
-							int IDNumber = moveableObject.get(index).getMoveableID();
+							//int IDNumber = moveableObject.get(index).getMoveableID();
 							
 							if(Player.getInstance().getBoundCore().intersects(moveableObject.get(index).getBoundCore()) && type > 0){
 								

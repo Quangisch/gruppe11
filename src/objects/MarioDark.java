@@ -1,13 +1,6 @@
-package game.objects;
-import game.objects.NPCMove;
+package objects;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -135,7 +128,7 @@ public class MarioDark extends NPCLogic implements Runnable{
 		
 		
 		if(OverWorldNavigator.getInstance().getID() == 1 && GameManager.getInstance().overWorld){
-			
+		
 			if(random1 < 75){
 				if(random1 > 30)
 					ItemListManager.dropItem(getX(), getY(), 0, 0, 0);
@@ -144,7 +137,7 @@ public class MarioDark extends NPCLogic implements Runnable{
 				else
 					ItemListManager.dropItem(getX(), getY(), 1, 0, 0);
 			}
-	
+		
 			drop = true;
 		}
 		

@@ -1,4 +1,4 @@
-package game.objects;
+package objects;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -20,7 +20,6 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 	private static ArrayList<MapObject> mapObjectList = new ArrayList<MapObject>();
 	public static int listCounter;
 	
-	private MapObject mapObject;
 	private int ID;
 	private int type;
 	private int orientation;
@@ -34,7 +33,6 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 	
 	private MapObject(int ID, int type, int orientation, int xMap, int yMap, int xPos, int yPos){
 		setMoveableType(-10);
-		mapObject = this;
 		this.ID = ID;
 		this.type = type;
 		this.xMap = xMap;
@@ -176,7 +174,6 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		setAlive(false);
 		Board.updateMapObjectList();
 		execRun.shutdown();
-		mapObject = null;
 	}
 	
 	private void initializeMapObject(int type, int orientation){

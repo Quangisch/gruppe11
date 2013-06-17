@@ -1,12 +1,12 @@
 package map;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
+
+import objects.Moveable;
+import objects.Player;
 
 import core.GameManager;
 
-import game.objects.Moveable;
-import game.objects.Player;
 
 public class Camera implements Runnable{
 	
@@ -67,7 +67,7 @@ public class Camera implements Runnable{
 			if(GameManager.getInstance().overWorld && GameManager.getInstance().cameraOn /*&& GameManager.getInstance().moveFocus*/ && !player.getDirectionLock()) {
 			//if(GameManager.getInstance().cameraOn){	
 			
-				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
+				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
 				
 				if(Player.getInstance().getX() > 400 && !(map.getXCoordinate() < -(map.getWidthMap()-810))) {
 					x += CAMERASPEED;
@@ -135,7 +135,7 @@ public class Camera implements Runnable{
 				OverWorldNavigator.getInstance().setXCoordinate(OverWorldNavigator.getInstance().getXCoordinate()-scrollX);
 				OverWorldNavigator.getInstance().setYCoordinate(OverWorldNavigator.getInstance().getYCoordinate()-scrollY);
 				
-				ArrayList<Moveable> object = GameManager.getInstance().getMoveableList();
+				ArrayList<Moveable> object = GameManager.getMoveableList();
 				for(int index = 0; index < object.size(); index++){
 					object.get(index).setX(object.get(index).getX()-scrollX);
 					object.get(index).setY(object.get(index).getY()-scrollY);
@@ -161,7 +161,7 @@ public class Camera implements Runnable{
 				//Player.getInstance().setY(Player.getInstance().getY()+SCROLLSPEEDY);
 				Player.getInstance().setMoveUp(true);
 				
-				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
+				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
 				for(int index = 0; index < moveableList.size(); index++){
 					moveableList.get(index).setY(moveableList.get(index).getY()+SCROLLSPEEDY);
 				}
@@ -186,7 +186,7 @@ public class Camera implements Runnable{
 				//Player.getInstance().setX(Player.getInstance().getX()-SCROLLSPEEDX);
 				Player.getInstance().setMoveRight(true);
 				
-				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
+				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
 				for(int index = 0; index < moveableList.size(); index++){
 					moveableList.get(index).setX(moveableList.get(index).getX()-SCROLLSPEEDX);
 				}
@@ -210,7 +210,7 @@ public class Camera implements Runnable{
 				//Player.getInstance().setY(Player.getInstance().getY()-SCROLLSPEEDY);
 				Player.getInstance().setMoveDown(true);
 				
-				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
+				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
 				for(int index = 0; index < moveableList.size(); index++){
 					moveableList.get(index).setY(moveableList.get(index).getY()-SCROLLSPEEDY);
 				}
@@ -235,7 +235,7 @@ public class Camera implements Runnable{
 				//Player.getInstance().setX(Player.getInstance().getX()+SCROLLSPEEDX);
 				Player.getInstance().setMoveLeft(true);
 				
-				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
+				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
 				for(int index = 0; index < moveableList.size(); index++){
 					moveableList.get(index).setX(moveableList.get(index).getX()+SCROLLSPEEDX);
 				}

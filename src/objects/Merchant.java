@@ -1,6 +1,5 @@
-package game.objects;
+package objects;
 
-import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -171,13 +170,13 @@ public class Merchant extends NPC implements Runnable, FileLink{
 		
 		execRun.scheduleWithFixedDelay(runThread, 10, 30, TimeUnit.MILLISECONDS);
 		
-		GameManager.getInstance().addGameObject(this);
+		GameManager.addGameObject(this);
 	}
 	
 	public void deleteInstance(){
 		setVisible(false);
 		setAlive(false);
-		GameManager.getInstance().updateGameObject();
+		GameManager.updateGameObject();
 		execRun.shutdown();
 		execRun = null;
 		merchant = null;

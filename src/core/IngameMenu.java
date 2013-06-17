@@ -1,16 +1,15 @@
 package core;
 
-import game.objects.Player;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import javax.imageio.ImageIO;
+
+import objects.Player;
 
 import map.Camera;
 import map.DungeonNavigator;
@@ -26,7 +25,6 @@ public class IngameMenu implements FileLink{
 	
 	
 	private int[] slotCounter = new int[2];
-	private int lineCounter;
 	
 	private IngameMenu(){
 		initializeInstance();

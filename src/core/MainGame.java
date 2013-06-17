@@ -1,16 +1,15 @@
 package core;
 
-import game.objects.Guide;
-import game.objects.MapObject;
-import game.objects.MarioDark;
-import game.objects.Player;
 
-import java.awt.Color;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
-import javax.swing.Timer;
+
+import objects.Guide;
+import objects.MapObject;
+import objects.MarioDark;
+import objects.Player;
 
 
 import map.Camera;
@@ -20,6 +19,10 @@ import map.DungeonNavigator;
 public class MainGame extends JFrame implements Runnable, FileLink{
 	
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2516853831687335362L;
 	private ScheduledThreadPoolExecutor threadPool;
 	private Thread paintBoardThread;
 	private Thread playerThread;
@@ -69,7 +72,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 	private void initializePlayer(){
 		
 		Player.getInstance().initializeImage(player1Sprite, 90, 120, 8);
-		Player.getInstance().initializeAttributes(2, 3.5, true, 0, 75, 45, 20);
+		Player.getInstance().initializeAttributes(3, 3.5, true, 0, 75, 45, 20);
 		Player.getInstance().initializePosition(600, 350, 5);
 		GameManager.addGameObject(Player.getInstance());
 	
@@ -93,7 +96,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 			
 
 		if(GameManager.getInstance().dungeon)
-			DungeonNavigator.getInstance().initializeMap(1,2,0,500,300);
+			DungeonNavigator.getInstance().initializeMap(0,2,0,100,300);
 
 
 		if(GameManager.getInstance().cameraOn && GameManager.getInstance().overWorld){

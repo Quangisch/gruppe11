@@ -1,18 +1,14 @@
-package game.objects;
+package objects;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import map.Camera;
-import map.DungeonNavigator;
 import map.OverWorldNavigator;
 
-import core.CollisionDetection;
 import core.GameManager;
 import core.Sound;
 
@@ -102,7 +98,7 @@ public class Moveable extends Sprite{
 			
 			if (GameManager.getInstance().overWorld && GameManager.getInstance().cameraOn){
 			
-				ArrayList<Moveable> object = GameManager.getInstance().getMoveableList();
+				ArrayList<Moveable> object = GameManager.getMoveableList();
 				
 				for(int index = 0; index < object.size(); index++){
 					if (!leftLock && !rightLock)
@@ -385,7 +381,7 @@ public class Moveable extends Sprite{
 		setInteraction(3);
 		setInteractionLock(true);
 		Sound.getInstance().playSound(0);
-		Sound.getInstance().playSound(10);
+		//Sound.getInstance().playSound(10);
 	}
 
 	

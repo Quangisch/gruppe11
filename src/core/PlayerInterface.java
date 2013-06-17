@@ -1,21 +1,17 @@
 package core;
 
-import game.objects.Moveable;
-import game.objects.Player;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+//import java.util.concurrent.Executors;
+//import java.util.concurrent.ScheduledExecutorService;
 
 import javax.imageio.ImageIO;
-import javax.swing.JComponent;
+
+import objects.Moveable;
+import objects.Player;
 
 
 public class PlayerInterface implements FileLink{
@@ -23,15 +19,11 @@ public class PlayerInterface implements FileLink{
 	private static PlayerInterface playerInterface;
 	
 	private boolean iniInterface;
-	private boolean visible;
-	private int width;
-	private int height;
+
 	
 	private String textBuff;
 	private int lineCounter = 0;
-	private int lineLimit = 16;
 	private int lineID = 0;
-	private boolean scrollText = false;
 
 	private BufferedImage imageBuff = new BufferedImage(810,630,BufferedImage.TYPE_INT_ARGB);
 	private BufferedImage dynamicInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
@@ -126,9 +118,9 @@ public class PlayerInterface implements FileLink{
 	
 	private boolean dynamicStatus;
 	private float dynamicOpacityCounter;
+	@SuppressWarnings("unused")
 	private double dynamicResizeCounter;
-	private Thread dynamicThread;
-	private ScheduledExecutorService execDynamic;
+	//private ScheduledExecutorService execDynamic;
 	
 	private PlayerInterface(){
 		System.err.println("construct PlayerInterface");
@@ -205,8 +197,6 @@ public class PlayerInterface implements FileLink{
 	
 	public void initializeInstance(){
 	
-		visible = true;
-		
 		try {
 			
 				winBuff = ImageIO.read(winScreenFile);
@@ -349,12 +339,12 @@ public class PlayerInterface implements FileLink{
 		textBuff = textString;
 		lowerInterface = new BufferedImage(810,315,BufferedImage.TYPE_INT_ARGB);
 		lineCounter = 0;
-		lineLimit = 16;
 		lineID = 0;
 		
 	}
 	
 	
+	@SuppressWarnings("unused")
 	public boolean buildText(){
 		
 		boolean finishText = false;
@@ -567,7 +557,7 @@ public class PlayerInterface implements FileLink{
 			playerInterface = new PlayerInterface();
 		return playerInterface;
 	}
-	
+	/*
 	private class DynamicTimer implements Runnable{
 		
 		private Moveable object;
@@ -597,4 +587,5 @@ public class PlayerInterface implements FileLink{
 			resize += 0.5;
 		}
 	}
+	*/
 }

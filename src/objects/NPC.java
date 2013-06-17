@@ -1,10 +1,4 @@
-package game.objects;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import core.GameManager;
+package objects;
 
 abstract class NPC extends NPCLogic {
 	

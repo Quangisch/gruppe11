@@ -1,10 +1,14 @@
 .project
 .metadata
 .ds_store
+.fatjar
 bin/**
 tmp/**
 tmp/**/*
 oldmaster/**
 settings/
 loadpath
+jardescFile.jardesc
+buildJar/**
+doc/**
 *.launch

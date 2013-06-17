@@ -1,14 +1,9 @@
-package game.objects;
+package objects;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-
-import javax.swing.JComponent;
 
 import core.Board;
 import core.FileLink;
@@ -17,7 +12,6 @@ import core.GameManager;
 
 public class DrawableObject implements FileLink{
 
-	private Graphics2D g2d;
 	private volatile int x, y;
 	private int oldX, oldY;
 	private int oldXCam, oldYCam, oldLastDirection;

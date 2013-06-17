@@ -1,7 +1,5 @@
 package core;
 
-import game.objects.DrawableObject;
-import game.objects.Player;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -18,19 +16,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import objects.DrawableObject;
+import objects.Player;
 
 import map.DungeonNavigator;
 import map.OverWorldNavigator;
 
 
 public class Board extends JPanel implements Runnable, FileLink{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6901033622659542069L;
+
 	private final int DELAY = 20;
 	
 	private static Board board = null;
 	private Graphics2D g2d;
-	private Graphics g;
 	
 	//add Values, sort Values, paint according Values
 	private static volatile ArrayList<DrawableObject> drawableList = new ArrayList<DrawableObject>();
@@ -58,7 +62,6 @@ public class Board extends JPanel implements Runnable, FileLink{
 	
 	public void paint(Graphics g){
 		super.paint(g);
-		this.g = g;
 		g2d = (Graphics2D) g;
 		
 		g2d.clearRect(0, 0, 810, 630);
@@ -170,7 +173,7 @@ public class Board extends JPanel implements Runnable, FileLink{
 		for(int i = 0; i < drawableList.size()-1; i++){
 			if(!drawableList.get(i).getAlive()){
 				drawableList.remove(i);
-				GameManager.getInstance().updateGameObject();
+				GameManager.updateGameObject();
 			}
 		}
 		

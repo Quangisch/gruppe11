@@ -1,4 +1,4 @@
-package game.objects;
+package objects;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

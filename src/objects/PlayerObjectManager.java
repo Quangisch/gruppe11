@@ -1,10 +1,5 @@
-package game.objects;
+package objects;
 
-import java.awt.image.BufferedImage;
-
-import javax.imageio.ImageIO;
-
-import core.FileLink;
 import core.PlayerInterface;
 import core.Sound;
 
@@ -23,8 +18,8 @@ abstract class PlayerObjectManager extends Initializer{
 	private int magicSpell = 0;
 	private double manaRegen = 0.0001;
 	
-	private int coinInventory = 0;
-	private int keyInventory = 0;
+	private int coinInventory = 2000;
+	private int keyInventory = 10;
 	
 	private int healthPotionInventory;
 	private int manaPotionInventory;
@@ -338,18 +333,5 @@ abstract class PlayerObjectManager extends Initializer{
 		return use;
 	}
 	
-	
-	
-	private class ItemInventory<I,T,M>{
-		final I ID;
-		final T type;
-		final M member;
-		
-		private ItemInventory(I ID, T type, M member){
-			this.ID = ID;
-			this.type = type;
-			this.member = member;
-		}
-	}
 	
 }

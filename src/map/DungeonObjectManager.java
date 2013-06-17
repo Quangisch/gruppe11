@@ -1,9 +1,10 @@
 package map;
 
-import game.objects.MapObject;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+
+import objects.MapObject;
 
 import core.GameObjectManager;
 
@@ -47,7 +48,6 @@ abstract class DungeonObjectManager extends Map{
 	private Rectangle objectBound[][][][][][][];
 	
 	private final Rectangle NULLRECT = new Rectangle(0,0,0,0);
-	private final int DIMENSIONMAX = 5;
 	
 	protected DungeonObjectManager(){
 		

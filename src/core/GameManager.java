@@ -2,7 +2,8 @@ package core;
 
 import java.util.ArrayList;
 
-import game.objects.Moveable;
+import objects.Moveable;
+
 
 public class GameManager {
 	

@@ -1,14 +1,11 @@
-package game.objects;
+package objects;
 
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 import map.Camera;
 import map.DungeonNavigator;
 import map.OverWorldNavigator;
 
-import core.Board;
 import core.GameManager;
 import core.ItemListManager;
 import core.PlayerInterface;
@@ -18,8 +15,6 @@ public class Player extends PlayerObjectManager implements Runnable{
 	private int spawnX; 
 	private int spawnY;
 	private boolean spawnLock;
-	private boolean horizontalLock;
-	private boolean verticalLock;
 	private boolean interactLock;
 	private boolean godlikeModus;
 	private boolean switchGameState;
@@ -151,22 +146,18 @@ public class Player extends PlayerObjectManager implements Runnable{
 		if (key == KeyEvent.VK_UP){
 			setMoveUp(false);
 			setMoveStep(0);
-			verticalLock = false;
 		}
 		if (key == KeyEvent.VK_RIGHT){
 			setMoveRight(false);
 			setMoveStep(0);
-			horizontalLock = false;
 		}
 		if (key == KeyEvent.VK_DOWN){
 			setMoveDown(false);
 			setMoveStep(0);
-			verticalLock = false;
 		}	
 		if (key == KeyEvent.VK_LEFT){
 			setMoveLeft(false);
 			setMoveStep(0);
-			horizontalLock = false;
 		}
 		
 		if (key == KeyEvent.VK_F && getMoveable()){

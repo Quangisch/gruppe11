@@ -1,11 +1,12 @@
 package map;
 
-import game.objects.MapObject;
-import game.objects.MarioDark;
-import game.objects.Player;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
+
+import objects.MapObject;
+import objects.MarioDark;
+import objects.Player;
 
 
 import core.GameManager;

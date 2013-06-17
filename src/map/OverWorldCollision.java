@@ -3,10 +3,9 @@ package map;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
-import core.GameManager;
+import objects.Moveable;
+import objects.Player;
 
-import game.objects.Moveable;
-import game.objects.Player;
 
 abstract class OverWorldCollision extends OverWorldBuilder{
 
@@ -74,7 +73,6 @@ abstract class OverWorldCollision extends OverWorldBuilder{
 		
 		for(int indexMapObject = 0; indexMapObject < mapObjectBoundList.size(); indexMapObject++){
 			Rectangle rect = mapObjectBoundList.get(indexMapObject).getRectangle();
-			int type = mapObjectBoundList.get(indexMapObject).getType();
 			
 			if(player.getBoundCore().intersects(rect.x-cam.getX(),rect.y-cam.getY(),rect.width,rect.height)){
 				/*TODO

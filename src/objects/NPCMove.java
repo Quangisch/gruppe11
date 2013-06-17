@@ -1,7 +1,6 @@
-package game.objects;
+package objects;
 
 import java.awt.Rectangle;
-import java.util.Map;
 import java.util.Random;
 
 import map.Camera;
@@ -13,16 +12,11 @@ import core.ItemListManager;
 
 abstract class NPCMove extends Initializer{
 
-	
-	private boolean hostile = true;
-	
 	//movement locks
 	private boolean xLock;
 	private boolean yLock;
 	private int destinationCounter;
 	private int cycleCounter;
-	private boolean cycleEnd;
-	
 	
 	
 	protected NPCMove(){
@@ -201,8 +195,9 @@ abstract class NPCMove extends Initializer{
 				break;
 		case 2: cycleCounter++;
 				if(cycleCounter == cycles && cycles != -1){
-					cycleEnd = true;
 					System.out.println("reach end of cycle");
+					return true;
+					
 				}
 				else if(cycleCounter < cycles)
 					destinationCounter = 0;
@@ -223,8 +218,9 @@ abstract class NPCMove extends Initializer{
 				break;
 		case 2: cycleCounter++;
 				if(cycleCounter == cycles && cycles != -1){
-					cycleEnd = true;
+					
 					System.out.println("reach end of cycle");
+					return true;
 				}
 				else if(cycleCounter < cycles)
 					destinationCounter = 0;
@@ -273,8 +269,8 @@ abstract class NPCMove extends Initializer{
 					
 			case 6:	cycleCounter++;
 					if(cycleCounter == cycles){
-						cycleEnd = true;
 						System.out.println("reach end of cycle");
+						return true;
 					}
 					else if(cycleCounter < cycles || cycles == -1)
 						destinationCounter = 2;
@@ -307,8 +303,8 @@ abstract class NPCMove extends Initializer{
 			
 			case 6:	cycleCounter++;
 					if(cycleCounter == cycles){
-						cycleEnd = true;
 						System.out.println("reach end of cycle");
+						return true;
 					}
 					else if(cycleCounter < cycles || cycles == -1)
 						destinationCounter = 2;

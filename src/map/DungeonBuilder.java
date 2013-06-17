@@ -1,20 +1,8 @@
 package map;
 
-import game.objects.MapObject;
-import game.objects.MarioDark;
-import game.objects.Merchant;
-import game.objects.Player;
 
-
-import java.awt.AWTException;
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.io.BufferedReader;
 
 import java.io.File;
@@ -25,7 +13,8 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import map.DungeonObjectManager.NavigationData;
+import objects.MarioDark;
+import objects.Merchant;
 
 import core.EnemyManager;
 import core.FileLink;
@@ -38,8 +27,6 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 	//scroll
 	private volatile int scrollX = 0; 
 	private volatile int scrollY = 0;
-	private int scrollPaintX = 0; 
-	private int scrollPaintY = 0;
 	final static int SCROLLSPEED_X = 60;  
 	final static int SCROLLSPEED_Y = 50;
 	
@@ -65,8 +52,6 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 	 * type 4: toWest
 	 */
 	//navigationData[xMap][yMap][type=max5][dimension=max4]
-	private volatile int xNavigationData[][][][];
-	private volatile int yNavigationData[][][][];
 	
 	private BufferedImage mapBuff;
 	//tileBuff[TileSet_Elements_X + 1][TileSet_Elements_Y + 1]: offset +1 in both Arrays to match TileData 
@@ -81,22 +66,15 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 	private final String[] layerHeader = {"#floor2#","#floor1#","#wall2#","#wall1#","###"};
 	//private final String[] layerHeader = {"#floor2#","#floor1#","#wall2#","#wall1#","###"};
 	private final String[] navigationHeader = {"#toExit#", "#toNorth#", "#toEast#", "#toSouth#", "#toWest#"};
-	private final String[] mapInformation = {"#enemy#","trap"};
+
 	
 	
 	private String dungeonIDName, mapIDName;
-	private BufferedImage clearImage;
 	
 	protected DungeonBuilder(){
 		System.err.println("construct DungeonBuilder");	
 		
-		try {
-			clearImage = new Robot().createScreenCapture(new Rectangle(0, 23, 810, 630));
-		} catch (AWTException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+	
 	}
 	
 	protected void loadMapData(File mapData, File tileDungeon){
@@ -133,9 +111,7 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 			xTileData = new int[getMapRowX()][getMapRowY()][7][9][7];
 			yTileData = new int[getMapRowX()][getMapRowY()][7][9][7];
 			
-			xNavigationData = new int[getMapRowX()][getMapRowY()][5][4];
-			yNavigationData = new int[getMapRowX()][getMapRowY()][5][4];
-			
+		
 			for(int j = 0; j < 2; j++){
 				for(int i = 0; i < 8; i++){
 					layerBuff[j][i] = new BufferedImage(810,630,BufferedImage.TYPE_INT_ARGB);
@@ -537,7 +513,6 @@ g2d.fillRect(0, 0, 10, 10);
 				//map row Y	
 				for(int mapIDY = 0; mapIDY < mapRowYSize; mapIDY++){
 					
-					readMapDataX:
 					//map column X
 					for(int mapIDX = 0; mapIDX < mapRowXSize; mapIDX++){
 						
@@ -678,7 +653,6 @@ g2d.fillRect(0, 0, 10, 10);
 						
 						
 					//EnemyData
-					EnemyData:
 						for(int infoID = 0; infoID < 2; infoID++){
 							
 							readDataBuff.mark(10);

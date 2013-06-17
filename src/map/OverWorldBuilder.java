@@ -1,8 +1,5 @@
 package map;
 
-import game.objects.Guide;
-import game.objects.MapObject;
-import game.objects.Merchant;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -15,8 +12,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import map.DungeonObjectManager.EnemyData;
-import map.DungeonObjectManager.MapObjectData;
+import objects.MapObject;
 
 import core.EnemyManager;
 import core.GameManager;
@@ -149,7 +145,6 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 			
 			
 		//EnemyData
-		EnemyData:
 			for(int infoID = 0; infoID < 2; infoID++){
 				System.out.println("EnemyData.for@"+infoID);
 				

@@ -1,7 +1,6 @@
-package game.objects;
+package objects;
 
 
-import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -274,7 +273,6 @@ abstract class Sprite extends DrawableObject{
 			this.interactType = interactType;
 		}
 		public void run() {
-			int counter = 0;
 			
 			while(interInteraction != 0){
 				interactSubSprite();

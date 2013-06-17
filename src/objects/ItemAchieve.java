@@ -1,4 +1,4 @@
-package game.objects;
+package objects;
 
 import java.io.File;
 import java.util.concurrent.Executors;
@@ -7,14 +7,12 @@ import java.util.concurrent.TimeUnit;
 
 import core.GameManager;
 import core.ItemListManager;
-import core.Sound;
 
 public class ItemAchieve extends Item implements Runnable{
 	
 
 	private Thread runThread;
 	private ScheduledExecutorService execRun;
-	private ItemAchieve itemAchieve;
 	
 	private ItemAchieve(int xPos, int yPos, int[]itemIDData){
 		System.err.println("construct ItemAchieve");
@@ -61,7 +59,6 @@ public class ItemAchieve extends Item implements Runnable{
 		GameManager.updateGameObject();
 		execRun.shutdown();
 		execRun = null;
-		itemAchieve = null;
 	}
 
 	public static void addInstance(int xPos, int yPos, int[]itemIDData){
