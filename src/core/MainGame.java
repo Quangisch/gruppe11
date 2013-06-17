@@ -80,7 +80,9 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		GameManager.getInstance().overWorld = true;
 		GameManager.getInstance().dungeon = false;
 		
+
 		if(GameManager.getInstance().overWorld){
+
 			int xStart = 1890;
 			int yStart = 0;
 			//int xStart = 100;
@@ -89,9 +91,10 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 			OverWorldNavigator.getInstance().initializeMap(xStart,yStart,0,500,200);
 		}
 			
+
 		if(GameManager.getInstance().dungeon)
 			DungeonNavigator.getInstance().initializeMap(1,2,0,500,300);
-		
+
 
 		if(GameManager.getInstance().cameraOn && GameManager.getInstance().overWorld){
 
@@ -129,7 +132,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 					Camera.getInstance().switchToCameraMode(scrollX, scrollY);
 				}
 		}
-		
+
 	}
 	
 	private void initializeThreads(){

@@ -253,6 +253,7 @@ public class Sound implements Runnable, FileLink{
 		if(sound == null)
 			sound = new Sound();
 		return sound;
+
 	}
 	
 }

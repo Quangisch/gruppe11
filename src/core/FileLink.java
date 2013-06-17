@@ -53,6 +53,7 @@ public interface FileLink{
 	//enemySprite
 	File goomba = new File("resources/images/goomba_sprite_move.png");
 	
+
 	//music/sounds
 	File MFboss = new File("resources/sounds/music/boss.mp3");
 	File MFdungeon = new File("resources/sounds/music/dungeon.mp3");
@@ -68,4 +69,5 @@ public interface FileLink{
 	File SFpunchHit = new File("resources/sounds/sound/punchHit.mp3");
 	
 	
+
 }

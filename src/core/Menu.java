@@ -29,6 +29,7 @@ public class Menu extends JComponent implements FileLink, ChangeListener{
 	private Graphics2D g2d;
 
 	private boolean options;
+	private boolean sound;
 	private JSlider slSouth;
 	private JSlider slNorth;
 	
@@ -59,7 +60,7 @@ public class Menu extends JComponent implements FileLink, ChangeListener{
 	public void paintComponents(Graphics2D g2d){
 	
 		
-		//g2d.drawImage(menuBuff, 0, 0, null);
+		g2d.drawImage(menuBuff, 0, 0, null);
 		
 		
 		if(options){
@@ -82,36 +83,7 @@ public class Menu extends JComponent implements FileLink, ChangeListener{
 			g2d.setColor(Color.red);
 			g2d.draw(returnButton);
 			
-			slSouth = new JSlider(JSlider.HORIZONTAL,0,100,50);
-			Board.getInstance().add(slSouth);
-			
-			slSouth.setMinorTickSpacing(10);//kleine Makierungsabstand;
-			slSouth.setMajorTickSpacing(50);//große Markierungsabstand;
-			slSouth.setPaintTicks(true);
-			slSouth.setPaintLabels(true);
-			slSouth.setSnapToTicks(false);//Zwischenposition wird angewählt
-			slSouth.setBounds(xStart,yStart+2*yRec,xRec,yRec);
-			slSouth.setPreferredSize(new Dimension(600,330));
-			System.out.print("slSouth");
-			slNorth = new JSlider(JSlider.HORIZONTAL,0,100,50);
-			Board.getInstance().add(slNorth);
-			
-			slNorth.setMinorTickSpacing(10);//kleine Makierungsabstand;
-			slNorth.setMajorTickSpacing(50);//große Markierungsabstand;
-			slNorth.setPaintTicks(true);
-			slNorth.setPaintLabels(true);
-			slNorth.setSnapToTicks(false);//Zwischenposition wird angewählt
-			slNorth.setBounds(xStart,yStart+2*yRec,xRec,yRec);
-			slNorth.setPreferredSize(new Dimension(800,630));
-			System.out.print("slNorth");
-			
-			Board.getInstance().validate();
-			Board.getInstance().repaint();
-			
-			
-			
 		}
-		
 		
 		
 		//mainMenu
@@ -139,12 +111,43 @@ public class Menu extends JComponent implements FileLink, ChangeListener{
 		try {
 
 			//menuBuff = ImageIO.read(menuFile);
+
 			buttonBuff = ImageIO.read(buttonFile);
-			
 		} catch (IOException e) {
 			System.err.println(e);
 			//System.exit(0);
 		} 
+
+	}
+	public void slider(){
+			
+			/*
+			slSouth = new JSlider(JSlider.HORIZONTAL,0,100,50);
+			Board.getInstance().add(slSouth);
+			slSouth.setMinorTickSpacing(10);//kleine Makierungsabstand;
+			slSouth.setMajorTickSpacing(25);//große Markierungsabstand;
+			slSouth.setPaintTicks(true);
+			slSouth.setPaintLabels(true);
+			slSouth.setSnapToTicks(false);//Zwischenposition wird angewählt
+			slSouth.setBounds(xStart,yStart+2*yRec,50,50);
+			slSouth.setPreferredSize(new Dimension(800,600));
+			System.out.print("slSouth");
+			
+			slNorth = new JSlider(JSlider.HORIZONTAL,0,100,50);
+			Board.getInstance().add(slNorth);
+			slNorth.setMinorTickSpacing(10);//kleine Makierungsabstand;
+			slNorth.setMajorTickSpacing(50);//große Markierungsabstand;
+			slNorth.setPaintTicks(true);
+			slNorth.setPaintLabels(true);
+			slNorth.setSnapToTicks(false);//Zwischenposition wird angewählt
+			slNorth.setBounds(100,100,50,50);
+			slNorth.setPreferredSize(new Dimension(800,600));
+			System.out.print("slNorth");
+			
+			Board.getInstance().validate();
+			Board.getInstance().repaint();
+			
+	*/
 	}
 	
 	public void keyPressed(KeyEvent e){
@@ -207,6 +210,12 @@ public class Menu extends JComponent implements FileLink, ChangeListener{
 		if(options){
 
 			if(soundButton.contains(clickX, clickY)){
+				if(sound)
+					sound=false;
+				else {
+					sound=true;
+					//slider();
+				}
 			}
 			if(level1Button.contains(clickX, clickY)){
 			}
@@ -238,4 +247,6 @@ public class Menu extends JComponent implements FileLink, ChangeListener{
 		// TODO Auto-generated method stub
 		
 	}
+
+
 }
