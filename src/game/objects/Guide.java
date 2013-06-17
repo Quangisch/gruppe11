@@ -32,6 +32,10 @@ public class Guide extends NPC implements Runnable{
 
 	public void run(){
 		
+		if(getBoundCore().intersects(Player.getInstance().getBoundCore()))
+			Player.getInstance().setObjectBack(5, 0, false, null);
+		
+		
 		if(GameManager.getInstance().overWorld){
 			if(this.getBound().intersects(Player.getInstance().getBoundCore()) && GameManager.getInstance().interact){
 				GameManager.getInstance().showIngameText = true;

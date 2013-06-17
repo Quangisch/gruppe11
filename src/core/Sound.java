@@ -212,7 +212,7 @@ public class Sound implements Runnable, FileLink{
 			 	} else if(sound == 2){
 			 		FileInputStream fis2 = new FileInputStream(soundFile);
 		            BufferedInputStream bis2 = new BufferedInputStream(fis2);
-		            soundPlayer = new Player(bis2);
+		            soundPlayer2 = new Player(bis2);
 			 	}
 	            
 	        }

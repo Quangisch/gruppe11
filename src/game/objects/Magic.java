@@ -106,7 +106,7 @@ public class Magic extends Initializer implements FileLink{
 		
 		for(int index = 0; index < moveableList.size(); index++){
 
-			if(getBoundCore().intersects(moveableList.get(index).getBoundCore()) && !moveableList.get(index).equals(caster) && !moveableList.get(index).equals(this) && moveableList.get(index).getMoveableType() != -10){
+			if(getBoundCore().intersects(moveableList.get(index).getBound()) && !moveableList.get(index).equals(caster) && !moveableList.get(index).equals(this) && moveableList.get(index).getMoveableType() != -10){
 				setAlive(false);
 				moveableList.get(index).setLife(moveableList.get(index).getLife()-damage[type]);
 				moveableList.get(index).setObjectBack(20,0,true,this.getBoundCore());
