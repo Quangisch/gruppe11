@@ -182,15 +182,31 @@ public class Board extends JPanel implements Runnable, FileLink{
 		do{
 			int counter = 1;
 			for(int i = 0; i < size-1; i++){
-
-				if(drawableList.get(i).getY() > drawableList.get(i+1).getY()){
-					DrawableObject tmpDrawable = drawableList.get(i);
+				
+				if(!drawableList.get(i).getRefPointFlag() && !drawableList.get(i).getRefPointFlag() &&drawableList.get(i).getY() > drawableList.get(i+1).getY()){
+						DrawableObject tmpDrawable = drawableList.get(i);
+				
+						drawableList.set(i, drawableList.get(i+1));
+						drawableList.set(i+1, tmpDrawable);
+						
+						counter = i+1;
 			
+				} if(drawableList.get(i).getRefPointFlag() && !drawableList.get(i+1).getRefPointFlag() && drawableList.get(i).getYRefPoint() > drawableList.get(i+1).getY()){
+					
+					DrawableObject tmpDrawable = drawableList.get(i);
 					drawableList.set(i, drawableList.get(i+1));
 					drawableList.set(i+1, tmpDrawable);
 					
 					counter = i+1;
-				}//end if
+				} if(!drawableList.get(i).getRefPointFlag() && drawableList.get(i+1).getRefPointFlag() && drawableList.get(i).getY() > drawableList.get(i+1).getYRefPoint()){
+					
+					DrawableObject tmpDrawable = drawableList.get(i);
+					drawableList.set(i, drawableList.get(i+1));
+					drawableList.set(i+1, tmpDrawable);
+					
+					counter = i+1;
+				}	
+				
 				
 			}//end for
 			size = counter;

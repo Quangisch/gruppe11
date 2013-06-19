@@ -15,8 +15,9 @@ import core.Sound;
 
 public class Moveable extends Sprite{
 	private int speed;
-	private double speedUp = 0.7;
+	private double speedUp = 0.9;
 	private double life;
+	private double maxLife;
 	private boolean invincible;
 	private boolean moveUp, moveRight, moveDown, moveLeft;
 	private boolean moveable;
@@ -27,16 +28,19 @@ public class Moveable extends Sprite{
 	private boolean humanPlayer;
 	private int moveableType;
 	private int moveableID;
+	private boolean moveableBoss;
 	private boolean inputLock;
+	private boolean stopFallBack;
 	
 	private int flashCounter, cycleFlash;
 	
 	
-	private Thread flashThread, invincibleThread, waitThread, rotateThread;
+	private Thread flashThread, invincibleThread, waitThread, rotateThread, fallBackThread;
 	private ScheduledExecutorService execFlash = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledExecutorService execInvincible = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledExecutorService execWait = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledExecutorService execRotate = Executors.newSingleThreadScheduledExecutor();
+	private ScheduledExecutorService execFallBack = Executors.newSingleThreadScheduledExecutor();
 	
 	protected Moveable(){
 		
@@ -270,60 +274,49 @@ public class Moveable extends Sprite{
 		
 		case(1):	if(objectRect.intersects(getBoundDirN()))
 					setMovement(0, distance);
+					//if(speed <= 1){setX(getX());setY(getY()+distance);}
 					break;
 			
 		case(2):	if(objectRect.intersects(getBoundDirNE()))
 					setMovement(-distance, distance);
+					//if(speed <= 1){setX(getX()-distance);setY(getY()+distance);}
 					break;
 		
 		case(3):	if(objectRect.intersects(getBoundDirE()))
 					setMovement(-distance, 0);
+					//if(speed <= 1){setX(getX()-distance);setY(getY());}
 					break;
 					
 		case(4):	if(objectRect.intersects(getBoundDirSE()))
 					setMovement(-distance,-distance);
+					//if(speed <= 1){setX(getX()-distance);setY(getY()-distance);}
 					break;
 					
 		case(5):	if(objectRect.intersects(getBoundDirS()))
 					setMovement(0, -distance);
+					//if(speed <= 1){setX(getX());setY(getY()-distance);}
 					break;
 					
 		case(6):	if(objectRect.intersects(getBoundDirSW()))
 					setMovement(distance, -distance);
+					//if(speed <= 1){setX(getX()+distance);setY(getY()-distance);}
 					break;
 					
 		case(7):	if(objectRect.intersects(getBoundDirW()))
 					setMovement(distance, 0);
+					//if(speed <= 1){setX(getX()+distance);setY(getY());}
 					break;
 					
 		case(8):	if(objectRect.intersects(getBoundDirNW()))
 					setMovement(distance,distance);
+					//if(speed <= 1){setX(getX()+distance);setY(getY()+distance);}
 					break;
 			
 		}//switch(lastdirection)
-		
-		
-		/*
-		switch(getLastDirection()){
-		case(1):	setMovement(0,+distance);
-					break;
-		case(3):	setMovement(-distance, 0);
-					break;
-		case(5):	setMovement(0,-distance);
-					break;
-		case(7):	setMovement(distance,0);
-					break;
-					
-		case(2):	setMovement(-distance,distance);
-					break;
-		case(4):	setMovement(-distance,-distance);
-					break;
-		case(6):	setMovement(distance,-distance);
-					break;
-		case(8):	setMovement(distance,distance);
-					break;
-		}*/
 	
+		
+		
+		
 	}
 	
 	//set
@@ -331,9 +324,15 @@ public class Moveable extends Sprite{
 	public void setSpeedUp(double speedUp){this.speedUp = speedUp;}
 	public synchronized void setLife(double life){
 
+		if(life > this.life && !isHumanPlayer())
+			maxLife = life;
+		
 		if(!invincible){
-			if(this.life > life && life > 0)
+			if(this.life > life && life > 0){
 				startInvincibleTimer(500);
+				startFlashTimer(150,5);
+			}
+				
 			this.life = life; 
 			if(life <= 0 && !isHumanPlayer()){
 				setVisible(false);
@@ -344,9 +343,7 @@ public class Moveable extends Sprite{
 			}
 			
 
-		} else {
-			System.out.println("Invincible Mode");
-		}
+		} 
 		
 	}
 	
@@ -456,13 +453,45 @@ public class Moveable extends Sprite{
 	
 	}
 
+	public synchronized void startFallBackTimer(int distance, int direction, boolean referenceObject, Rectangle referenceRect){
+		fallBackThread = new Thread(new FallBackTimer(distance, interpretDirection(direction), referenceObject, referenceRect));
+		execFallBack.scheduleWithFixedDelay(fallBackThread, 0, 10, TimeUnit.MILLISECONDS);
+		System.err.println("startFallBackTimer!");
+	}
+	
+	private int interpretDirection(int direction){
+		int directionOut = 0;
+		
+		if(direction > 0)
+			directionOut = direction;
+		if(direction < 0){
+			switch(direction){
+			case -1: directionOut = 5;break;
+			case -2: directionOut = 6;break;
+			case -3: directionOut = 7;break;
+			case -4: directionOut = 8;break;
+			case -5: directionOut = 1;break;
+			case -6: directionOut = 2;break;
+			case -7: directionOut = 3;break;
+			case -8: directionOut = 4;break;
+			}
+		}
+		
+		System.out.println("Direction_in@"+direction+",out@"+directionOut);
+		
+		return directionOut;
+	}
+	
+	public synchronized void stopFallBackTimer(){
+		stopFallBack = true;
+	}
 	
 	public synchronized void startFlashTimer(int period, int duration){
 
 		flashThread = new Thread(new FlashTimer());
-		execFlash.scheduleAtFixedRate(flashThread, 0, period, TimeUnit.MILLISECONDS);
-	
-		cycleFlash = duration/period;
+		execFlash.scheduleWithFixedDelay(flashThread, 0, period, TimeUnit.MILLISECONDS);
+		cycleFlash = duration;
+		System.err.println("startFlashTimer!");
 	}
 	
 	
@@ -473,7 +502,7 @@ public class Moveable extends Sprite{
 		
 		invincible = true;
 
-		//startFlashTimer(500, delay);
+		//startFlashTimer(500, 100);
 		//System.err.println("====>Invincible.start@WDH:"+(int)(delay / 200));
 			
 	}
@@ -489,28 +518,46 @@ public class Moveable extends Sprite{
 		execRotate.scheduleWithFixedDelay(rotateThread, delay, speed, TimeUnit.MILLISECONDS);
 	}
 
+	public boolean getMoveableBoss() {
+		return moveableBoss;
+	}
+
+	public void setMoveableBoss(boolean moveableBoss) {
+		this.moveableBoss = moveableBoss;
+	}
+
+	public double getMaxLife() {
+		return maxLife;
+	}
+
+	public void setMaxLife(double maxLife) {
+		this.maxLife = maxLife;
+	}
+
 	private class FlashTimer implements Runnable{
 		
 		private FlashTimer(){ }
-		
-		@Override
+	
 		public void run() {
 			System.out.println(flashCounter+","+cycleFlash);
 			
-			setVisible(!getVisible());
+			if(getOpacity() >= 1)
+				setOpacity(0.7f);
+			else
+				setOpacity(1f);
+			
 			System.out.println(getVisible());
 			flashCounter++;
 			
 			if(flashCounter > cycleFlash || flashCounter == 0){
 				flashCounter = cycleFlash = 0;
-				setVisible(true);
+				setOpacity(1f);
 				
 				execFlash.shutdown();
 				execFlash = Executors.newSingleThreadScheduledExecutor();
 				flashThread = new Thread(new FlashTimer());
 			}
 				
-
 		}
 	}
 	
@@ -550,6 +597,35 @@ public class Moveable extends Sprite{
 				execRotate = Executors.newSingleThreadScheduledExecutor();
 				rotateThread = new Thread(new RotateTimer(0));
 			}
+		}
+	}
+	
+	private class FallBackTimer implements Runnable{
+		private int distance;
+		private int distanceCounter;
+		private int direction;
+		private boolean referenceObject;
+		private Rectangle referenceRect;
+		private FallBackTimer(int distance, int direction, boolean referenceObject, Rectangle referenceRect){ 
+			this.distance = distance;
+			this.direction = direction;
+			this.referenceObject = referenceObject;
+			this.referenceRect = referenceRect;
+		}
+		
+		public void run(){
+			distanceCounter++;
+			setObjectBack(2,direction,referenceObject,referenceRect);
+			System.out.println("fallBack@"+distanceCounter+",to"+distance);
+			if(distanceCounter/2 >= distance || stopFallBack){
+				stopFallBack = false;
+				distanceCounter = 0;
+				distance = 0;
+				execFallBack.shutdown();
+				execFallBack = Executors.newSingleThreadScheduledExecutor();
+				fallBackThread = new Thread(new FallBackTimer(0,0,false,null));
+			}
+			
 		}
 	}
 

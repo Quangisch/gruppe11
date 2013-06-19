@@ -182,8 +182,8 @@ public class IngameMenu implements FileLink{
 		g2d.setColor(Color.RED);
 		g2d.fillRect(500, 440, 250, 10);
 		g2d.setColor(Color.GREEN);
-		g2d.fillRect(500, 440, (int)(250*(inventoryList[7]/(10*inventoryList[5]))), 10);
-		String nextLevel = ((new Double(10*inventoryList[5]-inventoryList[7])).intValue()+"xp to next Level");
+		g2d.fillRect(500, 440, (int)(250*(inventoryList[7]/(7*inventoryList[5]))), 10);
+		String nextLevel = ((new Double(7*inventoryList[5]-inventoryList[7])).intValue()+"xp to next Level");
 		length = nextLevel.length();
 		
 		for(int i =0; i < length; i++){

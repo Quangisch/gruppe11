@@ -1,0 +1,79 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf360
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\ql\qnatural\pardirnatural
+
+\f0\b\fs24 \cf0 #To-Do
+\b0 \
+-> Save/Load System\
+-> network/coop modus\
+-> improve Menu, with additional Options\
+-> redesign mainMenu
+\b \
+\
+#Notes, Suggestions
+\b0 \
+-> enlarge: box interaction radius\
+-> fix Guide speed/add Timer for waiting/intersect Method for fluid Movement\
+-> opacity for grass at yRefPoint\
+\
+\
+___________________________________________________________\
+\
+
+\b #PatchNotes: build180602\
+
+\b0 -> added additional mapObjects (lava, grass Tiles)\
+-> increased speedUp\
+-> increased manaRegen, added healthRegen\
+-> added flashTimer (objects flash, when losing health)\
+-> tweaked damage System (e.g.: magic not efficient vs caster)\
+-> added keys to toogle music/atmo on/off (8 and 9 respectivly)\
+\
+-> fixed mapObject Bugs after reset\
+\
+
+\b #PatchNotes\
+
+\b0 -> larger navigationBounds in dungeon\
+-> tweaked fallBack after punches, fallBackDistance affected Player Timing\
+-> changed flashTimer from visibilty to opacity\
+-> magic added to CollisionDetection\
+\
+-> fixed itemBounds, Collection\
+-> fixed enemy stucking behind walls\
+-> fixed resetBugPosition, when falling into water/lava/holes\
+-> fixed resetBug (???)\
+\
+\
+___________________________________________________________\
+\
+
+\b #Bugs @build180602
+\b0 \
+-> graphic bug at 1-1, blockstone doesnt show up properly (only after reset)\
+\
+-> shop bug: key missing, from 1-1 to 0-1, can't enter shop\
+-> graphic Bug, dungeonBlocks showing up in overWorld\
+-> map bug: game objects doesn't reset properly, enemies, etc.\
+-> after gameover, can't enter 2nd treasureBox area, invisibleBlock (mapObject?)\
+\
+-> gloves bug: occurs when player falls into the water, while retrieving them\
+-> enemy bug: enemy won't fall back after a punch\
+\
+\
+
+\b #Bugs @build180602
+\b0 \
+->reset Bug: Guide won't talk, 2nd guide to the left\
+-> shopBug after reset (instan, buy Potion, can't talk/buy afterwards)\
+->resetPosition Bug: Guide + EnemiesPosition Bug. TreasureBox ok\
+\
+-> Potion Bug, can't drink it instantly, sometimes(ok after reset)\
+->Graphic Bug at 02_01 after reset\
+->EnemyCollision Bug at second BossRoom (upper left Enemy, wrong stuck behind wall)\
+-> punchBug, when spamming punch, getsStuck briefly (only once)\
+\
+\
+}

@@ -207,10 +207,10 @@ abstract class Sprite extends DrawableObject{
 	}
 	
 	//item Sprites
-	protected void setStaticSubSprite(int resizeFactor){
+	protected void setStaticSubSprite(int resizeFactor, double speed){
 		
 		if(staticCycle != 0)
-			staticInterStep += 0.1;
+			staticInterStep += speed;
 		
 		if(staticInterStep >= staticCycle)
 			staticInterStep = 0;

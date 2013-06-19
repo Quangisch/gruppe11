@@ -25,10 +25,8 @@ public class MarioDark extends NPCLogic implements Runnable{
 	
 	
 	private volatile static int instanceCounter;
-	private int IDNumber;
 	private boolean constructionLock = false;
 	private boolean spawnLock = true;
-	private boolean boss;
 	private boolean overWorldSpawn;
 	
 
@@ -36,12 +34,11 @@ public class MarioDark extends NPCLogic implements Runnable{
 	private MarioDark(int IDNumber, boolean boss){
 		System.err.println("construct MarioDark: "+IDNumber);
 		overWorldSpawn = GameManager.getInstance().overWorld;
-		this.IDNumber = IDNumber;
-		this.boss = boss;
-		
+
 		initializeInstance();
 		constructionLock = true;
 		setMoveableID(IDNumber);
+		setMoveableBoss(boss);
 	}
 	
 	private MarioDark(){
@@ -91,10 +88,10 @@ public class MarioDark extends NPCLogic implements Runnable{
 
 		setVisible(false);
 		
-		System.out.print("delete MarioDark@ID: "+IDNumber);
+		System.out.print("delete MarioDark@ID: "+getMoveableID());
 
 		if(GameManager.getInstance().scrollDirection == 0 && GameManager.getInstance().mapLoaded)
-			MarioDark.getInstance(false, IDNumber, boss).dropItem();
+			MarioDark.getInstance(false, getMoveableID(), getMoveableBoss()).dropItem();
 		
 		instanceCounter--;
 		
@@ -107,8 +104,15 @@ public class MarioDark extends NPCLogic implements Runnable{
 
 	private void dropItem(){
 		
-		if(!boss)
-			Player.getInstance().addExperience(1);
+		if(!getMoveableBoss()){
+			double getXP = getAttackDamage()*getMaxLife()/6;
+			
+			if(getXP >= 1)
+				Player.getInstance().addExperience((int)(getXP));
+			else
+				Player.getInstance().addExperience(1);
+		}
+			
 		else
 			Player.getInstance().addExperience(3);
 		

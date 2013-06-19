@@ -56,9 +56,15 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		case(1): handleTrap(); break;
 		case(2): handleTreasure(); break;
 		case(3): handleBlockBoss(); break;
+		case(10): handleAnimationTile(); break;
+		case(11): handleAnimationTile(); break;
+		case(12): handleAnimationTile(); break;
 		
 		}
 		//System.out.println("Type@"+type);
+		
+		if(GameManager.getInstance().switchGameState)
+			stop();
 
 	}
 	
@@ -150,16 +156,14 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 			if(this.getBoundCore().intersects(Player.getInstance().getBoundCore()))
 				Player.getInstance().setObjectBack(10, 0, false, null);
 			
-			if(GameObjectManager.getInstance().openTreasureBox(false, this)){
-				if(!interact){
-					setStaticX(450);
-					setStaticSubSprite(1);
-					interact = true;
-				}	
-			}
+			if(GameObjectManager.getInstance().openTreasureBox(false, this) && !interact){
 				
-			
-			else if(this.getBoundCore().intersects(Player.getInstance().getBound()) && GameManager.getInstance().interact){
+				setStaticX(450);
+				setStaticSubSprite(1,0);
+				interact = true;
+					
+			} else if(getBoundCore().intersects(Player.getInstance().getBound()) && GameManager.getInstance().interact){
+				
 				GameObjectManager.getInstance().openTreasureBox(true, this);
 				//System.out.println("Treasure:open@"+GameObjectManager.openTreasureBox(false, this));
 				
@@ -167,6 +171,15 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 
 		}
 
+	}
+	
+	private void handleAnimationTile(){
+		x = xPos + xMap * 810;
+		y = yPos + yMap * 630;
+		setStaticSubSprite(1,0.01);
+		
+		setYRefPoint(getY()-48);
+	
 	}
 	
 	private void stop(){
@@ -184,7 +197,6 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		System.err.println("==construct=>CameraPos@"+Camera.getInstance().getX()+"x"+Camera.getInstance().getY());
 		
 		
-	
 		setStaticX(data[2]);
 		setStaticY(data[3]);
 		setSubSpriteWidth(data[4]);
@@ -208,7 +220,7 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 			Board.getInstance().addMapObject(this);
 		else
 			GameManager.addGameObject(this);
-		setStaticSubSprite(1);
+		setStaticSubSprite(1,0);
 		runThread = new Thread(this);
 		execRun.scheduleWithFixedDelay(runThread, 10, 10, TimeUnit.MILLISECONDS);
 		
@@ -222,14 +234,6 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 	}
 	private int getID(){return ID;}
 	
-	public static void deleteAllInstances(){
-		
-		
-		for(int index = 0; index < mapObjectList.size(); index++){
-			mapObjectList.get(index).stop();
-		}
-		mapObjectList.clear();
-	}
 	
 	public static void deleteInstance(int ID){
 		
@@ -249,9 +253,13 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		listCounter++;
 	}
 	
+	public static void deleteAllInstances(){
+		resetInstance();
+	}
+	
 	public static void resetInstance(){
 		for(int index = 0; index < mapObjectList.size(); index++){
-			mapObjectList.get(index).setAlive(false);
+			mapObjectList.get(index).stop();
 		}
 		mapObjectList.clear();
 		listCounter = 0;

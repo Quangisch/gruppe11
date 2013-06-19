@@ -25,6 +25,8 @@ public class Sound implements Runnable, FileLink{
 	private File soundFile, soundFile2;
 	private Player soundPlayer, soundPlayer2;
 	
+	private boolean muteAtmo, muteMusic;
+	
 	
 	private Sound(){
 		
@@ -32,15 +34,26 @@ public class Sound implements Runnable, FileLink{
 	
 	public void run(){
 	
-		if(musicPlayer == null)
+		if(musicPlayer == null && !muteMusic)
 			playMusic();
 			
-		if(atmoPlayer == null && GameManager.getInstance().getIngame())
+		if(atmoPlayer == null && !muteAtmo)
 			playAtmo();
 			
 		if(GameManager.getInstance().mapLoaded)	
 			checkMusicSound();
 	
+		if(muteMusic && musicPlayer != null){
+			musicPlayer.close();
+			musicPlayer = null;
+		}
+		
+		if(muteAtmo && atmoPlayer != null){
+			atmoPlayer.close();
+			atmoPlayer = null;
+		}
+		
+		
 	}
 	
 	private void checkMusicSound(){
@@ -255,12 +268,21 @@ public class Sound implements Runnable, FileLink{
 	       
 	}
 	
+	
+	public void toogleMusic(){
+		muteMusic = !muteMusic;
+	}
+	
+	public void toogleAtmo(){
+		muteAtmo = !muteAtmo;
+	}
 
 	public static Sound getInstance(){
 		if(sound == null)
 			sound = new Sound();
 		return sound;
-
 	}
+	
+	
 	
 }

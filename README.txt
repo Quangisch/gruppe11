@@ -1,3 +1,4 @@
+Manual
 
 - movement with arrow keys
 - F 		sprint
@@ -11,14 +12,17 @@
 - C 		toggle camera fixed/automatic
 - V		center camera in fixed-camera mode
 
+- 8		toogle music on/off
+- 9		toogle atmo on/off
+- 0		reset game
+
 - K		spawn coins
 - L		spawn lifeOrbs
 - M		spawn manaOrbs
 
-- X,Y		spawn enemy
 - B 		show borders and hitboxes
 - O 		get coordinates
 - P		print message
 
 
-
+java -jar -Xms512 -Xmx512m proprarpgver2.jar

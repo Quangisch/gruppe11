@@ -145,7 +145,7 @@ public class PlayerInterface implements FileLink{
 		}
 		
 		dynamicInterface.createGraphics().drawImage(resizeImage(dynamicBuff,1),0,0, null);
-		/*
+		/* TODO
 		dynamicThread = new Thread(new DynamicTimer(dynamicString, object,dynamicBuff));
 		execDynamic = Executors.newSingleThreadScheduledExecutor();
 		execDynamic.scheduleWithFixedDelay(dynamicThread, 0, 10, TimeUnit.MILLISECONDS);
@@ -181,6 +181,7 @@ public class PlayerInterface implements FileLink{
 			if(lowerInterface != null && GameManager.getInstance().showIngameText){
 				g2d.drawImage(borderBuff,0,315,Board.getInstance());
 				g2d.drawImage(lowerInterface, 0, 360, Board.getInstance());
+				System.err.println("=====>>");
 			}
 			
 		}
@@ -285,17 +286,19 @@ public class PlayerInterface implements FileLink{
 			upperInterface.getGraphics().drawImage(heart4_4Buff, 10+45*i, 10, Board.getInstance());
 			
 
-		//if(life > restLife){
+		if(restLife < 1 && restLife >= 0.75)
+			upperInterface.getGraphics().drawImage(heart4_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());
+	
+		if(restLife < 0.75 && restLife >= 0.5)
+			upperInterface.createGraphics().drawImage(heart3_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());
+		
+		if(restLife < 0.5 && restLife >= 0.25)
+			upperInterface.createGraphics().drawImage(heart2_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());
+		
+		if(restLife <= 0.25 && restLife > 0.0001)
+			upperInterface.createGraphics().drawImage(heart1_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());		
+	
 			
-			if(restLife >= 0.75)
-				upperInterface.createGraphics().drawImage(heart3_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());
-			
-			if(restLife < 0.75 && restLife >= 0.5)
-				upperInterface.createGraphics().drawImage(heart2_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());
-			
-			if(restLife <= 0.25 && restLife > 0.001)
-				upperInterface.createGraphics().drawImage(heart1_4Buff, (int)(10+45*Math.floor(life)+1), 10, Board.getInstance());		
-		//}
 		
 		//paint manaBar & manaPool
 		
@@ -314,7 +317,6 @@ public class PlayerInterface implements FileLink{
 			upperInterface.createGraphics().drawImage(digitBuff, 740-i*30, 8, null);
 		}
 		
-		//Player.getInstance().addCoin(1);
 		
 		int spellType = Player.getInstance().getMagicSpell();
 		BufferedImage spellBuff = new BufferedImage(50,50,BufferedImage.TYPE_INT_ARGB);
@@ -550,6 +552,11 @@ public class PlayerInterface implements FileLink{
 	
 	public boolean getIniStatus(){
 		return iniInterface;
+	}
+	
+	public static void resetInstance(){
+		if(playerInterface != null)
+			playerInterface = new PlayerInterface();
 	}
 
 	public static PlayerInterface getInstance(){

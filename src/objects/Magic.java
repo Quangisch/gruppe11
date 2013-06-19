@@ -14,7 +14,7 @@ public class Magic extends Initializer implements FileLink{
 	
 	private Thread runThread;
 	private ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
-	
+
 	private int type;
 	private Moveable caster;
 	private ArrayList<Moveable> moveableList;
@@ -30,7 +30,7 @@ public class Magic extends Initializer implements FileLink{
 
 
 	private Magic(int type, Moveable caster){
-		setMoveableType(-10);
+		setMoveableType(-20);
 		this.type = type;
 		this.caster = caster;
 		System.out.println("new MagicCast @type "+type);
@@ -80,6 +80,11 @@ public class Magic extends Initializer implements FileLink{
 		setHeight(50);
 		setSubRowY(0);
 		
+		setCoreX(10);
+		setCoreY(10);
+		setCoreWidth(10);
+		setCoreHeight(10);
+		
 		runThread = new Thread(new RunTimer());
 		execRun = Executors.newSingleThreadScheduledExecutor();
 		execRun.scheduleWithFixedDelay(runThread, 10, 20, TimeUnit.MILLISECONDS);
@@ -89,9 +94,9 @@ public class Magic extends Initializer implements FileLink{
 	}
 	
 	private void running(){
-		
 
 		move();
+		
 		//System.out.println("Position@"+getX()+"x"+getY()+",visible:"+getVisibleDrawable());
 		//System.out.println(getLastDirection()+","+getMoveUp()+"x"+getMoveRight()+"x"+getMoveDown()+"x"+getMoveLeft());
 		
@@ -99,12 +104,13 @@ public class Magic extends Initializer implements FileLink{
 
 			if(getBoundCore().intersects(moveableList.get(index).getBound()) && !moveableList.get(index).equals(caster) && !moveableList.get(index).equals(this) && moveableList.get(index).getMoveableType() != -10){
 				setAlive(false);
-				moveableList.get(index).setLife(moveableList.get(index).getLife()-damage[type]);
+				Damage.inflictDamage(damage[type], 1, moveableList.get(index));
 				moveableList.get(index).setObjectBack(20,0,true,this.getBoundCore());
 				System.out.println("magicHit");
 				Sound.getInstance().playSound(3);
 				break;
 			}
+
 		}
 		
 		

@@ -27,6 +27,7 @@ public class Merchant extends NPC implements Runnable, FileLink{
 		System.out.println("--> construct Merchant");
 		initializeNeutralNPC(posX, posY);
 		initializeThread();
+		setMoveableType(-5);
 		
 	}
 	
@@ -183,7 +184,11 @@ public class Merchant extends NPC implements Runnable, FileLink{
 	}
 	
 	public static void resetInstance(){
-		merchant = null;
+		if(merchant != null){
+			merchant.deleteInstance();
+			merchant = null;
+		}
+		
 	}
 	
 	public static Merchant getInstance(int posX, int posY){

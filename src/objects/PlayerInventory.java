@@ -3,7 +3,7 @@ package objects;
 import core.PlayerInterface;
 import core.Sound;
 
-abstract class PlayerObjectManager extends Initializer{
+abstract class PlayerInventory extends Initializer{
 	
 	private double maxMana = 1;
 	private double manaPool = 1; //value between 0 and maxMana (= full Mana)
@@ -16,10 +16,11 @@ abstract class PlayerObjectManager extends Initializer{
 	
 	private int magicLevel = 1;
 	private int magicSpell = 0;
-	private double manaRegen = 0.0001;
+	private double manaRegen = 0.00015;
+	private double healthRegen = 0.0004;
 	
-	private int coinInventory = 2000;
-	private int keyInventory = 10;
+	private int coinInventory = 0;
+	private int keyInventory = 0;
 	
 	private int healthPotionInventory;
 	private int manaPotionInventory;
@@ -30,7 +31,7 @@ abstract class PlayerObjectManager extends Initializer{
 	
 	
 	
-	protected PlayerObjectManager(){
+	protected PlayerInventory(){
 		
 	}
 	
@@ -66,10 +67,10 @@ abstract class PlayerObjectManager extends Initializer{
 		experience += xp;
 		System.out.println("+"+xp+" to "+experience);
 		
-		if(experience >= 10*level){
+		if(experience >= 7*level){
 			level++;
 			manaRegen +=0.00005;
-			experience -= 10;
+			experience -= 7;
 		}
 
 		if(oldLevel != level)
@@ -133,7 +134,7 @@ abstract class PlayerObjectManager extends Initializer{
 	public double getArmor(){return armor;}
 	public double getArmorDurability(){return armorDurability;}
 	
-	public void loseLife(int damage){
+	public void loseLife(double damage){
 		
 		System.out.println("pre.Life@"+getLife()+", @damage:"+damage);
 		setLife(getLife() - (1-armor)*damage);
@@ -182,14 +183,17 @@ abstract class PlayerObjectManager extends Initializer{
 		//System.out.println("life@"+getLife()+" to Max@"+maxLife);
 	}
 	
-	public void automaticManaRegen(){
-		if(manaPool < 1){
+	public void automaticRegen(){
+		if(manaPool < maxMana)
 			manaPool += manaRegen;
-			
-		}
+		if(getLife() < maxLife)
+			setLife(getLife() + healthRegen);
 			
 		if(manaPool > maxMana)
 			manaPool = maxMana;
+		
+		if(getLife() > maxLife)
+			setLife(maxLife);
 		
 	}
 	

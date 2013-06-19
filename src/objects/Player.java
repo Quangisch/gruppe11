@@ -9,9 +9,10 @@ import map.OverWorldNavigator;
 import core.GameManager;
 import core.ItemListManager;
 import core.PlayerInterface;
+import core.Sound;
 
-public class Player extends PlayerObjectManager implements Runnable{
-	private static Player player1;
+public class Player extends PlayerInventory implements Runnable{
+	private static Player player;
 	private int spawnX; 
 	private int spawnY;
 	private boolean spawnLock;
@@ -33,8 +34,7 @@ public class Player extends PlayerObjectManager implements Runnable{
 
 		if(getInitialized()){
 			move();
-			automaticManaRegen();
-			setMaxLife();
+			automaticRegen();
 			
 			if(godlikeModus){
 				if(getLife() +0.25 <= getMaxLife())
@@ -110,7 +110,7 @@ public class Player extends PlayerObjectManager implements Runnable{
 		}
 		
 		if(key == KeyEvent.VK_SPACE){
-			System.out.println("HitSpace");
+			//System.out.println("HitSpace");
 			
 			GameManager.getInstance().interact = true;
 			GameManager.getInstance().promptText = true;
@@ -161,7 +161,7 @@ public class Player extends PlayerObjectManager implements Runnable{
 		}
 		
 		if (key == KeyEvent.VK_F && getMoveable()){
-			setSpeedUp(0.7);
+			setSpeedUp(0.9);
 		}
 		
 		
@@ -170,7 +170,7 @@ public class Player extends PlayerObjectManager implements Runnable{
 			interactLock = false;
 		}
 		if(key == KeyEvent.VK_SPACE){
-			System.out.println("HitSpace");
+			//System.out.println("HitSpace");
 			
 			if(!GameManager.getInstance().showIngameText){
 				GameManager.getInstance().interact = false;
@@ -264,29 +264,7 @@ public class Player extends PlayerObjectManager implements Runnable{
 			
 		}
 		
-		if(key == KeyEvent.VK_Y){
-			int num = MarioDark.getInstanceCounter();
-			MarioDark.getInstance(true, num, false).initializeImage(enemyDark, 90, 120, 8);
-			MarioDark.getInstance(false, num, false).initializeAttributes(2, 3, true, 0, 75, 45, 20);
-			MarioDark.getInstance(false, num, false).initializePosition(200, 100, 5);
-			MarioDark.getInstance(false, num, false).setPattern(3);
-			MarioDark.getInstance(false, num, false).setMoveableType(1);
-			GameManager.addGameObject(MarioDark.getInstance(false, num, false));
-			
-		}
-		
-		if(key == KeyEvent.VK_X){
-			int num = MarioDark.getInstanceCounter();
-			MarioDark.getInstance(true, num, false).initializeImage(enemyBright, 90, 120, 8);
-			MarioDark.getInstance(false, num, false).initializeAttributes(2, 3, true, 0, 75, 45, 20);
-			MarioDark.getInstance(false, num, false).initializePosition(200, 100, 5);
-			MarioDark.getInstance(false, num, false).setPattern(1);
-			MarioDark.getInstance(false, num, false).setMoveableType(2);
-			GameManager.addGameObject(MarioDark.getInstance(false, num, false));
-			
-			
-			
-		}
+
 		
 		if(key == KeyEvent.VK_T){
 			System.out.println("printText");
@@ -315,7 +293,7 @@ public class Player extends PlayerObjectManager implements Runnable{
 			godlikeModus = !godlikeModus;
 		}
 		
-		if(key == KeyEvent.VK_0){
+		if(key == KeyEvent.VK_BACK_SPACE){
 			MarioDark.deleteAllInstances();
 		}
 		
@@ -323,12 +301,14 @@ public class Player extends PlayerObjectManager implements Runnable{
 			GameManager.getInstance().moveFocus = false;
 		}
 		
-		if(key == KeyEvent.VK_BACK_SPACE){
-			for(int layer = 0; layer < 7; layer++)
-			DungeonNavigator.getInstance().clearTileImage(3, 5, 4);
-		}
+
+		if(key == KeyEvent.VK_8)
+			Sound.getInstance().toogleMusic();
 		
-		if(key == KeyEvent.VK_8){
+		if(key == KeyEvent.VK_9)
+			Sound.getInstance().toogleAtmo();
+		
+		if(key == KeyEvent.VK_0){
 			GameManager.getInstance().switchGameState(true, false);
 		}
 		
@@ -347,18 +327,18 @@ public class Player extends PlayerObjectManager implements Runnable{
 	public void setSpawnLock(boolean spawnLock){this.spawnLock = spawnLock;}
 	
 	public static void resetInstance(){
-		if(player1 != null){
-			player1.setAlive(false);
-			player1.setDirectionLock(10);
-			player1 = new Player();
+		if(player != null){
+			player.setAlive(false);
+			player.setDirectionLock(10);
+			player = new Player();
 		}
 			
 	}
 	
 	public static Player getInstance(){
-		if(player1 == null)
-			player1 = new Player();
+		if(player == null)
+			player = new Player();
 		
-		return player1;
+		return player;
 	}
 }

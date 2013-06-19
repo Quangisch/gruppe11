@@ -26,9 +26,12 @@ public class ItemAchieve extends Item implements Runnable{
 		
 		if(Player.getInstance().getInteractionLock()){
 			move();
-			setStaticSubSprite(3);
+			setStaticSubSprite(3,0.1);
 			
 		} else 
+			deleteInstance();
+		
+		if(GameManager.getInstance().menu)
 			deleteInstance();
 	}
 	

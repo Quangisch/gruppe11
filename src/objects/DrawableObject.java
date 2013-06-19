@@ -1,5 +1,6 @@
 package objects;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -13,6 +14,8 @@ import core.GameManager;
 public class DrawableObject implements FileLink{
 
 	private volatile int x, y;
+	private int yRefPoint; //reference Y Value for DrawableSort
+	private boolean refPointFlag;
 	private int oldX, oldY;
 	private int oldXCam, oldYCam, oldLastDirection;
 	
@@ -30,6 +33,7 @@ public class DrawableObject implements FileLink{
 	private Rectangle attackBound = new Rectangle(0,0,0,0);
 	
 	private BufferedImage image;
+	private float opacity = 1f;
 	private volatile boolean visible = true;
 	private volatile boolean alive;
 
@@ -67,8 +71,10 @@ public class DrawableObject implements FileLink{
 			g2d.draw(getBoundW());
 		}
 		
-		if(image != null && visible)
+		if(image != null && visible){
+			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
 			g2d.drawImage(image, x, y, Board.getInstance());
+		}
 
 		
 	}
@@ -157,6 +163,26 @@ public class DrawableObject implements FileLink{
 	public int getOldLastDirection(){return oldLastDirection;}
 	
 	public boolean getAlive(){return alive;}
+
+	public int getYRefPoint() {
+		return yRefPoint;
+	}
+	public boolean getRefPointFlag(){
+		return refPointFlag;
+	}
+
+	public void setYRefPoint(int yRefPoint) {
+		this.yRefPoint = yRefPoint;
+		refPointFlag = true;
+	}
+
+	public float getOpacity() {
+		return opacity;
+	}
+	
+	public void setOpacity(float opacity) {
+		this.opacity = opacity;
+	}
 	
 
 }

@@ -8,36 +8,51 @@ import core.GameManager;
 import core.ItemListManager;
 import core.PlayerInterface;
 
-public class Guide extends NPC implements Runnable{
+public class Guide extends NPCLogic implements Runnable{
 	
 	private static Guide guide;
 	private Thread runThread;
 	private ScheduledExecutorService execRun;
 	
-	private String[] text = {"...*story*.../nFollow me!",
-							"Don't idle around",
-							"This is as far as i can bring you. Take this and good Luck!"};
+	private String[] text = {"Random ...Love... Story.../n/nFollow me!",
+							"Dont idle around!",
+							"This is as far as i can bring you. Take this and good Luck!",
+							"Dont hit me, Im your guide!"};
 
 	private int oldCounter = -1;
 	private int textCounter;
 	
 	private Guide(int xPos, int yPos){
 		System.err.println("construct Guide");
-		setMoveableType(-5);
+		
 		setPattern(-10);
 		initializeNeutralNPC(xPos, yPos);
 		initializeThread();
+		setMoveableType(-5);
 		
 	}
 
 	public void run(){
+		System.out.println("Guide@Pos:"+getX()+"x"+getY());
+		
+		setLife(999);
 		
 		if(getBoundCore().intersects(Player.getInstance().getBoundCore()))
 			Player.getInstance().setObjectBack(5, 0, false, null);
 		
+		if(Player.getInstance().getAttackBound().intersects(getBound()) && oldCounter != 3){
+			
+			GameManager.getInstance().showIngameText = true;
+			GameManager.getInstance().promptText = true;
+			textCounter = 3;
+			buildText();
+			
+		} else if(oldCounter == 3 && GameManager.getInstance().promptText) {
+			GameManager.getInstance().showIngameText = false;
+		}
 		
 		if(GameManager.getInstance().overWorld){
-			if(this.getBound().intersects(Player.getInstance().getBoundCore()) && GameManager.getInstance().interact){
+			if(this.getBound().intersects(Player.getInstance().getBound()) && GameManager.getInstance().interact){
 				GameManager.getInstance().showIngameText = true;
 				interact();
 				//System.out.println("TxtCounter@"+textCounter+"interact");
@@ -50,7 +65,8 @@ public class Guide extends NPC implements Runnable{
 			} else {
 				//System.out.println("TxtCounter@"+textCounter+"else");
 				GameManager.getInstance().interact = false;
-				GameManager.getInstance().showIngameText = false;
+				if(oldCounter != 3)
+					GameManager.getInstance().showIngameText = false;
 			} 
 			
 			
@@ -77,25 +93,32 @@ public class Guide extends NPC implements Runnable{
 		
 	}
 	
+	private void buildText(){
+
+		if(oldCounter != textCounter){
+			PlayerInterface.getInstance().setText(text[textCounter]);
+			System.out.println("promptText:true -> buildText");
+		}
+		else {
+			GameManager.getInstance().interact = false;
+		}
+
+		PlayerInterface.getInstance().buildText();
+		oldCounter = textCounter;
+		
+		textCounter = 0;
+	}
+	
 	private void interact(){
 		
-		if(GameManager.getInstance().promptText){
-			
-			
-			if(oldCounter != textCounter){
-				PlayerInterface.getInstance().setText(text[textCounter]);
-				System.out.println("promptText:true -> buildText");
-			}
-			else {
-				GameManager.getInstance().interact = false;
-			}
-				
-			
-			PlayerInterface.getInstance().buildText();
-			oldCounter = textCounter;
-		}
+		if(GameManager.getInstance().promptText)
+			buildText();
+	
 		
 		textCounter = 1;
+		
+		if(oldCounter == 3)
+			textCounter = 0;
 		
 	}
 	
@@ -120,8 +143,12 @@ public class Guide extends NPC implements Runnable{
 	}
 	
 	public static void resetInstance(){
-		if(guide != null)
+		if(guide != null){
+			System.err.println("deleteGuide=====>");
 			guide.deleteInstance();
+			guide = null;
+		}
+			
 		
 	}
 	

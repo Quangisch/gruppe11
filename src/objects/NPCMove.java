@@ -10,13 +10,14 @@ import core.GameManager;
 import core.ItemListManager;
 
 
-abstract class NPCMove extends Initializer{
+abstract class NPCMove extends NPC{
 
 	//movement locks
 	private boolean xLock;
 	private boolean yLock;
 	private int destinationCounter;
 	private int cycleCounter;
+	
 	
 	
 	protected NPCMove(){
@@ -179,8 +180,6 @@ abstract class NPCMove extends Initializer{
 		
 		if(destRect.intersects(posRect)){
 			reachPoint = true;
-			
-			System.out.println("reach===>Point<====");
 		}
 			
 		
@@ -375,7 +374,7 @@ abstract class NPCMove extends Initializer{
 			setAttack();
 			
 			if(this.getBoundHitSpace().intersects(object.getBound())){
-				object.setLife(object.getLife()-1.5);
+				Damage.inflictDamage(getAttackDamage(), 0, object);
 				object.setObjectBack(10, 0, false, null);
 				this.startWaitTimer(2000);
 			}

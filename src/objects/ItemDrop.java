@@ -37,10 +37,9 @@ public class ItemDrop extends Item{
 		//System.out.println("Item alive@"+counter+", to "+duration);
 		//System.out.println("Item visible:"+getVisibleDrawable());
 		
-		setStaticSubSprite(4);
+		setStaticSubSprite(4,0.1);
 		
-		if(Player.getInstance().getBoundCore().intersects(this.getBoundDirection(0))){
-			System.out.println("Player.intersectItem");
+		if(Player.getInstance().getBoundDirection(0).intersects(getBoundCore()) || GameManager.getInstance().menu){
 			Player.getInstance().addItem(itemIDData);
 			setAlive(false);
 		}

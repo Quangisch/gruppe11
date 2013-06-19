@@ -3,6 +3,8 @@ package map;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
+import core.GameManager;
+
 import objects.Moveable;
 import objects.Player;
 
@@ -62,6 +64,8 @@ abstract class OverWorldCollision extends OverWorldBuilder{
 				
 					}
 					
+					if(object.getMoveableType() == -20)
+						object.setAlive(false);
 					
 				//GameManager.cameraOn = tmpStateCamera;
 					
@@ -75,15 +79,10 @@ abstract class OverWorldCollision extends OverWorldBuilder{
 			Rectangle rect = mapObjectBoundList.get(indexMapObject).getRectangle();
 			
 			if(player.getBoundCore().intersects(rect.x-cam.getX(),rect.y-cam.getY(),rect.width,rect.height)){
-				/*TODO
-				for(int i = 0; i < GameManager.getMoveableList().size(); i++){
-					if(!GameManager.getMoveableList().get(i).isHumanPlayer()){
-
-						GameManager.getMoveableList().get(i).setX(GameManager.getMoveableList().get(i).getX()-player.getOldXCam());
-						GameManager.getMoveableList().get(i).setY(GameManager.getMoveableList().get(i).getX()-player.getOldYCam());
-					}
-				}
-				*/
+				
+				int camDX = Camera.getInstance().getX() - player.getOldXCam();
+				int camDY = Camera.getInstance().getY() - player.getOldYCam();
+				
 				player.setLife(player.getLife()-1);
 				player.setX(player.getOldX());
 				player.setY(player.getOldY());
@@ -92,7 +91,13 @@ abstract class OverWorldCollision extends OverWorldBuilder{
 				setXCoordinate(-player.getOldXCam());
 				setYCoordinate(-player.getOldYCam());
 				
-				
+				for(int i = 0; i < GameManager.getMoveableList().size(); i++){
+					if(!GameManager.getMoveableList().get(i).isHumanPlayer()){
+
+						GameManager.getMoveableList().get(i).setX(GameManager.getMoveableList().get(i).getX()+camDX);
+						GameManager.getMoveableList().get(i).setY(GameManager.getMoveableList().get(i).getY()+camDY);
+					}
+				}
 				
 				break;
 			}

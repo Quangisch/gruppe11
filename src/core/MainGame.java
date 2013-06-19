@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import objects.Guide;
 import objects.MapObject;
 import objects.MarioDark;
+import objects.Merchant;
 import objects.Player;
 
 
@@ -53,8 +54,10 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		threadPoolManager.scheduleWithFixedDelay(managerThread,100,1000, TimeUnit.MILLISECONDS);
 		threadPoolManager.scheduleWithFixedDelay(soundThread,100,100, TimeUnit.MILLISECONDS);
 		
+		
 		GameManager.getInstance().setGameInitialized(true);
 		GameManager.getInstance().switchGameState(true, false);
+		
 		
 	}
 
@@ -72,7 +75,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 	private void initializePlayer(){
 		
 		Player.getInstance().initializeImage(player1Sprite, 90, 120, 8);
-		Player.getInstance().initializeAttributes(3, 3.5, true, 0, 75, 45, 20);
+		Player.getInstance().initializeAttributes(2, 3.5, true, 0, 75, 45, 20);
 		Player.getInstance().initializePosition(600, 350, 5);
 		GameManager.addGameObject(Player.getInstance());
 	
@@ -96,7 +99,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 			
 
 		if(GameManager.getInstance().dungeon)
-			DungeonNavigator.getInstance().initializeMap(0,2,0,100,300);
+			DungeonNavigator.getInstance().initializeMap(0,0,0,100,300);
 
 
 		if(GameManager.getInstance().cameraOn && GameManager.getInstance().overWorld){
@@ -154,7 +157,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 
 	public void run(){
 		
-		System.out.println("System.Check");
+		//System.out.println("System.Check");
 		
 		if(GameManager.getInstance().getMenu() && GameManager.getInstance().switchGameState){
 			GameManager.getInstance().switchGameState = false;
@@ -164,17 +167,19 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 				threadPool = new ScheduledThreadPoolExecutor(4);	
 			}
 			
-			
+			System.out.println("==>Menu");
 			resetGame();
 			
-			System.out.println("==>Menu");
+			
 		}
+		
 		
 		if(GameManager.getInstance().getIngame() && GameManager.getInstance().switchGameState){
 			GameManager.getInstance().switchGameState = false;
-			
-			initializeGame();
 			System.out.println("==>InGame");
+			resetGame();
+			initializeGame();
+			
 		}
 		
 		
@@ -187,19 +192,24 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 	}
 	
 	private void resetGame(){
-		System.out.println("=====resetInstance=====");
+		System.out.println("=====resetInstances=====");
 		
 		CollisionDetection.resetInstance();
+		GameManager.resetInstance();
 		GameObjectManager.resetInstance();
+		IngameMenu.resetInstance();
 		ItemListManager.resetInstance();
-		MarioDark.deleteAllInstances();
-		Guide.resetInstance();
+		PlayerInterface.resetInstance();
+		
 		Camera.resetInstance();
 		DungeonNavigator.resetInstance();
 		OverWorldNavigator.resetInstance();
-		GameManager.resetInstance();
+		
 		MapObject.resetInstance();
 		Player.resetInstance();
+		Guide.resetInstance();
+		Merchant.resetInstance();
+		MarioDark.deleteAllInstances();
 		
 	}
 	

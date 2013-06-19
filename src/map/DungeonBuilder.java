@@ -239,57 +239,6 @@ abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, 
 		
 	}
 	
-	public void clearTileImage(int layer, int xTile, int yTile){
-		//layerBuff[1][layer].createGraphics().drawImage(tileBuff[xTileData[xMap][yMap][layer][xTile][yTile]][yTileData[xMap][yMap][layer][xTile][yTile]], 90*xTile, 90*yTile, this);
-		
-		
-		//layerBuff[0][layer].createGraphics().setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR));
-		//layerBuff[0][layer].createGraphics().fillRect(xTile, yTile, 90, 90);
-		
-		
-		//AlphaComposite compositeClear = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
-		
-		/*
-		layerBuff[0][layer].createGraphics().setComposite(compositeClear);
-		layerBuff[0][layer].createGraphics().setColor(new Color(0,0,0,0));
-		layerBuff[0][layer].createGraphics().fillRect(xTile, yTile, 90, 90);
-		*/
-		
-		//layerBuff[0][layer].createGraphics().setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
-		
-		//mapImage.createGraphics().drawImage(layerBuff[0][layer], null, 810*getXMap(), 630*getYMap());
-		//layerBuff[0][layer].createGraphics().setPaint(Color.RED);
-		//layerBuff[0][layer].createGraphics().fillOval(50,50,100,100);
-		/*
-		layerBuff[0][layer].getGraphics();
-		layerBuff[0][layer].setBackground(new Color(255, 255, 255, 0));
-        Rectangle screen = transformationContext.getScreen();
-        graphics.clearRect(0,0, (int)screen.getWidth(), (int)screen.getHeight());
-		*/
-		//layerBuff[0][layer].setRGB(0, 0, 810, 630, mapImage.getRGB(810*getXMap(), 630*getYMap(), 810, 630, null, 0, 810), 0, 810);
-	
-		
-		mapImage.createGraphics().drawImage(layerBuff[0][layer], null, 810*getXMap(), 630*getYMap());
-		
-		
-		for(int layerTmp = 0; layerTmp < 7; layerTmp++){
-			mapImage.createGraphics().drawImage(layerBuff[0][layerTmp], null, 810*getXMap(), 630*getYMap());
-		}
-		
-		
-		
-		
-		
-		
-		/*
-		 * AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f);
-Graphics2D g2d = (Graphics2D) image.getGraphics();
-g2d.setComposite(composite);
-g2d.setColor(new Color(0, 0, 0, 0));
-g2d.fillRect(0, 0, 10, 10);
-		 */
-	}
-	
 	protected void setEnemy(){
 		
 		MarioDark.deleteAllInstances();
@@ -389,7 +338,7 @@ g2d.fillRect(0, 0, 10, 10);
 		}
 		
 		int[][] enemyPositionBoss = new int[3][4];
-		int[][] enemyAttributesBoss = new int[3][4];
+		int[][] enemyAttributesBoss = new int[3][5];
 		
 		enemyPositionBoss[0][0] = 2; enemyPositionBoss[0][1] = 2; //mapXY
 		enemyPositionBoss[0][2] = xCoordinateMap; enemyPositionBoss[0][3] = yCoordinateMap; //posXY
@@ -398,6 +347,7 @@ g2d.fillRect(0, 0, 10, 10);
 		enemyAttributesBoss[0][1] = 8; //enemyLife
 		enemyAttributesBoss[0][2] = 5; //enemyLastDirection
 		enemyAttributesBoss[0][3] = 11; //enemyPattern
+		enemyAttributesBoss[0][4] = 2; //enemyAttackDamage
 		
 		
 		enemyPositionBoss[1][0] = 2; enemyPositionBoss[1][1] = 1; //mapXY
@@ -407,7 +357,7 @@ g2d.fillRect(0, 0, 10, 10);
 		enemyAttributesBoss[1][1] = 15; //enemyLife
 		enemyAttributesBoss[1][2] = 5; //enemyLastDirection
 		enemyAttributesBoss[1][3] = 12; //enemyPattern
-		
+		enemyAttributesBoss[1][4] = 3;
 		
 		enemyPositionBoss[2][0] = 2; enemyPositionBoss[2][1] = 0; //mapXY
 		enemyPositionBoss[2][2] = xCoordinateMap; enemyPositionBoss[2][3] = yCoordinateMap; //posXY
@@ -416,6 +366,7 @@ g2d.fillRect(0, 0, 10, 10);
 		enemyAttributesBoss[2][1] = 25; //enemyLife
 		enemyAttributesBoss[2][2] = 5; //enemyLastDirection
 		enemyAttributesBoss[2][3] = 13; //enemyPattern
+		enemyAttributesBoss[2][4] = 3;
 
 		
 		if(!GameObjectManager.getInstance().getBossStatusDefeated(22) && getXMap() == 2 && getYMap() == 2){
@@ -540,7 +491,7 @@ g2d.fillRect(0, 0, 10, 10);
 					//Navigation
 						for(int navigationID = 0; navigationID < 5; navigationID++){
 							
-							readDataBuff.mark(10);
+							readDataBuff.mark(20);
 							searchLine = readDataBuff.readLine(); //OrientationData
 							dataLine = searchLine;
 							
@@ -586,7 +537,7 @@ g2d.fillRect(0, 0, 10, 10);
 									String widthData = dataLine.substring(8, 12);
 									String heightData = dataLine.substring(12, 16);
 									
-									readDataBuff.mark(10);
+									readDataBuff.mark(20);
 									searchLine = readDataBuff.readLine();
 									
 									if(searchLine.contentEquals("Door"))
@@ -655,7 +606,7 @@ g2d.fillRect(0, 0, 10, 10);
 					//EnemyData
 						for(int infoID = 0; infoID < 2; infoID++){
 							
-							readDataBuff.mark(10);
+							readDataBuff.mark(20);
 							searchLine = readDataBuff.readLine();
 							
 							
@@ -667,7 +618,7 @@ g2d.fillRect(0, 0, 10, 10);
 								do{
 									int enemyType;
 									int[] enemyPosition = new int[4];
-									int[] enemyAttributes = new int[4];
+									int[] enemyAttributes = new int[5];
 									
 									dataLine = readDataBuff.readLine(); //EnemyType+X+Y
 									dataLine = dataLine.replace("x", "");
@@ -687,11 +638,11 @@ g2d.fillRect(0, 0, 10, 10);
 									enemyAttributes[1] = translateStringToInt(dataLine.substring(4, 8)); //enemyLife
 									enemyAttributes[2] = translateStringToInt(dataLine.substring(8, 12)); //enemyLastDirection
 									enemyAttributes[3] = translateStringToInt(dataLine.substring(12, 16)); //enemyPattern
-									
+									enemyAttributes[4] = translateStringToInt(dataLine.substring(16, 20)); //enemyPattern
 									
 									addEnemyData(enemyType, enemyPosition, enemyAttributes);
 								
-									readDataBuff.mark(10);
+									readDataBuff.mark(20);
 									searchLine = readDataBuff.readLine();
 									
 									if(!searchLine.startsWith("#")){
@@ -708,7 +659,7 @@ g2d.fillRect(0, 0, 10, 10);
 							} else if(searchLine.contentEquals("#MapObject#")){
 								
 								do{
-									readDataBuff.mark(10);
+									readDataBuff.mark(20);
 									
 									dataLine = readDataBuff.readLine(); //Trap+X+Y
 									dataLine = dataLine.replace("x", "");
@@ -716,11 +667,11 @@ g2d.fillRect(0, 0, 10, 10);
 									System.out.println("====>TRAP@"+mapIDX+"x"+mapIDY+"@data:"+dataLine);
 									String xPosition = dataLine.substring(0, 4);
 									String yPosition = dataLine.substring(4, 8);
-									String type = dataLine.substring(8, 9);
-									String orientation = dataLine.substring(9, 10);
+									String type = dataLine.substring(8, 10);
+									String orientation = dataLine.substring(10, 11);
 									writeMapObjectData(type, orientation, mapIDX, mapIDY, xPosition, yPosition);
 									
-									if(type.contentEquals("2")){
+									if(type.contentEquals("02")){
 										dataLine = readDataBuff.readLine();
 										dataLine = dataLine.replace("Item@", "");
 										dataLine = dataLine.replace("x", "");
@@ -731,7 +682,7 @@ g2d.fillRect(0, 0, 10, 10);
 										GameObjectManager.getInstance().constructTreasure(mapIDX, mapIDY, translateStringToInt(xPosition), translateStringToInt(yPosition), treasureData);
 									}
 									
-									readDataBuff.mark(10);
+									readDataBuff.mark(20);
 									searchLine = readDataBuff.readLine();
 									
 									if(!searchLine.startsWith("#")){
@@ -759,7 +710,7 @@ g2d.fillRect(0, 0, 10, 10);
 					//Layer
 						for(int layerID = 3; layerID >= 0; layerID--){
 							
-							readDataBuff.mark(10);
+							readDataBuff.mark(20);
 							searchLine = readDataBuff.readLine(); //LayerName
 							dataLine = searchLine;
 							
@@ -919,6 +870,8 @@ private int translateStringToInt(String numberString){
 	
 	
 }
+
+
 
 protected void writeTileData(int xMap, int yMap, int layer, int xTile, int yTile, int xValue, int yValue){
 	yTileData[xMap][yMap][layer][xTile][yTile] = xValue; 

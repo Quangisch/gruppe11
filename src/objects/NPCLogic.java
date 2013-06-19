@@ -79,8 +79,6 @@ abstract class NPCLogic extends NPCMove {
 			else
 				setSpeed(3);
 			
-
-			System.out.println(destinationCounter);
 			int[] xDestination = {1930,1925,2030,2030,2310,2315,1915,1840,1500,1325,1325, 500, 200, 207, 440};
 			int[] yDestination = { 530,1171,1244,1355,1350,1867,1860,1950,1940,2160,2530,2530,2320,2047,1820};
 			if(destinationCounter < 15){
@@ -157,6 +155,10 @@ abstract class NPCLogic extends NPCMove {
 	
 	public void setPattern(int pattern){
 		this.pattern = pattern;
+		if(pattern == 5 || pattern == 10 || pattern == 12)
+			setMoveableType(1);
+		else if(pattern > 0)
+			setMoveableType(0);
 	}
 	
 	public int getPattern(){

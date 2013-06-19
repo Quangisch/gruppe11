@@ -1,8 +1,8 @@
 package objects;
 
-abstract class NPC extends NPCLogic {
+abstract class NPC extends Initializer {
 	
-	
+	private double attackDamage;
 	
 	protected NPC(){
 
@@ -14,11 +14,26 @@ abstract class NPC extends NPCLogic {
 	
 	
 	protected void initializeNeutralNPC(int posX, int posY){
-			setMoveableType(0);
 			initializeAttributes(2, 9999, true,0,75,45,20);
 			initializePosition(posX, posY, 5);
 			initializeImage(neutralNPC, 90,120,8);
 			
+	}
+
+
+
+
+
+	public double getAttackDamage() {
+		return attackDamage;
+	}
+
+
+
+
+
+	public void setAttackDamage(double attackDamage) {
+		this.attackDamage = attackDamage;
 	}
 
 }

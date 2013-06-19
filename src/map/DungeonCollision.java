@@ -4,7 +4,6 @@ package map;
 import java.awt.Rectangle;
 
 import objects.Moveable;
-import objects.Player;
 
 import core.GameManager;
 
@@ -35,7 +34,7 @@ abstract class DungeonCollision extends DungeonBuilder{
 		
 		//System.out.println(getXTileDataElement(getXMap(), getYMap(), 0, 5, 5));
 		//&& (getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 14 && (getXTileDataElement(xMap, yMap, 0, xTile, yTile) == 8 || getXTileDataElement(xMap, yMap, 1, xTile, yTile) == 10))){
-		
+
 	}
 	
 
@@ -459,86 +458,47 @@ abstract class DungeonCollision extends DungeonBuilder{
 
 	}
 	
-	protected void checkCollisionDoor(Moveable object){
-		
-		CheckDoor:
-		for(int orientation = 0; orientation < 9; orientation++){
-			for(int yTile = 0; yTile < 7; yTile++){
-				for(int xTile = 0; xTile < 9; xTile++){
-					for(int element = 0; element < 3; element++){
-						
-						//if(object.getBoundDirection(0).intersects(mapObjectBound[4][orientation][xTile][yTile][element]) && !object.isHumanPlayer())
-						//	object.setY(Player.getInstance().getY()+10);
-						
-						if(Player.getInstance().getBoundCore().intersects(mapObjectBound[4][orientation][xTile][yTile][element])){
-							
-							boolean useKey = Player.getInstance().useKeyInventory();
-							
-							if(!useKey){
-								Player.getInstance().setY(Player.getInstance().getY()+10);
-								System.err.println("Door Locked!");
-							} else {
-								
-								//addObjectBound(int xMapTmp, int yMapTmp, int layer, int orientation, int xTile, int yTile, int dimension, Rectangle objectElement)
-								
-								writeTileData(getXMap(), getYMap(), 4, xTile, yTile, 18, 14);
-								clearBlockRect(getXMap(), getYMap(), 4, xTile, yTile);
-								
-								for(int e = 0; e < 3; e++){
-									for(int o = 0; o < 9; o++){
-										mapObjectBound[4][o][xTile][yTile][e] = new Rectangle(0,0,0,0);
-									}
-								}
-									
-							
-								System.err.println("Door Unlocked!");
-								break CheckDoor;
-							}
-							
-						}
-					}
-					
-				}
-			}
-		}
-		
-		
-	}
+	protected boolean checkCollisionWall(Moveable object){
 	
-	
-	protected void checkCollisionWall(Moveable object){
-	
-		
+		boolean collision = false;
 		for(int layer = 2; layer < 4; layer++){
 			for(int yTile = 0; yTile < 7; yTile++){
 				for(int xTile = 0; xTile < 9; xTile++){
 					for(int element = 0; element < 3; element++){
 						
 				
-						if(object.getBoundCore().intersects(mapObjectBound[layer][1][xTile][yTile][element]))
-							object.setObjectBack(10,1,true,(mapObjectBound[layer][1][xTile][yTile][element]));
-						if(object.getBoundCore().intersects(mapObjectBound[layer][3][xTile][yTile][element]))
-							object.setObjectBack(10,3,true,(mapObjectBound[layer][3][xTile][yTile][element]));
-						if(object.getBoundCore().intersects(mapObjectBound[layer][5][xTile][yTile][element]))
-							object.setObjectBack(10,5,true,(mapObjectBound[layer][5][xTile][yTile][element]));
-						if(object.getBoundCore().intersects(mapObjectBound[layer][7][xTile][yTile][element]))
-							object.setObjectBack(10,7,true,(mapObjectBound[layer][7][xTile][yTile][element]));
-						if(object.getBoundCore().intersects(mapObjectBound[layer][2][xTile][yTile][element]))
-							object.setObjectBack(10,0,true,(mapObjectBound[layer][2][xTile][yTile][element]));
-						if(object.getBoundCore().intersects(mapObjectBound[layer][4][xTile][yTile][element]))
-							object.setObjectBack(10,0,true,(mapObjectBound[layer][4][xTile][yTile][element]));
-						if(object.getBoundCore().intersects(mapObjectBound[layer][6][xTile][yTile][element]))
-							object.setObjectBack(10,0,true,(mapObjectBound[layer][6][xTile][yTile][element]));
-						if(object.getBoundCore().intersects(mapObjectBound[layer][8][xTile][yTile][element]))
-							object.setObjectBack(10,0,true,(mapObjectBound[layer][8][xTile][yTile][element]));
+						if(object.getBoundCore().intersects(mapObjectBound[layer][1][xTile][yTile][element])){
+							object.setObjectBack(10,1,true,(mapObjectBound[layer][1][xTile][yTile][element]));collision=true;break;}
+						if(object.getBoundCore().intersects(mapObjectBound[layer][3][xTile][yTile][element])){
+							object.setObjectBack(10,3,true,(mapObjectBound[layer][3][xTile][yTile][element]));collision=true;break;}
+						if(object.getBoundCore().intersects(mapObjectBound[layer][5][xTile][yTile][element])){
+							object.setObjectBack(10,5,true,(mapObjectBound[layer][5][xTile][yTile][element]));collision=true;break;}
+						if(object.getBoundCore().intersects(mapObjectBound[layer][7][xTile][yTile][element])){
+							object.setObjectBack(10,7,true,(mapObjectBound[layer][7][xTile][yTile][element]));collision=true;break;}
+						if(object.getBoundCore().intersects(mapObjectBound[layer][2][xTile][yTile][element])){
+							object.setObjectBack(10,0,true,(mapObjectBound[layer][2][xTile][yTile][element]));collision=true;break;}
+						if(object.getBoundCore().intersects(mapObjectBound[layer][4][xTile][yTile][element])){
+							object.setObjectBack(10,0,true,(mapObjectBound[layer][4][xTile][yTile][element]));collision=true;break;}
+						if(object.getBoundCore().intersects(mapObjectBound[layer][6][xTile][yTile][element])){
+							object.setObjectBack(10,0,true,(mapObjectBound[layer][6][xTile][yTile][element]));collision=true;break;}
+						if(object.getBoundCore().intersects(mapObjectBound[layer][8][xTile][yTile][element])){
+							object.setObjectBack(10,0,true,(mapObjectBound[layer][8][xTile][yTile][element]));collision=true;break;}
 							
+						if(collision && object.getMoveableType() == -20)
+							object.setAlive(false);
 						
+						if(collision){
+							object.stopFallBackTimer();
+							//System.out.println("Collision:"+collision);
+						}
 					}
 				}
 			}
 		}
 		
 		
+		
+		return collision;
 	}
 	
 	
@@ -554,13 +514,7 @@ abstract class DungeonCollision extends DungeonBuilder{
 		}
 	}
 	
-	private void clearBlockRect(int xMap, int yMap, int layer, int xTile, int yTile){
-	
-		addObjectBound(xMap,yMap,layer,0,xTile,yTile,0,new Rectangle(xTile*90,yTile*90,90,90));
-		
-		 
-	}
-	
+
 	private void addBlockRect(int xMap, int yMap, int layer, int orientation, int xTile, int yTile){
 		
 		int x = xTile * 90;

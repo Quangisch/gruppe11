@@ -157,7 +157,7 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 					do{
 						int enemyType;
 						int[] enemyPosition = new int[4];
-						int[] enemyAttributes = new int[4];
+						int[] enemyAttributes = new int[5];
 						
 						dataLine = readDataBuff.readLine(); //EnemyType+X+Y
 						dataLine = dataLine.replace("x", "");
@@ -178,6 +178,8 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 						enemyAttributes[1] = translateStringToInt(dataLine.substring(4, 8)); //enemyLife
 						enemyAttributes[2] = translateStringToInt(dataLine.substring(8, 12)); //enemyLastDirection
 						enemyAttributes[3] = translateStringToInt(dataLine.substring(12, 16)); //enemyPattern
+						enemyAttributes[4] = translateStringToInt(dataLine.substring(16, 20)); //enemyPattern
+						
 						System.out.println(dataLine);
 						//System.err.println("==>ENEMYPATTERN: "+enemyAttributes[3]+" String:"+dataLine.substring(12, 16));
 						addEnemyData(enemyType, enemyPosition, enemyAttributes);
@@ -214,13 +216,13 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 
 							String xPosition = dataLine.substring(0, 4);
 							String yPosition = dataLine.substring(4, 8);
-							String type = dataLine.substring(8, 9);
-							String orientation = dataLine.substring(9, 10);
+							String type = dataLine.substring(8, 10);
+							String orientation = dataLine.substring(10, 11);
 							
 						
 							writeMapObjectData(type, orientation, mapIDX, mapIDY, xPosition, yPosition);
 							
-							if(type.contentEquals("2")){
+							if(type.contentEquals("02")){
 								dataLine = readDataBuff.readLine();
 								dataLine = dataLine.replace("Item@", "");
 								dataLine = dataLine.replace("x", "");
@@ -620,8 +622,7 @@ abstract class OverWorldBuilder extends OverWorldObjectManager {
 		if(number == -1)
 			System.exit(0);
 
-		return number;
-		
+		return number;	
 	}
 	
 	
