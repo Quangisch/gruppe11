@@ -2,6 +2,10 @@ package objects;
 
 abstract class NPC extends Initializer {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4410950013709266820L;
 	private double attackDamage;
 	
 	protected NPC(){

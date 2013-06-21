@@ -11,8 +11,12 @@ import core.FileLink;
 import core.GameManager;
 
 
-public class DrawableObject implements FileLink{
+public class DrawableObject implements FileLink, java.io.Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4637390613966111620L;
 	private volatile int x, y;
 	private int yRefPoint; //reference Y Value for DrawableSort
 	private boolean refPointFlag;
@@ -32,7 +36,7 @@ public class DrawableObject implements FileLink{
 	
 	private Rectangle attackBound = new Rectangle(0,0,0,0);
 	
-	private BufferedImage image;
+	transient private BufferedImage image;
 	private float opacity = 1f;
 	private volatile boolean visible = true;
 	private volatile boolean alive;
@@ -43,6 +47,8 @@ public class DrawableObject implements FileLink{
 	}
 	
 	public void draw(Graphics2D g2d){
+		
+		
 		//System.out.println("draw Drawable");
 
 		if(image != null && visible && GameManager.getInstance().showBounds){
@@ -74,7 +80,8 @@ public class DrawableObject implements FileLink{
 		if(image != null && visible){
 			g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
 			g2d.drawImage(image, x, y, Board.getInstance());
-		}
+		} else if(visible);
+			//constructImage();
 
 		
 	}
@@ -140,10 +147,15 @@ public class DrawableObject implements FileLink{
 		//System.out.println("attackBound@"+attackBound);
 	}
 	
+	
 	public Rectangle getAttackBound(){return attackBound;}
 	
 	//get
-	public BufferedImage getImage(){return image;}
+	public BufferedImage getImage(){
+		//if(image == null)
+			//constructImage();
+		return image;
+	}
 	public boolean getVisible(){return visible;}
 	
 	

@@ -20,6 +20,11 @@ abstract class DungeonCollision extends DungeonBuilder{
 	 */
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6385964595000987769L;
+	
 	//mapObjectBound[layer][orientation][xTile][yTile][element]
 	Rectangle[][][][][] mapObjectBound = new Rectangle[7][13][9][7][3];
 	
@@ -423,7 +428,7 @@ abstract class DungeonCollision extends DungeonBuilder{
 						System.err.println("Trap!");
 						
 						object.setObjectBack(100,0,false,null);
-						object.setLife(object.getLife()-1);
+						object.setLife(object.getLife()-1,true);
 						
 						if(object.isHumanPlayer()){
 							object.setX(object.getOldX());
@@ -444,7 +449,7 @@ abstract class DungeonCollision extends DungeonBuilder{
 							object.setObjectBack(100,0,false, null);
 							
 							System.err.println("Lava!");
-							object.setLife(object.getLife()-1);
+							object.setLife(object.getLife()-1,true);
 							sleepNow();
 							
 						}
@@ -488,7 +493,7 @@ abstract class DungeonCollision extends DungeonBuilder{
 							object.setAlive(false);
 						
 						if(collision){
-							object.stopFallBackTimer();
+							object.stopFallBack();
 							//System.out.println("Collision:"+collision);
 						}
 					}

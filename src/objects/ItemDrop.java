@@ -10,12 +10,16 @@ import core.GameManager;
 
 public class ItemDrop extends Item{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -579282741659010805L;
 	private int duration;
 	private int counter;
 	private int[] itemIDData = new int[3];
 	
-	Thread runThread = new Thread(new RunTimer());
-	ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
+	transient private Thread runThread = new Thread(new RunTimer());
+	transient private ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
 	
 	private ItemDrop(int x, int y, int[] data, File file, int duration){
 		setMoveableType(-10);
@@ -66,8 +70,8 @@ public class ItemDrop extends Item{
 		setFile(file);
 		loadSprite();
 		
-		Thread runThread = new Thread(new RunTimer());
-		ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
+		runThread = new Thread(new RunTimer());
+		execRun = Executors.newSingleThreadScheduledExecutor();
 		execRun.scheduleWithFixedDelay(runThread, 10, 20, TimeUnit.MILLISECONDS);
 		
 		GameManager.addGameObject(this);

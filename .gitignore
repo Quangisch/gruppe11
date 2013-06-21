@@ -6,6 +6,7 @@ bin/**
 tmp/**
 tmp/**/*
 oldmaster/**
+saveData/**
 settings/
 loadpath
 jardescFile.jardesc

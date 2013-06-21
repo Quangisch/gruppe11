@@ -20,13 +20,18 @@ import core.GameObjectManager;
 
 abstract class OverWorldBuilder extends OverWorldObjectManager {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4482748973397881239L;
 	private int xRowSize, yRowSize;
+	transient private BufferedImage mapBuff;
+	
 	
 	protected OverWorldBuilder(){
 		
 	}
 	
-	private BufferedImage mapBuff;
 	
 	protected boolean loadMap(File mapImage, File mapData){
 		

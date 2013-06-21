@@ -22,6 +22,7 @@ public class GameManager {
 	public volatile boolean ingame;
 	public volatile boolean ingameMenu;
 	public volatile boolean switchGameState;
+	public volatile boolean saveGameLock;
 	
 	public volatile boolean overWorld;
 	public volatile boolean dungeon;

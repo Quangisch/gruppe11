@@ -121,9 +121,9 @@ public class IngameMenu implements FileLink{
 			}
 			
 			String armorLevel = "";
-			if(Player.getInstance().getArmorDurability() >= 0 && Player.getInstance().getArmorDurability() < 50)
+			if(Player.getInstance().getArmorDurability(-1) >= 0 && Player.getInstance().getArmorDurability(-1) < 50)
 				armorLevel = "Lvl 1";
-			if(Player.getInstance().getArmorDurability() >= 50 && Player.getInstance().getArmorDurability() < 100)
+			if(Player.getInstance().getArmorDurability(-1) >= 50 && Player.getInstance().getArmorDurability(-1) < 100)
 				armorLevel = "Lvl 2";
 			
 			length =  armorLevel.length();

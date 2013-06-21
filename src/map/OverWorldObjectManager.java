@@ -5,6 +5,11 @@ import java.util.ArrayList;
 
 abstract class OverWorldObjectManager extends Map{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4552688017680117948L;
+	
 	private final Rectangle[] navigationBound = {new Rectangle(0,-10,810,20),
 												new Rectangle(800,0,20,630),
 												new Rectangle(0,620,810,20),
@@ -126,7 +131,11 @@ abstract class OverWorldObjectManager extends Map{
 	
 	
 	
-	public class WallBound<P, R>{
+	public class WallBound<P, R> implements java.io.Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1804192484056312500L;
 		final P pushDirection;
 		final R rectangle;
 		
@@ -139,7 +148,11 @@ abstract class OverWorldObjectManager extends Map{
 		public R getRectangle(){return rectangle;}
 	}
 	
-	public class MapObjectBound<T, R>{
+	public class MapObjectBound<T, R> implements java.io.Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7610153625050164005L;
 		final T type;
 		final R rectangle;
 		
@@ -152,7 +165,11 @@ abstract class OverWorldObjectManager extends Map{
 		public R getRectangle(){return rectangle;}
 	}
 	
-	protected class EnemyData<T, P, A>{
+	protected class EnemyData<T, P, A> implements java.io.Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2448127192532647277L;
 		public final T type;
 		public final P position;
 		public final A attributes;

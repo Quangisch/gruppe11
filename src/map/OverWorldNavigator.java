@@ -15,6 +15,11 @@ import core.GameManager;
 
 public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6593291885482114081L;
+	
 	private static OverWorldNavigator overWorldNavigator;
 	
 	
@@ -23,7 +28,9 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 		setOverWorld(true);
 	}
 	
-	public void initializeMap(int x, int y, int ID, int playerX, int playerY){
+	
+	
+	public void initializeMap(boolean reinitialize, int ID, int x, int y, int playerX, int playerY){
 		
 		GameManager.getInstance().mapLoaded = false;
 		MarioDark.deleteAllInstances();
@@ -32,7 +39,7 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 		DungeonNavigator.getInstance().resetObjectManager();
 		
 		Board.getInstance().setTopMap(false, null);
-		setID(ID);
+		
 		
 		switch(ID){
 		case(0):	loadMap(overWorldMapID00,overWorldDataID00);
@@ -54,24 +61,32 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 					
 		}
 		
-		setXCoordinate(-x);
-		setYCoordinate(-y);
-		Camera.getInstance().setX(x);
-		Camera.getInstance().setY(y);
-		Player.getInstance().setX(playerX);
-		Player.getInstance().setY(playerY);
-		Player.getInstance().setOldPosition();
-		
-
-		setEnemy();
-		if(this.getID() == 0){
-			System.out.println("=====>GUIDE@Cam:"+x+"x"+y);
-			Guide.getInstance(1930-x, 530-y);
+		if(!reinitialize){
+			setID(ID);
+			setXCoordinate(-x);
+			setYCoordinate(-y);
+			Camera.getInstance().setX(x);
+			Camera.getInstance().setY(y);
+			Player.getInstance().setX(playerX);
+			Player.getInstance().setY(playerY);
+			Player.getInstance().setOldPosition();
+			
+			setEnemy();
+			if(this.getID() == 0){
+				System.out.println("=====>GUIDE@Cam:"+x+"x"+y);
+				Guide.getInstance(1930-x, 530-y);
+			}
+			
+		} else {
+			
+			setXCoordinate(-Camera.getInstance().getX());
+			setYCoordinate(-Camera.getInstance().getY());
+			Player.getInstance().setOldPosition();
 		}
 		
-		
-		System.out.println("xy@"+x+"x"+y);
-		System.out.println("Player@"+playerX+"x"+playerY);
+
+		System.out.println("xy@"+getXCoordinate()+"x"+getYCoordinate());
+		System.out.println("Player@"+Player.getInstance().getX()+"x"+Player.getInstance().getY());
 		
 		initializeBounds();
 		
@@ -179,7 +194,7 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 					GameManager.getInstance().dungeon = false;
 					GameManager.getInstance().overWorld = true;
 					GameManager.getInstance().mapLoaded = false;
-					this.initializeMap(xMap-810, yMap-630, mapID, xPlayer, yPlayer);
+					this.initializeMap(false, mapID, xMap-810, yMap-630, xPlayer, yPlayer);
 					//OverWorldNavigator.getInstance().initializeMap(xMap-810, yMap-630, mapID, 400, 300);
 					System.out.println("overworldMap_"+xMap+"x"+yMap);
 				}
@@ -189,6 +204,10 @@ public class OverWorldNavigator extends OverWorldCollision implements FileLink{
 		
 		
 			
+	}
+	
+	public static void setInstance(OverWorldNavigator OWNavigatorLoad){
+		overWorldNavigator = OWNavigatorLoad;
 	}
 	
 	public static void resetInstance(){

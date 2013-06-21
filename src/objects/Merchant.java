@@ -11,9 +11,13 @@ import core.PlayerInterface;
 
 public class Merchant extends NPC implements Runnable, FileLink{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3217512311508188572L;
 	private static Merchant merchant;
-	private Thread runThread;
-	private ScheduledExecutorService execRun;
+	transient private Thread runThread;
+	transient private ScheduledExecutorService execRun;
 	
 	private String[] text = {"What do you want to buy?",
 			"1 HP-Potion   2G/n2 ManaPotion  2G/n3 WeaponLvl2  8G/n4 Armor Lvl2 10G/n5 Magic Lvl2 12G", 

@@ -15,10 +15,12 @@ import core.GameManager;
 
 public class DungeonNavigator extends DungeonCollision{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2164407733810407949L;
+
 	private static DungeonNavigator dungeonNavigator;
-	
-	
-	
 	private volatile int areaID = 1;
 	ArrayList<NavigationData<int[], Rectangle, int[]>> navDataMap;
 	
@@ -142,7 +144,7 @@ public class DungeonNavigator extends DungeonCollision{
 							GameManager.getInstance().dungeon = false;
 							GameManager.getInstance().overWorld = true;
 							GameManager.getInstance().mapLoaded = false;
-							OverWorldNavigator.getInstance().initializeMap(xMap, yMap, mapID, xPlayer, yPlayer);
+							OverWorldNavigator.getInstance().initializeMap(false, mapID, xMap, yMap, xPlayer, yPlayer);
 							//OverWorldNavigator.getInstance().initializeMap(xMap-810, yMap-630, mapID, 400, 300);
 							System.out.println("overworldMap_"+xMap+"x"+yMap);
 						}

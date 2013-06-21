@@ -14,6 +14,10 @@ import core.Sound;
 
 
 public class Moveable extends Sprite{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2815542215299457788L;
 	private int speed;
 	private double speedUp = 0.9;
 	private double life;
@@ -27,20 +31,23 @@ public class Moveable extends Sprite{
 	
 	private boolean humanPlayer;
 	private int moveableType;
-	private int moveableID;
 	private boolean moveableBoss;
 	private boolean inputLock;
-	private boolean stopFallBack;
+	
+	private volatile boolean fallBack;
+	private int fallBackCounter;
+	private int distance, direction; 
+	private boolean referenceObject;
+	private Rectangle referenceRect;
 	
 	private int flashCounter, cycleFlash;
 	
 	
-	private Thread flashThread, invincibleThread, waitThread, rotateThread, fallBackThread;
-	private ScheduledExecutorService execFlash = Executors.newSingleThreadScheduledExecutor();
-	private ScheduledExecutorService execInvincible = Executors.newSingleThreadScheduledExecutor();
-	private ScheduledExecutorService execWait = Executors.newSingleThreadScheduledExecutor();
-	private ScheduledExecutorService execRotate = Executors.newSingleThreadScheduledExecutor();
-	private ScheduledExecutorService execFallBack = Executors.newSingleThreadScheduledExecutor();
+	transient private Thread flashThread, invincibleThread, waitThread, rotateThread;
+	transient private ScheduledExecutorService execFlash = Executors.newSingleThreadScheduledExecutor();
+	transient private ScheduledExecutorService execInvincible = Executors.newSingleThreadScheduledExecutor();
+	transient private ScheduledExecutorService execWait = Executors.newSingleThreadScheduledExecutor();
+	transient private ScheduledExecutorService execRotate = Executors.newSingleThreadScheduledExecutor();
 	
 	protected Moveable(){
 		
@@ -71,9 +78,22 @@ public class Moveable extends Sprite{
 		moveSubSprite(speed, moveable, moveUp, moveRight, moveDown, moveLeft);
 		*/
 		
-		if(!getInteractionLock()){
+		if(!getInteractionLock() && !fallBack){
 			setMovement(dx, dy);
 			moveSubSprite(speed, moveable, moveUp, moveRight, moveDown, moveLeft);
+		}
+		
+		
+		if(fallBack){
+			fallBackCounter++;
+			setObjectBack(2,direction,referenceObject,referenceRect);
+			System.out.println("fallBack@"+fallBackCounter+",to"+distance);
+			if(fallBackCounter/2 >= distance)
+				fallBack = false;
+		} else {
+			fallBackCounter = distance =  direction = 0; 
+			referenceObject = false;
+			referenceRect = null;
 		}
 		
 		
@@ -322,25 +342,31 @@ public class Moveable extends Sprite{
 	//set
 	public void setSpeed(int speed){this.speed = speed;}
 	public void setSpeedUp(double speedUp){this.speedUp = speedUp;}
-	public synchronized void setLife(double life){
+	
+	public synchronized void setLife(double life, boolean loseLife){
 
 		if(life > this.life && !isHumanPlayer())
 			maxLife = life;
 		
+		
 		if(!invincible){
-			if(this.life > life && life > 0){
-				startInvincibleTimer(500);
-				startFlashTimer(150,5);
-			}
+			if(loseLife && life > 0 && invincibleThread == null){
 				
+				startInvincibleTimer(150,10);
+				
+				//startFlashTimer(150,5);
+			}
+			if(this.life > life)
+				System.out.println("pre.Life@"+this.life+"after.Life@"+life);
+			
 			this.life = life; 
+			
 			if(life <= 0 && !isHumanPlayer()){
 				setVisible(false);
 				setAlive(false);	
 			}
-			if(Player.getInstance().getLife() <= 0){
-				GameManager.getInstance().lose = true;
-			}
+			
+			
 			
 
 		} 
@@ -357,7 +383,6 @@ public class Moveable extends Sprite{
 	public void setHumanPlayer(boolean humanPlayer){this.humanPlayer = humanPlayer;}
 	public void setInputLock(boolean inputLock){this.inputLock = inputLock;}
 	public void setMoveableType(int type){this.moveableType = type;}
-	public void setMoveableID(int ID){this.moveableID = ID;}
 	
 	public void setAttack(){
 	
@@ -397,7 +422,6 @@ public class Moveable extends Sprite{
 	
 	public boolean isHumanPlayer(){return humanPlayer;}
 	public int getMoveableType(){return moveableType;}
-	public int getMoveableID(){return moveableID;}
 	
 	public boolean getUpLock(){return upLock;}
 	public boolean getRightLock(){return rightLock;}
@@ -453,12 +477,6 @@ public class Moveable extends Sprite{
 	
 	}
 
-	public synchronized void startFallBackTimer(int distance, int direction, boolean referenceObject, Rectangle referenceRect){
-		fallBackThread = new Thread(new FallBackTimer(distance, interpretDirection(direction), referenceObject, referenceRect));
-		execFallBack.scheduleWithFixedDelay(fallBackThread, 0, 10, TimeUnit.MILLISECONDS);
-		System.err.println("startFallBackTimer!");
-	}
-	
 	private int interpretDirection(int direction){
 		int directionOut = 0;
 		
@@ -482,9 +500,20 @@ public class Moveable extends Sprite{
 		return directionOut;
 	}
 	
-	public synchronized void stopFallBackTimer(){
-		stopFallBack = true;
+	public synchronized void startFallBack(int distance, int direction, boolean referenceObject, Rectangle referenceRect){
+		
+		this.distance = distance;
+		this.direction = interpretDirection(direction);
+		this.referenceObject = referenceObject;
+		this.referenceRect = referenceRect;
+		
+		fallBack = true;
 	}
+	
+	public synchronized void stopFallBack(){
+		fallBack = false;
+	}
+	
 	
 	public synchronized void startFlashTimer(int period, int duration){
 
@@ -495,15 +524,19 @@ public class Moveable extends Sprite{
 	}
 	
 	
-	public synchronized void startInvincibleTimer(int delay){
+	private synchronized void startInvincibleTimer(int period, int duration){
 		
-		invincibleThread = new Thread(new InvincibleTimer());
-		execFlash.schedule(invincibleThread, delay, TimeUnit.MILLISECONDS);
+	
+			invincibleThread = new Thread(new InvincibleTimer());
+			execInvincible.scheduleWithFixedDelay(invincibleThread, 0, period, TimeUnit.MILLISECONDS);
+			
+			cycleFlash = duration;
+			invincible = true;
 		
-		invincible = true;
+		
 
 		//startFlashTimer(500, 100);
-		//System.err.println("====>Invincible.start@WDH:"+(int)(delay / 200));
+		System.err.println("====>Invincible.start@WDH:");
 			
 	}
 	
@@ -546,7 +579,7 @@ public class Moveable extends Sprite{
 			else
 				setOpacity(1f);
 			
-			System.out.println(getVisible());
+			
 			flashCounter++;
 			
 			if(flashCounter > cycleFlash || flashCounter == 0){
@@ -565,12 +598,31 @@ public class Moveable extends Sprite{
 		private InvincibleTimer(){ }
 		
 		public void run () {
-			invincible = false;
-			System.err.println("====>Invincible.false");
+			System.out.println("Invincible@"+flashCounter+"to"+cycleFlash);
 			
-			execInvincible.shutdown();
-			execInvincible = Executors.newSingleThreadScheduledExecutor();
-			invincibleThread = new Thread(new InvincibleTimer());
+			
+			if(getOpacity() >= 1)
+				setOpacity(0.7f);
+			else
+				setOpacity(1f);
+
+			flashCounter++;
+			
+			
+			if(flashCounter > cycleFlash || flashCounter == 0){
+				//System.err.println("endInvincible");
+				
+				flashCounter = cycleFlash = 0;
+				setOpacity(1f);
+				
+				
+				execInvincible.shutdown();
+				//execInvincible = Executors.newSingleThreadScheduledExecutor();
+
+				invincible = false;
+				invincibleThread = null;
+			}
+			
 		}
 	}
 	
@@ -600,33 +652,6 @@ public class Moveable extends Sprite{
 		}
 	}
 	
-	private class FallBackTimer implements Runnable{
-		private int distance;
-		private int distanceCounter;
-		private int direction;
-		private boolean referenceObject;
-		private Rectangle referenceRect;
-		private FallBackTimer(int distance, int direction, boolean referenceObject, Rectangle referenceRect){ 
-			this.distance = distance;
-			this.direction = direction;
-			this.referenceObject = referenceObject;
-			this.referenceRect = referenceRect;
-		}
-		
-		public void run(){
-			distanceCounter++;
-			setObjectBack(2,direction,referenceObject,referenceRect);
-			System.out.println("fallBack@"+distanceCounter+",to"+distance);
-			if(distanceCounter/2 >= distance || stopFallBack){
-				stopFallBack = false;
-				distanceCounter = 0;
-				distance = 0;
-				execFallBack.shutdown();
-				execFallBack = Executors.newSingleThreadScheduledExecutor();
-				fallBackThread = new Thread(new FallBackTimer(0,0,false,null));
-			}
-			
-		}
-	}
+	
 
 }

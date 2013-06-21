@@ -10,15 +10,19 @@ import java.util.ArrayList;
 import core.Board;
 import core.GameManager;
 
-abstract class Map{
+abstract class Map implements java.io.Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4658748043722373654L;
 	private volatile int x = 0;
 	private volatile int y = 0;
 	private int width;
 	private int height;
 	
 
-	private BufferedImage mapImage, mapImageWall;
+	transient private BufferedImage mapImage, mapImageWall;
 	private volatile boolean visible = true;
 	private volatile boolean alive;
 	private boolean dungeon;

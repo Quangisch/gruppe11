@@ -12,8 +12,12 @@ import core.Sound;
 
 public class Magic extends Initializer implements FileLink{
 	
-	private Thread runThread;
-	private ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3939105970367590365L;
+	transient private Thread runThread;
+	transient private ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
 
 	private int type;
 	private Moveable caster;
@@ -104,7 +108,7 @@ public class Magic extends Initializer implements FileLink{
 
 			if(getBoundCore().intersects(moveableList.get(index).getBound()) && !moveableList.get(index).equals(caster) && !moveableList.get(index).equals(this) && moveableList.get(index).getMoveableType() != -10){
 				setAlive(false);
-				Damage.inflictDamage(damage[type], 1, moveableList.get(index));
+				Damage.inflictDamage(1, damage[type], moveableList.get(index));
 				moveableList.get(index).setObjectBack(20,0,true,this.getBoundCore());
 				System.out.println("magicHit");
 				Sound.getInstance().playSound(3);

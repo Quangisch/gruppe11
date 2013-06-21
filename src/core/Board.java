@@ -112,6 +112,8 @@ public class Board extends JPanel implements Runnable, FileLink{
 				IngameMenu.getInstance().draw(g2d);	
 			
 			
+			g2d.drawImage(Player.getInstance().getImage(), 0, 0, this);
+			
 
 		}
 		
@@ -290,6 +292,5 @@ public class Board extends JPanel implements Runnable, FileLink{
 	      } 
 	 }
 	
-
 
 }

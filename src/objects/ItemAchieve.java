@@ -11,8 +11,12 @@ import core.ItemListManager;
 public class ItemAchieve extends Item implements Runnable{
 	
 
-	private Thread runThread;
-	private ScheduledExecutorService execRun;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 957778348175896766L;
+	transient private Thread runThread;
+	transient private ScheduledExecutorService execRun;
 	
 	private ItemAchieve(int xPos, int yPos, int[]itemIDData){
 		System.err.println("construct ItemAchieve");

@@ -5,35 +5,40 @@ import core.Sound;
 
 abstract class PlayerInventory extends Initializer{
 	
-	private double maxMana = 1;
-	private double manaPool = 1; //value between 0 and maxMana (= full Mana)
-	private double armor = 0; //value between 0 and 1: 1 = invinciblemode
-	private double armorDurability = 0;
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3557445771253473743L;
+	private double[] armor = {0,0}; //value between 0 and 1: 1 = invinciblemode
+	private double[] armorDurability = {0,0};
+	private int currentArmor = 0;
 	private double weaponDamage = 0.2;
+	private int magicLevel = 1;
+	private int currentSpell = 0;
 	
 	private int level = 1;
 	private int maxLife = 3;
+	private double maxMana = 1;
 	
-	private int magicLevel = 1;
-	private int magicSpell = 0;
+	private double manaPool = 1; //value between 0 and maxMana (= full Mana)
 	private double manaRegen = 0.00015;
 	private double healthRegen = 0.0004;
+	private int experience;
 	
 	private int coinInventory = 0;
 	private int keyInventory = 0;
-	
-	private int healthPotionInventory;
-	private int manaPotionInventory;
-	
-	private int experience;
+	private int healthPotionInventory = 0;
+	private int manaPotionInventory = 0;
 	
 	
-	
-	
-	
+
 	protected PlayerInventory(){
 		
 	}
+	
+	
+	
 	
 	public double[] getInventory(){
 		double[] inventoryList = new double[13];
@@ -51,7 +56,7 @@ abstract class PlayerInventory extends Initializer{
 		
 		inventoryList[8] = keyInventory;
 		inventoryList[9] = weaponDamage;
-		inventoryList[10] = armor;
+		inventoryList[10] = armor[currentArmor];
 		
 		inventoryList[11] = healthPotionInventory;
 		inventoryList[12] = manaPotionInventory;
@@ -87,7 +92,7 @@ abstract class PlayerInventory extends Initializer{
 			case 5: maxLife = 7; maxMana = 2.8; break;
 		}
 		System.out.println("Level Up! @Lvl:"+level);
-		setLife(maxLife);
+		setLife(maxLife, false);
 		manaPool = maxMana;
 		setLevelUp();
 		startRotateTimer(1000,70,8);
@@ -118,11 +123,11 @@ abstract class PlayerInventory extends Initializer{
 	}
 	
 	//armor
-	public void setArmor(double armor, double durability){
+	public void setArmor(int type, double armor, double durability){
 		
 		if(armor >= 0 && armor <= 1){
-			this.armor = armor;
-			this.armorDurability = durability;
+			this.armor[type] = armor;
+			this.armorDurability[type] = durability;
 		}
 			
 		else
@@ -131,43 +136,61 @@ abstract class PlayerInventory extends Initializer{
 			System.out.println("==> setPlayer invincible");
 	}
 	
-	public double getArmor(){return armor;}
-	public double getArmorDurability(){return armorDurability;}
+	public double getArmor(int type){
+		if(type >= 0)
+			return armor[type];
+		else
+			return armor[currentArmor];
+	}
+	public double getArmorDurability(int type){
+		if(type >= 0)
+			return armorDurability[type];
+		else
+			return armor[currentArmor];
+	}
 	
-	public void loseLife(double damage){
+	public void loseLife(int type, double damage){
+
+		//type 0 = physical, type 1 = magical dmg
 		
-		System.out.println("pre.Life@"+getLife()+", @damage:"+damage);
-		setLife(getLife() - (1-armor)*damage);
+		if(type == currentArmor)
+			damage *= 0.7;
+		else
+			damage *= 1.3;
 		
+		System.out.println("@damage:"+damage+"@afterArmor:"+(1-armor[currentArmor])*damage);
+		System.out.println("getLife@"+getLife()+",setLife@"+(getLife() - (1-armor[currentArmor])*damage));
 		
-		if(armor > 0)
-			armor = armor - 1/(damage*armorDurability);
+		setLife(getLife() - (1-armor[currentArmor])*damage, true);
+	
 		
-		if(armor <= 0){
+		if(armor[currentArmor] > 0)
+			armor[currentArmor] = armor[currentArmor] - 1/(damage*armorDurability[currentArmor]);
+		
+		if(armor[currentArmor] < 0){
 			System.out.println("Armor broken!");
-			armor = 0;
-			armorDurability = 0;
+			armor[currentArmor] = 0;
+			armorDurability[currentArmor] = 0;
 		}
-		System.out.println("after.Life@"+getLife());
 	}
 	
 	//magic
-	public void scrollUpMagicSpell(){magicSpell = ((magicSpell + 1)%magicLevel);}
-	public int getMagicSpell(){return magicSpell;}
+	public void scrollUpMagicSpell(){currentSpell = ((currentSpell + 1)%magicLevel);}
+	public int getMagicSpell(){return currentSpell;}
 
 	public void castMagicSpell(){
 		boolean cast = false;
 		
-		switch(magicSpell){
+		switch(currentSpell){
 		case(0):	if(manaPool >= 0.08){
 					manaPool -= 0.14;
-					Magic.addInstance(magicSpell, this);
+					Magic.addInstance(currentSpell, this);
 					cast = true;
 					}break;
 					
 		case(1):	if(manaPool >= 0.18){
 					manaPool -= 0.28;
-					Magic.addInstance(magicSpell, this);
+					Magic.addInstance(currentSpell, this);
 					cast = true;
 					}break;
 		}
@@ -179,7 +202,7 @@ abstract class PlayerInventory extends Initializer{
 	public void setManaRegen(double manaRegen){this.manaRegen = manaRegen;}
 	public void setMaxLife(){
 		if(getLife() > maxLife)
-			setLife(maxLife-0.0);
+			setLife(maxLife,false);
 		//System.out.println("life@"+getLife()+" to Max@"+maxLife);
 	}
 	
@@ -187,13 +210,13 @@ abstract class PlayerInventory extends Initializer{
 		if(manaPool < maxMana)
 			manaPool += manaRegen;
 		if(getLife() < maxLife)
-			setLife(getLife() + healthRegen);
+			setLife(getLife() + healthRegen, false);
 			
 		if(manaPool > maxMana)
 			manaPool = maxMana;
 		
 		if(getLife() > maxLife)
-			setLife(maxLife);
+			setLife(maxLife, false);
 		
 	}
 	
@@ -218,8 +241,8 @@ abstract class PlayerInventory extends Initializer{
 			
 			if(type == 1){
 				switch(member){
-				case(0):	setLife(getLife()+1); break;
-				case(1):	setLife(getLife()+2); break;
+				case(0):	setLife(getLife()+1,false); break;
+				case(1):	setLife(getLife()+2,false); break;
 				}
 			}
 			
@@ -246,8 +269,8 @@ abstract class PlayerInventory extends Initializer{
 		if(ID == 3){
 			if(type == 0){
 				switch(member){
-				case 0: setArmor(0.8, 25); break;
-				case 1: setArmor(1.0, 50); break;
+				case 0: setArmor(0, 0.8, 25); break;
+				case 1: setArmor(0, 1.0, 50); break;
 				}
 			}
 		}
@@ -308,7 +331,7 @@ abstract class PlayerInventory extends Initializer{
 	public boolean useHealthPotion(){
 		boolean use = false;
 		if(healthPotionInventory > 0){
-			setLife(getLife()+3);
+			setLife(getLife()+6,false);
 			healthPotionInventory--;
 			use = true;
 			System.out.println("used HealthPotion");

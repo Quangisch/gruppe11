@@ -12,6 +12,10 @@ import core.ItemListManager;
 
 abstract class NPCMove extends NPC{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2998177994020494617L;
 	//movement locks
 	private boolean xLock;
 	private boolean yLock;
@@ -161,17 +165,30 @@ abstract class NPCMove extends NPC{
 		Rectangle destRect = new Rectangle(xDest-5, yDest-5, 10,10);
 		Rectangle posRect = new Rectangle(xPos-5, yPos-5, 10,10);
 		
-		if(xDest >= xPos){
+		if(xDest > xPos){
 			setMoveRight(true); setMoveLeft(false);
 		} else {
 			setMoveRight(false); setMoveLeft(true);
 		}
 			
-		if(yDest >= yPos){
+		if(yDest > yPos){
 			setMoveUp(false); setMoveDown(true);
 		} else {
 			setMoveUp(true); setMoveDown(false);
 		}
+		
+		if(Math.abs(yDest - yPos) < 2){
+			setY(yDest);
+			setMoveUp(false);
+			setMoveDown(false);
+		}
+		
+		if(Math.abs(xDest - xPos) < 2){
+			setX(xDest);
+			setMoveRight(false);
+			setMoveLeft(false);
+		}
+			
 		
 		move();
 		
@@ -374,7 +391,7 @@ abstract class NPCMove extends NPC{
 			setAttack();
 			
 			if(this.getBoundHitSpace().intersects(object.getBound())){
-				Damage.inflictDamage(getAttackDamage(), 0, object);
+				Damage.inflictDamage(0, getAttackDamage(), object);
 				object.setObjectBack(10, 0, false, null);
 				this.startWaitTimer(2000);
 			}
@@ -433,7 +450,7 @@ abstract class NPCMove extends NPC{
 			setAttack();
 			
 			if(this.getBoundHitSpace().intersects(Player.getInstance().getBound())){
-				Player.getInstance().setLife(Player.getInstance().getLife()-1.5);
+				Player.getInstance().loseLife(0, this.getAttackDamage());
 				Player.getInstance().setObjectBack(10, 0, false, null);
 				this.startWaitTimer(2000);
 			}

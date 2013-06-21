@@ -5,6 +5,10 @@ import java.io.File;
 abstract class Initializer extends Moveable{
 
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1253696535547252573L;
 	private volatile boolean iniPosition, iniImage, iniAttributes;
 	
 	protected Initializer(){
@@ -24,8 +28,8 @@ abstract class Initializer extends Moveable{
 		setSubSpriteWidth(subSpriteWidth);
 		setSubSpriteHeight(subSpriteHeight);
 		setMoveStepCycle(moveStepCycle);
-		iniImage = true;
 		loadSprite();
+		iniImage = true;
 		System.out.println("-->iniImage");
 	}
 	
@@ -34,7 +38,7 @@ abstract class Initializer extends Moveable{
 						int coreX, int coreY, int coreWidth, int coreHeight){
 		setMoveable(true);
 		setSpeed(speed);
-		setLife(life);
+		setLife(life, false);
 		setAlive(true);
 		setVisible(visible);
 		setCoreX(coreX);
@@ -61,7 +65,7 @@ abstract class Initializer extends Moveable{
 	
 	protected void byPassInitialCheck(){
 		iniAttributes = iniPosition = iniImage = true;
-		setLife(9999);
+		setLife(9999, false);
 	}
 	
 }

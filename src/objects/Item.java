@@ -2,6 +2,11 @@ package objects;
 
 abstract class Item extends Moveable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2950460446612133052L;
+
 	protected Item(){
 		setWidth(25);
 		setHeight(25);

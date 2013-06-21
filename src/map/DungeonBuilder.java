@@ -24,6 +24,11 @@ import core.GameObjectManager;
 
 abstract class DungeonBuilder extends DungeonObjectManager implements Runnable, FileLink {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2148818354701050992L;
+	
 	//scroll
 	private volatile int scrollX = 0; 
 	private volatile int scrollY = 0;

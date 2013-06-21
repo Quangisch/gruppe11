@@ -9,9 +9,14 @@ import map.OverWorldNavigator;
 import core.GameManager;
 import core.ItemListManager;
 import core.PlayerInterface;
+import core.SaveGameManager;
 import core.Sound;
 
 public class Player extends PlayerInventory implements Runnable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2112715920555154717L;
 	private static Player player;
 	private int spawnX; 
 	private int spawnY;
@@ -32,13 +37,15 @@ public class Player extends PlayerInventory implements Runnable{
 		if(!getInitialized())
 			System.err.println("Player not initialized");
 
+		//System.out.println("Player@"+getX()+"x"+getY()+"@subSprite:"+getSubSpriteWidth());
+		
 		if(getInitialized()){
 			move();
 			automaticRegen();
 			
 			if(godlikeModus){
 				if(getLife() +0.25 <= getMaxLife())
-				setLife(getLife()+0.25);
+				setLife(getLife()+0.25, false);
 				if(getManaPool() +0.1 <= getMaxMana())
 				setManaPool(getManaPool()+0.1);
 			}
@@ -46,6 +53,10 @@ public class Player extends PlayerInventory implements Runnable{
 		
 		if(GameManager.getInstance().scrollDirection != 0 || !GameManager.getInstance().mapLoaded){
 			setOldPosition();
+		}
+		
+		if(Player.getInstance().getLife() <= 0 && !GameManager.getInstance().saveGameLock){
+			GameManager.getInstance().lose = true;
 		}
 		
 		if(GameManager.getInstance().win){
@@ -73,75 +84,100 @@ public class Player extends PlayerInventory implements Runnable{
 		//System.out.println(getX()+"to"+getOldX()+", "+getY()+"to"+getOldY());
 	}
 	
-	
-	public void keyPressed(KeyEvent e){
-		int key;
-		if(!getInputLock())
-			key = e.getKeyCode();
-		else
-			key = 0;
-			
-		
+	private void keyPressedIngame(int key){
 		//basic movement
-		if (key == KeyEvent.VK_UP && getMoveable() && !getMoveDown()){
-			setMoveUp(true);
-		}
-		if (key == KeyEvent.VK_RIGHT && getMoveable() && !getMoveLeft()){
-			setMoveRight(true);
-		}
-		if (key == KeyEvent.VK_DOWN && getMoveable() && !getMoveUp()){	
-			setMoveDown(true);
-		}
-		if (key == KeyEvent.VK_LEFT && getMoveable() && !getMoveRight()){
-			setMoveLeft(true);
-		}
-		
-		if (key == KeyEvent.VK_F && getMoveable()){
-			setSpeedUp(1.2);
-		}
-		
-		
-		//interaction
-		//attack
-		if(key == KeyEvent.VK_D && !interactLock){
-			interactLock = true;
-			if(getAttackDamage() > 0)
-				setAttack();
-		}
-		
-		if(key == KeyEvent.VK_SPACE){
-			//System.out.println("HitSpace");
-			
-			GameManager.getInstance().interact = true;
-			GameManager.getInstance().promptText = true;
-		
-		}
-		
-		if(key == KeyEvent.VK_1){
-			GameManager.getInstance().interactKey = 1;
-		}
-		if(key == KeyEvent.VK_2){
-			GameManager.getInstance().interactKey = 2;
-		}
-		if(key == KeyEvent.VK_3){
-			GameManager.getInstance().interactKey = 3;
-		}
-		if(key == KeyEvent.VK_4){
-			GameManager.getInstance().interactKey = 4;
-		}
-		if(key == KeyEvent.VK_5){
-			GameManager.getInstance().interactKey = 5;
-		}
-		
-		//extended Camera
-		if(key == KeyEvent.VK_V){
-			GameManager.getInstance().moveFocus = true;
-		}
+				if (key == KeyEvent.VK_UP && getMoveable() && !getMoveDown()){
+					setMoveUp(true);
+				}
+				if (key == KeyEvent.VK_RIGHT && getMoveable() && !getMoveLeft()){
+					setMoveRight(true);
+				}
+				if (key == KeyEvent.VK_DOWN && getMoveable() && !getMoveUp()){	
+					setMoveDown(true);
+				}
+				if (key == KeyEvent.VK_LEFT && getMoveable() && !getMoveRight()){
+					setMoveLeft(true);
+				}
+				
+				if (key == KeyEvent.VK_F && getMoveable()){
+					setSpeedUp(1.2);
+				}
+				
+				
+				//interaction
+				//attack
+				if(key == KeyEvent.VK_D && !interactLock){
+					interactLock = true;
+					if(getAttackDamage() > 0)
+						setAttack();
+				}
+				
+				if(key == KeyEvent.VK_SPACE){
+					//System.out.println("HitSpace");
+					
+					GameManager.getInstance().interact = true;
+					GameManager.getInstance().promptText = true;
+				
+				}
+				
+				if(key == KeyEvent.VK_1){
+					GameManager.getInstance().interactKey = 1;
+				}
+				if(key == KeyEvent.VK_2){
+					GameManager.getInstance().interactKey = 2;
+				}
+				if(key == KeyEvent.VK_3){
+					GameManager.getInstance().interactKey = 3;
+				}
+				if(key == KeyEvent.VK_4){
+					GameManager.getInstance().interactKey = 4;
+				}
+				if(key == KeyEvent.VK_5){
+					GameManager.getInstance().interactKey = 5;
+				}
+				
+				//extended Camera
+				if(key == KeyEvent.VK_V){
+					GameManager.getInstance().moveFocus = true;
+				}
 	}
 	
-	public void keyReleased(KeyEvent e){
-		int key = e.getKeyCode();
+	public void keyPressed(KeyEvent kE){
+		int key;
+		if(!getInputLock())
+			key = kE.getKeyCode();
+		else
+			key = 0;
 		
+		if(!GameManager.getInstance().ingameMenu)
+			keyPressedIngame(key);
+		
+		if(key == 0)
+			interactLock = false;
+	}
+	
+	private void keyReleasedIngameMenu(KeyEvent kE){
+		
+		//saveFile
+		if(kE.isControlDown() && kE.getKeyCode() == KeyEvent.VK_1){
+
+			SaveGameManager.saveNow(0);
+		}
+		if(kE.isControlDown() && kE.getKeyCode() == KeyEvent.VK_2){
+
+			SaveGameManager.saveNow(1);
+		}
+		
+		//loadFile
+		if(!kE.isControlDown() && kE.getKeyCode() == KeyEvent.VK_1)
+			SaveGameManager.loadNow(0);
+		if(!kE.isControlDown() && kE.getKeyCode() == KeyEvent.VK_2)
+			SaveGameManager.loadNow(1);
+		
+		
+	}
+	
+	private void keyReleasedPlayer(int key){
 		//basic movement
 		if (key == KeyEvent.VK_UP){
 			setMoveUp(false);
@@ -236,14 +272,25 @@ public class Player extends PlayerInventory implements Runnable{
 			}
 			
 		}
+	}
+	
+	public void keyReleased(KeyEvent e){
+		int key = e.getKeyCode();
+		
+		if(!GameManager.getInstance().ingameMenu)
+			keyReleasedPlayer(key);
+		else
+			keyReleasedIngameMenu(e);
 		
 		//ingameMenu
 		if(key == KeyEvent.VK_ESCAPE){
 			GameManager.getInstance().ingameMenu = !GameManager.getInstance().ingameMenu;
+			
 			if(GameManager.getInstance().ingameMenu)
 				this.setInteractionLock(true);
 			else
 				setInteractionLock(false);
+			
 		}
 		
 		//debug
@@ -333,6 +380,10 @@ public class Player extends PlayerInventory implements Runnable{
 			player = new Player();
 		}
 			
+	}
+	
+	public static void setInstance(Player playerSave){
+		player = playerSave;
 	}
 	
 	public static Player getInstance(){

@@ -8,7 +8,14 @@ import objects.Player;
 import core.GameManager;
 
 
-public class Camera implements Runnable{
+public class Camera implements Runnable, java.io.Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3969319699316203634L;
+
+	private static Camera camera;
 	
 	private volatile int x;
 	private volatile int y;
@@ -18,11 +25,8 @@ public class Camera implements Runnable{
 	private final int SCROLLSPEEDX = 45; //810
 	private final int SCROLLSPEEDY = 35; //630
 	private final int CAMERASPEED = 20;
-	
-
 
 	
-	private static Camera camera;
 	
 	private Camera(){
 		System.err.println("construct OverWorldCamera");
@@ -59,12 +63,13 @@ public class Camera implements Runnable{
 	}
 	
 	//center Player.getInstance() with fixed camera
+	
 		public void moveCamera(){
 			
 			OverWorldNavigator map = OverWorldNavigator.getInstance();
 			Player player = Player.getInstance();
 			
-			if(GameManager.getInstance().overWorld && GameManager.getInstance().cameraOn /*&& GameManager.getInstance().moveFocus*/ && !player.getDirectionLock()) {
+			if(GameManager.getInstance().overWorld && GameManager.getInstance().cameraOn && !player.getDirectionLock()) {
 			//if(GameManager.getInstance().cameraOn){	
 			
 				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
@@ -119,10 +124,11 @@ public class Camera implements Runnable{
 		
 		if(map.getXCoordinate() < -(map.getWidthMap()-810))
 			map.setXCoordinate(-(map.getWidthMap()-810));
-		
+	
 		
 		}
 		
+
 		public void switchToCameraMode(int scrollX, int scrollY){
 			
 			
@@ -268,6 +274,10 @@ public class Camera implements Runnable{
 	
 	public int getScrollX(){return scrollX;}
 	public int getScrollY(){return scrollY;}
+	
+	public static void setInstance(Camera cameraSave){
+		camera = cameraSave;
+	}
 	
 	public static void resetInstance(){
 		if(camera != null)

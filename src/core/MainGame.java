@@ -24,14 +24,15 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 	 * 
 	 */
 	private static final long serialVersionUID = 2516853831687335362L;
-	private ScheduledThreadPoolExecutor threadPool;
-	private Thread paintBoardThread;
-	private Thread playerThread;
-	private Thread cameraThread;
-	private Thread collisionThread;
-	private Thread managerThread;
-	private Thread soundThread;
-	private ScheduledThreadPoolExecutor threadPoolManager;
+	
+	private static Thread paintBoardThread;
+	private static Thread playerThread;
+	private static Thread cameraThread;
+	private static Thread collisionThread;
+	private static Thread managerThread;
+	private static Thread soundThread;
+	private static ScheduledThreadPoolExecutor threadPoolManager;
+	private static ScheduledThreadPoolExecutor threadPool;
 	
 	private MainGame(){
 		
@@ -75,8 +76,9 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 	private void initializePlayer(){
 		
 		Player.getInstance().initializeImage(player1Sprite, 90, 120, 8);
-		Player.getInstance().initializeAttributes(2, 3.5, true, 0, 75, 45, 20);
+		Player.getInstance().initializeAttributes(3, 3.5, true, 0, 75, 45, 20);
 		Player.getInstance().initializePosition(600, 350, 5);
+		
 		GameManager.addGameObject(Player.getInstance());
 	
 	}
@@ -94,12 +96,12 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 			//int xStart = 100;
 			//int yStart = 100;
 			GameManager.getInstance().cameraOn = true;
-			OverWorldNavigator.getInstance().initializeMap(xStart,yStart,0,500,200);
+			OverWorldNavigator.getInstance().initializeMap(false,0,xStart,yStart,500,200);
 		}
 			
 
 		if(GameManager.getInstance().dungeon)
-			DungeonNavigator.getInstance().initializeMap(0,0,0,100,300);
+			DungeonNavigator.getInstance().initializeMap(0,3,0,100,300);
 
 
 		if(GameManager.getInstance().cameraOn && GameManager.getInstance().overWorld){
@@ -172,8 +174,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 			
 			
 		}
-		
-		
+			
 		if(GameManager.getInstance().getIngame() && GameManager.getInstance().switchGameState){
 			GameManager.getInstance().switchGameState = false;
 			System.out.println("==>InGame");
@@ -181,10 +182,23 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 			initializeGame();
 			
 		}
-		
-		
+
 	}
 
+	public static void stopThreads(){
+		threadPool.shutdownNow();
+		threadPool = null;
+	
+	}
+	
+	public static void startThreads(){
+		threadPool = new ScheduledThreadPoolExecutor(4);
+		threadPool.scheduleWithFixedDelay(new Thread(Player.getInstance()), 10, 10, TimeUnit.MILLISECONDS);
+		threadPool.scheduleWithFixedDelay(new Thread(Camera.getInstance()), 20, 50, TimeUnit.MILLISECONDS);
+		threadPool.scheduleWithFixedDelay(new Thread(CollisionDetection.getInstance()), 30, 10, TimeUnit.MILLISECONDS);
+		
+	}
+	
 	private void initializeGame(){
 		initializePlayer();
 		initializeMap();
@@ -198,7 +212,6 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		GameManager.resetInstance();
 		GameObjectManager.resetInstance();
 		IngameMenu.resetInstance();
-		ItemListManager.resetInstance();
 		PlayerInterface.resetInstance();
 		
 		Camera.resetInstance();

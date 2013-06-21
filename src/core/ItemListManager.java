@@ -5,7 +5,7 @@ import java.io.File;
 
 import objects.ItemDrop;
 
-public enum ItemListManager implements FileLink{
+public enum ItemListManager implements FileLink, java.io.Serializable{
 
 	//(ID, type, member, file, xRow, yRow, cycle)
 	/*
@@ -13,6 +13,7 @@ public enum ItemListManager implements FileLink{
 	 * type 
 	 * member - smaller/bigger effects
 	 */
+	
 	
 	COIN(0, 0, 0,itemListID00, 0, 0, 4),
 	COIN5(0, 0, 1,itemListID00, 0, 0, 4),
@@ -40,10 +41,7 @@ public enum ItemListManager implements FileLink{
 	private final int member;
 	private final File file;
 	
-	public static int[] keyIDCounter = {1,1,1,1,1};
-	public static int[] weaponIDCounter = {1};
-	public static int[] armorIDCounter = {1};
-	public static int[] spellIDCounter = {0,1};
+	
 	
 	private int[] itemData = new int[6];
 		
@@ -111,42 +109,16 @@ public enum ItemListManager implements FileLink{
 	
 	}
 	
-	public final static boolean dropKey(int x, int y, int itemID, int itemType, int member, int keyID){
-		
-		boolean drop = false;
-		for(ItemListManager item : values()){
-			
-			if(item.getID() == itemID && item.getType() == itemType && item.getMember() == member){
-				
-				if(keyIDCounter[keyID] == 1){
-					
-					ItemDrop.addInstance(x, y, item.itemData, item.file, 1500);
-					keyIDCounter[keyID] = 0;
-					drop = true;
-					break;
-				}
-				
-			}
-		}
-		
-		return drop;
-	}
 	
-	private int getID(){return ID;}
-	private int getType(){return type;}
-	private int getMember(){return member;}
 	
-	public static void resetInstance(){
-		for(int i = 0; i < keyIDCounter.length; i++){
-			keyIDCounter[i] = 1;
-		}
-		
-		weaponIDCounter[0] = 1;
-		armorIDCounter[0] = 1;
-		spellIDCounter[0] = 0;
-		spellIDCounter[1] = 1;
-		
-	}
+	
+	public int getID(){return ID;}
+	public int getType(){return type;}
+	public int getMember(){return member;}
+	public File getFile(){return file;}
+	public int[] getItemData(){return itemData;}
+	
+
 	
 	
 }

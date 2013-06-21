@@ -5,14 +5,19 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import core.GameManager;
+import core.GameObjectManager;
 import core.ItemListManager;
 import core.PlayerInterface;
 
-public class Guide extends NPCLogic implements Runnable{
+public class Guide extends NPCLogic implements Runnable, java.io.Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1114720826560851488L;
 	private static Guide guide;
-	private Thread runThread;
-	private ScheduledExecutorService execRun;
+	transient private Thread runThread;
+	transient private ScheduledExecutorService execRun;
 	
 	private String[] text = {"Random ...Love... Story.../n/nFollow me!",
 							"Dont idle around!",
@@ -33,9 +38,9 @@ public class Guide extends NPCLogic implements Runnable{
 	}
 
 	public void run(){
-		System.out.println("Guide@Pos:"+getX()+"x"+getY());
 		
-		setLife(999);
+		setLife(999,false);
+		
 		
 		if(getBoundCore().intersects(Player.getInstance().getBoundCore()))
 			Player.getInstance().setObjectBack(5, 0, false, null);
@@ -57,8 +62,8 @@ public class Guide extends NPCLogic implements Runnable{
 				interact();
 				//System.out.println("TxtCounter@"+textCounter+"interact");
 					
-				if(getReachDestination() && ItemListManager.weaponIDCounter[0] == 1){
-					ItemListManager.weaponIDCounter[0] = 0;
+				if(getReachDestination() && GameObjectManager.getInstance().weaponIDCounter[0] == 1){
+					GameObjectManager.getInstance().weaponIDCounter[0] = 0;
 					ItemListManager.dropItem(getX(),getY()-50,2,0,0);
 				}
 				
@@ -123,7 +128,7 @@ public class Guide extends NPCLogic implements Runnable{
 	}
 	
 
-	private void initializeThread(){
+	public void initializeThread(){
 	
 		runThread = new Thread(this);
 		execRun = Executors.newSingleThreadScheduledExecutor();
@@ -132,6 +137,7 @@ public class Guide extends NPCLogic implements Runnable{
 		
 		GameManager.addGameObject(this);
 	}
+	
 	
 	public void deleteInstance(){
 		setVisible(false);
@@ -152,10 +158,20 @@ public class Guide extends NPCLogic implements Runnable{
 		
 	}
 	
+	public static void setInstance(Guide guideSave){
+		guide = guideSave;
+		guide.initializeImage(neutralNPC, 90,120,8);
+	}
+	
 	public static Guide getInstance(int xPos, int yPos){
 		if(guide == null)
 			guide = new Guide(xPos, yPos);
 		return guide;
 		
 	}
+
+	public static Guide getInstance(){
+		return guide;
+	}
+	
 }

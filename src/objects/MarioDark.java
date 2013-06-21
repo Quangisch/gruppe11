@@ -11,18 +11,24 @@ import map.OverWorldNavigator;
 import core.GameManager;
 import core.GameObjectManager;
 import core.ItemListManager;
+import core.EnemyManager;
 
 
 
+public class MarioDark extends NPCLogic implements Runnable, java.io.Serializable{
 
-public class MarioDark extends NPCLogic implements Runnable{
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3327169509412998041L;
 	private final static int MAXINSTANCE = 10;
 	private static MarioDark[] marioDark = new MarioDark[MAXINSTANCE];
 	
-	private Thread runThread;
-	private ScheduledExecutorService execRun;
-	
+	transient private Thread runThread;
+	transient private ScheduledExecutorService execRun;
+	private int enemyManagerType;
+	private int ID;
+	private boolean boss;
 	
 	private volatile static int instanceCounter;
 	private boolean constructionLock = false;
@@ -34,10 +40,10 @@ public class MarioDark extends NPCLogic implements Runnable{
 	private MarioDark(int IDNumber, boolean boss){
 		System.err.println("construct MarioDark: "+IDNumber);
 		overWorldSpawn = GameManager.getInstance().overWorld;
-
-		initializeInstance();
+		this.ID = IDNumber;
+		this.boss = boss;
+		initializeThreads();
 		constructionLock = true;
-		setMoveableID(IDNumber);
 		setMoveableBoss(boss);
 	}
 	
@@ -45,13 +51,12 @@ public class MarioDark extends NPCLogic implements Runnable{
 		System.err.println("Caution: construct dummy MarioDark");
 	}
 	
-	private void initializeInstance(){
+	private void initializeThreads(){
 		
 		runThread = new Thread(this);
 		execRun = Executors.newSingleThreadScheduledExecutor();
 		execRun.scheduleWithFixedDelay(runThread, 10, 10, TimeUnit.MILLISECONDS);
 		
-		//GameManager.addGameObject(this);
 	}
 
 	public void run(){
@@ -88,10 +93,10 @@ public class MarioDark extends NPCLogic implements Runnable{
 
 		setVisible(false);
 		
-		System.out.print("delete MarioDark@ID: "+getMoveableID());
+		System.out.print("delete MarioDark@ID: "+ID);
 
 		if(GameManager.getInstance().scrollDirection == 0 && GameManager.getInstance().mapLoaded)
-			MarioDark.getInstance(false, getMoveableID(), getMoveableBoss()).dropItem();
+			MarioDark.getInstance(false, ID, getMoveableBoss()).dropItem();
 		
 		instanceCounter--;
 		
@@ -125,10 +130,10 @@ public class MarioDark extends NPCLogic implements Runnable{
 		System.out.println("==>MarioDark.drops Item@"+getX()+"x"+getY());
 		
 		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 3)
-			drop = ItemListManager.dropKey(getX(), getY(), 5, 0, 0, 0);
+			drop = GameObjectManager.getInstance().dropKey(getX(), getY(), 5, 0, 0, 0);
 	
 		if(DungeonNavigator.getInstance().getXMap() == 1 && DungeonNavigator.getInstance().getYMap() == 1 && instanceCounter == 1)
-			drop = ItemListManager.dropKey(getX(), getY(), 5, 0, 0, 1);
+			drop = GameObjectManager.getInstance().dropKey(getX(), getY(), 5, 0, 0, 1);
 		
 		
 		if(OverWorldNavigator.getInstance().getID() == 1 && GameManager.getInstance().overWorld){
@@ -181,12 +186,38 @@ public class MarioDark extends NPCLogic implements Runnable{
 		return false;
 	}
 	
+	public void setEnemyManagerType(int enemyManagerType){
+		this.enemyManagerType = enemyManagerType;
+	}
+	
+	
 	public static int getMaxInstance(){
 		return MAXINSTANCE;
 	}
 	
 	public static int getInstanceCounter(){
 		return instanceCounter;
+	}
+	
+	public static void reinitializeAllInstances(){
+		for(int i = 0; i < marioDark.length; i++){
+			if(marioDark[i] != null){
+				if(marioDark[i].getAlive()){
+					EnemyManager.reinitializeEnemyInstance(marioDark[i].enemyManagerType, marioDark[i].ID, marioDark[i].boss);
+					marioDark[i].initializeThreads();
+					
+				}
+				
+			}
+		}
+	}
+	
+	public static void setInstance(MarioDark[] marioDarkSave){
+		marioDark = marioDarkSave;
+	}
+	
+	public static MarioDark[] getAllInstances(){
+		return marioDark;
 	}
 	
 	public static synchronized MarioDark getInstance(boolean newInstance, int IDNumber, boolean boss){

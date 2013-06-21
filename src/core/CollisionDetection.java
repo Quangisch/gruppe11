@@ -56,11 +56,11 @@ public class CollisionDetection implements Runnable{
 								
 								System.out.println("==>loseLife against moveableType@"+type);
 								if(moveableObject.get(index).getMoveableBoss())
-									Damage.inflictDamage(2, -1, Player.getInstance());
+									Damage.inflictDamage(0, 1.3, Player.getInstance());
 								else
-									Damage.inflictDamage(1, -1, Player.getInstance());
+									Damage.inflictDamage(0, 0.7, Player.getInstance());
 								
-								Player.getInstance().startInvincibleTimer(1800);
+								
 								Player.getInstance().setObjectBack(20,0,true,moveableObject.get(index).getBoundCore());
 								
 								break;
@@ -68,8 +68,8 @@ public class CollisionDetection implements Runnable{
 							
 							if(Player.getInstance().getAttackBound().intersects(moveableObject.get(index).getBoundN().union(moveableObject.get(index).getBoundS()))){
 								//moveableObject.get(index).setObjectBack(50,0,true,Player.getInstance().getAttackBound());
-								Damage.inflictDamage(Player.getInstance().getAttackDamage(), 0, moveableObject.get(index));
-								moveableObject.get(index).startFallBackTimer(3, -Player.getInstance().getLastDirection(), false,null);
+								Damage.inflictDamage(0, Player.getInstance().getAttackDamage(), moveableObject.get(index));
+								moveableObject.get(index).startFallBack(3, -Player.getInstance().getLastDirection(), false,null);
 								break;
 							}
 							

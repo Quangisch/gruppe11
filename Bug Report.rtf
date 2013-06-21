@@ -6,7 +6,6 @@
 
 \f0\b\fs24 \cf0 #To-Do
 \b0 \
--> Save/Load System\
 -> network/coop modus\
 -> improve Menu, with additional Options\
 -> redesign mainMenu
@@ -15,9 +14,33 @@
 #Notes, Suggestions
 \b0 \
 -> enlarge: box interaction radius\
--> fix Guide speed/add Timer for waiting/intersect Method for fluid Movement\
 -> opacity for grass at yRefPoint\
 \
+___________________________________________________________\
+\
+
+\b #PatchNotes: current Version\
+
+\b0 -> added Save/Load System\
+-> changed guideBehaviour, improved waiting/running logic
+\b \
+
+\b0 -> larger navigationBounds in dungeon\
+-> tweaked fallBack after punches, fallBackDistance affected Player Timing\
+-> changed flashTimer from visibilty to opacity\
+-> magic added to CollisionDetection, can't pass walls anymore\
+\
+-> fixed itemBounds, Collection\
+-> fixed enemy stucking behind walls\
+-> fixed resetBugPosition, when falling into water/lava/holes\
+-> fixed resetBug (???, can't reproduce it)\
+\
+
+\b #current known Bugs\
+
+\b0 -> game crahses, unknown reason:\
+(first run, room 1-1, achieved lvl3 or 4, after second boss)\
+(first run, speed/attack Hack, room 1-2 after first boss)\
 \
 ___________________________________________________________\
 \
@@ -32,22 +55,6 @@ ___________________________________________________________\
 -> added keys to toogle music/atmo on/off (8 and 9 respectivly)\
 \
 -> fixed mapObject Bugs after reset\
-\
-
-\b #PatchNotes\
-
-\b0 -> larger navigationBounds in dungeon\
--> tweaked fallBack after punches, fallBackDistance affected Player Timing\
--> changed flashTimer from visibilty to opacity\
--> magic added to CollisionDetection\
-\
--> fixed itemBounds, Collection\
--> fixed enemy stucking behind walls\
--> fixed resetBugPosition, when falling into water/lava/holes\
--> fixed resetBug (???)\
-\
-\
-___________________________________________________________\
 \
 
 \b #Bugs @build180602

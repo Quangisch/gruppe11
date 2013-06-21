@@ -3,6 +3,12 @@ package core;
 import java.io.File;
 
 public interface FileLink{
+	//saveFiles
+	File[] saveFile = {new File("saveData/saveFile1.str"), 
+								new File("saveData/saveFile2.str")};
+	
+	
+	//sprites
 	File player1Sprite = new File("resources/images/mario_sprite_move2_3x.png");
 	File enemyDark = new File("resources/images/marioDark_sprite_move2_3x.png");
 	File enemyBright = new File("resources/images/marioBright_sprite_move2_3x.png");

@@ -7,9 +7,14 @@ abstract class NPCLogic extends NPCMove {
 	
 	
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8922633465295910087L;
 	private int pattern;
 	private int destinationCounter = 0;
 	private boolean reachDestination;
+	private boolean waitNow = false;
 	
 	protected NPCLogic(){
 
@@ -65,12 +70,27 @@ abstract class NPCLogic extends NPCMove {
 	}
 	
 	public void guidePlayer(){
-		if(Math.abs(getX() - Player.getInstance().getX()) > 300 || Math.abs(getY() - Player.getInstance().getY()) > 300){
+		
+		if(Math.abs(getX() - Player.getInstance().getX()) > 300 || Math.abs(getY() - Player.getInstance().getY()) > 300 || waitNow){
+			waitNow = true;
 			setSpeed(1);
 			followObject(Player.getInstance());
 			move();
 			
-		} else {
+			new Thread(){
+				public void run(){
+					try {
+						sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} finally {
+						waitNow = false;
+					}
+				}
+			}.start();
+			
+		} else if (!waitNow){
 			
 			boolean reachPoint = false;
 			
@@ -166,6 +186,9 @@ abstract class NPCLogic extends NPCMove {
 	}
 	
 	public boolean getReachDestination(){return reachDestination;}
+	public void setReachDestination(boolean reach){reachDestination = reach;}
+	protected int getDestinationCounter(){return destinationCounter;}
+	protected void setDestinationCounter(int destinationCounter){this.destinationCounter = destinationCounter;}
 
 
 }

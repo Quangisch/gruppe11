@@ -49,20 +49,31 @@ public enum EnemyManager implements FileLink {
 		double attackDamage = enemyAttributes[4];
 		
 		if(enemyType == 0)
-			MARIODARK.initializeInstance(false, xCoordinateMap, yCoordinateMap, direction, speed, life, true, pattern, attackDamage);
+			MARIODARK.initializeInstance(enemyType, false, xCoordinateMap, yCoordinateMap, direction, speed, life, true, pattern, attackDamage);
 		if(enemyType == 1)
-			MARIOBRIGHT.initializeInstance(false, xCoordinateMap, yCoordinateMap, direction, speed, life, true, pattern, attackDamage);
+			MARIOBRIGHT.initializeInstance(enemyType, false, xCoordinateMap, yCoordinateMap, direction, speed, life, true, pattern, attackDamage);
 		
 		if(enemyType == 22)
-			MARIOBOSS1.initializeInstance(true, xCoordinateMap, yCoordinateMap, direction, speed, life, true, pattern, attackDamage);
+			MARIOBOSS1.initializeInstance(enemyType, true, xCoordinateMap, yCoordinateMap, direction, speed, life, true, pattern, attackDamage);
 		if(enemyType == 21)
-			MARIOBOSS2.initializeInstance(true, xCoordinateMap, yCoordinateMap, direction, speed, life, true, pattern, attackDamage);
+			MARIOBOSS2.initializeInstance(enemyType, true, xCoordinateMap, yCoordinateMap, direction, speed, life, true, pattern, attackDamage);
 		if(enemyType == 20)
-			MARIOBOSS3.initializeInstance(true, xCoordinateMap, yCoordinateMap, direction, speed, life, true, pattern, attackDamage);
+			MARIOBOSS3.initializeInstance(enemyType, true, xCoordinateMap, yCoordinateMap, direction, speed, life, true, pattern, attackDamage);
 		
 	}
 	
-	private synchronized void initializeInstance(boolean boss, int xCoordinateMap, int yCoordinateMap, int direction, int speed, int life, boolean visible, int pattern, double attackDamage){
+	public static synchronized void reinitializeEnemyInstance(int enemyType, int ID, boolean boss){
+		
+		for(EnemyManager enemy : values()){
+			if(enemy.type == enemyType){
+				MarioDark.getInstance(false, ID, boss).initializeImage(enemy.file, enemy.subSpriteWidth, enemy.subSpriteHeight, enemy.moveStepCycle);
+				GameManager.addGameObject(MarioDark.getInstance(false, ID, boss));
+			}
+		}
+		
+	}
+	
+	private synchronized void initializeInstance(int enemyType, boolean boss, int xCoordinateMap, int yCoordinateMap, int direction, int speed, int life, boolean visible, int pattern, double attackDamage){
 		
 		//if(!boss){
 			int num = MarioDark.getInstanceCounter();
@@ -72,6 +83,7 @@ public enum EnemyManager implements FileLink {
 			MarioDark.getInstance(false, num, boss).initializePosition(xCoordinateMap, yCoordinateMap, direction);
 			MarioDark.getInstance(false, num, boss).setPattern(pattern);
 			MarioDark.getInstance(false, num, boss).setAttackDamage(attackDamage);
+			MarioDark.getInstance(false, num, boss).setEnemyManagerType(enemyType);
 			
 			GameManager.addGameObject(MarioDark.getInstance(false, num, boss));
 			System.err.println("========>EnemyManager.initializeInstance: type@"+type+" ID@"+num+" Behaviour@"+pattern);

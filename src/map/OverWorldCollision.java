@@ -11,6 +11,11 @@ import objects.Player;
 
 abstract class OverWorldCollision extends OverWorldBuilder{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2976928620101932581L;
+	
 	private ArrayList<WallBound<Integer, Rectangle>> wallBoundList = new ArrayList<WallBound<Integer, Rectangle>>();
 	private ArrayList<MapObjectBound<Integer, Rectangle>> mapObjectBoundList = new ArrayList<MapObjectBound<Integer, Rectangle>>();
 	private final int SETBACK = 4;
@@ -83,7 +88,7 @@ abstract class OverWorldCollision extends OverWorldBuilder{
 				int camDX = Camera.getInstance().getX() - player.getOldXCam();
 				int camDY = Camera.getInstance().getY() - player.getOldYCam();
 				
-				player.setLife(player.getLife()-1);
+				player.setLife(player.getLife()-1,true);
 				player.setX(player.getOldX());
 				player.setY(player.getOldY());
 				cam.setX(player.getOldXCam());

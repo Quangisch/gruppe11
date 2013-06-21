@@ -8,32 +8,26 @@ public class Damage {
 	}
 	
 	//type 0: physical, type 1: magic
-	public static void inflictDamage(double damage, int type, Moveable object){
+	
+	public static void inflictDamage(int type, double damage, Moveable object){
 
-		System.out.println("inflict DMG "+damage+",type"+type+" on MoveableType: "+object.getMoveableID()+" life@"+object.getLife());
+		System.out.println("inflict DMG "+damage+",type"+type+" on MoveableType: "+object.getMoveableType()+" life@"+object.getLife());
 		
 		
 		if(!object.isHumanPlayer()){
 			if(type == object.getMoveableType() && type  == 1){
-				object.setLife(object.getLife()- damage*0.6);
+				object.setLife(object.getLife()- damage*0.6,true);
 			}
 				
 				
 			else if (type == 0 && object.getMoveableType() == 1)
-				object.setLife(object.getLife() - damage*1.4);
+				object.setLife(object.getLife() - damage*1.4,true);
 				
 			else
-				object.setLife(object.getLife() - damage);
-		} else {
-			if(type == object.getMoveableType())
-				Player.getInstance().loseLife(damage*0.4);
-				
-			else if (type == 0 && object.getMoveableType() == 1)
-				Player.getInstance().loseLife(damage*1.4);
-				
-			else
-				Player.getInstance().loseLife(damage);
-		}
+				object.setLife(object.getLife() - damage,true);
+		} else 
+			Player.getInstance().loseLife(type, damage);
+		
 		
 		
 		

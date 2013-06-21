@@ -17,6 +17,10 @@ import core.GameObjectManager;
 
 public class MapObject extends Moveable implements Runnable, FileLink{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1112901041904747447L;
 	private static ArrayList<MapObject> mapObjectList = new ArrayList<MapObject>();
 	public static int listCounter;
 	
@@ -28,8 +32,8 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 	private int x = 0;
 	private int y = 0;
 	
-	private Thread runThread;
-	ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
+	transient private Thread runThread;
+	transient private ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
 	
 	private MapObject(int ID, int type, int orientation, int xMap, int yMap, int xPos, int yPos){
 		setMoveableType(-10);

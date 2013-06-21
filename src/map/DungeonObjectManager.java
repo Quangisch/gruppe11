@@ -10,6 +10,10 @@ import core.GameObjectManager;
 
 abstract class DungeonObjectManager extends Map{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1322125265245622409L;
 	private volatile int xMap;
 	private volatile int yMap;
 	private int mapRowX;

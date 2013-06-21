@@ -4,18 +4,25 @@ package core;
 import java.util.ArrayList;
 
 import objects.ItemAchieve;
+import objects.ItemDrop;
 import objects.MapObject;
 import objects.Player;
 
-public class GameObjectManager{
+public class GameObjectManager implements java.io.Serializable{
 	
-	//private ArrayList<O> gameObjectList = new ArrayList<O>();
-	//private static int[][][] doorIDCounter = new int[4][4][10];
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -132774034488958629L;
 	private static GameObjectManager gameObjectManager;
 	private ArrayList<DoorIDStatus<Integer,Boolean>> doorIDList = new ArrayList<DoorIDStatus<Integer, Boolean>>();
 	private ArrayList<BossIDStatus<Integer, Boolean>> bossIDList = new ArrayList<BossIDStatus<Integer, Boolean>>();
-	public ArrayList<Treasure<Integer[],Integer[],Boolean>> treasureIDCounter = new ArrayList<Treasure<Integer[],Integer[],Boolean>>();
+	private ArrayList<Treasure<Integer[],Integer[],Boolean>> treasureIDCounter = new ArrayList<Treasure<Integer[],Integer[],Boolean>>();
 
+	public int[] keyIDCounter = {1,1,1,1,1};
+	public int[] weaponIDCounter = {1};
+	public int[] armorIDCounter = {1};
+	public int[] spellIDCounter = {0,1};
 	
 	private GameObjectManager(){
 		//gameObjectList.add(object);
@@ -175,9 +182,36 @@ public final boolean constructTreasure(int xMap, int yMap, int xPos, int yPos, i
 		}
 	}
 	
+	public boolean dropKey(int x, int y, int itemID, int itemType, int member, int keyID){
+		
+		boolean drop = false;
+		for(ItemListManager item : ItemListManager.values()){
+			
+			if(item.getID() == itemID && item.getType() == itemType && item.getMember() == member){
+				
+				if(keyIDCounter[keyID] == 1){
+					
+					ItemDrop.addInstance(x, y, item.getItemData(), item.getFile(), 1500);
+					keyIDCounter[keyID] = 0;
+					drop = true;
+					break;
+				}
+				
+			}
+		}
+		
+		return drop;
+	}
+	
+	
+	public static void setInstance(GameObjectManager gameObjectManagerSave){
+		gameObjectManager = gameObjectManagerSave;
+	}
+	
 	public static void resetInstance(){
 		if(gameObjectManager != null)
 			gameObjectManager = new GameObjectManager();
+		
 	}
 	
 	public static GameObjectManager getInstance(){
@@ -186,7 +220,11 @@ public final boolean constructTreasure(int xMap, int yMap, int xPos, int yPos, i
 		return gameObjectManager;
 	}
 	
-	public class DoorIDStatus<I, L>{
+	public class DoorIDStatus<I, L> implements java.io.Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 6122888902521250341L;
 		final I ID;
 		L lockOpen;
 		public DoorIDStatus(I ID, L lockOpen){
@@ -200,7 +238,11 @@ public final boolean constructTreasure(int xMap, int yMap, int xPos, int yPos, i
 		public void setLockStatus(L open){this.lockOpen = open;}
 	}
 	
-	public class BossIDStatus<I, D>{
+	public class BossIDStatus<I, D> implements java.io.Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8429373043047720518L;
 		final I ID;
 		D defeated;
 		
@@ -216,7 +258,11 @@ public final boolean constructTreasure(int xMap, int yMap, int xPos, int yPos, i
 		public void setDefeatedStatus(D defeated){this.defeated = defeated;}
 	}
 	
-	public class Treasure<P, I, O>{
+	public class Treasure<P, I, O> implements java.io.Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8622031473269197460L;
 		final P positionID; //int[] 0: xMap; 2: xPos; 3: yPos; (4: 0 = dungeon; 1 = overWorld;)
 		final I itemData; //int[] 0: ID; 1: type; 2: member
 		O open;

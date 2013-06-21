@@ -5,16 +5,22 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
 abstract class Sprite extends DrawableObject{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5309031653677629053L;
+
 	File file = null;
 	
-	private BufferedImage spriteBuff;
-	private BufferedImage subSpriteBuff;
+	transient private BufferedImage spriteBuff;
+	transient private BufferedImage subSpriteBuff;
 	private int subSpriteWidth = 0;
 	private int subSpriteHeight = 0;
 	private int subRowY = 1;
@@ -31,8 +37,8 @@ abstract class Sprite extends DrawableObject{
 	private boolean interactionLock;
 	private int interactType;
 	private double interInteraction = 0;
-	private Timer interactionTimer;
-	private TimerTask interactionTask;
+	transient private Thread interactionThread;
+	transient private ScheduledExecutorService execInteraction;
 	
 	private double staticInterStep;
 	private int staticCycle;
@@ -48,6 +54,7 @@ abstract class Sprite extends DrawableObject{
 			if(subSpriteWidth != 0 && subSpriteHeight != 0){
 				spriteBuff = ImageIO.read(file);
 				subSpriteBuff = new BufferedImage(subSpriteWidth, subSpriteHeight, BufferedImage.TYPE_INT_ARGB);
+		
 			} else 
 				System.err.println("Sprite: Width/Height not initialized");
 			
@@ -58,8 +65,10 @@ abstract class Sprite extends DrawableObject{
 		
 	}
 	
+
 	protected void moveSubSprite(int speed, boolean moveable, boolean moveUp, boolean moveRight, boolean moveDown, boolean moveLeft){
 		
+	
 		if(moveUp || moveRight || moveDown || moveLeft){
 			if (interStep >= moveStepCycle || newDirection != lastDirection)
 				interStep = 0;
@@ -147,9 +156,10 @@ abstract class Sprite extends DrawableObject{
 	protected void setInteraction(int interactType){
 		this.interactType = interactType;
 		interInteraction += 0.1;
-		interactionTimer = new Timer();
-		interactionTask = new InteractionTask(interactType);
-		interactionTimer.schedule(interactionTask, 0);
+		interactionThread = new Thread(new InteractionTimer(interactType));
+		execInteraction =  Executors.newSingleThreadScheduledExecutor();
+		
+		execInteraction.scheduleWithFixedDelay(interactionThread, 10, 10, TimeUnit.MILLISECONDS);
 	}
 	
 	protected void interactSubSprite(){
@@ -159,8 +169,8 @@ abstract class Sprite extends DrawableObject{
 	
 			//System.out.println("attackCounter: "+attackCounter); 
 			if (interInteraction < 2.5)
-				interInteraction += 0.000005;
-			
+				//interInteraction += 0.015;
+				interInteraction += 0.1;
 			
 			int attackStep = (int)(interInteraction);
 			
@@ -181,7 +191,8 @@ abstract class Sprite extends DrawableObject{
 			int achieveStep = 0;
 			
 			if (interInteraction < 5.5)
-				interInteraction += 0.000005;
+				//interInteraction += 0.03;
+				interInteraction += 0.1;
 			
 			if(interactType == 2){
 				if(interInteraction >= 1 && interInteraction < 5)
@@ -239,6 +250,7 @@ abstract class Sprite extends DrawableObject{
 	protected void setSprite(BufferedImage spriteBuff){this.spriteBuff = spriteBuff;}
 	protected void setSubSpriteWidth(int width){this.subSpriteWidth = width; setWidth(width);}
 	protected void setSubSpriteHeight(int height){this.subSpriteHeight = height; setHeight(height);}
+	public int getSubSpriteWidth(){return subSpriteWidth;}
 	protected void setMoveStepCycle(int moveStepCycle){this.moveStepCycle = moveStepCycle;}
 	public void setLastDirection(int lastDirection){
 		if(lastDirection > 0) this.lastDirection = lastDirection;
@@ -265,25 +277,30 @@ abstract class Sprite extends DrawableObject{
 	protected boolean getInteractionLock(){return interactionLock;}
 	
 
-	private class InteractionTask extends TimerTask{
+	private class InteractionTimer implements Runnable{
 		
 		private int interactType;
 		
-		private InteractionTask(int interactType){
+		private InteractionTimer(int interactType){
 			this.interactType = interactType;
 		}
 		public void run() {
+			int counter = 0;
 			
-			while(interInteraction != 0){
 				interactSubSprite();
+				
 				if(interactType == 1)
 					setAttackBound(lastDirection, interInteraction, attackRangeX, attackRangeY);
-				//System.out.println("running@"+counter+" &interInteraction@"+interInteraction);
-			}
+				
+				System.out.println("running@"+counter+" &interInteraction@"+interInteraction);
+				counter++;
+			
 			
 			if(interInteraction == 0){
 				interactionLock = false;
 				setAttackBound(0,0,0,0);
+				execInteraction.shutdown();
+				execInteraction = null;
 				
 			}
 				
