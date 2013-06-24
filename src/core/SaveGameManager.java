@@ -128,7 +128,7 @@ public class SaveGameManager implements FileLink{
 	private static void reinitializeInstances(){
 		Player.getInstance().initializeImage(player1Sprite, 90, 120, 8);
 		OverWorldNavigator.getInstance().initializeMap(true, 0, 0, 0, 0, 0);
-	    GameManager.addGameObject(Player.getInstance());
+	    GameManager.getInstance().addGameObject(Player.getInstance());
 	    
 	    Guide.getInstance().initializeThread();
 	    MarioDark.reinitializeAllInstances();

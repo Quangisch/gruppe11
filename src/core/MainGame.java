@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 
 import objects.Guide;
+import objects.ItemDrop;
 import objects.MapObject;
 import objects.MarioDark;
 import objects.Merchant;
@@ -33,6 +34,7 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 	private static Thread soundThread;
 	private static ScheduledThreadPoolExecutor threadPoolManager;
 	private static ScheduledThreadPoolExecutor threadPool;
+	
 	
 	private MainGame(){
 		
@@ -76,10 +78,10 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 	private void initializePlayer(){
 		
 		Player.getInstance().initializeImage(player1Sprite, 90, 120, 8);
-		Player.getInstance().initializeAttributes(3, 3.5, true, 0, 75, 45, 20);
+		Player.getInstance().initializeAttributes(2, 3.5, true, 0, 75, 45, 20);
 		Player.getInstance().initializePosition(600, 350, 5);
 		
-		GameManager.addGameObject(Player.getInstance());
+		GameManager.getInstance().addGameObject(Player.getInstance());
 	
 	}
 	
@@ -172,7 +174,6 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 			System.out.println("==>Menu");
 			resetGame();
 			
-			
 		}
 			
 		if(GameManager.getInstance().getIngame() && GameManager.getInstance().switchGameState){
@@ -219,10 +220,12 @@ public class MainGame extends JFrame implements Runnable, FileLink{
 		OverWorldNavigator.resetInstance();
 		
 		MapObject.resetInstance();
+		ItemDrop.resetInstance();
 		Player.resetInstance();
 		Guide.resetInstance();
 		Merchant.resetInstance();
 		MarioDark.deleteAllInstances();
+	
 		
 	}
 	

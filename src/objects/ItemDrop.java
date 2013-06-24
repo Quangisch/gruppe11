@@ -2,6 +2,8 @@ package objects;
 
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +19,7 @@ public class ItemDrop extends Item{
 	private int duration;
 	private int counter;
 	private int[] itemIDData = new int[3];
+	private static List<ItemDrop> itemDropList = new ArrayList<ItemDrop>();
 	
 	transient private Thread runThread = new Thread(new RunTimer());
 	transient private ScheduledExecutorService execRun = Executors.newSingleThreadScheduledExecutor();
@@ -74,12 +77,22 @@ public class ItemDrop extends Item{
 		execRun = Executors.newSingleThreadScheduledExecutor();
 		execRun.scheduleWithFixedDelay(runThread, 10, 20, TimeUnit.MILLISECONDS);
 		
-		GameManager.addGameObject(this);
+		GameManager.getInstance().addGameObject(this);
+	}
+	
+	public static void resetInstance(){
+		for(int index = 0; index < itemDropList.size(); index++)
+			itemDropList.get(index).setAlive(false);
+		
+		itemDropList.clear();
+		
 	}
 	
 	public static ItemDrop addInstance(int xPosition, int yPosition, int[] data, File file,int duration){
 		System.out.println("add Item@Pos "+xPosition+"x"+yPosition);
-		return new ItemDrop(xPosition, yPosition, data, file, duration);
+		ItemDrop drop = new ItemDrop(xPosition, yPosition, data, file, duration);
+		itemDropList.add(drop);
+		return drop;
 	}
 	
 	private class RunTimer implements Runnable{

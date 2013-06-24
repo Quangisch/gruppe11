@@ -26,7 +26,7 @@ abstract class DungeonCollision extends DungeonBuilder{
 	private static final long serialVersionUID = -6385964595000987769L;
 	
 	//mapObjectBound[layer][orientation][xTile][yTile][element]
-	Rectangle[][][][][] mapObjectBound = new Rectangle[7][13][9][7][3];
+	private Rectangle[][][][][] mapObjectBound = new Rectangle[7][13][9][7][3];
 	
 	protected DungeonCollision(){
 	
@@ -440,7 +440,7 @@ abstract class DungeonCollision extends DungeonBuilder{
 					}//Trap,Hole
 					
 					
-					for(int index = 0; index < GameManager.getMoveableList().size()-1; index ++){
+					for(int index = 0; index < GameManager.getInstance().getMoveableList().size()-1; index ++){
 					
 						if(mapObjectBound[0][0][xTile][yTile][element].contains(object.getBoundCore()) 
 								&& !(mapObjectBound[1][0][xTile][yTile][element].intersects(object.getBoundCore())

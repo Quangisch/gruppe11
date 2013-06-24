@@ -175,13 +175,13 @@ public class Merchant extends NPC implements Runnable, FileLink{
 		
 		execRun.scheduleWithFixedDelay(runThread, 10, 30, TimeUnit.MILLISECONDS);
 		
-		GameManager.addGameObject(this);
+		GameManager.getInstance().addGameObject(this);
 	}
 	
 	public void deleteInstance(){
 		setVisible(false);
 		setAlive(false);
-		GameManager.updateGameObject();
+		GameManager.getInstance().updateGameObject();
 		execRun.shutdown();
 		execRun = null;
 		merchant = null;

@@ -17,7 +17,7 @@ abstract class Sprite extends DrawableObject{
 	 */
 	private static final long serialVersionUID = 5309031653677629053L;
 
-	File file = null;
+	private File file = null;
 	
 	transient private BufferedImage spriteBuff;
 	transient private BufferedImage subSpriteBuff;
@@ -168,8 +168,7 @@ abstract class Sprite extends DrawableObject{
 		if (interactType == 1){
 	
 			//System.out.println("attackCounter: "+attackCounter); 
-			if (interInteraction < 2.5)
-				//interInteraction += 0.015;
+			if (interInteraction < 2.5 && interInteraction > 0)
 				interInteraction += 0.1;
 			
 			int attackStep = (int)(interInteraction);
@@ -192,7 +191,7 @@ abstract class Sprite extends DrawableObject{
 			
 			if (interInteraction < 5.5)
 				//interInteraction += 0.03;
-				interInteraction += 0.1;
+				interInteraction += 0.05;
 			
 			if(interactType == 2){
 				if(interInteraction >= 1 && interInteraction < 5)
@@ -285,16 +284,12 @@ abstract class Sprite extends DrawableObject{
 			this.interactType = interactType;
 		}
 		public void run() {
-			int counter = 0;
 			
 				interactSubSprite();
 				
 				if(interactType == 1)
 					setAttackBound(lastDirection, interInteraction, attackRangeX, attackRangeY);
-				
-				System.out.println("running@"+counter+" &interInteraction@"+interInteraction);
-				counter++;
-			
+	
 			
 			if(interInteraction == 0){
 				interactionLock = false;

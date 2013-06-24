@@ -102,7 +102,7 @@ public class MarioDark extends NPCLogic implements Runnable, java.io.Serializabl
 		
 		execRun.shutdown();
 		execRun = null;
-		GameManager.updateGameObject();
+		GameManager.getInstance().updateGameObject();
 		
 	
 	}

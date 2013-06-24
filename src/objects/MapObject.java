@@ -223,7 +223,7 @@ public class MapObject extends Moveable implements Runnable, FileLink{
 		if(type == 1)
 			Board.getInstance().addMapObject(this);
 		else
-			GameManager.addGameObject(this);
+			GameManager.getInstance().addGameObject(this);
 		setStaticSubSprite(1,0);
 		runThread = new Thread(this);
 		execRun.scheduleWithFixedDelay(runThread, 10, 10, TimeUnit.MILLISECONDS);

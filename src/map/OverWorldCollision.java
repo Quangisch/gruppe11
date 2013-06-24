@@ -96,11 +96,11 @@ abstract class OverWorldCollision extends OverWorldBuilder{
 				setXCoordinate(-player.getOldXCam());
 				setYCoordinate(-player.getOldYCam());
 				
-				for(int i = 0; i < GameManager.getMoveableList().size(); i++){
-					if(!GameManager.getMoveableList().get(i).isHumanPlayer()){
+				for(int i = 0; i < GameManager.getInstance().getMoveableList().size(); i++){
+					if(!GameManager.getInstance().getMoveableList().get(i).isHumanPlayer()){
 
-						GameManager.getMoveableList().get(i).setX(GameManager.getMoveableList().get(i).getX()+camDX);
-						GameManager.getMoveableList().get(i).setY(GameManager.getMoveableList().get(i).getY()+camDY);
+						GameManager.getInstance().getMoveableList().get(i).setX(GameManager.getInstance().getMoveableList().get(i).getX()+camDX);
+						GameManager.getInstance().getMoveableList().get(i).setY(GameManager.getInstance().getMoveableList().get(i).getY()+camDY);
 					}
 				}
 				

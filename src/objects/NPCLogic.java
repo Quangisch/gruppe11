@@ -139,12 +139,12 @@ abstract class NPCLogic extends NPCMove {
 	
 	public void followMelee(int wait){
 		followObject(Player.getInstance());
-		punchObject(Player.getInstance(),500);
+		punchObject(Player.getInstance(),800);
 	}
 	
 	public void sprintingMelee(int wait, int radius){
 		sprintToObject(Player.getInstance(), radius);
-		punchObject(Player.getInstance(),500);
+		punchObject(Player.getInstance(),900);
 	}
 	
 	public void sprintingCaster(int radius){
@@ -158,7 +158,7 @@ abstract class NPCLogic extends NPCMove {
 		
 		if(random > 5){
 			followObject(Player.getInstance());
-			punchObject(Player.getInstance(), 200);
+			punchObject(Player.getInstance(), 700);
 			
 		} else if (random > 1){
 			sprintToObject(Player.getInstance(),50);

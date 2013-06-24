@@ -32,8 +32,8 @@ public class CollisionDetection implements Runnable{
 		}
 		
 		try {
-			GameManager.updateGameObject();
-			moveableObject = GameManager.getMoveableList();
+			GameManager.getInstance().updateGameObject();
+			moveableObject = GameManager.getInstance().getMoveableList();
 		
 			//System.out.println("moveableListSize@"+moveableObject.size());
 			if(moveableObject.size() > 0){
@@ -99,7 +99,7 @@ public class CollisionDetection implements Runnable{
 	}
 	
 	public void getObjects(){
-		moveableObject = GameManager.getMoveableList();
+		moveableObject = GameManager.getInstance().getMoveableList();
 	}
 	
 	public static void resetInstance(){

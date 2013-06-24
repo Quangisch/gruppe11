@@ -72,7 +72,7 @@ public class Camera implements Runnable, java.io.Serializable{
 			if(GameManager.getInstance().overWorld && GameManager.getInstance().cameraOn && !player.getDirectionLock()) {
 			//if(GameManager.getInstance().cameraOn){	
 			
-				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
+				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
 				
 				if(Player.getInstance().getX() > 400 && !(map.getXCoordinate() < -(map.getWidthMap()-810))) {
 					x += CAMERASPEED;
@@ -141,7 +141,7 @@ public class Camera implements Runnable, java.io.Serializable{
 				OverWorldNavigator.getInstance().setXCoordinate(OverWorldNavigator.getInstance().getXCoordinate()-scrollX);
 				OverWorldNavigator.getInstance().setYCoordinate(OverWorldNavigator.getInstance().getYCoordinate()-scrollY);
 				
-				ArrayList<Moveable> object = GameManager.getMoveableList();
+				ArrayList<Moveable> object = GameManager.getInstance().getMoveableList();
 				for(int index = 0; index < object.size(); index++){
 					object.get(index).setX(object.get(index).getX()-scrollX);
 					object.get(index).setY(object.get(index).getY()-scrollY);
@@ -158,6 +158,9 @@ public class Camera implements Runnable, java.io.Serializable{
 		
 		//scroll between map with fixed camera
 		public void scrollCamera(Map map){
+			
+			if(GameManager.getInstance().scrollDirection != 0)
+				Player.getInstance().setSpeedUp(0.7);
 
 			if(GameManager.getInstance().scrollDirection == 1){
 				//System.out.println("North scrollY: " +scrollY);
@@ -165,9 +168,12 @@ public class Camera implements Runnable, java.io.Serializable{
 				y -= SCROLLSPEEDY;
 				scrollY -= SCROLLSPEEDY;
 				//Player.getInstance().setY(Player.getInstance().getY()+SCROLLSPEEDY);
+				
+			
+				Player.getInstance().setMovementLock();
 				Player.getInstance().setMoveUp(true);
 				
-				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
+				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
 				for(int index = 0; index < moveableList.size(); index++){
 					moveableList.get(index).setY(moveableList.get(index).getY()+SCROLLSPEEDY);
 				}
@@ -190,9 +196,11 @@ public class Camera implements Runnable, java.io.Serializable{
 				x += SCROLLSPEEDX;
 				scrollX += SCROLLSPEEDX;
 				//Player.getInstance().setX(Player.getInstance().getX()-SCROLLSPEEDX);
-				Player.getInstance().setMoveRight(true);
 				
-				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
+				Player.getInstance().setMoveRight(true);
+				Player.getInstance().setInputLock(true);
+				
+				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
 				for(int index = 0; index < moveableList.size(); index++){
 					moveableList.get(index).setX(moveableList.get(index).getX()-SCROLLSPEEDX);
 				}
@@ -214,9 +222,11 @@ public class Camera implements Runnable, java.io.Serializable{
 				y += SCROLLSPEEDY;
 				scrollY += SCROLLSPEEDY;
 				//Player.getInstance().setY(Player.getInstance().getY()-SCROLLSPEEDY);
-				Player.getInstance().setMoveDown(true);
 				
-				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
+				Player.getInstance().setMoveDown(true);
+				Player.getInstance().setInputLock(true);
+				
+				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
 				for(int index = 0; index < moveableList.size(); index++){
 					moveableList.get(index).setY(moveableList.get(index).getY()-SCROLLSPEEDY);
 				}
@@ -239,9 +249,11 @@ public class Camera implements Runnable, java.io.Serializable{
 				x -= SCROLLSPEEDX;
 				scrollX -= SCROLLSPEEDX;
 				//Player.getInstance().setX(Player.getInstance().getX()+SCROLLSPEEDX);
+			
 				Player.getInstance().setMoveLeft(true);
+				Player.getInstance().setInputLock(true);
 				
-				ArrayList<Moveable> moveableList = GameManager.getMoveableList();
+				ArrayList<Moveable> moveableList = GameManager.getInstance().getMoveableList();
 				for(int index = 0; index < moveableList.size(); index++){
 					moveableList.get(index).setX(moveableList.get(index).getX()+SCROLLSPEEDX);
 				}

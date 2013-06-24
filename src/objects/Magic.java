@@ -22,6 +22,7 @@ public class Magic extends Initializer implements FileLink{
 	private int type;
 	private Moveable caster;
 	private ArrayList<Moveable> moveableList;
+	private boolean constructionLock = true;
 	
 	private int direction;
 	private int[] speed = {10, 15};
@@ -46,7 +47,7 @@ public class Magic extends Initializer implements FileLink{
 	public void initializeMagic(){
 		
 		File magicFile = null;
-		moveableList = GameManager.getMoveableList();
+		moveableList = GameManager.getInstance().getMoveableList();
 		direction = caster.getLastDirection();
 		
 		switch(direction){
@@ -93,7 +94,7 @@ public class Magic extends Initializer implements FileLink{
 		execRun = Executors.newSingleThreadScheduledExecutor();
 		execRun.scheduleWithFixedDelay(runThread, 10, 20, TimeUnit.MILLISECONDS);
 		
-		GameManager.addGameObject(this);
+		GameManager.getInstance().addGameObject(this);
 		
 	}
 	
@@ -104,9 +105,16 @@ public class Magic extends Initializer implements FileLink{
 		//System.out.println("Position@"+getX()+"x"+getY()+",visible:"+getVisibleDrawable());
 		//System.out.println(getLastDirection()+","+getMoveUp()+"x"+getMoveRight()+"x"+getMoveDown()+"x"+getMoveLeft());
 		
+		if(!getBoundCore().intersects(caster.getBound()))
+			constructionLock = false;
+		
 		for(int index = 0; index < moveableList.size(); index++){
 
-			if(getBoundCore().intersects(moveableList.get(index).getBound()) && !moveableList.get(index).equals(caster) && !moveableList.get(index).equals(this) && moveableList.get(index).getMoveableType() != -10){
+			if(getBoundCore().intersects(moveableList.get(index).getBound()) 
+					&& !moveableList.get(index).equals(caster) 
+					&& !moveableList.get(index).equals(this) 
+					&& moveableList.get(index).getMoveableType() != -10
+					&& !constructionLock){
 				setAlive(false);
 				Damage.inflictDamage(1, damage[type], moveableList.get(index));
 				moveableList.get(index).setObjectBack(20,0,true,this.getBoundCore());

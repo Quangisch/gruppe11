@@ -154,6 +154,7 @@ public class DungeonNavigator extends DungeonCollision{
 				
 				if(coordinates[2] == 1){
 					if(Player.getInstance().getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
+						Player.getInstance().setMovementLock();
 						GameManager.getInstance().scrollDirection = 1;
 						setYMap(getYMap()-1);
 						System.err.println("Y_"+getYMap()+" to: "+(getYMap()+1));
@@ -165,6 +166,7 @@ public class DungeonNavigator extends DungeonCollision{
 				
 				if(coordinates[2] == 2){
 					if(Player.getInstance().getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
+						Player.getInstance().setMovementLock();
 						GameManager.getInstance().scrollDirection = 3;
 						setXMap(getXMap()+1);
 						System.err.println("X_"+getXMap()+" to: " +(getXMap()+1));
@@ -177,6 +179,7 @@ public class DungeonNavigator extends DungeonCollision{
 				
 				if(coordinates[2] == 3){
 					if(Player.getInstance().getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
+						Player.getInstance().setMovementLock();
 						GameManager.getInstance().scrollDirection = 5;
 						setYMap(getYMap()+1);
 						System.err.println("Y_"+getYMap()+" to: "+(getYMap()+1));
@@ -189,6 +192,7 @@ public class DungeonNavigator extends DungeonCollision{
 				
 				if(coordinates[2] == 4){
 					if(Player.getInstance().getBoundDirection(1).intersects(navDataMap.get(index).getRect())){
+						Player.getInstance().setMovementLock();
 						GameManager.getInstance().scrollDirection = 7;
 						setXMap(getXMap()-1);
 						System.err.println("X_"+getXMap()+" to: "+(getXMap()-1));

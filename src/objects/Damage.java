@@ -13,7 +13,6 @@ public class Damage {
 
 		System.out.println("inflict DMG "+damage+",type"+type+" on MoveableType: "+object.getMoveableType()+" life@"+object.getLife());
 		
-		
 		if(!object.isHumanPlayer()){
 			if(type == object.getMoveableType() && type  == 1){
 				object.setLife(object.getLife()- damage*0.6,true);

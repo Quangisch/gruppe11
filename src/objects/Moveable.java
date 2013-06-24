@@ -122,7 +122,7 @@ public class Moveable extends Sprite{
 			
 			if (GameManager.getInstance().overWorld && GameManager.getInstance().cameraOn){
 			
-				ArrayList<Moveable> object = GameManager.getMoveableList();
+				ArrayList<Moveable> object = GameManager.getInstance().getMoveableList();
 				
 				for(int index = 0; index < object.size(); index++){
 					if (!leftLock && !rightLock)
@@ -263,6 +263,16 @@ public class Moveable extends Sprite{
 			return false;	
 	}
 	
+	public void setMovementLock(){
+		inputLock = true;
+		moveable = false;
+		moveUp = false;
+		moveRight = false;
+		moveDown = false;
+		moveLeft = false;
+		setMoveStep(0);
+	}
+	
 	public void resetMovementLock(){
 		inputLock = false;
 		moveable = true;
@@ -352,12 +362,10 @@ public class Moveable extends Sprite{
 		if(!invincible){
 			if(loseLife && life > 0 && invincibleThread == null){
 				
-				startInvincibleTimer(150,10);
+				startInvincibleTimer(150,6);
 				
 				//startFlashTimer(150,5);
 			}
-			if(this.life > life)
-				System.out.println("pre.Life@"+this.life+"after.Life@"+life);
 			
 			this.life = life; 
 			
@@ -495,8 +503,6 @@ public class Moveable extends Sprite{
 			}
 		}
 		
-		System.out.println("Direction_in@"+direction+",out@"+directionOut);
-		
 		return directionOut;
 	}
 	
@@ -598,13 +604,17 @@ public class Moveable extends Sprite{
 		private InvincibleTimer(){ }
 		
 		public void run () {
-			System.out.println("Invincible@"+flashCounter+"to"+cycleFlash);
 			
 			
-			if(getOpacity() >= 1)
-				setOpacity(0.7f);
-			else
-				setOpacity(1f);
+			//if(flashCounter < 4){
+				if(getOpacity() >= 1)
+					setOpacity(0.3f);
+				else
+					setOpacity(1f);
+				
+				//System.out.println("Invincible@"+flashCounter+"to"+cycleFlash);
+			//}
+			
 
 			flashCounter++;
 			

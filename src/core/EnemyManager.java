@@ -67,7 +67,7 @@ public enum EnemyManager implements FileLink {
 		for(EnemyManager enemy : values()){
 			if(enemy.type == enemyType){
 				MarioDark.getInstance(false, ID, boss).initializeImage(enemy.file, enemy.subSpriteWidth, enemy.subSpriteHeight, enemy.moveStepCycle);
-				GameManager.addGameObject(MarioDark.getInstance(false, ID, boss));
+				GameManager.getInstance().addGameObject(MarioDark.getInstance(false, ID, boss));
 			}
 		}
 		
@@ -85,7 +85,7 @@ public enum EnemyManager implements FileLink {
 			MarioDark.getInstance(false, num, boss).setAttackDamage(attackDamage);
 			MarioDark.getInstance(false, num, boss).setEnemyManagerType(enemyType);
 			
-			GameManager.addGameObject(MarioDark.getInstance(false, num, boss));
+			GameManager.getInstance().addGameObject(MarioDark.getInstance(false, num, boss));
 			System.err.println("========>EnemyManager.initializeInstance: type@"+type+" ID@"+num+" Behaviour@"+pattern);
 		
 	}

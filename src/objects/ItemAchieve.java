@@ -56,14 +56,14 @@ public class ItemAchieve extends Item implements Runnable{
 		execRun = Executors.newSingleThreadScheduledExecutor();
 		execRun.scheduleWithFixedDelay(runThread, 0, 10, TimeUnit.MILLISECONDS);
 
-		GameManager.addGameObject(this);
+		GameManager.getInstance().addGameObject(this);
 	}
 	
 	private void deleteInstance(){
 		System.out.println("delete ItemAchieve");
 		setAlive(false);
 		setVisible(false);
-		GameManager.updateGameObject();
+		GameManager.getInstance().updateGameObject();
 		execRun.shutdown();
 		execRun = null;
 	}

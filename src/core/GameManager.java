@@ -42,7 +42,7 @@ public class GameManager {
 	public volatile boolean printMsg;
 	public volatile boolean showBounds;
 	
-	private static volatile ArrayList<Moveable> moveableList = new ArrayList<Moveable>();
+	private volatile ArrayList<Moveable> moveableList = new ArrayList<Moveable>();
 	
 	private GameManager(boolean menu, boolean ingame, boolean switchGameState){
 		this.menu = menu;
@@ -50,7 +50,7 @@ public class GameManager {
 		this.switchGameState = switchGameState;
 	}
 	
-	public static synchronized void addGameObject(Moveable moveableElement){
+	public synchronized void addGameObject(Moveable moveableElement){
 
 		moveableList.add(moveableElement);
 		Board.getInstance().addDrawable(moveableElement);
@@ -66,18 +66,18 @@ public class GameManager {
 	}
 	
 	
-	public static synchronized void updateGameObject(){
+	public synchronized void updateGameObject(){
 		for(int i = 0; i < moveableList.size(); i++){
 			if(moveableList.get(i) == null || !moveableList.get(i).getAlive())
 				moveableList.remove(i);
 		}
 	}
 	
-	public static synchronized void clearGameObjects(){
+	public synchronized void clearGameObjects(){
 		moveableList.clear();
 	}
 	
-	public static ArrayList<Moveable> getMoveableList(){
+	public ArrayList<Moveable> getMoveableList(){
 		return moveableList;
 	}
 	
@@ -125,10 +125,10 @@ public class GameManager {
 		boolean tmpMenu = GameManager.getInstance().menu;
 		boolean tmpIngame = GameManager.getInstance().ingame;
 		boolean tmpSwitchState = GameManager.getInstance().switchGameState;
-		if(gameManager != null)
+		if(gameManager != null){
 			gameManager = new GameManager(tmpMenu, tmpIngame, tmpSwitchState);
-
-		
+			Board.resetLists();
+		}	
 	}
 	
 	public static GameManager getInstance(){

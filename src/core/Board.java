@@ -68,10 +68,8 @@ public class Board extends JPanel implements Runnable, FileLink{
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		
-		if(GameManager.getInstance().getMenu()){
+		if(GameManager.getInstance().getMenu())
 			Menu.getInstance().paintComponents(g2d);
-			
-		}
 		
 		
 		if(GameManager.getInstance().getIngame() && !GameManager.getInstance().getMenu() && GameManager.getInstance().mapLoaded){
@@ -80,26 +78,20 @@ public class Board extends JPanel implements Runnable, FileLink{
 			if(GameManager.getInstance().overWorld)
 				OverWorldNavigator.getInstance().draw(0, g2d);
 			
-			if(GameManager.getInstance().dungeon){
+			if(GameManager.getInstance().dungeon)
 				DungeonNavigator.getInstance().draw(0, g2d);
-			}
-			
-			for(int index = 0; index < mapObjectList.size(); index ++){
+		
+			for(int index = 0; index < mapObjectList.size(); index ++)
 				mapObjectList.get(index).draw(g2d);
-			}
 			
-			if(GameManager.getInstance().dungeon){
+			if(GameManager.getInstance().dungeon)
 				DungeonNavigator.getInstance().draw(1, g2d);
-			}
 		
 			//sort objects, specified in sortYOrder(), to draw them according to their Y-Value, respectivly in the proper Z-Order
 			ArrayList<DrawableObject> drawablePaint = sortDrawable();
-			for(int i = 0; i < drawableList.size(); i++){
+			for(int i = 0; i < drawableList.size(); i++)
 				drawablePaint.get(i).draw(g2d);
-			}
-			
-			
-			
+		
 			if(GameManager.getInstance().overWorld && topMap != null)
 				g2d.drawImage(topMap, OverWorldNavigator.getInstance().getXCoordinate(), OverWorldNavigator.getInstance().getYCoordinate(), this);
 			
@@ -116,11 +108,7 @@ public class Board extends JPanel implements Runnable, FileLink{
 			
 
 		}
-		
-		
-		
-		
-		
+	
 	}
 	
 	public synchronized void addDrawable(DrawableObject drawableElement){
@@ -155,6 +143,11 @@ public class Board extends JPanel implements Runnable, FileLink{
 		}
 	}
 	
+	public static synchronized void resetLists(){
+		mapObjectList.clear();
+		drawableList.clear();
+	}
+	
 	public void setTopMap(boolean setImage,File topMapFile){
 		
 		try {
@@ -175,7 +168,7 @@ public class Board extends JPanel implements Runnable, FileLink{
 		for(int i = 0; i < drawableList.size()-1; i++){
 			if(!drawableList.get(i).getAlive()){
 				drawableList.remove(i);
-				GameManager.updateGameObject();
+				GameManager.getInstance().updateGameObject();
 			}
 		}
 		
